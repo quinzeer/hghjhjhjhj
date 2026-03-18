@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr" style="width:100%;height:100%;margin:0px; padding:0px;">
+    <head>
+        <title>Twimmo - Logiciel de transaction immobilière</title>
+        <meta name="keywords" content="logiciel, immobilier, negociateur, vente, achat, location, transaction" />
+        <meta name="description" content="Le logiciel qui fait la différence pour la gestion de vos transactions et de vos medias Internet" />
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+        <meta name="robots" content="noindex">
+        <meta name="viewport" content="">
+        <link rel="apple-touch-icon" href="//prod.twimmo.net/assets/img/apple-touch-icon.png" />
+        <script type="text/javascript">
+            // [FIX #9] Sécurisation du handler postMessage
+            // - Validation stricte de l'origine (seul prod.twimmo.net est autorisé)
+            // - Validation du format des données reçues
+            var ALLOWED_ORIGIN = "https://prod.twimmo.net";
+
+            var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+            var eventer = window[eventMethod];
+            var messageEvent = eventMethod === "attachEvent" ? "onmessage" : "message";
+
+            eventer(messageEvent, function(e) {
+                // [FIX #9] Vérifier que le message vient bien de prod.twimmo.net
+                if (e.origin !== ALLOWED_ORIGIN) {
+                    return;
+                }
+
+                // Ne traiter que les chaînes de caractères (pas les objets)
+                if (typeof e.data !== "string") {
+                    return;
+                }
+
+                // [FIX #9] Valider le format des données viewport acceptées
+                // N'accepter que les valeurs viewport connues et sûres
+                var allowedValues = [
+                    "width=device-width",
+                    "width=1400",
+                    "width=device-width, initial-scale=1"
+                ];
+
+                if (allowedValues.indexOf(e.data) !== -1) {
+                    window.document.querySelector('meta[name="viewport"]').setAttribute('content', e.data);
+                }
+            }, false);
+        </script>
+    </head>
+    <body style="width:100%;height:100%;margin:0px; padding:0px;">
+        <!-- [FIX #10] Ajout de sandbox pour restreindre les capacités de l'iframe -->
+        <iframe
+            src="//prod.twimmo.net/"
+            width="100%"
+            height="100%"
+            frameborder="0"
+            sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-top-navigation"
+            referrerpolicy="strict-origin-when-cross-origin"
+            webkitallowfullscreen
+            mozallowfullscreen
+            allowfullscreen>
+        </iframe>
+    </body>
+</html>
