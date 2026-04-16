@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DualSense Tester — Test ta manette PS5</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- HEADER -->
+        <header class="header">
+            <div class="header-left">
+                <div class="ps-logo">
+                    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+                        <path d="M8.985 2.596v17.548l3.915 1.261V6.688c0-.69.304-1.151.794-.991.636.181.76.814.76 1.505v5.876c2.441 1.193 4.362-.002 4.362-3.153 0-3.237-1.126-4.675-5.831-6.324L8.985 2.596zM1.348 17.672l2.564.832c2.047.661 4.089.612 4.089-.894 0-1.474-1.623-2.07-4.089-2.96v2.17l-2.564-.832v-2.318c3.135-1.012 6.422-1.258 8.35-.038 1.694 1.088 1.463 3.133-.39 4.01-1.913.905-4.689.761-7.96-.078v.108zm18.065-.834c-1.465.835-3.24 1.055-5.345.488l-2.564-.81v-2.318c1.667.541 3.334.79 4.655.35.683-.227 1.027-.63 1.027-1.158 0-.561-.395-.917-1.356-1.213l-2.059-.683c-2.372-.788-3.396-1.873-3.068-3.826.37-2.206 2.642-3.238 5.448-2.49l2.384.69v2.2l-2.384-.744c-1.27-.376-2.553-.339-2.703.455-.128.677.283 1.004 1.397 1.375l1.9.615c2.555.867 3.377 2.044 3.027 3.915-.271 1.44-1.379 2.553-3.36 3.154h.001z"/>
+                    </svg>
+                </div>
+                <h1>DualSense <span class="accent">Tester</span></h1>
+            </div>
+            <div class="header-right">
+                <div id="connection-status" class="status disconnected">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Aucune manette</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- CONNECTION SCREEN -->
+        <div id="connect-screen" class="connect-screen">
+            <div class="connect-card">
+                <div class="controller-icon">
+                    <svg viewBox="0 0 200 120" width="200" height="120">
+                        <path d="M60 20 C60 10, 140 10, 140 20 L155 80 C160 100, 140 110, 130 95 L120 80 L80 80 L70 95 C60 110, 40 100, 45 80 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                        <circle cx="75" cy="55" r="12" fill="none" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="125" cy="55" r="12" fill="none" stroke="currentColor" stroke-width="2"/>
+                        <rect x="90" y="25" width="20" height="8" rx="4" fill="none" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="100" cy="50" r="4" fill="currentColor" opacity="0.3"/>
+                    </svg>
+                </div>
+                <h2>Connecte ta manette PS5</h2>
+                <p>Branche ta DualSense en USB ou connecte-la en Bluetooth, puis <strong>appuie sur un bouton</strong></p>
+                <div class="pulse-ring"></div>
+            </div>
+        </div>
+
+        <!-- MAIN TEST AREA -->
+        <div id="test-area" class="test-area hidden">
+            <!-- TABS -->
+            <nav class="tabs">
+                <button class="tab active" data-tab="overview">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                    Vue d'ensemble
+                </button>
+                <button class="tab" data-tab="buttons">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
+                    Boutons
+                </button>
+                <button class="tab" data-tab="sticks">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="3" x2="12" y2="12"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>
+                    Sticks
+                </button>
+                <button class="tab" data-tab="triggers">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20 L4 8 C4 5 8 4 12 4 C16 4 20 5 20 8 L20 20"/><line x1="4" y1="14" x2="20" y2="14"/></svg>
+                    Gâchettes
+                </button>
+                <button class="tab" data-tab="vibration">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12 C2 12 5 6 8 6 C11 6 11 18 14 18 C17 18 22 12 22 12"/></svg>
+                    Vibration
+                </button>
+                <button class="tab" data-tab="deadzone">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4" stroke-dasharray="3 2"/></svg>
+                    Deadzone
+                </button>
+                <button class="tab" data-tab="latency">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+                    Latence
+                </button>
+                <button class="tab" data-tab="stress">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15 9 22 9 17 14 19 22 12 17 5 22 7 14 2 9 9 9"/></svg>
+                    Stress Test
+                </button>
+            </nav>
+
+            <!-- TAB CONTENT -->
+            <main class="tab-content">
+
+                <!-- OVERVIEW -->
+                <section id="tab-overview" class="panel active">
+                    <div class="panel-header">
+                        <h2>Vue d'ensemble</h2>
+                        <div id="controller-info" class="controller-info"></div>
+                    </div>
+                    <div class="overview-grid">
+                        <div class="overview-card">
+                            <h3>Boutons</h3>
+                            <div class="overview-buttons" id="overview-buttons"></div>
+                        </div>
+                        <div class="overview-card">
+                            <h3>Stick Gauche</h3>
+                            <canvas id="overview-stick-l" width="160" height="160"></canvas>
+                            <div class="stick-values" id="overview-stick-l-values"></div>
+                        </div>
+                        <div class="overview-card">
+                            <h3>Stick Droit</h3>
+                            <canvas id="overview-stick-r" width="160" height="160"></canvas>
+                            <div class="stick-values" id="overview-stick-r-values"></div>
+                        </div>
+                        <div class="overview-card">
+                            <h3>Gâchettes</h3>
+                            <div class="overview-triggers">
+                                <div class="trigger-bar-container">
+                                    <span>L2</span>
+                                    <div class="trigger-bar"><div class="trigger-fill" id="overview-l2"></div></div>
+                                    <span class="trigger-value" id="overview-l2-val">0%</span>
+                                </div>
+                                <div class="trigger-bar-container">
+                                    <span>R2</span>
+                                    <div class="trigger-bar"><div class="trigger-fill r2" id="overview-r2"></div></div>
+                                    <span class="trigger-value" id="overview-r2-val">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- BUTTONS TEST -->
+                <section id="tab-buttons" class="panel">
+                    <div class="panel-header">
+                        <h2>Test des boutons</h2>
+                        <p>Appuie sur chaque bouton pour le valider</p>
+                        <button class="btn-reset" id="btn-reset-buttons">Réinitialiser</button>
+                    </div>
+                    <div class="buttons-test-grid">
+                        <div class="btn-group">
+                            <h3>Face</h3>
+                            <div class="ps-face-buttons">
+                                <div class="ps-btn" data-btn="12" id="btn-triangle">
+                                    <svg viewBox="0 0 30 30" width="30" height="30"><polygon points="15,5 27,25 3,25" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+                                    <span>Triangle</span>
+                                </div>
+                                <div class="ps-btn" data-btn="1" id="btn-circle">
+                                    <svg viewBox="0 0 30 30" width="30" height="30"><circle cx="15" cy="15" r="10" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+                                    <span>Rond</span>
+                                </div>
+                                <div class="ps-btn" data-btn="0" id="btn-cross">
+                                    <svg viewBox="0 0 30 30" width="30" height="30"><line x1="8" y1="8" x2="22" y2="22" stroke="currentColor" stroke-width="2"/><line x1="22" y1="8" x2="8" y2="22" stroke="currentColor" stroke-width="2"/></svg>
+                                    <span>Croix</span>
+                                </div>
+                                <div class="ps-btn" data-btn="2" id="btn-square">
+                                    <svg viewBox="0 0 30 30" width="30" height="30"><rect x="6" y="6" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+                                    <span>Carré</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <h3>D-Pad</h3>
+                            <div class="ps-dpad">
+                                <div class="ps-btn dpad" data-btn="12" id="btn-up"><span>↑</span></div>
+                                <div class="ps-btn dpad" data-btn="15" id="btn-right"><span>→</span></div>
+                                <div class="ps-btn dpad" data-btn="13" id="btn-down"><span>↓</span></div>
+                                <div class="ps-btn dpad" data-btn="14" id="btn-left"><span>←</span></div>
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <h3>Bumpers</h3>
+                            <div class="bumpers-row">
+                                <div class="ps-btn wide" data-btn="4" id="btn-l1"><span>L1</span></div>
+                                <div class="ps-btn wide" data-btn="5" id="btn-r1"><span>R1</span></div>
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <h3>Sticks (clic)</h3>
+                            <div class="bumpers-row">
+                                <div class="ps-btn wide" data-btn="10" id="btn-l3"><span>L3</span></div>
+                                <div class="ps-btn wide" data-btn="11" id="btn-r3"><span>R3</span></div>
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <h3>Système</h3>
+                            <div class="system-row">
+                                <div class="ps-btn" data-btn="8" id="btn-share"><span>Share</span></div>
+                                <div class="ps-btn" data-btn="16" id="btn-ps"><span>PS</span></div>
+                                <div class="ps-btn" data-btn="9" id="btn-options"><span>Options</span></div>
+                                <div class="ps-btn wide" data-btn="17" id="btn-touchpad"><span>Touchpad</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="buttons-progress">
+                        <div class="progress-bar"><div class="progress-fill" id="buttons-progress"></div></div>
+                        <span id="buttons-progress-text">0 / 18 boutons testés</span>
+                    </div>
+                </section>
+
+                <!-- STICKS TEST -->
+                <section id="tab-sticks" class="panel">
+                    <div class="panel-header">
+                        <h2>Test des sticks analogiques</h2>
+                        <p>Fais des cercles complets avec chaque stick</p>
+                        <button class="btn-reset" id="btn-reset-sticks">Réinitialiser</button>
+                    </div>
+                    <div class="sticks-grid">
+                        <div class="stick-test-card">
+                            <h3>Stick Gauche</h3>
+                            <canvas id="stick-l-canvas" width="300" height="300"></canvas>
+                            <div class="stick-data">
+                                <div class="data-row"><span>X</span><span id="stick-l-x">0.000</span></div>
+                                <div class="data-row"><span>Y</span><span id="stick-l-y">0.000</span></div>
+                                <div class="data-row"><span>Angle</span><span id="stick-l-angle">0°</span></div>
+                                <div class="data-row"><span>Distance</span><span id="stick-l-dist">0.000</span></div>
+                            </div>
+                            <div class="stick-coverage">
+                                <span>Couverture</span>
+                                <div class="progress-bar"><div class="progress-fill" id="stick-l-coverage"></div></div>
+                                <span id="stick-l-coverage-text">0%</span>
+                            </div>
+                        </div>
+                        <div class="stick-test-card">
+                            <h3>Stick Droit</h3>
+                            <canvas id="stick-r-canvas" width="300" height="300"></canvas>
+                            <div class="stick-data">
+                                <div class="data-row"><span>X</span><span id="stick-r-x">0.000</span></div>
+                                <div class="data-row"><span>Y</span><span id="stick-r-y">0.000</span></div>
+                                <div class="data-row"><span>Angle</span><span id="stick-r-angle">0°</span></div>
+                                <div class="data-row"><span>Distance</span><span id="stick-r-dist">0.000</span></div>
+                            </div>
+                            <div class="stick-coverage">
+                                <span>Couverture</span>
+                                <div class="progress-bar"><div class="progress-fill" id="stick-r-coverage"></div></div>
+                                <span id="stick-r-coverage-text">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TRIGGERS TEST -->
+                <section id="tab-triggers" class="panel">
+                    <div class="panel-header">
+                        <h2>Test des gâchettes</h2>
+                        <p>Appuie progressivement sur L2 et R2 pour tester la sensibilité</p>
+                    </div>
+                    <div class="triggers-grid">
+                        <div class="trigger-card">
+                            <h3>L2 — Gâchette gauche</h3>
+                            <div class="trigger-visual">
+                                <div class="trigger-arc-container">
+                                    <canvas id="trigger-l2-arc" width="250" height="140"></canvas>
+                                </div>
+                                <div class="trigger-percent" id="trigger-l2-percent">0%</div>
+                            </div>
+                            <div class="trigger-history">
+                                <canvas id="trigger-l2-history" width="400" height="100"></canvas>
+                            </div>
+                            <div class="trigger-stats">
+                                <div class="stat"><span>Min</span><span id="trigger-l2-min">0.00</span></div>
+                                <div class="stat"><span>Max</span><span id="trigger-l2-max">0.00</span></div>
+                                <div class="stat"><span>Précision</span><span id="trigger-l2-precision">—</span></div>
+                            </div>
+                        </div>
+                        <div class="trigger-card">
+                            <h3>R2 — Gâchette droite</h3>
+                            <div class="trigger-visual">
+                                <div class="trigger-arc-container">
+                                    <canvas id="trigger-r2-arc" width="250" height="140"></canvas>
+                                </div>
+                                <div class="trigger-percent" id="trigger-r2-percent">0%</div>
+                            </div>
+                            <div class="trigger-history">
+                                <canvas id="trigger-r2-history" width="400" height="100"></canvas>
+                            </div>
+                            <div class="trigger-stats">
+                                <div class="stat"><span>Min</span><span id="trigger-r2-min">0.00</span></div>
+                                <div class="stat"><span>Max</span><span id="trigger-r2-max">0.00</span></div>
+                                <div class="stat"><span>Précision</span><span id="trigger-r2-precision">—</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIBRATION TEST -->
+                <section id="tab-vibration" class="panel">
+                    <div class="panel-header">
+                        <h2>Test de vibration</h2>
+                        <p>Teste les moteurs haptiques de ta manette</p>
+                    </div>
+                    <div class="vibration-grid">
+                        <div class="vibration-card">
+                            <h3>Vibration faible</h3>
+                            <p>Moteur gauche — vibration légère</p>
+                            <button class="vibration-btn" data-intensity="weak" data-duration="500">
+                                <div class="vibration-wave w1"></div>
+                                Tester
+                            </button>
+                        </div>
+                        <div class="vibration-card">
+                            <h3>Vibration forte</h3>
+                            <p>Moteur droit — vibration puissante</p>
+                            <button class="vibration-btn" data-intensity="strong" data-duration="500">
+                                <div class="vibration-wave w2"></div>
+                                Tester
+                            </button>
+                        </div>
+                        <div class="vibration-card">
+                            <h3>Double moteur</h3>
+                            <p>Les deux moteurs simultanément</p>
+                            <button class="vibration-btn" data-intensity="both" data-duration="800">
+                                <div class="vibration-wave w3"></div>
+                                Tester
+                            </button>
+                        </div>
+                        <div class="vibration-card">
+                            <h3>Pulsation</h3>
+                            <p>Vibrations en rafale</p>
+                            <button class="vibration-btn" data-intensity="pulse" data-duration="2000">
+                                <div class="vibration-wave w4"></div>
+                                Tester
+                            </button>
+                        </div>
+                        <div class="vibration-card full-width">
+                            <h3>Vibration personnalisée</h3>
+                            <div class="custom-vibration">
+                                <div class="slider-group">
+                                    <label>Moteur faible</label>
+                                    <input type="range" id="vib-weak" min="0" max="1" step="0.01" value="0">
+                                    <span id="vib-weak-val">0.00</span>
+                                </div>
+                                <div class="slider-group">
+                                    <label>Moteur fort</label>
+                                    <input type="range" id="vib-strong" min="0" max="1" step="0.01" value="0">
+                                    <span id="vib-strong-val">0.00</span>
+                                </div>
+                                <div class="slider-group">
+                                    <label>Durée (ms)</label>
+                                    <input type="range" id="vib-duration" min="100" max="5000" step="100" value="1000">
+                                    <span id="vib-duration-val">1000</span>
+                                </div>
+                                <button class="vibration-btn custom" id="vib-custom-btn">Tester</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- DEADZONE TEST -->
+                <section id="tab-deadzone" class="panel">
+                    <div class="panel-header">
+                        <h2>Test de Deadzone</h2>
+                        <p>Lâche les sticks et observe si ils reviennent parfaitement au centre</p>
+                    </div>
+                    <div class="deadzone-grid">
+                        <div class="deadzone-card">
+                            <h3>Stick Gauche — Deadzone</h3>
+                            <canvas id="deadzone-l" width="300" height="300"></canvas>
+                            <div class="deadzone-stats">
+                                <div class="stat"><span>Drift X</span><span id="dz-l-x">0.000</span></div>
+                                <div class="stat"><span>Drift Y</span><span id="dz-l-y">0.000</span></div>
+                                <div class="stat"><span>Drift total</span><span id="dz-l-total">0.000</span></div>
+                                <div class="stat"><span>Status</span><span id="dz-l-status" class="status-ok">OK</span></div>
+                            </div>
+                            <div class="deadzone-slider">
+                                <label>Deadzone recommandée</label>
+                                <input type="range" id="dz-l-range" min="0" max="0.3" step="0.005" value="0.05">
+                                <span id="dz-l-range-val">5%</span>
+                            </div>
+                        </div>
+                        <div class="deadzone-card">
+                            <h3>Stick Droit — Deadzone</h3>
+                            <canvas id="deadzone-r" width="300" height="300"></canvas>
+                            <div class="deadzone-stats">
+                                <div class="stat"><span>Drift X</span><span id="dz-r-x">0.000</span></div>
+                                <div class="stat"><span>Drift Y</span><span id="dz-r-y">0.000</span></div>
+                                <div class="stat"><span>Drift total</span><span id="dz-r-total">0.000</span></div>
+                                <div class="stat"><span>Status</span><span id="dz-r-status" class="status-ok">OK</span></div>
+                            </div>
+                            <div class="deadzone-slider">
+                                <label>Deadzone recommandée</label>
+                                <input type="range" id="dz-r-range" min="0" max="0.3" step="0.005" value="0.05">
+                                <span id="dz-r-range-val">5%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="deadzone-history-section">
+                        <h3>Historique du drift (30 dernières secondes)</h3>
+                        <canvas id="deadzone-history" width="800" height="150"></canvas>
+                    </div>
+                </section>
+
+                <!-- LATENCY TEST -->
+                <section id="tab-latency" class="panel">
+                    <div class="panel-header">
+                        <h2>Test de latence</h2>
+                        <p>Mesure le temps de réponse entre l'appui et la détection</p>
+                    </div>
+                    <div class="latency-test">
+                        <div class="latency-prompt" id="latency-prompt">
+                            <div class="latency-circle" id="latency-circle">
+                                <span id="latency-instruction">Appuie sur <strong>X</strong> quand le cercle devient vert</span>
+                            </div>
+                        </div>
+                        <button class="btn-start" id="latency-start">Démarrer le test</button>
+                        <div class="latency-results" id="latency-results">
+                            <div class="latency-stat">
+                                <span class="latency-label">Dernière</span>
+                                <span class="latency-value" id="latency-last">— ms</span>
+                            </div>
+                            <div class="latency-stat">
+                                <span class="latency-label">Moyenne</span>
+                                <span class="latency-value" id="latency-avg">— ms</span>
+                            </div>
+                            <div class="latency-stat">
+                                <span class="latency-label">Meilleure</span>
+                                <span class="latency-value best" id="latency-best">— ms</span>
+                            </div>
+                            <div class="latency-stat">
+                                <span class="latency-label">Pire</span>
+                                <span class="latency-value worst" id="latency-worst">— ms</span>
+                            </div>
+                            <div class="latency-stat">
+                                <span class="latency-label">Tests</span>
+                                <span class="latency-value" id="latency-count">0</span>
+                            </div>
+                        </div>
+                        <canvas id="latency-chart" width="700" height="200"></canvas>
+                    </div>
+                </section>
+
+                <!-- STRESS TEST -->
+                <section id="tab-stress" class="panel">
+                    <div class="panel-header">
+                        <h2>Stress Test</h2>
+                        <p>Appuie sur tous les boutons le plus vite possible pendant 30 secondes</p>
+                    </div>
+                    <div class="stress-test">
+                        <div class="stress-timer" id="stress-timer">30</div>
+                        <button class="btn-start" id="stress-start">Démarrer</button>
+                        <div class="stress-stats">
+                            <div class="stress-stat">
+                                <span class="stress-value" id="stress-total">0</span>
+                                <span class="stress-label">Inputs total</span>
+                            </div>
+                            <div class="stress-stat">
+                                <span class="stress-value" id="stress-rate">0</span>
+                                <span class="stress-label">Inputs/sec</span>
+                            </div>
+                            <div class="stress-stat">
+                                <span class="stress-value" id="stress-missed">0</span>
+                                <span class="stress-label">Inputs perdus</span>
+                            </div>
+                            <div class="stress-stat">
+                                <span class="stress-value" id="stress-score">—</span>
+                                <span class="stress-label">Score</span>
+                            </div>
+                        </div>
+                        <canvas id="stress-chart" width="700" height="200"></canvas>
+                        <div class="stress-heatmap">
+                            <h3>Heatmap des boutons</h3>
+                            <div id="stress-heatmap-grid" class="heatmap-grid"></div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
