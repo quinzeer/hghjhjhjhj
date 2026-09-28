@@ -177,7 +177,7 @@ Aucune source datée trouvée cette session ne chiffre un coût d'opportunité d
 | S2 | YouTube Help — YouTube Partner Program overview & eligibility | https://support.google.com/youtube/answer/72851?hl=en | s.d. | 2026-09-28 | officiel | élevée |
 | S3 | YouTube Blog — What are "Engaged" Views on YouTube? | https://blog.youtube/inside-youtube/engaged-views-youtube-explained/ | 2026-08 | 2026-09-28 | officiel | élevée |
 | S4 | YouTube Blog — Unlock a world of viewers with multi-language audio | https://blog.youtube/news-and-events/multi-language-audio/ | 2025-09-10 | 2026-09-28 | officiel | élevée |
-| S5 | YouTube Blog — New opportunities to earn and changes to the YouTube Partner Program | https://blog.youtube/news-and-events/youtube-partner-program-updates-2027-new-opportunities-earn/ | s.d. | 2026-09-28 | officiel | élevée |
+| S5 | YouTube Blog — New opportunities to earn and changes to the YouTube Partner Program | https://blog.youtube/news-and-events/youtube-partner-program-updates-2027-new-opportunities-earn/ | 2026-08-10 | 2026-09-28 | officiel | élevée |
 | S6 | YouTube Help — YouTube Shorts monetization policies | https://support.google.com/youtube/answer/12504220?hl=en | s.d. | 2026-09-28 | officiel | élevée |
 | S7 | TikTok — Creator Rewards Program Terms (EEA) | https://www.tiktok.com/legal/page/global/tiktok-creator-rewards-program-eea/en | s.d. | 2026-09-28 | officiel | élevée |
 | S8 | CRE — La CRE propose une évolution du niveau moyen des TRVE de +2,5 % TTC au 1er août 2026 | https://www.cre.fr/actualites/toute-lactualite/la-cre-propose-une-evolution-du-niveau-moyen-des-tarifs-reglementes-de-vente-de-lelectricite-de-25-ttc-au-1er-aout-2026.html | 2026-07 | 2026-09-28 | officiel | élevée |
