@@ -17,18 +17,19 @@ Critère de sortie : `make verify-phase-0` → 0.
 - [x] Fichiers d'état : `CLAUDE.md`, `docs/PLAN.md`, `docs/PROGRESS.md`, `docs/DECISIONS.md`, `docs/NEEDS_HUMAN.md`, `docs/PARAMETERS.md`
 - [x] 9 sous-agents de construction dans `.claude/agents/` (format vérifié dans la doc Claude Code, frontmatter validé)
 - [x] `make verify-phase-0` v1 + 19 tests (`tests/tools/`) ; `make doctor` v1
-- [~] `docs/research/platform-policies.md`
-- [~] `docs/research/apis.md` (dont état de l'usage de `claude -p` sur abonnement)
-- [~] `docs/research/video-image-models.md`
-- [~] `docs/research/audio-models.md`
-- [~] `docs/research/craft.md`
-- [~] `docs/research/economics.md`
-- [~] `docs/research/infra.md` (hors liste de la mission, nécessaire à l'ADR-001)
-- [~] `docs/research/channel-concepts.md` (fusion des lots A et B, classement)
-- [ ] ADR-001 architecture
-- [ ] ADR-002 stratégie fournisseurs (modèles locaux, licences)
-- [ ] `docs/COST_MODEL.md`
-- [ ] Revue `critic` de la phase 0
+- [x] `docs/research/platform-policies.md` (29 sources, 20 officielles)
+- [x] `docs/research/apis.md` (43 sources, dont l'état de l'usage de `claude -p` sur abonnement)
+- [x] `docs/research/video-image-models.md` (66 sources)
+- [x] `docs/research/audio-models.md`
+- [x] `docs/research/craft.md`
+- [x] `docs/research/economics.md`
+- [x] `docs/research/infra.md` (hors liste de la mission, nécessaire à l'ADR-001)
+- [x] `docs/research/channel-concepts.md` : fusion des lots A et B, top 6 classé hors preuve de demande
+- [ ] Preuve de demande mesurée par l'API (≥ 2 outliers récents par concept) — bloqué par H0 (clé `YOUTUBE_API_KEY`)
+- [x] ADR-001 architecture
+- [x] ADR-002 stratégie fournisseurs (modèles locaux, licences) ; ADR-003 corrections proposées ; ADR-004 preuve de demande
+- [x] `docs/COST_MODEL.md` (généré par `tools/cost_model.py`, testé)
+- [~] Revue `critic` de la phase 0
 - [ ] Choix humain des concepts (H2) → hors critère de sortie, bloque la phase 2
 
 ## Phase 1 — Squelette, contrats, mocks

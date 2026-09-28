@@ -16,5 +16,5 @@
 | Plafond par vidéo | voir `docs/COST_MODEL.md` § Plafonds | hypothèse | Dérivé du modèle de coût, pas fixé à l'aveugle | 2026-09-28 |
 | Temps humain disponible | 30 min par jour | hypothèse | §11 : ≤ 15 min par vidéo ; 30 min/jour couvre la cadence ci-dessous avec marge | 2026-09-28 |
 | Cadence cible par chaîne | 1 long + 3 Shorts par semaine au lancement | hypothèse | Prudente tant que `docs/CAPACITY.md` (phase 3) n'a pas mesuré le débit GPU réel | 2026-09-28 |
-| OS de la machine GPU | Ubuntu 24.04 LTS | hypothèse | NVIDIA Container Toolkit natif, sans la couche WSL2 | 2026-09-28 |
+| OS de la machine GPU | Ubuntu 24.04 LTS natif | hypothèse (contrainte technique) | WSL2 ne permet pas d'épingler un GPU par index (`infra.md` S39) : un worker par carte exige Linux natif (ADR-001, ADR-003) | 2026-09-28 |
 | Clés et comptes disponibles | aucun supposé | hypothèse | Tout ce qui manque est listé dans `docs/NEEDS_HUMAN.md` | 2026-09-28 |

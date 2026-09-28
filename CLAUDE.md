@@ -17,6 +17,8 @@ Ce dépôt construit le logiciel d'un studio vidéo automatisé (YouTube long + 
 | `python3 tools/verify_phase0.py --note docs/research/X.md` | contrôle d'une seule note |
 | `make test` / `make lint` / `make fmt` | pytest / ruff (via `uv run --group dev`) |
 | `make check` | doctor + lint + test : à passer avant toute PR |
+| `python3 tools/outliers.py channel @handle …` | outliers récents via l'API YouTube Data (`YOUTUBE_API_KEY`) |
+| `python3 tools/cost_model.py` | tables de `docs/COST_MODEL.md` (régénérer après tout changement de paramètre) |
 
 ## Carte du dépôt
 ```
@@ -51,6 +53,8 @@ Arrivent en phase 1 : `studio/` (paquet Python), `knowledge/`, `evals/`, `studio
   Type ∈ officiel, publication, presse, praticien, données. Chaque `[Sn]` cité existe dans la table.
 - Critères phase 0 : ≥ 8 sources datées par note ; ≥ 3 officielles pour `platform-policies.md` et `apis.md`.
 - Une URL n'est citée que si elle a été ouverte pendant la rédaction.
+- Outlier (phase 0) : ligne avec ratio ≥ 3× (vs 30 vidéos précédentes du même format) et publication ≤ 18 mois,
+  mesurée par `tools/outliers.py`. Jamais d'accès automatisé aux pages youtube.com / tiktok.com (ADR-004).
 
 ## ADR (`docs/DECISIONS.md`)
 Titre `## ADR-NNN — …` puis `### Statut`, `### Contexte`, `### Options`, `### Décision`, `### Conséquences`,
