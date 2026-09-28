@@ -4,14 +4,15 @@
 
 - `hypothèse` : choisie par Claude, réversible, à confirmer.
 - `confirmé` : validé par l'humain (date + canal).
+- `délégué (Claude)` : décidé par Claude sur délégation explicite de l'humain (ADR-005), réversible.
 - `make verify-phase-0` lit ce tableau : `docs/research/channel-concepts.md` reste exigé tant que les deux concepts ne sont pas `confirmé`.
 
 | Paramètre | Valeur en vigueur | Statut | Raison de l'hypothèse | Mis à jour |
 |---|---|---|---|---|
 | Nom du studio | `studio` (nom de code technique) | hypothèse | Aucun impact d'architecture ; le nom public viendra avec les chaînes | 2026-09-28 |
-| Concept chaîne A | à choisir dans `docs/research/channel-concepts.md` | en attente | Le §0 dit « propose » par défaut ; 6 concepts classés livrés en phase 0 | 2026-09-28 |
-| Concept chaîne B | à choisir dans `docs/research/channel-concepts.md` | en attente | Idem | 2026-09-28 |
-| Langue maître | par chaîne (champ `language` de la configuration de chaîne), aucune langue codée en dur | hypothèse | Choix lié au concept et au RPM (voir `docs/research/economics.md`) ; l'architecture reste multilingue | 2026-09-28 |
+| Concept chaîne A | « Civilisations reconstruites » (C02 + C07) | délégué (Claude) | ADR-005 ; à réexaminer après la mesure de demande (H0) | 2026-09-28 |
+| Concept chaîne B | « Échelles de l'espace et du temps » (C03 + C09) | délégué (Claude) | ADR-005 ; idem | 2026-09-28 |
+| Langue maître | anglais pour A et B ; piste française par `localizer` (phase 4) ; champ `language` par chaîne, rien en dur | délégué (Claude) | ADR-005 : audience et RPM plus élevés | 2026-09-28 |
 | Offre Claude du studio | Max 5x | hypothèse | Offre la plus contrainte : dimensionner sur elle évite de dépendre d'un quota qu'on n'a peut-être pas | 2026-09-28 |
 | Plafond par vidéo | voir `docs/COST_MODEL.md` § Plafonds | hypothèse | Dérivé du modèle de coût, pas fixé à l'aveugle | 2026-09-28 |
 | Temps humain disponible | 30 min par jour | hypothèse | §11 : ≤ 15 min par vidéo ; 30 min/jour couvre la cadence ci-dessous avec marge | 2026-09-28 |

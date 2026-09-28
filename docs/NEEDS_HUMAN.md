@@ -16,16 +16,16 @@ Trié par urgence. Chaque entrée : quoi faire, pourquoi, comment vérifier que 
 - **Vérification** : le badge « Private » apparaît à côté du nom du dépôt.
 - **En attendant** : je ne copie pas ton skill `scenariste-youtube` dans `knowledge/imports/` (il deviendrait public) ; les agents le lisent depuis ta session. Aucun secret n'est jamais versionné (`make verify-phase-0` scanne l'arbre et l'historique git).
 - **Fuite partielle déjà poussée** : deux brouillons de recherche (`docs/research/_work/concepts-a.md` et `concepts-b.md`, commits `a436236` à `0abbeb1`) reprenaient la grille pondérée de ton skill et des repères chiffrés. Ils sont retirés de la branche et ignorés par git, mais **restent dans l'historique**. `docs/research/craft.md` cite aussi quelques affirmations courtes du skill pour les vérifier.
-- **Choix** : (a) passer le dépôt en privé, ce qui règle tout ; (b) le garder public et me demander de réécrire l'historique de la branche (force-push : irréversible pour les clones existants) et de paraphraser `craft.md`.
+- **Choix** : (a) passer le dépôt en privé, ce qui règle tout ; (b) le garder public et réécrire l'historique de la branche (force-push). Le 2026-09-28, sur délégation, j'ai tenté (b) : le garde-fou de sécurité de la session a refusé cette opération git destructive. **Elle reste donc à ta main** (passer le dépôt en privé, ou autoriser la réécriture).
 
-### H2 — Choisir les concepts des chaînes A et B
+### H2 — Concepts des chaînes A et B · décidé par délégation (ADR-005), à confirmer ou renverser
 - **Quoi** : lire `docs/research/channel-concepts.md` (6 concepts classés) et répondre « A = Cx, B = Cy », ou proposer autre chose.
-- **Recommandation** : A = « Civilisations reconstruites » (C02 + C07), B = « Échelles de l'espace et du temps » (C03 + C09). Alternative à coût minimal pour B : C11 Géographie et données. Le choix définitif gagne à attendre la mesure de H0 (le classement peut s'inverser).
+- **Décidé le 2026-09-28 par délégation** : A = « Civilisations reconstruites » (C02 + C07), B = « Échelles de l'espace et du temps » (C03 + C09), langue maître anglaise. Réexaminé automatiquement après la mesure de H0. Pour renverser : modifier `docs/PARAMETERS.md`.
 - **Pourquoi** : la phase 2 (bibles de chaîne, `knowledge/`, bancs éditoriaux) en dépend.
 - **Vérification** : `docs/PARAMETERS.md` passe les deux lignes « Concept chaîne » en `confirmé`.
 - **En attendant** : phase 1 (squelette, contrats, mocks) avance sans dépendre du concept.
 
-### H3 — Valider ou corriger les paramètres du §0 et l'ADR-003
+### H3 — Paramètres du §0 et ADR-003 · hypothèses adoptées par délégation (ADR-005), à confirmer
 - **Quoi** : relire `docs/PARAMETERS.md` (hypothèses : Max 5x, 30 min/jour, 1 long + 3 Shorts par semaine et par chaîne, Ubuntu 24.04 natif, langue par chaîne) et corriger ce qui est faux.
 - **Langue** : anglais (audience et RPM plus élevés), français (arbitrage possible sur certains concepts) ou master anglais + piste audio française.
 - **ADR-003** : valider les corrections proposées à la mission (Wan 2.7 fermé, WSL2 incompatible, seuils YPP 2027, cible −14 LUFS non officielle…). Après accord, j'ajoute un erratum daté en fin de `docs/MISSION.md`.

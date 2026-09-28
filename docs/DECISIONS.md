@@ -12,6 +12,7 @@ Les faits externes renvoient aux notes de `docs/research/` sous la forme `note.m
 | ADR-002 | Stratégie fournisseurs : modèles locaux, politique de licences, shortlist du benchmark | accepté |
 | ADR-003 | Corrections proposées à MISSION §0, §4, §5, §6, §8 après la phase 0 | proposé (accord humain requis) |
 | ADR-004 | Preuve de demande : mesure des outliers par l'API officielle uniquement | accepté |
+| ADR-005 | Décisions prises par délégation : concepts A/B, langue, paramètres du §0 | accepté (délégation du 2026-09-28, réversible) |
 
 ---
 
@@ -234,3 +235,36 @@ Faible : outil isolé ; le seuil de 18 mois et la fenêtre de 30 vidéos sont de
 `apis.md` (quotas, coûts par méthode) · MISSION §2, §7, §12.
 
 Révision du 2026-09-28 après revue `critic` : médiane à âge comparable au lieu des seules vidéos antérieures. Contre-revue : 12 lignes inventées passaient la porte ; preuve désormais adossée aux mesures brutes et à une re-mesure en ligne.
+
+---
+
+## ADR-005 — Décisions prises par délégation : concepts A/B, langue, paramètres du §0
+
+### Statut
+Accepté le 2026-09-28 par délégation : consigne de l'humain « débrouille-toi entièrement seul ». Chaque décision reste réversible ; l'humain peut la renverser à tout moment en modifiant `docs/PARAMETERS.md`.
+
+### Contexte
+La mission (§0, §9 phase 0) réservait à l'humain le choix des concepts de chaîne et des paramètres du §0. L'humain délègue désormais ces choix. La preuve de demande mesurée par l'API manque encore (ADR-004, NEEDS_HUMAN H0) : le choix des concepts se fait donc sur les critères disponibles, et il sera réexaminé dès la mesure. Les concepts retenus doivent en outre être distincts entre eux pour le contrôle de diversité inter-chaînes (MISSION §7, §12). Enfin, la décision de langue conditionne la voix, les bibles et les métadonnées de la phase 2, mais ni le squelette ni les contrats de la phase 1.
+
+### Options
+1. Attendre l'humain : contraire à la consigne et à MISSION §3.4 (« jamais bloqué par moi »).
+2. Retenir les deux premiers concepts du classement (C03 et C11), à 64/80 chacun : l'écart avec les suivants tient dans le bruit de ±3 points (`channel-concepts.md`), et C11 a le risque politique le plus élevé du top 6 ainsi que la concurrence la plus installée.
+3. **Fusionner des concepts voisins en deux chaînes distinctes** selon l'adéquation au rendu procédural et la sérialité : « Civilisations reconstruites » (C02 + C07, 63 et 61,5) et « Échelles de l'espace et du temps » (C03 + C09, 64 et 62,5).
+4. Langue : français (arbitrage linguistique possible, confiance faible), anglais (audience et RPM des États-Unis environ 2,5 fois ceux de la France selon `economics.md` [S15]), ou une langue par chaîne.
+
+### Décision
+- **Chaîne A** = « Civilisations reconstruites » (C02 + C07) : ingénierie historique et villes disparues en 3D, plans larges, reconstitution annoncée.
+- **Chaîne B** = « Échelles de l'espace et du temps » (C03 + C09) : échelles impossibles et temps géologique, chaque épisode porté par une question (jamais une suite d'objets alignés : risque de gabarit, `channel-concepts.md` constat 7).
+- **Langue maître** = anglais pour les deux chaînes ; piste audio et métadonnées françaises produites par `localizer` (phase 4). Raisons : audience et RPM plus élevés (`economics.md` [S15]) ; une piste secondaire s'ajoute plus tard, alors qu'une audience ne se déplace pas.
+- **Autres paramètres du §0** : les hypothèses de `docs/PARAMETERS.md` sont adoptées telles quelles (Max 5x, 30 min par jour, 1 long + 3 Shorts par semaine et par chaîne, Ubuntu 24.04 natif).
+
+### Conséquences
+- `docs/PARAMETERS.md` marque ces lignes « délégué (Claude) ». `make verify-phase-0` continue d'exiger la preuve de demande, qui n'est pas levée par la délégation.
+- Dès que la clé API est disponible : mesurer les chaînes de C02, C07, C03 et C09 en priorité. Si la mesure renverse le classement, un nouvel ADR remplace celui-ci avant la phase 2.
+- Les bibles visuelles des deux chaînes doivent diverger nettement (palette, optique, typographie, musique) : elles partagent la même famille de production.
+
+### Coût d'un retour arrière
+Faible jusqu'à la phase 2 : aucun code ne dépend du concept. Moyen ensuite : bibles, `knowledge/` et bancs éditoriaux à refaire pour un nouveau concept.
+
+### Sources
+`channel-concepts.md` [S4] [S5] · `economics.md` [S5] [S15] · ADR-004.
