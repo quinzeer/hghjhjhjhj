@@ -49,6 +49,14 @@ node tools/render.mjs episodes/nasdas-01 --mode overlay          # passe rapide 
 node tools/render.mjs episodes/nasdas-01 --stills 0,90,300       # images fixes de contrôle (3D + habillage)
 ```
 
+Version d'upload légère (< 30 Mo, 1080×1920 conservé, perte quasi invisible après le réencodage TikTok) :
+
+```bash
+cd episodes/nasdas-01/out
+ffmpeg -y -i final.mp4 -c:v libx264 -preset slow -b:v 3550k -maxrate 6000k -bufsize 7100k -pass 1 -an -f mp4 /dev/null
+ffmpeg -y -i final.mp4 -c:v libx264 -preset slow -b:v 3550k -maxrate 6000k -bufsize 7100k -pass 2 -pix_fmt yuv420p -c:a aac -b:a 128k -movflags +faststart nasdas-01_tiktok_1080p.mp4
+```
+
 **Deux passes** : la 3D (lente) est rendue une fois en « plaques » ; sous-titres, titres et compteurs sont posés ensuite en quelques minutes.
 Pour corriger un texte, modifie `episode.json` puis relance `build.py` et seulement `--mode overlay`.
 La voix off est mise en cache par scène (`build/tts_cache/`) : tant que le texte lu ne change pas, les timings restent identiques et les plaques restent synchrones. Si tu changes une `voix_off`, relance aussi `--mode plate`.

@@ -11,3 +11,4 @@ episodes/*/out/preview.mp4
 *.part
 __pycache__/
 strategy/out/
+episodes/*/out/*_tiktok_1080p.mp4
