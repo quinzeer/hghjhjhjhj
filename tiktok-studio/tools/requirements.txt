@@ -1,0 +1,5 @@
+numpy
+scipy
+piper-tts>=1.8
+pyloudnorm
+onnx

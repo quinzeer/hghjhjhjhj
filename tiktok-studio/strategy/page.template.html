@@ -1,0 +1,304 @@
+<title>Playbook Actu Influenceurs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;800&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --bg:#EEF0F3; --surface:#FFFFFF; --surface-2:#E3E6EB; --ink:#0E1116; --muted:#566070; --line:#CDD2DA;
+  --led:#FFD60A; --led-ink:#111111; --alert:#D92326; --data:#0B8C99; --ok:#14894A; --warn:#B26A00;
+  --hook:#D92326; --relance:#E0761A; --cadre:#7A8494; --contenu:#0B8C99; --payoff:#C79A00; --boucle:#8E2BD6;
+  --shadow:0 1px 0 rgba(14,17,22,.06),0 8px 24px -12px rgba(14,17,22,.18);
+  --display:"Anton","Archivo Narrow","Arial Narrow",Impact,sans-serif;
+  --body:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0B0C10; --surface:#15171D; --surface-2:#1E2129; --ink:#F2F3F5; --muted:#9AA3B2; --line:#2A2E38;
+    --led:#FFD60A; --led-ink:#111111; --alert:#FF4D4F; --data:#19E3FF; --ok:#2BE06A; --warn:#FFB020;
+    --hook:#FF4D4F; --relance:#FF8A3D; --cadre:#8C96A8; --contenu:#19C3D6; --payoff:#FFD60A; --boucle:#B46BFF;
+    --shadow:0 1px 0 rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0B0C10; --surface:#15171D; --surface-2:#1E2129; --ink:#F2F3F5; --muted:#9AA3B2; --line:#2A2E38;
+  --led:#FFD60A; --led-ink:#111111; --alert:#FF4D4F; --data:#19E3FF; --ok:#2BE06A; --warn:#FFB020;
+  --hook:#FF4D4F; --relance:#FF8A3D; --cadre:#8C96A8; --contenu:#19C3D6; --payoff:#FFD60A; --boucle:#B46BFF;
+  --shadow:0 1px 0 rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:clamp(16px,4vw,40px);padding-block:28px 64px}
+h1,h2,h3{text-wrap:balance;margin:0}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(40px,7vw,76px);line-height:.95;letter-spacing:.5px;text-transform:uppercase}
+h2{font-family:var(--display);font-weight:400;font-size:clamp(28px,4vw,40px);line-height:1;text-transform:uppercase;letter-spacing:.4px}
+h3{font-size:18px;font-weight:800}
+p{margin:0}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--body);font-weight:800;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:999px;background:var(--led);color:var(--led-ink);white-space:nowrap}
+.chip.red{background:var(--alert);color:#fff}
+.chip.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 32px;padding-bottom:24px;border-bottom:2px solid var(--ink)}
+header.top .lede{max-width:560px;color:var(--muted);font-size:17px}
+section{padding-top:48px;display:grid;gap:20px}
+.grid-hero{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:32px;align-items:start}
+@media (max-width:860px){.grid-hero{grid-template-columns:1fr}}
+.phone{position:relative;width:100%;max-width:340px;aspect-ratio:9/16;border-radius:34px;padding:10px;background:#07080B;box-shadow:var(--shadow);margin-inline:auto}
+.phone video,.phone img{width:100%;height:100%;object-fit:cover;border-radius:26px;display:block;background:#000}
+.specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.spec{background:var(--surface);padding:14px 16px;display:grid;gap:2px}
+.spec b{font-family:var(--display);font-weight:400;font-size:34px;line-height:1;font-variant-numeric:tabular-nums}
+.spec span{font-size:13px;color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;gap:12px}
+.verdict{border-left:0;background:var(--ink);color:var(--bg);border-radius:18px;padding:24px;display:grid;gap:14px}
+.verdict .big{font-family:var(--display);font-size:clamp(26px,3.6vw,36px);line-height:1.05;text-transform:uppercase}
+.verdict p{color:color-mix(in oklab,var(--bg) 80%,var(--ink))}
+.odds{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.odd{border:1.5px solid color-mix(in oklab,var(--bg) 30%,var(--ink));border-radius:12px;padding:12px 14px;display:grid;gap:4px}
+.odd b{font-family:var(--display);font-weight:400;font-size:28px;line-height:1}
+.odd small{font-size:12.5px;opacity:.85}
+/* Conducteur à l'échelle */
+.rundown{display:flex;width:100%;height:58px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.seg{position:relative;display:flex;align-items:flex-end;padding:6px;color:#fff;font-family:var(--mono);font-size:11px;font-weight:600;min-width:0;border-right:1px solid rgba(255,255,255,.35)}
+.seg:last-child{border-right:0}
+.seg span{white-space:nowrap;overflow:hidden;text-overflow:clip}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:720px;font-size:14.5px}
+th,td{text-align:left;vertical-align:top;padding:11px 14px;border-bottom:1px solid var(--line)}
+th{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;background:var(--surface-2)}
+tr:last-child td{border-bottom:0}
+td.tc{font-family:var(--mono);white-space:nowrap;font-variant-numeric:tabular-nums}
+.role{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px}
+.impact{display:inline-flex;gap:3px}
+.impact i{width:9px;height:14px;border-radius:2px;background:var(--line)}
+.impact i.on{background:var(--led)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+ol.steps{margin:0;padding-left:1.3em;display:grid;gap:10px}
+ol.steps li::marker{font-family:var(--mono);color:var(--muted)}
+ul.clean{margin:0;padding-left:1.1em;display:grid;gap:6px}
+.copybox{display:grid;gap:8px}
+.copybox pre{margin:0;white-space:pre-wrap;word-break:break-word;font-family:var(--mono);font-size:13px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px}
+button.copy{justify-self:start;font:800 13px var(--body);letter-spacing:.04em;text-transform:uppercase;border:0;border-radius:999px;padding:8px 14px;background:var(--ink);color:var(--bg);cursor:pointer}
+button.copy:focus-visible{outline:3px solid var(--led);outline-offset:2px}
+.conf{font-family:var(--mono);font-weight:600;font-size:12px;padding:2px 7px;border-radius:6px;border:1.5px solid currentColor}
+.conf.A{color:var(--ok)} .conf.B{color:var(--warn)} .conf.C{color:var(--alert)}
+.muted{color:var(--muted)}
+.note{font-size:13.5px;color:var(--muted)}
+pre.mermaid{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;overflow-x:auto;margin:0}
+footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div style="display:grid;gap:10px">
+    <p class="eyebrow">Compte TikTok · actu des plus gros influenceurs · 28/09/2026</p>
+    <h1>Playbook<br>Actu Influenceurs</h1>
+  </div>
+  <p class="lede">Épisode 1 (Team Nasdas) livré en 3D Three.js, et la stratégie pour transformer ce format en machine à vues : ce qui compte, ce qu'on mesure, ce qu'on publie, et ce qu'on refuse de publier.</p>
+</header>
+
+<section aria-labelledby="ep1">
+  <div class="grid-hero">
+    <div style="display:grid;gap:12px">
+      <div class="phone"><video id="ep1video" src="nasdas-01-web.mp4" poster="poster.jpg" controls playsinline preload="metadata"></video></div>
+      <p class="note" style="text-align:center">Version web allégée. Le fichier 1080×1920 haute qualité est à publier tel quel.</p>
+    </div>
+    <div style="display:grid;gap:18px">
+      <div style="display:grid;gap:8px">
+        <p class="eyebrow">Épisode 1</p>
+        <h2 id="ep1">Nasdas : 446 773 en direct… puis plus rien</h2>
+        <p class="muted">Hook sur un record vérifié, 4 actus de l'été en compte à rebours, retour au record pour le payoff, question finale qui boucle sur la 1re image.</p>
+      </div>
+      <div class="specs">
+        <div class="spec"><b>{{DURATION}} s</b><span>durée (&gt; 60 s : éligible Creator Rewards)</span></div>
+        <div class="spec"><b>{{SHOTS}}</b><span>plans, 1 coupe toutes les {{AVGSHOT}} s</span></div>
+        <div class="spec"><b>{{WPS}}</b><span>mots par seconde</span></div>
+        <div class="spec"><b>{{CAPTIONS}}</b><span>sous-titres mot à mot</span></div>
+        <div class="spec"><b>82/100</b><span>score de l'idée (grille du skill)</span></div>
+        <div class="spec"><b>6</b><span>faits sourcés, 0 rumeur</span></div>
+      </div>
+      <div style="display:grid;gap:8px">
+        <p class="eyebrow">Conducteur à l'échelle</p>
+        <div class="rundown" role="img" aria-label="Conducteur de l'épisode, largeur proportionnelle à la durée de chaque séquence">{{RUNDOWN}}</div>
+        <div class="legend">
+          <span><i style="background:var(--hook)"></i>Hook</span><span><i style="background:var(--relance)"></i>Relance</span><span><i style="background:var(--cadre)"></i>Cadre</span><span><i style="background:var(--contenu)"></i>Actu</span><span><i style="background:var(--payoff)"></i>Payoff</span><span><i style="background:var(--boucle)"></i>Question + boucle</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="verdict">
+  <div class="verdict">
+    <p class="eyebrow" style="color:inherit;opacity:.7">La prémisse, corrigée</p>
+    <p class="big" id="verdict">Une vidéo ne garantit pas des millions. Une série de bonnes tentatives, si.</p>
+    <p>Sur TikTok, chaque vidéo est testée sur un petit public, puis élargie par vagues tant qu'elle bat les vidéos comparables. Les vues par vidéo suivent donc une loi à queue lourde : la plupart plafonnent, quelques-unes explosent. Pour maximiser le total, on joue sur trois termes : le nombre de tentatives de qualité, la probabilité qu'une tentative décolle (sujet, accroche, rétention), et la taille maximale du décollage (notoriété du sujet).</p>
+    <div class="odds">
+      <div class="odd"><b>1 k – 20 k</b><small>médiane probable de l'épisode 1 (compte neuf)</small></div>
+      <div class="odd"><b>100 k – 500 k</b><small>si « Stayed to watch » ≥ 70 % et beaucoup de commentaires</small></div>
+      <div class="odd"><b>&lt; 5 %</b><small>chance d'atteindre le million sur cette 1re vidéo</small></div>
+    </div>
+    <p style="font-size:14px">Confiance : faible à moyenne (aucune donnée sur ton compte). Ce qui ferait monter l'estimation : ta vraie voix à la place du TTS, un premier visuel avec le visage d'un créateur (avec droits), un historique de 20+ vidéos dans la niche.</p>
+  </div>
+</section>
+
+<section aria-labelledby="moteur">
+  <p class="eyebrow">Premiers principes</p>
+  <h2 id="moteur">Comment une vidéo gagne des vues</h2>
+  <pre class="mermaid">
+flowchart LR
+  A[Publication] --> B[Lot test : quelques centaines de personnes]
+  B --> C{Signaux vs vidéos comparables}
+  C -->|reste après 2-3 s, % vu, revisionnages, partages, commentaires, enregistrements| D[Vague suivante, plus large]
+  C -->|swipe rapide, pas intéressé| E[Distribution stoppée]
+  D --> C
+  D --> F[Profil visité : abonnés et vues sur les autres vidéos]
+  </pre>
+  <p class="note">Le mécanisme de lots successifs est un modèle de praticiens : TikTok ne le documente pas officiellement. Ce que TikTok documente : un visionnage complet d'une vidéo longue pèse plus qu'un signal faible, et le fil tient compte des likes, partages, commentaires et recherches.</p>
+</section>
+
+<section aria-labelledby="leviers">
+  <p class="eyebrow">Classés par impact estimé</p>
+  <h2 id="leviers">Les 12 leviers et ce qu'on en fait</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Levier</th><th>Principe</th><th>Action concrète sur ton compte</th><th>Impact</th></tr></thead>
+      <tbody>
+        <tr><td><b>Sujet</b></td><td>La notoriété du créateur fixe le plafond ; la fraîcheur fixe la demande</td><td>Rotation sur les 10 noms les plus recherchés (Nasdas, Squeezie, Inoxtag, Michou, AD Laurent, Jeremstar, Amixem, Tiboinshape, Kameto, Mohamed Henni). Vérifie la demande dans Creator Search Insights (onglet « Content gap »).</td><td><span class="impact"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></td></tr>
+        <tr><td><b>1re seconde</b></td><td>La plupart des abandons ont lieu dans les 5 premières secondes</td><td>1re image = un chiffre énorme + un nom, lisibles sans le son. Jamais de logo ni de « salut ». Message clé avant 3 s.</td><td><span class="impact"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></td></tr>
+        <tr><td><b>Rythme</b></td><td>Chaque plan doit apporter une info nouvelle</td><td>Une coupe toutes les ~2 s, sous-titres mot à mot, compte à rebours « Actu 1/4 », bruitage à chaque changement.</td><td><span class="impact"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></td></tr>
+        <tr><td><b>Fin en boucle</b></td><td>Revisionnages et commentaires sont des signaux forts</td><td>Terminer sur une question précise (« Il revient quand ? »), sans outro, avec un son qui raccorde sur l'impact de la 1re image.</td><td><span class="impact"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></td></tr>
+        <tr><td><b>Voix humaine</b></td><td>Les comptes qui dominent la niche ont un visage ou une voix identifiable</td><td>Réenregistre la voix off avec ta voix sur <span class="mono">mix_sans_voix.wav</span> (10 min). Le TTS reste le plan B pour publier vite.</td><td><span class="impact"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></td></tr>
+        <tr><td><b>Cadence</b></td><td>Plus de tentatives = plus de chances de décrochage</td><td>2 vidéos par jour pendant 30 jours : 1 actu chaude (rapide) + 1 format premium 3D.</td><td><span class="impact"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></td></tr>
+        <tr><td><b>Angle</b></td><td>Même sujet, même semaine : l'angle a battu la vitesse (331 k vues contre 10,5 k)</td><td>Toujours un chiffre, une comparaison, une coulisse. Jamais « l'actu du jour » sans angle.</td><td><span class="impact"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span></td></tr>
+        <tr><td><b>Série et marque</b></td><td>Un format reconnaissable transforme les vues en abonnés</td><td>Le plateau 3D, le jaune LED et « Actu 1/4 » deviennent ta signature. Noms de séries fixes : « L'actu de… en 60 s », « Le top Twitch du mois », « Vrai ou faux ? ».</td><td><span class="impact"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span></td></tr>
+        <tr><td><b>Durée</b></td><td>&gt; 60 s : monétisable et +43 % de portée médiane (corrélation, Buffer 2025)</td><td>Formats premium à 61-63 s. Teste des coupes de 25-35 s sur les actus chaudes : complétion plus haute.</td><td><span class="impact"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span></td></tr>
+        <tr><td><b>Multi-plateforme</b></td><td>Même fichier, 4 tirages au sort</td><td>Publie aussi en natif sur YouTube Shorts, Instagram Reels et Snapchat Spotlight (le public de Nasdas est sur Snapchat). Fichier sans filigrane.</td><td><span class="impact"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span></td></tr>
+        <tr><td><b>Recherche</b></td><td>La valeur de recherche fait partie du calcul Creator Rewards</td><td>Dire le nom et le sujet à l'oral dans les 3 premières secondes, les répéter dans la légende et le texte à l'écran.</td><td><span class="impact"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></td></tr>
+        <tr><td><b>Sécurité du compte</b></td><td>Un seul avertissement peut couper le fil « Pour toi » et la monétisation</td><td>Aucune rumeur, sources en commentaire épinglé, jamais d'adresse, de mineur ni de spéculation sur la santé mentale.</td><td><span class="impact"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section aria-labelledby="kpi">
+  <p class="eyebrow">TikTok Studio → Analyse de la vidéo</p>
+  <h2 id="kpi">Ce qu'on mesure, et quand on agit</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Indicateur</th><th>Seuil visé</th><th>Si en dessous</th><th>Source du seuil</th></tr></thead>
+      <tbody>
+        <tr><td>Restés après les premières secondes</td><td class="tc">≥ 70 %</td><td>Nouvelle 1re image + nouveau hook (garder le reste)</td><td class="note">Praticien (Galloway), confiance moyenne</td></tr>
+        <tr><td>Durée moyenne regardée</td><td class="tc">≥ 50 % (≥ 31 s)</td><td>Couper le passage où la courbe chute ; contexte avant conclusion</td><td class="note">Heuristique, confiance faible</td></tr>
+        <tr><td>Vidéo regardée en entier</td><td class="tc">≥ 30 %</td><td>Raccourcir, avancer le payoff, supprimer la dernière seconde morte</td><td class="note">Heuristique, confiance faible</td></tr>
+        <tr><td>Partages / vues</td><td class="tc">≥ 1 %</td><td>Ajouter un fait « à envoyer à un pote » (chiffre, comparaison)</td><td class="note">Heuristique</td></tr>
+        <tr><td>Commentaires / vues</td><td class="tc">≥ 0,5 %</td><td>Question finale plus clivante (sans attaque de personne)</td><td class="note">Heuristique</td></tr>
+        <tr><td>Abonnés / 1 000 vues</td><td class="tc">≥ 3</td><td>Rendre la série identifiable (même plateau, même promesse)</td><td class="note">Heuristique</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="cols">
+    <div class="card"><h3>Règle des 2 heures</h3><p>Si une vidéo fait plus de 2 fois ta médiane après 2 h, publie une suite sur le même sujet dans les 24 h et réponds en vidéo aux 3 meilleurs commentaires.</p></div>
+    <div class="card"><h3>Règle des 20 vidéos</h3><p>Si la médiane reste sous 500 vues après 20 vidéos, change une variable à la fois : voix humaine, puis durée 30 s, puis sujets plus chauds.</p></div>
+    <div class="card"><h3>Juger à la rétention</h3><p>Une vue compte dès le démarrage. Juge chaque vidéo sur ses premières secondes et sa durée moyenne, pas sur le compteur.</p></div>
+  </div>
+</section>
+
+<section aria-labelledby="publier">
+  <p class="eyebrow">Épisode 1</p>
+  <h2 id="publier">Publier la vidéo, étape par étape</h2>
+  <div class="cols">
+    <div class="card">
+      <ol class="steps">
+        <li><b>Relire les 3 faits marqués « à vérifier »</b> (vues de Bilel VTC, prénom Aiyana, dates si publication après le 30/09).</li>
+        <li><b>Optionnel, recommandé :</b> enregistrer ta voix sur <span class="mono">mix_sans_voix.wav</span> et remplacer la piste.</li>
+        <li><b>Publier un jour de semaine entre 18 h 30 et 20 h (heure de Paris)</b>, depuis un ordinateur, option « haute qualité » activée. Les études se contredisent : après 100 abonnés, suis « Heures les plus actives » dans TikTok Studio.</li>
+        <li><b>Coller la légende, les hashtags, puis épingler le commentaire des sources</b> (boutons ci-contre).</li>
+        <li><b>Pendant 2 h :</b> répondre aux premiers commentaires, lancer le débat « mise en scène ou pas ? » sous le commentaire d'Anis et Polska.</li>
+        <li><b>+2 h :</b> publier le même fichier en natif sur Shorts, Reels et Spotlight.</li>
+        <li><b>+24 h :</b> lire les indicateurs, appliquer la règle des 2 heures ou changer le hook du prochain épisode.</li>
+      </ol>
+    </div>
+    <div class="card copybox">
+      <h3>Légende</h3>
+      <pre id="cap">{{CAPTION}}</pre>
+      <button class="copy" type="button" data-target="cap">Copier la légende</button>
+      <h3>Hashtags</h3>
+      <pre id="tags">{{HASHTAGS}}</pre>
+      <button class="copy" type="button" data-target="tags">Copier les hashtags</button>
+      <h3>Commentaire épinglé</h3>
+      <pre id="pin">{{PINNED}}</pre>
+      <button class="copy" type="button" data-target="pin">Copier le commentaire</button>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="plan30">
+  <p class="eyebrow">Octobre 2026</p>
+  <h2 id="plan30">Plan sur 30 jours</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Semaine</th><th>Objectif</th><th>Volume</th><th>Contenus</th></tr></thead>
+      <tbody>
+        <tr><td class="tc">S1</td><td>Trouver le hook qui retient</td><td class="tc">10 vidéos</td><td>Épisode 1 + 2 suites Nasdas selon les commentaires ; 1 vidéo par créateur du top 10 ; même plateau, 3 styles de hook testés (chiffre, question, contre-pied).</td></tr>
+        <tr><td class="tc">S2</td><td>Installer les séries</td><td class="tc">14 vidéos</td><td>« Le top Twitch de septembre » dès la sortie du classement mensuel ; « Vrai ou faux ? » sur une rumeur démentie ; le récap du dimanche « ce que t'as raté cette semaine ».</td></tr>
+        <tr><td class="tc">S3</td><td>Doubler ce qui marche</td><td class="tc">14 vidéos</td><td>60 % sur la série la plus performante, 40 % en tests. Voix humaine sur toutes les vidéos si ce n'est pas déjà fait.</td></tr>
+        <tr><td class="tc">S4</td><td>Monétisation</td><td class="tc">14 vidéos</td><td>Objectif Creator Rewards : 10 000 abonnés et 100 000 vues sur 30 jours, vidéos &gt; 1 min, compte personnel (pas Business), 18 ans ou plus.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Pistes déjà sourcées pour la suite : le procès de Louis Aliot pour complicité de diffamation publique, prévu le 5 mars 2027 après la plainte de Nasdas (les prévenus sont présumés innocents) ; la série « bain de Jeremstar », dont l'épisode Nasdas est le plus vu de 2026 ; le classement Twitch mensuel d'ActuStream.</p>
+</section>
+
+<section aria-labelledby="garde">
+  <p class="eyebrow">Ce qu'on refuse de publier</p>
+  <h2 id="garde">Garde-fous juridiques et plateforme</h2>
+  <div class="cols">
+    <div class="card"><h3>Écarté de l'épisode 1</h3><ul class="clean"><li>Le clash Mouna / Nasdas (22-27/09) : uniquement des sources sociales, accusations graves, santé mentale.</li><li>« Tounsi papa » : une seule source, une chaîne de fans.</li><li>Les rumeurs d'Égypte : une seule source, un blogueur.</li></ul></div>
+    <div class="card"><h3>Droit français</h3><ul class="clean"><li>Diffamation (loi de 1881) : un fait précis sans preuve ni prudence = jusqu'à 12 000 € d'amende.</li><li>Présomption d'innocence : jamais « coupable » avant une condamnation.</li><li>Photos : reproduire une photo entière n'est pas une « courte citation ». N'utilise que des images dont tu as les droits.</li><li>Cyberharcèlement « de meute » : ne jamais pousser tes abonnés vers le compte de quelqu'un.</li></ul></div>
+    <div class="card"><h3>TikTok et AI Act</h3><ul class="clean"><li>Voix TTS générique : pas d'étiquette IA obligatoire sur TikTok. Voix clonée d'une vraie personne : étiquette et délit (art. 226-8 C. pén.).</li><li>Script écrit avec une IA sur un sujet d'intérêt public : relecture humaine et responsabilité éditoriale assumée (AI Act art. 50, en vigueur depuis le 02/08/2026).</li><li>Mention « voix de synthèse » en légende : coût nul, confiance en plus.</li></ul></div>
+  </div>
+</section>
+
+<section aria-labelledby="usine">
+  <p class="eyebrow">Dépôt <span class="mono">tiktok-studio/</span></p>
+  <h2 id="usine">Produire l'épisode suivant</h2>
+  <div class="cols">
+    <div class="card"><h3>1. Écrire</h3><p>Copier <span class="mono">episodes/nasdas-01/episode.json</span>, changer voix off, mots-clés, plans, habillage, sources.</p></div>
+    <div class="card"><h3>2. Construire</h3><p><span class="mono">tools/build.py</span> génère voix alignée, musique, bruitages, timeline et mix −14 LUFS en ~1 min.</p></div>
+    <div class="card"><h3>3. Rendre</h3><p>Aperçu en ~12 min, rendu final en 1 h 30 à 2 h sur CPU (quelques minutes avec une carte graphique).</p></div>
+  </div>
+</section>
+
+<section aria-labelledby="sources">
+  <p class="eyebrow">Vérifiés le 28/09/2026</p>
+  <h2 id="sources">Sources de l'épisode 1</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Fait utilisé</th><th>Source</th><th>Confiance</th></tr></thead>
+      <tbody>{{SOURCES}}</tbody>
+    </table>
+  </div>
+  <p class="note">A : confirmé par un média établi ou une donnée publique relue. B : presse people ou déclaration de l'intéressé, relayée par au moins un média.</p>
+</section>
+
+<footer>Musique et bruitages générés par le code du dépôt. Voix de synthèse : Piper / corpus SIWIS (CC BY 4.0). Modèles 3D et HDRI : Poly Haven (CC0). Polices : Montserrat, Anton (SIL OFL).</footer>
+</div>
+
+<script>
+document.querySelectorAll('button.copy').forEach(function (b) {
+  b.addEventListener('click', function () {
+    var el = document.getElementById(b.dataset.target);
+    var txt = el.textContent;
+    var done = function () { var t = b.textContent; b.textContent = 'Copié'; setTimeout(function () { b.textContent = t; }, 1400); };
+    var fallback = function () { var r = document.createRange(); r.selectNodeContents(el); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = 'Texte sélectionné'; };
+    try { navigator.clipboard.writeText(txt).then(done, fallback); } catch (e) { fallback(); }
+  });
+});
+</script>

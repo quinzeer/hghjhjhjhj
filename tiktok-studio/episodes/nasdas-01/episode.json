@@ -1,0 +1,1896 @@
+{
+  "version": "1.0",
+  "format": "short",
+  "langue": "fr",
+  "slug": "nasdas-01",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "debit_mots_min": 165,
+  "promesse": "Tu vas savoir tout ce qui s'est passé cet été dans la Team Nasdas, et pourquoi son record Twitch intrigue.",
+  "titres": [
+    "Nasdas : 446 773 en direct… puis plus rien",
+    "Team Nasdas : les 4 actus de l'été que t'as ratées",
+    "Nasdas n'a plus fait de live depuis le 19 juin"
+  ],
+  "titre_en": "Nasdas: 446,773 live viewers… then nothing since June",
+  "premiere_image": "Plateau TV sombre, téléphone géant sur un podium en direct, compteur doré « 446 773 » plein écran, mur LED rouge « EN DIRECT ».",
+  "video_suivante": "Épisode 2 : l'actu de la semaine d'un autre gros créateur (même format, même plateau).",
+  "divulgation_ia": {
+    "requise": false,
+    "raison": "Décor 3D stylisé non-IA, aucune personne réelle représentée, voix TTS générique non attribuée (exception explicite des règles TikTok). Script rédigé avec une IA : relecture humaine et responsabilité éditoriale du titulaire du compte requises (AI Act art. 50(4)). Mention recommandée en légende : « voix de synthèse »."
+  },
+  "controle": {
+    "publiable": true,
+    "raisons_blocage": [],
+    "faits_a_verifier": [
+      "Vues de la vidéo de Bilel VTC (354 k relevées le 28/09 par la recherche, non revérifiées) : l'énoncé utilise « plus de 300 000 »",
+      "Prénom Aiyana et citation « Aylan est devenu grand frère » : relayés par public.fr (20/07/2026), post Instagram non consulté directement",
+      "Relire toutes les dates si la vidéo est publiée après le 30/09/2026"
+    ],
+    "score_idee": 82
+  },
+  "sources": [
+    {
+      "fait": "Pic 446 773 spectateurs (live « Le Jour du Jugement a sonné »), moyenne 258 767 (n°1), 11 h de live en avril 2026",
+      "source": "ActuStream, classement Twitch avril 2026, publié le 04/05/2026",
+      "url": "https://actustream.fr/articles/Top-audiences-streamers-twitch-avril-2026",
+      "confiance": "A"
+    },
+    {
+      "fait": "Dernier live Twitch le 19/06/2026 (« Live Concept Danse »), 1 625 521 followers",
+      "source": "Données publiques Twitch (chaîne nasdas_off), relevé du 28/09/2026",
+      "url": "https://www.twitch.tv/nasdas_off",
+      "confiance": "A"
+    },
+    {
+      "fait": "Anis (Team Nasdas) demande Polska en mariage en public, elle dit oui ; possible mise en scène évoquée",
+      "source": "public.fr et Bénin Web TV, 19/07/2026",
+      "url": "https://www.public.fr/polska-bientot-mariee-la-chroniqueuse-de-tpmp-dit-oui-a-anis-de-la-team-nasdas",
+      "confiance": "B"
+    },
+    {
+      "fait": "Reprise par Nasdas de la chanson de Pizza Nizar (Bruxelles) ; clients venus de Liège, Charleroi, Paris ; le patron seul au départ, renforcé par deux personnes",
+      "source": "La Libre et Paris Match Belgique, 10/08/2026",
+      "url": "https://www.lalibre.be/regions/bruxelles/2026/08/10/une-pizzeria-bruxelloise-cree-le-buzz-sur-la-toile-des-gens-viennent-de-liege-de-charleroi-de-paris-je-ne-mattendais-pas-a-un-tel-succes-3JGV6ABLRNBW5M673GKVCWJ2UA/",
+      "confiance": "A"
+    },
+    {
+      "fait": "Bilel VTC se présente comme « l'ex-chauffeur de Nasdas » (vidéo YouTube du 06/09/2026)",
+      "source": "YouTube @Bilvtc, « L'EX CHAUFFEUR de NASDAS dit LA VÉRITÉ ! »",
+      "url": "https://www.youtube.com/watch?v=mrZ_CpzbYKg",
+      "confiance": "B"
+    },
+    {
+      "fait": "Naissance d'une fille (Aiyana) le 18/07/2026, annoncée le 20/07 : « Aylan est devenu grand frère »",
+      "source": "public.fr, 20/07/2026",
+      "url": "https://www.public.fr/nasdas-la-star-de-snapchat-est-papa-pour-la-deuxieme-fois-le-prenom-de-sa-fille-devoile",
+      "confiance": "B"
+    }
+  ],
+  "voix": {
+    "modele": "fr_FR-siwis-medium",
+    "length_scale": 0.855,
+    "lexique": {
+      "Nasdas": "Nass-dass",
+      "Aylan": "Aïlane",
+      "Aiyana": "Aïyana",
+      "YouTube": "Youtioube"
+    }
+  },
+  "musique": {
+    "bpm": 140
+  },
+  "queue": 0.7,
+  "scenes": [
+    {
+      "id": "S01",
+      "role": "hook",
+      "voix_off": "446_773 personnes en direct. En même temps.",
+      "ton": "choc, rapide",
+      "texte_ecran": "446 773 EN DIRECT",
+      "visuel": "Plateau TV, téléphone géant en direct sur le podium, compteur doré plein écran.",
+      "son": "Impact grave + drop du beat dès la 1re image",
+      "boucles": {
+        "ouvre": [
+          "Q1"
+        ],
+        "ferme": []
+      },
+      "mots_cles": [
+        "446 773"
+      ],
+      "mots_rouges": [
+        "en direct"
+      ],
+      "lead": 0.05,
+      "pad": 0.2,
+      "musique": "drop",
+      "plans": [
+        {
+          "set": "studio",
+          "cam": {
+            "pos": [
+              {
+                "t": 0,
+                "v": [
+                  0.5,
+                  1.75,
+                  3.7
+                ]
+              },
+              {
+                "t": 2.4,
+                "v": [
+                  0.25,
+                  1.7,
+                  3.1
+                ],
+                "ease": "outCubic"
+              }
+            ],
+            "target": [
+              {
+                "t": 0,
+                "v": [
+                  0,
+                  1.6,
+                  0
+                ]
+              }
+            ],
+            "fov": [
+              {
+                "t": 0,
+                "v": 34
+              }
+            ],
+            "shake": 0.45
+          },
+          "params": {
+            "prop": "phone",
+            "accent": "#ff2d2d",
+            "mood": "alert",
+            "phone": {
+              "kind": "live",
+              "viewers": 446773,
+              "countDur": 0.9,
+              "title": "Le Jour du Jugement a sonné"
+            },
+            "wall": {
+              "kind": "breaking",
+              "title": "EN DIRECT",
+              "subtitle": "446 773 SPECTATEURS",
+              "ticker": "RECORD • NASDAS • AVRIL 2026 • "
+            },
+            "totems": [
+              {
+                "kind": "title",
+                "title": [
+                  "446 773"
+                ],
+                "size": 0.13
+              },
+              {
+                "kind": "title",
+                "title": [
+                  "EN",
+                  "DIRECT"
+                ],
+                "size": 0.16
+              }
+            ]
+          },
+          "dof": {
+            "target": [
+              0,
+              1.35,
+              0
+            ],
+            "range": 1.4,
+            "bokeh": 2.6
+          }
+        },
+        {
+          "set": "studio",
+          "cam": "phone",
+          "params": {
+            "prop": "phone",
+            "accent": "#ff2d2d",
+            "mood": "alert",
+            "phone": {
+              "kind": "live",
+              "viewers": 446773,
+              "countDur": 0.01,
+              "title": "Le Jour du Jugement a sonné"
+            },
+            "wall": {
+              "kind": "breaking",
+              "title": "EN DIRECT",
+              "subtitle": "446 773 SPECTATEURS",
+              "ticker": "RECORD • NASDAS • AVRIL 2026 • "
+            },
+            "totems": [
+              {
+                "kind": "title",
+                "title": [
+                  "446 773"
+                ],
+                "size": 0.13
+              },
+              {
+                "kind": "title",
+                "title": [
+                  "EN",
+                  "DIRECT"
+                ],
+                "size": 0.16
+              }
+            ]
+          },
+          "coupe_sur": "en direct",
+          "trans": "zoom"
+        },
+        {
+          "set": "studio",
+          "cam": "wall",
+          "params": {
+            "prop": "phone",
+            "accent": "#ff2d2d",
+            "mood": "alert",
+            "phone": {
+              "kind": "live",
+              "viewers": 446773,
+              "countDur": 0.01,
+              "title": "Le Jour du Jugement a sonné"
+            },
+            "wall": {
+              "kind": "breaking",
+              "title": "EN DIRECT",
+              "subtitle": "446 773 SPECTATEURS",
+              "ticker": "RECORD • NASDAS • AVRIL 2026 • "
+            },
+            "totems": [
+              {
+                "kind": "title",
+                "title": [
+                  "446 773"
+                ],
+                "size": 0.13
+              },
+              {
+                "kind": "title",
+                "title": [
+                  "EN",
+                  "DIRECT"
+                ],
+                "size": 0.16
+              }
+            ]
+          },
+          "coupe_sur": "En même"
+        }
+      ],
+      "habillage": [
+        {
+          "type": "counter",
+          "at": -0.3,
+          "from": 446600,
+          "to": 446773,
+          "countDur": 0.8,
+          "y": 420,
+          "size": 200,
+          "label": "en même temps",
+          "muet": true
+        },
+        {
+          "type": "chip",
+          "at": -0.3,
+          "text": "NASDAS",
+          "y": 250,
+          "bg": "#FFFFFF"
+        }
+      ],
+      "bruitages": [
+        {
+          "sfx": "boom",
+          "at": 0,
+          "shake": 0.6,
+          "flash": 0.0
+        }
+      ]
+    },
+    {
+      "id": "S02",
+      "role": "relance",
+      "voix_off": "Le record de Nasdas. Et depuis le 19 juin ? Plus un seul live sur Twitch.",
+      "ton": "grave puis coupure",
+      "texte_ecran": "0 LIVE DEPUIS LE 19 JUIN",
+      "visuel": "Mur LED : « 19 JUIN » ; tampon rouge « 0 LIVE ».",
+      "son": "Coupure de la musique sur « Plus », impact",
+      "boucles": {
+        "ouvre": [
+          "Q2"
+        ],
+        "ferme": []
+      },
+      "mots_cles": [
+        "record",
+        "Nasdas",
+        "19 juin"
+      ],
+      "mots_rouges": [
+        "Plus un seul live"
+      ],
+      "musique": "stop",
+      "musique_au_mot": "Plus",
+      "musique_duree": 1.3,
+      "plans": [
+        {
+          "set": "studio",
+          "cam": "hero",
+          "params": {
+            "prop": "phone",
+            "accent": "#9b5cff",
+            "mood": "cool",
+            "phone": {
+              "kind": "live",
+              "viewers": 446773,
+              "countDur": 0.01,
+              "title": "Le Jour du Jugement a sonné"
+            },
+            "wall": {
+              "kind": "number",
+              "from": 446773,
+              "to": 446773,
+              "label": "record de Nasdas · avril 2026"
+            }
+          }
+        },
+        {
+          "set": "studio",
+          "cam": "wall",
+          "params": {
+            "prop": "phone",
+            "accent": "#ff2d2d",
+            "mood": "alert",
+            "phone": {
+              "kind": "lock",
+              "notifications": [
+                {
+                  "text": "Dernier live Twitch : 19 juin",
+                  "time": "il y a 3 mois",
+                  "icon": "!"
+                }
+              ],
+              "date": "lundi 28 septembre"
+            },
+            "wall": {
+              "kind": "date",
+              "title": "19 JUIN",
+              "subtitle": "dernier live Twitch"
+            }
+          },
+          "coupe_sur": "Et depuis",
+          "trans": "whipUp"
+        },
+        {
+          "set": "studio",
+          "cam": "phone",
+          "params": {
+            "prop": "phone",
+            "accent": "#ff2d2d",
+            "mood": "alert",
+            "phone": {
+              "kind": "lock",
+              "notifications": [
+                {
+                  "text": "Dernier live Twitch : 19 juin",
+                  "time": "il y a 3 mois",
+                  "icon": "!"
+                }
+              ],
+              "date": "lundi 28 septembre"
+            },
+            "wall": {
+              "kind": "date",
+              "title": "19 JUIN",
+              "subtitle": "dernier live Twitch",
+              "strike": true
+            }
+          },
+          "coupe_sur": "Plus un",
+          "trans": "zoom"
+        }
+      ],
+      "habillage": [
+        {
+          "type": "stamp",
+          "au_mot": "Plus",
+          "text": "0 LIVE",
+          "y": 520,
+          "dur": "scene"
+        },
+        {
+          "type": "source",
+          "au_mot": "Et",
+          "text": "Twitch (nasdas_off) · dernier live : 19/06/2026",
+          "dur": "scene"
+        }
+      ],
+      "bruitages": [
+        {
+          "sfx": "hit",
+          "au_mot": "Plus",
+          "shake": 0.8
+        }
+      ],
+      "pad": 0.45
+    },
+    {
+      "id": "S03",
+      "role": "cadre",
+      "voix_off": "Pendant ce temps, voici ce que t'as raté dans la team.",
+      "ton": "complice, relance",
+      "texte_ecran": "CE QUE T'AS RATÉ",
+      "visuel": "Plan large du plateau, mur LED « TEAM NASDAS · ÉTÉ 2026 », totems « 4 ACTUS ».",
+      "son": "Reprise du beat",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "mots_cles": [
+        "t'as raté"
+      ],
+      "musique": "drop",
+      "plans": [
+        {
+          "set": "studio",
+          "cam": "wide",
+          "params": {
+            "prop": "text3d",
+            "text": "4",
+            "material": "gold",
+            "accent": "#ffd60a",
+            "wall": {
+              "kind": "title",
+              "title": [
+                "TEAM NASDAS",
+                "ÉTÉ 2026"
+              ],
+              "size": 0.2
+            },
+            "totems": [
+              {
+                "kind": "title",
+                "title": [
+                  "4",
+                  "ACTUS"
+                ],
+                "size": 0.2
+              },
+              {
+                "kind": "title",
+                "title": [
+                  "ÉTÉ",
+                  "2026"
+                ],
+                "size": 0.18
+              }
+            ]
+          },
+          "trans": "zoom"
+        },
+        {
+          "set": "studio",
+          "cam": "push",
+          "params": {
+            "prop": "text3d",
+            "text": "4",
+            "material": "gold",
+            "accent": "#ffd60a",
+            "wall": {
+              "kind": "title",
+              "title": [
+                "TEAM NASDAS",
+                "ÉTÉ 2026"
+              ],
+              "size": 0.2
+            },
+            "totems": [
+              {
+                "kind": "title",
+                "title": [
+                  "4",
+                  "ACTUS"
+                ],
+                "size": 0.2
+              },
+              {
+                "kind": "title",
+                "title": [
+                  "ÉTÉ",
+                  "2026"
+                ],
+                "size": 0.18
+              }
+            ]
+          },
+          "coupe_sur": "t'as"
+        }
+      ],
+      "habillage": [
+        {
+          "type": "headline",
+          "at": 0.15,
+          "text": [
+            "CE QUE",
+            "T'AS RATÉ"
+          ],
+          "y": 470,
+          "size": 140
+        },
+        {
+          "type": "brand",
+          "at": 0.2,
+          "text": "ACTU INFLUENCEURS",
+          "dur": 100
+        }
+      ],
+      "bruitages": [
+        {
+          "sfx": "whoosh_big",
+          "at": -0.25
+        }
+      ]
+    },
+    {
+      "id": "S04",
+      "role": "contenu",
+      "voix_off": "Numéro 4 : Anis, de la team, demande en mariage Polska, chroniqueuse télé. En public. Elle dit oui ! Mais certains parlent déjà de mise en scène.",
+      "ton": "people, amusé",
+      "texte_ecran": "ELLE A DIT OUI",
+      "visuel": "Écrin en velours qui s'ouvre, bague en or et diamant sur le podium ; mur LED « ANIS × POLSKA ».",
+      "son": "Ding sur « oui », tension sur « Mais »",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "mots_cles": [
+        "Anis",
+        "Polska"
+      ],
+      "mots_verts": [
+        "Elle dit oui"
+      ],
+      "mots_rouges": [
+        "mise en scène"
+      ],
+      "plans": [
+        {
+          "set": "studio",
+          "cam": "macro",
+          "params": {
+            "prop": "ringbox",
+            "accent": "#ff4d8d",
+            "mood": "gold",
+            "wall": {
+              "kind": "title",
+              "title": [
+                "ANIS",
+                "× POLSKA"
+              ],
+              "size": 0.22,
+              "accent": "#ff4d8d"
+            },
+            "totems": [
+              {
+                "kind": "title",
+                "title": [
+                  "19",
+                  "JUILLET"
+                ],
+                "size": 0.16
+              },
+              {
+                "kind": "title",
+                "title": [
+                  "#4"
+                ],
+                "size": 0.3
+              }
+            ]
+          }
+        },
+        {
+          "set": "studio",
+          "cam": "heroLeft",
+          "params": {
+            "prop": "ringbox",
+            "accent": "#ff4d8d",
+            "mood": "gold",
+            "wall": {
+              "kind": "title",
+              "title": [
+                "ANIS",
+                "× POLSKA"
+              ],
+              "size": 0.22,
+              "accent": "#ff4d8d"
+            },
+            "totems": [
+              {
+                "kind": "title",
+                "title": [
+                  "19",
+                  "JUILLET"
+                ],
+                "size": 0.16
+              },
+              {
+                "kind": "title",
+                "title": [
+                  "#4"
+                ],
+                "size": 0.3
+              }
+            ]
+          },
+          "coupe_sur": "demande"
+        },
+        {
+          "set": "studio",
+          "cam": "orbit",
+          "params": {
+            "prop": "ringbox",
+            "accent": "#ff4d8d",
+            "mood": "gold",
+            "wall": {
+              "kind": "title",
+              "title": [
+                "ANIS",
+                "× POLSKA"
+              ],
+              "size": 0.22,
+              "accent": "#ff4d8d"
+            },
+            "totems": [
+              {
+                "kind": "title",
+                "title": [
+                  "19",
+                  "JUILLET"
+                ],
+                "size": 0.16
+              },
+              {
+                "kind": "title",
+                "title": [
+                  "#4"
+                ],
+                "size": 0.3
+              }
+            ]
+          },
+          "coupe_sur": "Polska"
+        },
+        {
+          "set": "studio",
+          "cam": "low",
+          "params": {
+            "prop": "ringbox",
+            "accent": "#ff4d8d",
+            "mood": "gold",
+            "wall": {
+              "kind": "title",
+              "title": [
+                "ANIS",
+                "× POLSKA"
+              ],
+              "size": 0.22,
+              "accent": "#ff4d8d"
+            },
+            "totems": [
+              {
+                "kind": "title",
+                "title": [
+                  "19",
+                  "JUILLET"
+                ],
+                "size": 0.16
+              },
+              {
+                "kind": "title",
+                "title": [
+                  "#4"
+                ],
+                "size": 0.3
+              }
+            ]
+          },
+          "coupe_sur": "En public"
+        },
+        {
+          "set": "studio",
+          "cam": "wall",
+          "params": {
+            "prop": "ringbox",
+            "accent": "#ff4d8d",
+            "mood": "alert",
+            "wall": {
+              "kind": "title",
+              "title": [
+                "MISE EN",
+                "SCÈNE ?"
+              ],
+              "size": 0.22,
+              "accent": "#ff2d2d"
+            },
+            "totems": [
+              {
+                "kind": "title",
+                "title": [
+                  "19",
+                  "JUILLET"
+                ],
+                "size": 0.16
+              },
+              {
+                "kind": "title",
+                "title": [
+                  "#4"
+                ],
+                "size": 0.3
+              }
+            ]
+          },
+          "coupe_sur": "Mais",
+          "trans": "whipUp"
+        }
+      ],
+      "habillage": [
+        {
+          "type": "progress",
+          "at": 0,
+          "total": 4,
+          "index": 1
+        },
+        {
+          "type": "lowerthird",
+          "au_mot": "Anis",
+          "name": "Anis",
+          "role": "Team Nasdas",
+          "dur": 1.8,
+          "y": 1020
+        },
+        {
+          "type": "lowerthird",
+          "au_mot": "Polska",
+          "name": "Polska",
+          "role": "Chroniqueuse télé",
+          "dur": 1.7,
+          "y": 1020
+        },
+        {
+          "type": "stamp",
+          "au_mot": "oui",
+          "text": "ELLE A DIT OUI",
+          "color": "#2BE06A",
+          "y": 640,
+          "dur": 1.4,
+          "rotate": -8
+        },
+        {
+          "type": "chip",
+          "au_mot": "mise",
+          "text": "MISE EN SCÈNE ?",
+          "bg": "#FF2D2D",
+          "color": "#FFFFFF",
+          "y": 640,
+          "dur": "scene",
+          "size": 58
+        },
+        {
+          "type": "source",
+          "at": 0.3,
+          "text": "Sources : public.fr, Bénin Web TV · 19/07/2026",
+          "dur": "scene"
+        }
+      ],
+      "bruitages": [
+        {
+          "sfx": "ding",
+          "au_mot": "oui",
+          "gain": 0.8
+        }
+      ]
+    },
+    {
+      "id": "S05",
+      "role": "contenu",
+      "voix_off": "Numéro 3 : l'effet Nasdas. Il reprend la chanson d'une pizzeria de Bruxelles. Résultat : des clients débarquent de Liège, de Charleroi, et même de Paris. Seul au départ, le patron a dû appeler du renfort.",
+      "ton": "enthousiaste",
+      "texte_ecran": "L'EFFET NASDAS",
+      "visuel": "Pizza sur planche en bois au podium ; mur LED : carte avec arcs Liège, Charleroi, Paris → Bruxelles.",
+      "son": "Pops sur les villes",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "mots_cles": [
+        "l'effet Nasdas",
+        "Bruxelles",
+        "Paris"
+      ],
+      "mots_verts": [
+        "renfort"
+      ],
+      "plans": [
+        {
+          "set": "studio",
+          "cam": "food",
+          "params": {
+            "prop": "pizza",
+            "spin": 0.25,
+            "accent": "#ffb020",
+            "mood": "gold",
+            "wall": {
+              "kind": "title",
+              "title": [
+                "L'EFFET",
+                "NASDAS"
+              ],
+              "size": 0.24,
+              "accent": "#ffb020"
+            },
+            "totems": [
+              {
+                "kind": "title",
+                "title": [
+                  "#3"
+                ],
+                "size": 0.3
+              },
+              {
+                "kind": "title",
+                "title": [
+                  "BRUXELLES"
+                ],
+                "size": 0.1
+              }
+            ]
+          }
+        },
+        {
+          "set": "studio",
+          "cam": "food",
+          "params": {
+            "prop": "pizza",
+            "spin": 0.25,
+            "accent": "#ffb020",
+            "mood": "gold",
+            "wall": {
+              "kind": "title",
+              "title": [
+                "L'EFFET",
+                "NASDAS"
+              ],
+              "size": 0.24,
+              "accent": "#ffb020"
+            },
+            "totems": [
+              {
+                "kind": "title",
+                "title": [
+                  "#3"
+                ],
+                "size": 0.3
+              },
+              {
+                "kind": "title",
+                "title": [
+                  "BRUXELLES"
+                ],
+                "size": 0.1
+              }
+            ]
+          },
+          "coupe_sur": "Il reprend"
+        },
+        {
+          "set": "studio",
+          "cam": "wall",
+          "params": {
+            "prop": "pizza",
+            "spin": 0.25,
+            "accent": "#ffb020",
+            "mood": "gold",
+            "wall": {
+              "kind": "map",
+              "title": "Ils viennent de loin",
+              "accent": "#ffb020",
+              "target": {
+                "name": "Bruxelles",
+                "x": 0.62,
+                "y": 0.24
+              },
+              "cities": [
+                {
+                  "name": "Liège",
+                  "x": 0.84,
+                  "y": 0.34
+                },
+                {
+                  "name": "Charleroi",
+                  "x": 0.5,
+                  "y": 0.44
+                },
+                {
+                  "name": "Paris",
+                  "x": 0.26,
+                  "y": 0.6
+                }
+              ]
+            },
+            "totems": [
+              {
+                "kind": "title",
+                "title": [
+                  "#3"
+                ],
+                "size": 0.3
+              },
+              {
+                "kind": "title",
+                "title": [
+                  "BRUXELLES"
+                ],
+                "size": 0.1
+              }
+            ]
+          },
+          "coupe_sur": "Résultat",
+          "trans": "whipUp"
+        },
+        {
+          "set": "studio",
+          "cam": "food",
+          "params": {
+            "prop": "pizza",
+            "spin": 0.25,
+            "accent": "#ffb020",
+            "mood": "gold",
+            "wall": {
+              "kind": "title",
+              "title": [
+                "L'EFFET",
+                "NASDAS"
+              ],
+              "size": 0.24,
+              "accent": "#ffb020"
+            },
+            "totems": [
+              {
+                "kind": "title",
+                "title": [
+                  "#3"
+                ],
+                "size": 0.3
+              },
+              {
+                "kind": "title",
+                "title": [
+                  "BRUXELLES"
+                ],
+                "size": 0.1
+              }
+            ]
+          },
+          "coupe_sur": "et même"
+        },
+        {
+          "set": "studio",
+          "cam": "food",
+          "params": {
+            "prop": "pizza",
+            "spin": 0.35,
+            "accent": "#ffb020",
+            "mood": "gold",
+            "wall": {
+              "kind": "title",
+              "title": [
+                "1 → 3"
+              ],
+              "size": 0.3,
+              "accent": "#ffb020"
+            },
+            "totems": [
+              {
+                "kind": "title",
+                "title": [
+                  "#3"
+                ],
+                "size": 0.3
+              },
+              {
+                "kind": "title",
+                "title": [
+                  "BRUXELLES"
+                ],
+                "size": 0.1
+              }
+            ]
+          },
+          "coupe_sur": "Seul"
+        }
+      ],
+      "habillage": [
+        {
+          "type": "progress",
+          "at": 0,
+          "total": 4,
+          "index": 2
+        },
+        {
+          "type": "headline",
+          "au_mot": "l'effet",
+          "text": [
+            "L'EFFET",
+            "NASDAS"
+          ],
+          "y": 470,
+          "size": 150,
+          "dur": 2.2
+        },
+        {
+          "type": "headline",
+          "au_mot": "Seul",
+          "text": [
+            "SEUL → 3"
+          ],
+          "y": 470,
+          "size": 150,
+          "dur": "scene",
+          "style": "impact"
+        },
+        {
+          "type": "emoji",
+          "au_mot": "Paris",
+          "text": "🍕",
+          "x": 860,
+          "y": 560,
+          "dur": 1.6
+        },
+        {
+          "type": "source",
+          "at": 0.3,
+          "text": "Sources : La Libre, Paris Match Belgique · 10/08/2026",
+          "dur": "scene"
+        }
+      ],
+      "bruitages": []
+    },
+    {
+      "id": "S06",
+      "role": "contenu",
+      "voix_off": "Numéro 2 : Bilel VTC, son chauffeur, se présente maintenant comme son ex-chauffeur. Il lance sa chaîne YouTube, et sa vidéo dépasse les 300_000 vues.",
+      "ton": "mystère",
+      "texte_ecran": "L'EX-CHAUFFEUR",
+      "visuel": "Voiture bâchée sur le plateau, puis téléphone avec une carte vidéo générique et compteur de vues.",
+      "son": "Glitch sur « ex-chauffeur », montée finale vers le numéro 1",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "mots_cles": [
+        "Bilel VTC",
+        "300 000"
+      ],
+      "mots_rouges": [
+        "ex-chauffeur"
+      ],
+      "musique_fin": "build",
+      "musique_fin_avance": 2.0,
+      "plans": [
+        {
+          "set": "studio",
+          "cam": "car",
+          "params": {
+            "prop": "car",
+            "accent": "#19e3ff",
+            "mood": "cool",
+            "wall": {
+              "kind": "title",
+              "title": [
+                "L'EX-",
+                "CHAUFFEUR"
+              ],
+              "size": 0.24,
+              "accent": "#19e3ff"
+            },
+            "totems": [
+              {
+                "kind": "title",
+                "title": [
+                  "#2"
+                ],
+                "size": 0.3
+              },
+              {
+                "kind": "title",
+                "title": [
+                  "BILEL",
+                  "VTC"
+                ],
+                "size": 0.16
+              }
+            ]
+          }
+        },
+        {
+          "set": "studio",
+          "cam": "carSide",
+          "params": {
+            "prop": "car",
+            "accent": "#19e3ff",
+            "mood": "cool",
+            "wall": {
+              "kind": "title",
+              "title": [
+                "L'EX-",
+                "CHAUFFEUR"
+              ],
+              "size": 0.24,
+              "accent": "#19e3ff"
+            },
+            "totems": [
+              {
+                "kind": "title",
+                "title": [
+                  "#2"
+                ],
+                "size": 0.3
+              },
+              {
+                "kind": "title",
+                "title": [
+                  "BILEL",
+                  "VTC"
+                ],
+                "size": 0.16
+              }
+            ]
+          },
+          "coupe_sur": "se présente"
+        },
+        {
+          "set": "studio",
+          "cam": "phone",
+          "params": {
+            "prop": "phone",
+            "accent": "#19e3ff",
+            "mood": "cool",
+            "phone": {
+              "kind": "video",
+              "thumb": "L'ex-chauffeur",
+              "title": "L'EX CHAUFFEUR de NASDAS dit LA VÉRITÉ !",
+              "channel": "Bilel VTC · 6 sept. 2026",
+              "views": 300000,
+              "suffix": "+ vues"
+            },
+            "wall": {
+              "kind": "number",
+              "from": 0,
+              "to": 300000,
+              "suffix": "+",
+              "label": "vues sur YouTube"
+            }
+          },
+          "coupe_sur": "Il lance",
+          "trans": "zoom"
+        },
+        {
+          "set": "studio",
+          "cam": "wall",
+          "params": {
+            "prop": "phone",
+            "accent": "#19e3ff",
+            "mood": "cool",
+            "phone": {
+              "kind": "video",
+              "thumb": "L'ex-chauffeur",
+              "title": "L'EX CHAUFFEUR de NASDAS dit LA VÉRITÉ !",
+              "channel": "Bilel VTC · 6 sept. 2026",
+              "views": 300000,
+              "suffix": "+ vues"
+            },
+            "wall": {
+              "kind": "number",
+              "from": 0,
+              "to": 300000,
+              "suffix": "+",
+              "label": "vues sur YouTube"
+            }
+          },
+          "coupe_sur": "sa vidéo"
+        }
+      ],
+      "habillage": [
+        {
+          "type": "progress",
+          "at": 0,
+          "total": 4,
+          "index": 3
+        },
+        {
+          "type": "lowerthird",
+          "au_mot": "Bilel",
+          "name": "Bilel VTC",
+          "role": "Se présente comme « ex-chauffeur »",
+          "dur": 2.2,
+          "y": 1020
+        },
+        {
+          "type": "stamp",
+          "au_mot": "ex-chauffeur",
+          "text": "EX",
+          "y": 640,
+          "dur": 1.5
+        },
+        {
+          "type": "source",
+          "at": 0.3,
+          "text": "Source : YouTube @Bilvtc · 06/09/2026",
+          "dur": "scene"
+        }
+      ],
+      "bruitages": [
+        {
+          "sfx": "glitch",
+          "au_mot": "ex-chauffeur",
+          "gain": 0.7
+        },
+        {
+          "sfx": "riser",
+          "avant_fin": 1.7,
+          "gain": 0.8
+        }
+      ],
+      "pad": 0.5
+    },
+    {
+      "id": "S07",
+      "role": "payoff",
+      "voix_off": "Et numéro 1 : le 18 juillet, Nasdas est devenu papa pour la deuxième fois. Une petite fille, Aiyana. Son message : « Aylan est devenu grand frère ».",
+      "ton": "chaleureux, émotion",
+      "texte_ecran": "PAPA ×2",
+      "visuel": "Texte 3D doré « PAPA X2 » sur le podium, pluie de confettis rose et or, mur LED « BIENVENUE AIYANA ».",
+      "son": "Drop + impact sur « numéro 1 », ding sur « papa »",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "mots_cles": [
+        "numéro 1",
+        "papa",
+        "Aiyana"
+      ],
+      "musique": "drop",
+      "plans": [
+        {
+          "set": "studio",
+          "cam": "crane",
+          "params": {
+            "prop": "text3d",
+            "text": "PAPA X2",
+            "material": "gold",
+            "confetti": true,
+            "accent": "#ff8fc1",
+            "mood": "gold",
+            "wall": {
+              "kind": "title",
+              "title": [
+                "BIENVENUE",
+                "AIYANA"
+              ],
+              "size": 0.22,
+              "accent": "#ff8fc1",
+              "bgA": "#2a0a1f",
+              "bgB": "#3d1030"
+            },
+            "totems": [
+              {
+                "kind": "title",
+                "title": [
+                  "#1"
+                ],
+                "size": 0.3
+              },
+              {
+                "kind": "title",
+                "title": [
+                  "18",
+                  "JUILLET"
+                ],
+                "size": 0.16
+              }
+            ],
+            "scale": 0.45
+          },
+          "trans": "zoom",
+          "grade": {
+            "uLeak": 0.15,
+            "uLeakColor": [
+              1.0,
+              0.45,
+              0.6
+            ]
+          }
+        },
+        {
+          "set": "studio",
+          "cam": "macro",
+          "params": {
+            "prop": "text3d",
+            "text": "PAPA X2",
+            "material": "gold",
+            "confetti": true,
+            "accent": "#ff8fc1",
+            "mood": "gold",
+            "wall": {
+              "kind": "title",
+              "title": [
+                "BIENVENUE",
+                "AIYANA"
+              ],
+              "size": 0.22,
+              "accent": "#ff8fc1",
+              "bgA": "#2a0a1f",
+              "bgB": "#3d1030"
+            },
+            "totems": [
+              {
+                "kind": "title",
+                "title": [
+                  "#1"
+                ],
+                "size": 0.3
+              },
+              {
+                "kind": "title",
+                "title": [
+                  "18",
+                  "JUILLET"
+                ],
+                "size": 0.16
+              }
+            ],
+            "scale": 0.45
+          },
+          "coupe_sur": "Nasdas est devenu",
+          "grade": {
+            "uLeak": 0.15,
+            "uLeakColor": [
+              1.0,
+              0.45,
+              0.6
+            ]
+          }
+        },
+        {
+          "set": "studio",
+          "cam": "wall",
+          "params": {
+            "prop": "text3d",
+            "text": "PAPA X2",
+            "material": "gold",
+            "confetti": true,
+            "accent": "#ff8fc1",
+            "mood": "gold",
+            "wall": {
+              "kind": "title",
+              "title": [
+                "BIENVENUE",
+                "AIYANA"
+              ],
+              "size": 0.22,
+              "accent": "#ff8fc1",
+              "bgA": "#2a0a1f",
+              "bgB": "#3d1030"
+            },
+            "totems": [
+              {
+                "kind": "title",
+                "title": [
+                  "#1"
+                ],
+                "size": 0.3
+              },
+              {
+                "kind": "title",
+                "title": [
+                  "18",
+                  "JUILLET"
+                ],
+                "size": 0.16
+              }
+            ],
+            "confettiOffset": 3.5,
+            "scale": 0.45
+          },
+          "coupe_sur": "Une petite",
+          "grade": {
+            "uLeak": 0.15,
+            "uLeakColor": [
+              1.0,
+              0.45,
+              0.6
+            ]
+          }
+        },
+        {
+          "set": "studio",
+          "cam": "push",
+          "params": {
+            "prop": "text3d",
+            "text": "PAPA X2",
+            "material": "gold",
+            "confetti": true,
+            "accent": "#ff8fc1",
+            "mood": "gold",
+            "wall": {
+              "kind": "title",
+              "title": [
+                "BIENVENUE",
+                "AIYANA"
+              ],
+              "size": 0.22,
+              "accent": "#ff8fc1",
+              "bgA": "#2a0a1f",
+              "bgB": "#3d1030"
+            },
+            "totems": [
+              {
+                "kind": "title",
+                "title": [
+                  "#1"
+                ],
+                "size": 0.3
+              },
+              {
+                "kind": "title",
+                "title": [
+                  "18",
+                  "JUILLET"
+                ],
+                "size": 0.16
+              }
+            ],
+            "confettiOffset": 5.5,
+            "scale": 0.45
+          },
+          "coupe_sur": "Son message",
+          "grade": {
+            "uLeak": 0.15,
+            "uLeakColor": [
+              1.0,
+              0.45,
+              0.6
+            ]
+          }
+        }
+      ],
+      "habillage": [
+        {
+          "type": "progress",
+          "at": 0,
+          "total": 4,
+          "index": 4
+        },
+        {
+          "type": "emoji",
+          "au_mot": "papa",
+          "text": "👶",
+          "x": 850,
+          "y": 520,
+          "dur": 1.8
+        },
+        {
+          "type": "quote",
+          "au_mot": "Son",
+          "text": "Aylan est devenu grand frère",
+          "author": "Nasdas, sur Instagram",
+          "y": 560,
+          "typeDur": 0.9,
+          "dur": "scene"
+        },
+        {
+          "type": "source",
+          "at": 0.3,
+          "text": "Source : public.fr · 20/07/2026",
+          "dur": "scene"
+        }
+      ],
+      "bruitages": [
+        {
+          "sfx": "boom",
+          "at": 0,
+          "shake": 0.9,
+          "flash": 0.2
+        },
+        {
+          "sfx": "ding",
+          "au_mot": "papa",
+          "gain": 0.8
+        }
+      ],
+      "pad": 0.3,
+      "lead": 0.25
+    },
+    {
+      "id": "S08",
+      "role": "payoff",
+      "voix_off": "Et ce record ? En avril, avec seulement 11 heures de live, il était numéro 1 en France. Six fois plus de spectateurs que le deuxième.",
+      "ton": "impressionné",
+      "texte_ecran": "×6",
+      "visuel": "Graphique 3D : barre dorée Nasdas qui écrase les barres des 4 suivants ; compteur 258 767.",
+      "son": "Tic-tac du compteur, impact sur « Six »",
+      "boucles": {
+        "ouvre": [],
+        "ferme": [
+          "Q1"
+        ]
+      },
+      "mots_cles": [
+        "11 heures",
+        "numéro 1",
+        "Six fois plus"
+      ],
+      "plans": [
+        {
+          "set": "studio",
+          "cam": "chart",
+          "params": {
+            "prop": "chart",
+            "accent": "#9b5cff",
+            "mood": "cool",
+            "chart": [
+              {
+                "name": "Nasdas",
+                "value": 258767,
+                "valueLabel": "258 767"
+              },
+              {
+                "name": "Aminematue",
+                "value": 38828,
+                "valueLabel": "38 828"
+              },
+              {
+                "name": "Squeezie",
+                "value": 23809,
+                "valueLabel": "23 809"
+              }
+            ],
+            "wall": {
+              "kind": "number",
+              "from": 0,
+              "to": 258767,
+              "label": "spectateurs en moyenne · avril 2026"
+            }
+          }
+        },
+        {
+          "set": "studio",
+          "cam": "chart",
+          "params": {
+            "prop": "chart",
+            "accent": "#9b5cff",
+            "mood": "cool",
+            "chart": [
+              {
+                "name": "Nasdas",
+                "value": 258767,
+                "valueLabel": "258 767"
+              },
+              {
+                "name": "Aminematue",
+                "value": 38828,
+                "valueLabel": "38 828"
+              },
+              {
+                "name": "Squeezie",
+                "value": 23809,
+                "valueLabel": "23 809"
+              }
+            ],
+            "wall": {
+              "kind": "number",
+              "from": 0,
+              "to": 258767,
+              "label": "spectateurs en moyenne · avril 2026"
+            }
+          },
+          "coupe_sur": "En avril"
+        },
+        {
+          "set": "studio",
+          "cam": "wall",
+          "params": {
+            "prop": "chart",
+            "accent": "#9b5cff",
+            "mood": "cool",
+            "chart": [
+              {
+                "name": "Nasdas",
+                "value": 258767,
+                "valueLabel": "258 767"
+              },
+              {
+                "name": "Aminematue",
+                "value": 38828,
+                "valueLabel": "38 828"
+              },
+              {
+                "name": "Squeezie",
+                "value": 23809,
+                "valueLabel": "23 809"
+              }
+            ],
+            "wall": {
+              "kind": "number",
+              "from": 0,
+              "to": 258767,
+              "label": "spectateurs en moyenne · avril 2026"
+            }
+          },
+          "coupe_sur": "il était",
+          "trans": "whipUp"
+        },
+        {
+          "set": "studio",
+          "cam": "low",
+          "params": {
+            "prop": "chart",
+            "accent": "#9b5cff",
+            "mood": "cool",
+            "chart": [
+              {
+                "name": "Nasdas",
+                "value": 258767,
+                "valueLabel": "258 767"
+              },
+              {
+                "name": "Aminematue",
+                "value": 38828,
+                "valueLabel": "38 828"
+              },
+              {
+                "name": "Squeezie",
+                "value": 23809,
+                "valueLabel": "23 809"
+              }
+            ],
+            "wall": {
+              "kind": "number",
+              "from": 258767,
+              "to": 258767,
+              "label": "spectateurs en moyenne"
+            }
+          },
+          "coupe_sur": "Six fois",
+          "trans": "zoom"
+        }
+      ],
+      "habillage": [
+        {
+          "type": "chip",
+          "au_mot": "11",
+          "text": "11 H DE LIVE SEULEMENT",
+          "y": 360,
+          "dur": 2.4
+        },
+        {
+          "type": "chip",
+          "au_mot": "numéro",
+          "text": "N°1 EN FRANCE · AVRIL",
+          "bg": "#FFD60A",
+          "y": 360,
+          "dur": 2.2
+        },
+        {
+          "type": "headline",
+          "au_mot": "Six",
+          "text": [
+            "×6"
+          ],
+          "y": 480,
+          "size": 240,
+          "dur": "scene",
+          "style": "impact"
+        },
+        {
+          "type": "source",
+          "at": 0.3,
+          "text": "Source : ActuStream, classement Twitch avril 2026",
+          "dur": "scene"
+        }
+      ],
+      "bruitages": [
+        {
+          "sfx": "hit",
+          "au_mot": "Six",
+          "shake": 0.7
+        }
+      ],
+      "pad": 0.25
+    },
+    {
+      "id": "S09",
+      "role": "boucle",
+      "voix_off": "Alors, il revient en live quand, d'après toi ?",
+      "ton": "question directe",
+      "texte_ecran": "IL REVIENT QUAND ?",
+      "visuel": "Retour au plateau : mur LED « ? » (prochain live), téléphone en direct à 0 spectateur, poussée caméra qui raccorde avec la 1re image.",
+      "son": "Montée qui raccorde avec l'impact du début (boucle)",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "mots_cles": [
+        "quand"
+      ],
+      "musique": "build",
+      "musique_decalage": 0.0,
+      "pad": 0.4,
+      "plans": [
+        {
+          "set": "studio",
+          "cam": "push",
+          "trans": "whip",
+          "params": {
+            "prop": "phone",
+            "accent": "#ff2d2d",
+            "mood": "alert",
+            "phone": {
+              "kind": "live",
+              "viewers": 0,
+              "countDur": 0.01,
+              "title": "Prochain live : ?"
+            },
+            "wall": {
+              "kind": "date",
+              "title": "?",
+              "subtitle": "prochain live"
+            }
+          }
+        }
+      ],
+      "habillage": [
+        {
+          "type": "headline",
+          "at": 0.1,
+          "text": [
+            "IL REVIENT",
+            "QUAND ?"
+          ],
+          "y": 470,
+          "size": 140,
+          "exit": false
+        },
+        {
+          "type": "emoji",
+          "at": 0.4,
+          "text": "🤔",
+          "x": 860,
+          "y": 700
+        },
+        {
+          "type": "chip",
+          "at": 0.9,
+          "text": "RÉPONDS EN COMMENTAIRE 👇",
+          "y": 1440,
+          "size": 40,
+          "bg": "#FFFFFF"
+        }
+      ],
+      "bruitages": [
+        {
+          "sfx": "riser_long",
+          "at": 0.0,
+          "gain": 0.7
+        }
+      ]
+    }
+  ],
+  "fiche": {
+    "hypotheses": [
+      "Compte TikTok neuf (0 abonné), public cible : fans de Snapchat/Twitch 13-24 ans en France.",
+      "Format : Short vertical 9:16, ~62 s (éligible au Creator Rewards Program, seuil > 1 min).",
+      "Production : décor 3D Three.js, voix de synthèse provisoire (à remplacer idéalement par la vraie voix du créateur du compte).",
+      "Aucune photo de Nasdas intégrée : emplacements prévus pour des visuels dont le compte détient les droits."
+    ],
+    "public": "Fans de Nasdas et de la « chienneté » (Snapchat 9,66 M, TikTok 4,2 M), curieux de l'actu des créateurs FR.",
+    "score": [
+      [
+        "Demande prouvée",
+        20,
+        5,
+        "Outliers 2026 : TikTok @actuchrono60 4,8 M vues (Nasdas) ; Jeremstar « Nasdas dans le bain » 1,28 M (sa vidéo la plus vue de la série)"
+      ],
+      [
+        "Packaging",
+        20,
+        4,
+        "Titre de 42 caractères + 1re image « 446 773 » lisible en 1 s"
+      ],
+      [
+        "Audience adressable",
+        15,
+        4,
+        "Nasdas = top 2 Snapchat FR, mais public surtout jeune"
+      ],
+      [
+        "Angle neuf",
+        15,
+        3,
+        "Données vérifiées (record + silence Twitch) + décor 3D inédit dans la niche"
+      ],
+      [
+        "Intensité",
+        10,
+        4,
+        "446 773 en direct, ×6 le n°2, 11 h de live, bébé, demande en mariage"
+      ],
+      [
+        "Livrable en 30 s",
+        10,
+        5,
+        "Le chiffre choc est montré dès la 1re image"
+      ],
+      [
+        "Durée de vie",
+        5,
+        2,
+        "Actu : pertinente 1 à 3 semaines"
+      ],
+      [
+        "Conformité",
+        5,
+        5,
+        "Aucune rumeur, sources citées, aucune personne réelle représentée"
+      ]
+    ],
+    "potentiel": "Compte neuf : médiane probable 1 k à 20 k vues ; haut de fourchette 100 k à 500 k si « Stayed to watch » ≥ 70 % et commentaires nombreux. Le million sur une 1re vidéo reste un scénario de queue (< 5 %). Confiance : faible à moyenne. Limites : compte sans historique, voix TTS, pas d'images réelles, actus de 1 à 2 mois pour la moitié."
+  },
+  "ouvertures_alternatives": [
+    {
+      "id": "B",
+      "voix_off": "Plus de cinq Stades de France devant un seul live. Et depuis le 19 juin : plus rien.",
+      "texte_ecran": "5 STADES DE FRANCE",
+      "visuel": "Compteur 446 773 + icônes de stades qui se remplissent"
+    },
+    {
+      "id": "C",
+      "voix_off": "Un bébé, une demande en mariage, un ex-chauffeur : l'été de la Team Nasdas en 60 secondes.",
+      "texte_ecran": "L'ÉTÉ DE LA TEAM NASDAS",
+      "visuel": "Mur LED en grille : bague, pizza, voiture bâchée, « PAPA ×2 »"
+    }
+  ],
+  "metadonnees": {
+    "description": "446 773 personnes en direct… puis plus un seul live Twitch depuis le 19 juin. Le récap de l'été de la Team Nasdas : Anis et Polska, l'effet Nasdas sur une pizzeria de Bruxelles, Bilel VTC, et la naissance d'Aiyana. Sources en commentaire épinglé. Voix de synthèse.",
+    "hashtags": [
+      "#nasdas",
+      "#teamnasdas",
+      "#chiennete",
+      "#twitch",
+      "#actu",
+      "#influenceur",
+      "#snapchat",
+      "#polska",
+      "#perpignan"
+    ],
+    "commentaire_epingle": "📌 Sources : ActuStream (classement Twitch avril 2026) · Twitch nasdas_off (dernier live 19/06/2026) · public.fr & Bénin Web TV (19/07) · La Libre & Paris Match Belgique (10/08) · YouTube @Bilvtc (06/09) · public.fr (20/07). Une erreur ? Dis-le en commentaire, on corrige.",
+    "description_en": "446,773 people watching live at once… and no Twitch stream since June 19. Nasdas's summer recap: Anis & Polska's engagement, the 'Nasdas effect' on a Brussels pizzeria, his former driver's YouTube launch, and the birth of his daughter Aiyana."
+  },
+  "duree_min_totale": 61.6
+}

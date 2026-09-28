@@ -1,0 +1,12 @@
+node_modules/
+.venv/
+.voices/
+dist/
+assets/polyhaven/
+episodes/_test/
+episodes/*/build/
+episodes/*/out/final.mp4
+episodes/*/out/preview.mp4
+*.part
+__pycache__/
+strategy/out/
