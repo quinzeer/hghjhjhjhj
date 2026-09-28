@@ -40,3 +40,30 @@
 - Un mock porte `mock` dans son identifiant, sa spec et chaque rapport.
 - Aucun secret dans le code, les fixtures ou les logs.
 - Les règles éditoriales privées (grille, seuils, formules) ne sont pas codées en dur : elles viendront de `knowledge/` en phase 2.
+
+## Contrat de `make e2e-dry`
+
+Commande : `uv run studio run --channel <id> --format <short|long> --dry-run --out <dossier>`, lancée par `make e2e-dry` pour `channel-a` en `short` puis en `long` dans `var/e2e/`.
+
+Graphe de démonstration (tout adaptateur est un mock) :
+
+| Étape | Ressource | Rôle |
+|---|---|---|
+| `idea` | llm | idée (MockLLMRunner, schéma `Idea`) |
+| `package` | llm | titres et miniatures (schéma `Package`) |
+| `g1` | human | porte G1 sur le package (décision mock) |
+| `script` | cpu | script issu d'une fixture au format du skill, via `studio/scenario/skill_json.py` |
+| `voice` | gpu | voix off (MockTextToSpeech, une piste par scène, concaténées) |
+| `shots` | gpu | un plan par scène selon sa technique (mocks image / vidéo), au format cible |
+| `music` | gpu | lit musical (mock) |
+| `mix` | cpu | voix + musique sous la voix, loudnorm deux passes vers −14 LUFS / −1 dBTP |
+| `assemble` | cpu | concaténation des plans, mise au format, multiplexage audio |
+| `qa` | cpu | `studio/media/qa.check_render` : aucun défaut attendu |
+| `compliance` | human | verdict conformité sur le hash du rendu (décision mock, jamais contournable) |
+| `g2` | human | porte G2 sur le hash du rendu (décision mock) |
+| `publish_plan` | cpu | objet `Publication` privé (`contains_synthetic_media` = divulgation du script) ; `requires_approval` = conformité + G2 sur le rendu ; **aucun appel réseau** |
+
+Sorties dans `<dossier>/<channel>/<format>/` :
+- `report.json` : `run_id`, `channel_id`, `format`, `dry_run`, `mock` (true), `adapters` (ids, tous contenant `mock`), `executed`, `skipped`, `waiting`, `render_key`, `render_path`, `qa_defects`, `publication`, `duration_expected_s` ;
+- `manifest.json` (`RunManifest`), `costs.json` (entrées du registre), `render.mp4`.
+Une seconde exécution sur le même dossier donne `executed == []` et le même `render_key`.
