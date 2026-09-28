@@ -77,8 +77,10 @@ SECRET_PATTERNS = (
     re.compile(r"AIza[0-9A-Za-z_\-]{35}"),
     re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
     re.compile(r"ghp_[A-Za-z0-9]{36}"),
-    re.compile(r"(?m)^\s*(?:export\s+)?ANTHROPIC_API_KEY\s*=\s*\S+"),
-    re.compile(r"(?m)^\s*(?:export\s+)?CLAUDE_CODE_OAUTH_TOKEN\s*=\s*\S+"),
+    # [ \t]* (not \s*) so an empty value followed by a newline is not read as a secret
+    re.compile(r"(?m)^[ \t]*(?:export[ \t]+)?ANTHROPIC_API_KEY[ \t]*=[ \t]*[A-Za-z0-9_\-]{12,}"),
+    re.compile(r"(?m)^[ \t]*(?:export[ \t]+)?CLAUDE_CODE_OAUTH_TOKEN[ \t]*=[ \t]*[A-Za-z0-9_\-]{12,}"),
+    re.compile(r"(?m)^[ \t]*(?:export[ \t]+)?YOUTUBE_API_KEY[ \t]*=[ \t]*[A-Za-z0-9_\-]{12,}"),
 )
 
 

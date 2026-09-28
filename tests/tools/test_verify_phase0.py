@@ -241,6 +241,13 @@ def test_secret_detection(repo: Path) -> None:
     assert not vp.check_secrets(repo).ok
 
 
+def test_empty_values_in_env_example_are_not_secrets(repo: Path) -> None:
+    write(repo / ".env.example", "# comment\nCLAUDE_CODE_OAUTH_TOKEN=\n# next line\nYOUTUBE_API_KEY=\n")
+    assert vp.check_secrets(repo).ok
+    write(repo / ".env.example", "CLAUDE_CODE_OAUTH_TOKEN=sk-ant-oat01-abcdef\n")
+    assert not vp.check_secrets(repo).ok
+
+
 def test_plan_needs_every_phase(repo: Path) -> None:
     write(repo / "docs/PLAN.md", "## Phase 0 — X\n\n- [ ] a\n")
     assert any("Phase 7" in d for d in vp.check_plan(repo).details)
