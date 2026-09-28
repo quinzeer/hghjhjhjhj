@@ -1,6 +1,6 @@
 # Arène des Nations — stratégie pour maximiser les vues
 
-> Épisode 1 livré : `episodes/ep01/out/arene-ep01.mp4` (61 s, 1080×1920, H.264/AAC, −14 LUFS) et sa variante `…_sans-musique.mp4`.
+> Épisode 1 livré : `arene-ep01_tiktok.mp4` (61 s, 1080×1920, H.264/AAC, −14 LUFS, 28 Mio) et sa variante `…_sans-musique.mp4`. Master 8,5 Mb/s régénérable à l'identique (`tools/render.mjs`), aperçu versionné dans `episodes/ep01/preview/`.
 > Tout est généré par le code de ce dossier : un **seed** = une partie de physique rejouable à l'identique, dans n'importe quel navigateur.
 
 ---

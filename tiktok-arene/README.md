@@ -8,9 +8,10 @@ Stratégie de diffusion : [`STRATEGIE.md`](STRATEGIE.md).
 
 | Fichier | Contenu |
 |---|---|
-| `episodes/ep01/out/arene-ep01.mp4` | vidéo finale 1080×1920, 30 i/s, H.264 + AAC 48 kHz, −14 LUFS |
-| `episodes/ep01/out/arene-ep01_sans-musique.mp4` | même vidéo sans musique (pour un son tendance TikTok) |
-| `episodes/ep01/out/cover_*.jpg` | couvertures candidates |
+| `episodes/ep01/out/arene-ep01.mp4` | master 1080×1920, 30 i/s, H.264 8,5 Mb/s + AAC 48 kHz, −14 LUFS, crête −1,1 dBTP (non versionné, régénérable) |
+| `episodes/ep01/out/arene-ep01_tiktok.mp4` | version d'envoi 28 Mio (2 passes, 3,7 Mb/s) ; TikTok réencode de toute façon |
+| `…_sans-musique.mp4` | mêmes vidéos sans musique (pour un son tendance TikTok) |
+| `episodes/ep01/preview/` | aperçu 720×1280 (12 Mo) et couvertures candidates, versionnés |
 | `episodes/ep01/ep01.scenes.json` | découpage en scènes (JSON de production) |
 | `episodes/ep01/voices/` | répliques TTS + horodatage mot à mot |
 

@@ -1,4 +1,4 @@
-// Rendu complet d'un épisode → MP4 prêt pour TikTok (1080×1920, 30 i/s, H.264 + AAC, −14 LUFS).
+// Rendu complet d'un épisode → MP4 prêt pour TikTok (1080×1920, 30 i/s, H.264 ≤ 9 Mb/s + AAC, −14 LUFS, crête −1,5 dBTP).
 // Images : Chromium headless (WebGL via GPU ou SwiftShader), rendu image par image, déterministe.
 // Usage : node tools/render.mjs episodes/ep01 [--workers 2] [--scale 1] [--fps 30] [--q high|draft] [--from 0] [--to N]
 //         node tools/render.mjs episodes/ep01 --audio-only   (remixe l'audio et remultiplexe sans re-rendre les images)
@@ -49,7 +49,7 @@ async function renderChunk(w, a, b) {
   if (fs.existsSync(seg + '.done')) { log(`segment ${w} déjà rendu`); return seg; }
   const { browser, page } = await openPage();
   const ff = spawn(FF, ['-y', '-v', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'mjpeg', '-i', '-',
-    '-c:v', 'libx264', '-preset', 'slow', '-crf', '19', '-maxrate', '14M', '-bufsize', '28M', '-tune', 'film', '-pix_fmt', 'yuv420p', '-profile:v', 'high', '-level', '4.2',
+    '-c:v', 'libx264', '-preset', 'slow', '-crf', '20', '-maxrate', '9M', '-bufsize', '18M', '-tune', 'film', '-pix_fmt', 'yuv420p', '-profile:v', 'high', '-level', '4.2',
     '-r', String(FPS), '-g', String(FPS * 2), '-bf', '2', '-movflags', '+faststart', seg], { stdio: ['pipe', 'inherit', 'inherit'] });
   const t0 = Date.now();
   for (let i = a; i < b; i++) {
@@ -72,9 +72,9 @@ async function renderChunk(w, a, b) {
 
 function normalize(inWav, outWav) {
   // passe 1 : mesure (le JSON sort sur stderr)
-  const r = spawnSyncStderr([FF, '-hide_banner', '-nostats', '-i', inWav, '-af', 'loudnorm=I=-14:TP=-1.0:LRA=11:print_format=json', '-f', 'null', '-']);
+  const r = spawnSyncStderr([FF, '-hide_banner', '-nostats', '-i', inWav, '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11:print_format=json', '-f', 'null', '-']);
   const js = JSON.parse(r.slice(r.lastIndexOf('{'), r.lastIndexOf('}') + 1));
-  const f = `loudnorm=I=-14:TP=-1.0:LRA=11:measured_I=${js.input_i}:measured_TP=${js.input_tp}:measured_LRA=${js.input_lra}:measured_thresh=${js.input_thresh}:offset=${js.target_offset}:linear=true`;
+  const f = `loudnorm=I=-14:TP=-1.5:LRA=11:measured_I=${js.input_i}:measured_TP=${js.input_tp}:measured_LRA=${js.input_lra}:measured_thresh=${js.input_thresh}:offset=${js.target_offset}:linear=true`;
   execFileSync(FF, ['-y', '-v', 'error', '-i', inWav, '-af', f, '-ar', '48000', outWav]);
   return js;
 }

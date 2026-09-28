@@ -47,11 +47,11 @@
       "id": "S02",
       "role": "contenu",
       "debut_s": 2.9,
-      "duree_s": 5.24,
+      "duree_s": 2.62,
       "voix_off": "Choisis ton pays. Maintenant. Premier éliminé : le Cameroun !",
       "ton": "énergique, rapide",
       "avatar": "hors_champ",
-      "visuel": "Plan large 3/4 type retransmission, légère orbite — élimination(s) : Cameroun, Italie",
+      "visuel": "Plan large 3/4 type retransmission, légère orbite — élimination(s) : Cameroun",
       "texte_ecran": "CAMEROUN OUT",
       "son": "clics de billes, musique tendue",
       "boucles": {
@@ -62,6 +62,23 @@
     },
     {
       "id": "S03",
+      "role": "contenu",
+      "debut_s": 5.52,
+      "duree_s": 2.62,
+      "voix_off": "",
+      "ton": "énergique, rapide",
+      "avatar": "hors_champ",
+      "visuel": "Plan large 3/4 type retransmission, légère orbite — élimination(s) : Italie",
+      "texte_ecran": "ITALIE OUT",
+      "son": "clics de billes, musique tendue",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S04",
       "role": "contenu",
       "debut_s": 8.14,
       "duree_s": 1.33,
@@ -78,7 +95,7 @@
       "note_traduction": ""
     },
     {
-      "id": "S04",
+      "id": "S05",
       "role": "contenu",
       "debut_s": 9.47,
       "duree_s": 3.55,
@@ -95,7 +112,7 @@
       "note_traduction": ""
     },
     {
-      "id": "S05",
+      "id": "S06",
       "role": "contenu",
       "debut_s": 13.02,
       "duree_s": 1.33,
@@ -112,14 +129,14 @@
       "note_traduction": ""
     },
     {
-      "id": "S06",
+      "id": "S07",
       "role": "contenu",
       "debut_s": 14.35,
-      "duree_s": 5,
-      "voix_off": "La Côte d'Ivoire, c'est fini ! La Turquie saute !",
+      "duree_s": 2.99,
+      "voix_off": "La Côte d'Ivoire, c'est fini !",
       "ton": "énergique, rapide",
       "avatar": "hors_champ",
-      "visuel": "Plan large 3/4 type retransmission, légère orbite — élimination(s) : Côte d'Ivoire, Turquie",
+      "visuel": "Plan large 3/4 type retransmission, légère orbite — élimination(s) : Côte d'Ivoire",
       "texte_ecran": "CÔTE D'IVOIRE OUT",
       "son": "clics de billes, musique tendue",
       "boucles": {
@@ -129,15 +146,15 @@
       "note_traduction": ""
     },
     {
-      "id": "S07",
+      "id": "S08",
       "role": "contenu",
-      "debut_s": 19.35,
-      "duree_s": 0.99,
-      "voix_off": "",
+      "debut_s": 17.34,
+      "duree_s": 2.99,
+      "voix_off": "La Turquie saute !",
       "ton": "énergique, rapide",
       "avatar": "hors_champ",
-      "visuel": "Plan large 3/4 type retransmission, légère orbite — élimination(s) : Madagascar",
-      "texte_ecran": "MADAGASCAR OUT",
+      "visuel": "Plan large 3/4 type retransmission, légère orbite — élimination(s) : Turquie, Madagascar",
+      "texte_ecran": "TURQUIE OUT",
       "son": "clics de billes, musique tendue",
       "boucles": {
         "ouvre": [],
@@ -146,7 +163,7 @@
       "note_traduction": ""
     },
     {
-      "id": "S08",
+      "id": "S09",
       "role": "relance",
       "debut_s": 20.33,
       "duree_s": 2.69,
@@ -163,7 +180,7 @@
       "note_traduction": ""
     },
     {
-      "id": "S09",
+      "id": "S10",
       "role": "contenu",
       "debut_s": 23.03,
       "duree_s": 1.33,
@@ -180,14 +197,14 @@
       "note_traduction": ""
     },
     {
-      "id": "S10",
+      "id": "S11",
       "role": "contenu",
       "debut_s": 24.36,
-      "duree_s": 5,
-      "voix_off": "Le Burkina tombe ! Adieu la Belgique !",
+      "duree_s": 2.96,
+      "voix_off": "Le Burkina tombe !",
       "ton": "énergique, rapide",
       "avatar": "hors_champ",
-      "visuel": "Plan large 3/4 type retransmission, légère orbite — élimination(s) : Burkina Faso, Belgique",
+      "visuel": "Plan large 3/4 type retransmission, légère orbite — élimination(s) : Burkina Faso",
       "texte_ecran": "BURKINA FASO OUT",
       "son": "clics de billes, musique tendue",
       "boucles": {
@@ -197,15 +214,15 @@
       "note_traduction": ""
     },
     {
-      "id": "S11",
+      "id": "S12",
       "role": "contenu",
-      "debut_s": 29.36,
-      "duree_s": 0.91,
-      "voix_off": "",
+      "debut_s": 27.31,
+      "duree_s": 2.96,
+      "voix_off": "Adieu la Belgique !",
       "ton": "énergique, rapide",
       "avatar": "hors_champ",
-      "visuel": "Plan large 3/4 type retransmission, légère orbite",
-      "texte_ecran": "",
+      "visuel": "Plan large 3/4 type retransmission, légère orbite — élimination(s) : Belgique",
+      "texte_ecran": "BELGIQUE OUT",
       "son": "clics de billes, musique tendue",
       "boucles": {
         "ouvre": [],
@@ -214,7 +231,7 @@
       "note_traduction": ""
     },
     {
-      "id": "S12",
+      "id": "S13",
       "role": "contenu",
       "debut_s": 30.27,
       "duree_s": 1.33,
@@ -231,7 +248,7 @@
       "note_traduction": ""
     },
     {
-      "id": "S13",
+      "id": "S14",
       "role": "contenu",
       "debut_s": 31.6,
       "duree_s": 3.11,
@@ -248,7 +265,7 @@
       "note_traduction": ""
     },
     {
-      "id": "S14",
+      "id": "S15",
       "role": "relance",
       "debut_s": 34.71,
       "duree_s": 2.55,
@@ -265,7 +282,7 @@
       "note_traduction": ""
     },
     {
-      "id": "S15",
+      "id": "S16",
       "role": "contenu",
       "debut_s": 37.26,
       "duree_s": 0.44,
@@ -282,7 +299,7 @@
       "note_traduction": ""
     },
     {
-      "id": "S16",
+      "id": "S17",
       "role": "contenu",
       "debut_s": 37.7,
       "duree_s": 1.33,
@@ -299,7 +316,7 @@
       "note_traduction": ""
     },
     {
-      "id": "S17",
+      "id": "S18",
       "role": "contenu",
       "debut_s": 39.03,
       "duree_s": 1.27,
@@ -316,10 +333,10 @@
       "note_traduction": ""
     },
     {
-      "id": "S18",
+      "id": "S19",
       "role": "relance",
       "debut_s": 40.3,
-      "duree_s": 5,
+      "duree_s": 3.15,
       "voix_off": "C'est la finale. L'Algérie contre le Brésil.",
       "ton": "énergique, rapide",
       "avatar": "hors_champ",
@@ -333,10 +350,10 @@
       "note_traduction": ""
     },
     {
-      "id": "S19",
+      "id": "S20",
       "role": "contenu",
-      "debut_s": 45.3,
-      "duree_s": 1.31,
+      "debut_s": 43.45,
+      "duree_s": 3.15,
       "voix_off": "Qui va craquer ?",
       "ton": "énergique, rapide",
       "avatar": "hors_champ",
@@ -350,7 +367,7 @@
       "note_traduction": ""
     },
     {
-      "id": "S20",
+      "id": "S21",
       "role": "payoff",
       "debut_s": 46.6,
       "duree_s": 4.71,
@@ -369,7 +386,7 @@
       "note_traduction": ""
     },
     {
-      "id": "S21",
+      "id": "S22",
       "role": "contenu",
       "debut_s": 51.31,
       "duree_s": 4.13,
@@ -386,7 +403,7 @@
       "note_traduction": ""
     },
     {
-      "id": "S22",
+      "id": "S23",
       "role": "payoff",
       "debut_s": 55.44,
       "duree_s": 1.7,
@@ -405,7 +422,7 @@
       "note_traduction": ""
     },
     {
-      "id": "S23",
+      "id": "S24",
       "role": "boucle",
       "debut_s": 57.14,
       "duree_s": 3.9,
