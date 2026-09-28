@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """Measure YouTube outliers through the official YouTube Data API v3 (no scraping).
 
-Outlier ratio = views of a video ÷ median views of the channel's `window` previous uploads
-of the same format (Short ≤ 180 s vs long). Previous uploads are older, so they had at least
-as much time to accumulate views: the ratio is a conservative (under-)estimate.
+Outlier ratio = views of a video ÷ median views of the `window` uploads of the same channel and
+format that are closest to it in publication date, before and after (MISSION §7: "à âge
+comparable"). Using only older uploads would inflate the ratio on a growing channel (older videos
+were published to a smaller audience). Uploads younger than MIN_AGE_DAYS are left out of the
+baseline, and a target that young gets no ratio. Format: Short = ≤ 180 s and a vertical player
+(`player.embedHeight > embedWidth`); duration alone is used when the API gives no player size.
 
 Quota cost (default 10 000 units/day): 1 unit per API call; a channel scan of 18 months
 costs a few units per 50 uploads. `search.list` (100 units) is never used.
@@ -43,10 +46,11 @@ class Video:
     published: dt.datetime
     views: int
     seconds: int
+    vertical: bool | None = None
 
     @property
     def is_short(self) -> bool:
-        return self.seconds <= SHORT_MAX_SECONDS
+        return self.seconds <= SHORT_MAX_SECONDS and self.vertical is not False
 
 
 @dataclass
@@ -102,11 +106,14 @@ def chunks(items: list[str], size: int = 50) -> Iterable[list[str]]:
 def get_videos(fetch: Fetch, ids: list[str]) -> list[Video]:
     out: list[Video] = []
     for batch in chunks(ids):
-        data = fetch("videos", {"part": "snippet,statistics,contentDetails", "id": ",".join(batch), "maxResults": "50"})
+        params = {"part": "snippet,statistics,contentDetails,player", "id": ",".join(batch), "maxWidth": "1000"}
+        data = fetch("videos", params)
         for item in data.get("items", []):
-            sn, st = item["snippet"], item.get("statistics", {})
-            if "viewCount" not in st:  # hidden or live: unusable
+            sn, st = item.get("snippet", {}), item.get("statistics", {})
+            if "viewCount" not in st or "publishedAt" not in sn:  # hidden counts, private or deleted: unusable
                 continue
+            player = item.get("player", {})
+            h, w = player.get("embedHeight"), player.get("embedWidth")
             out.append(
                 Video(
                     id=item["id"],
@@ -116,6 +123,7 @@ def get_videos(fetch: Fetch, ids: list[str]) -> list[Video]:
                     published=parse_time(sn["publishedAt"]),
                     views=int(st["viewCount"]),
                     seconds=parse_duration(item.get("contentDetails", {}).get("duration", "")),
+                    vertical=(int(h) > int(w)) if h and w else None,
                 )
             )
     return out
@@ -145,7 +153,9 @@ def upload_ids(fetch: Fetch, playlist: str, since: dt.datetime, max_pages: int =
         data = fetch("playlistItems", params)
         stop = False
         for item in data.get("items", []):
-            cd = item["contentDetails"]
+            cd = item.get("contentDetails", {})
+            if "videoPublishedAt" not in cd:  # private or deleted upload
+                continue
             if parse_time(cd["videoPublishedAt"]) < since:
                 stop = True
                 break
@@ -157,17 +167,16 @@ def upload_ids(fetch: Fetch, playlist: str, since: dt.datetime, max_pages: int =
 
 
 def measure(target: Video, history: list[Video], window: int, now: dt.datetime) -> Measure:
-    """Compare target with the `window` previous uploads of the same format."""
-    same = sorted(
-        (v for v in history if v.id != target.id and v.is_short == target.is_short and v.published < target.published),
-        key=lambda v: v.published,
-        reverse=True,
-    )[:window]
+    """Compare target with the `window` same-format uploads closest to it in publication date."""
+    settled = [
+        v for v in history if v.id != target.id and v.is_short == target.is_short and (now - v.published).days >= MIN_AGE_DAYS
+    ]
+    same = sorted(settled, key=lambda v: abs((v.published - target.published).total_seconds()))[:window]
     fmt = "short" if target.is_short else "long"
     old_enough = (now - target.published).days >= MIN_AGE_DAYS
     median = statistics.median(v.views for v in same) if same else None
     ratio = round(target.views / median, 2) if median and old_enough else None
-    method = f"API YouTube Data v3 ; médiane des {len(same)} {fmt}s précédents de la chaîne"
+    method = f"API YouTube Data v3 ; médiane des {len(same)} {fmt}s de la chaîne les plus proches en date"
     if not old_enough:
         method += f" ; vidéo de moins de {MIN_AGE_DAYS} j : ratio non calculé"
     return Measure(
@@ -194,7 +203,7 @@ def measure_videos(fetch: Fetch, refs: list[str], window: int, now: dt.datetime)
     targets = get_videos(fetch, [video_id(r) for r in refs])
     out = []
     for t in targets:
-        # enough history: go back until `window` same-format uploads are likely covered (cap 3 years)
+        # uploads before and after the target: go back up to 3 years before it (cap)
         history, _ = history_for(fetch, t.channel_id, t.published - dt.timedelta(days=3 * 365))
         out.append(measure(t, history, window, now))
     return out

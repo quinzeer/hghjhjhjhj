@@ -56,8 +56,29 @@ OUTLIER_URL = re.compile(
     r"https?://(?:www\.|m\.)?(?:youtube\.com/(?:watch\?v=|shorts/)|youtu\.be/|tiktok\.com/@[^/\s|]+/video/)[^\s|)]+"
 )
 
+# "officiel" is for platform, regulator, vendor or licence texts: never forums, wikis or placeholders.
+NOT_OFFICIAL_URL = re.compile(
+    r"example\.|/discussions?/|/issues/|/pull/|wikipedia\.org|fandom\.com|reddit\.com|medium\.com|substack\.com"
+)
+# A source that was never opened cannot be cited; one read only through a search summary cannot be "élevée".
+NOT_OPENED = re.compile(
+    r"(?:HTTP|code|erreur)\s*404|404\s*(?:not found|introuvable)|non ouvert|not opened|jamais ouvert", re.IGNORECASE
+)
+WEAKLY_READ = re.compile(r"\b403\b|bloqu|inaccessible|via (?:un )?r[ée]sum|vue? (?:en|via|dans un) r[ée]sultat", re.IGNORECASE)
+OUTLIER_METHOD = "API YouTube Data v3"  # rows produced by tools/outliers.py
+RATIO_TOLERANCE = 0.05
+
 ADR_REQUIRED = ("ADR-001", "ADR-002")
-ADR_SECTIONS = ("statut", "contexte", "options", "decision", "cout d'un retour arriere")
+ADR_SECTIONS = (
+    "statut",
+    "contexte",
+    "options",
+    "decision",
+    "consequences",
+    "cout d'un retour arriere",
+    "sources",
+)
+ADR_MIN_WORDS = {"contexte": 40, "options": 40, "decision": 40}
 PLACEHOLDER = re.compile(r"\b(TODO|TBD|FIXME|XXX)\b|à compléter|a completer", re.IGNORECASE)
 
 SUBAGENTS = {
@@ -195,16 +216,30 @@ def in_future(parsed: tuple[str, dt.date], today: dt.date) -> bool:
 # ---------------------------------------------------------------- notes
 
 
-def check_sources(text: str, name: str, today: dt.date, chk: Check, min_official: int = 0) -> None:
+def cited_ids(text: str) -> set[str]:
+    """IDs cited as [S1], [S1, S3] or [S1][S2] in the body (before '## Sources')."""
+    before = text.split("\n## Sources", 1)[0] if "\n## Sources" in text else text
+    cited: set[str] = set()
+    for group in re.findall(r"\[([^\]]+)\]", before):
+        if re.fullmatch(r"\s*S\d+(\s*[,;]\s*S\d+)*\s*", group):
+            cited.update(re.findall(r"S\d+", group))
+    return cited
+
+
+def source_rows(text: str) -> list[list[str]] | None:
     body = section(text, "sources")
     if body is None:
-        chk.fail(f"{name}: section '## Sources' absente")
-        return
+        return None
     tbls = [t for t in tables(body) if t and [norm(c) for c in t[0]][: len(SOURCE_COLUMNS)] == list(SOURCE_COLUMNS)]
-    if not tbls:
-        chk.fail(f"{name}: table des sources absente ou colonnes incorrectes (attendu : {', '.join(SOURCE_COLUMNS)})")
+    return tbls[0][1:] if tbls else None
+
+
+def check_sources(text: str, name: str, today: dt.date, chk: Check, min_official: int = 0) -> None:
+    rows = source_rows(text)
+    if rows is None:
+        chk.fail(f"{name}: section '## Sources' ou table des sources absente (colonnes : {', '.join(SOURCE_COLUMNS)})")
         return
-    rows = tbls[0][1:]
+    cited = cited_ids(text)
     ids: set[str] = set()
     urls: set[str] = set()
     dated = official = 0
@@ -212,7 +247,7 @@ def check_sources(text: str, name: str, today: dt.date, chk: Check, min_official
         if len(row) < len(SOURCE_COLUMNS):
             chk.fail(f"{name}: ligne source {r} incomplète ({len(row)} colonnes)")
             continue
-        sid, _title, url, date_src, consulted, typ, conf = row[:7]
+        sid, title, url, date_src, consulted, typ, conf = row[:7]
         where = f"{name}: {sid or f'ligne {r}'}"
         if not re.fullmatch(r"S\d+", sid):
             chk.fail(f"{where}: ID invalide (attendu S1, S2…)")
@@ -227,41 +262,63 @@ def check_sources(text: str, name: str, today: dt.date, chk: Check, min_official
         elif url in urls:
             chk.info(f"{where}: URL déjà citée (toléré)")
         urls.add(url)
+        row_text = " ".join(row)
+        if NOT_OPENED.search(row_text):
+            chk.fail(f"{where}: source déclarée non ouverte : à ouvrir ou à retirer")
+        if WEAKLY_READ.search(row_text) and norm(conf) == "elevee":
+            chk.fail(f"{where}: source lue indirectement ou bloquée : confiance « élevée » impossible")
+        parsed_c = parse_date(consulted)
+        if parsed_c is None or parsed_c[0] != "day":
+            chk.fail(f"{where}: date de consultation illisible '{consulted}' (AAAA-MM-JJ)")
+            parsed_c = None
+        elif in_future(parsed_c, today):
+            chk.fail(f"{where}: consultation dans le futur '{consulted}'")
+        is_dated = False
         if norm(date_src) not in UNDATED:
             parsed = parse_date(date_src)
             if parsed is None:
                 chk.fail(f"{where}: date source illisible '{date_src}'")
-            elif in_future(parsed, today):
-                chk.fail(f"{where}: date source dans le futur '{date_src}'")
+            elif in_future(parsed, today) or (parsed_c and parsed[1] > parsed_c[1]):
+                chk.fail(f"{where}: date source postérieure à la consultation ou dans le futur '{date_src}'")
             else:
-                dated += 1
-        parsed_c = parse_date(consulted)
-        if parsed_c is None or parsed_c[0] != "day":
-            chk.fail(f"{where}: date de consultation illisible '{consulted}' (AAAA-MM-JJ)")
-        elif in_future(parsed_c, today):
-            chk.fail(f"{where}: consultation dans le futur '{consulted}'")
+                is_dated = True
         if norm(typ) not in SOURCE_TYPES:
             chk.fail(f"{where}: type '{typ}' hors liste {sorted(SOURCE_TYPES)}")
-        elif norm(typ) == "officiel":
-            official += 1
+        elif norm(typ) == "officiel" and NOT_OFFICIAL_URL.search(url):
+            chk.fail(f"{where}: typé « officiel » mais l'URL est un forum, un wiki ou un exemple")
         if norm(conf) not in CONFIDENCE:
             chk.fail(f"{where}: confiance '{conf}' hors liste")
+        if sid in cited:  # only sources the note actually uses count toward the thresholds
+            dated += is_dated
+            official += norm(typ) == "officiel"
     if dated < MIN_DATED_SOURCES:
-        chk.fail(f"{name}: {dated} sources datées < {MIN_DATED_SOURCES}")
+        chk.fail(f"{name}: {dated} sources datées et citées < {MIN_DATED_SOURCES}")
     if official < min_official:
-        chk.fail(f"{name}: {official} sources officielles < {min_official}")
-    chk.info(f"{name}: {len(rows)} sources, {dated} datées, {official} officielles")
-
-    before = text.split("\n## Sources", 1)[0] if "\n## Sources" in text else text
-    cited: set[str] = set()
-    for group in re.findall(r"\[([^\]]+)\]", before):
-        if re.fullmatch(r"\s*S\d+(\s*[,;]\s*S\d+)*\s*", group):
-            cited.update(re.findall(r"S\d+", group))
-    missing = sorted(cited - ids, key=lambda s: int(s[1:]))
+        chk.fail(f"{name}: {official} sources officielles citées < {min_official}")
+    uncited = sorted(ids - cited, key=lambda x: int(x[1:]) if x[1:].isdigit() else 0)
+    chk.info(f"{name}: {len(rows)} sources, {dated} datées et citées, {official} officielles citées")
+    if uncited:
+        chk.info(f"{name}: sources jamais citées (non comptées) : {', '.join(uncited)}")
+    missing = sorted(cited - ids, key=lambda x: int(x[1:]))
     if missing:
         chk.fail(f"{name}: références citées sans source : {', '.join(missing)}")
     if not cited:
         chk.fail(f"{name}: aucune référence [Sn] dans le corps de la note")
+
+
+def check_constats(text: str, name: str, chk: Check) -> None:
+    """Every row of the '## Constats' table cites a source, or is labelled an inference or an absence of evidence."""
+    body = section(text, "constats")
+    if body is None:
+        return
+    for tbl in tables(body)[:1]:
+        for row in tbl[1:]:
+            joined = " ".join(row)
+            labelled = any(k in norm(joined) for k in ("inference", "non trouve", "non verifi", "absence"))
+            if not re.search(r"\[\s*S\d+", joined) and not labelled:
+                chk.fail(
+                    f"{name}: constat sans source ni mention « inférence » : « {row[1][:60] if len(row) > 1 else joined[:60]} »"
+                )
 
 
 def check_note(path: Path, today: dt.date, min_official: int | None = None) -> Check:
@@ -279,6 +336,7 @@ def check_note(path: Path, today: dt.date, min_official: int | None = None) -> C
         chk.fail(f"{name}: marqueur de travail inachevé (TODO/TBD/…) présent")
     if min_official is None:
         min_official = OFFICIAL_REQUIRED.get(name, 0)
+    check_constats(text, name, chk)
     check_sources(text, name, today, chk, min_official)
     return chk
 
@@ -317,10 +375,21 @@ def measured_outliers(body: str, today: dt.date) -> tuple[set[str], list[str]]:
             if (m := re.fullmatch(r"[≥>~≈]?\s*(\d+(?:[.,]\d+)?)\s*[×x]", c.strip()))
         ]
         dates = [p for c in cells if (p := parse_date(c.strip())) and p[0] in ("day", "month")]
+        # columns: Vidéo | Chaîne | Langue | Publiée | Vues | Médiane (méthode) | Ratio | URL
+        numbers = [
+            int(re.sub(r"[\s\u202f\u00a0]", "", m.group(0)))
+            for c in cells[4:6]
+            if (m := re.match(r"\d{1,3}(?:[\s\u202f\u00a0]\d{3})+|\d+", c.strip()))
+        ]
+        vid = urls[0][-11:]
         if not ratios or max(ratios) < MIN_OUTLIER_RATIO:
-            rejected.append(f"{urls[0][-11:]} sans ratio ≥ {MIN_OUTLIER_RATIO:g}×")
+            rejected.append(f"{vid} sans ratio ≥ {MIN_OUTLIER_RATIO:g}×")
         elif not dates or (today - dates[0][1]).days > RECENT_DAYS:
-            rejected.append(f"{urls[0][-11:]} non récent ou non daté")
+            rejected.append(f"{vid} non récent ou non daté")
+        elif OUTLIER_METHOD not in line:
+            rejected.append(f"{vid} non mesuré par {OUTLIER_METHOD} (tools/outliers.py)")
+        elif len(numbers) < 2 or abs(numbers[0] / numbers[1] - max(ratios)) > RATIO_TOLERANCE * max(ratios):
+            rejected.append(f"{vid} ratio incohérent avec vues ÷ médiane")
         else:
             ok.add(urls[0])
     return ok, rejected
@@ -410,7 +479,7 @@ def check_subagents(root: Path) -> Check:
 
 
 def check_decisions(root: Path) -> Check:
-    chk = Check("adr", "ADR-001 et ADR-002 complets, sans TODO")
+    chk = Check("adr", "ADR-001 et ADR-002 complets, sourcés, sans TODO")
     path = root / "docs" / "DECISIONS.md"
     if not path.is_file():
         chk.fail("docs/DECISIONS.md absent")
@@ -427,13 +496,38 @@ def check_decisions(root: Path) -> Check:
         start = adr_heads[k][0]
         end = adr_heads[k + 1][0] if k + 1 < len(adr_heads) else len(lines)
         body = "\n".join(lines[start:end])
-        subs = [norm(re.sub(r"^#+\s*", "", ln)) for ln in body.splitlines() if re.match(r"^#{3,4} ", ln)]
+        subsections = {}
+        for m in re.finditer(r"^### (.+)\n((?:(?!^### |^## ).*\n?)*)", body + "\n", re.M):
+            subsections[norm(m.group(1))] = m.group(2)
         for sec in ADR_SECTIONS:
-            if not any(s.startswith(sec) for s in subs):
+            content = next((v for k2, v in subsections.items() if k2.startswith(sec)), None)
+            if content is None:
                 chk.fail(f"{adr}: sous-section '### {sec}' absente")
+                continue
+            words = len(re.findall(r"\w+", content))
+            if words == 0:
+                chk.fail(f"{adr}: sous-section '{sec}' vide")
+            elif words < ADR_MIN_WORDS.get(sec, 1):
+                chk.fail(f"{adr}: sous-section '{sec}' trop courte ({words} mots < {ADR_MIN_WORDS[sec]})")
         if PLACEHOLDER.search(body):
             chk.fail(f"{adr}: contient TODO/TBD/FIXME/XXX/« à compléter »")
+        check_cross_refs(root, body, adr, chk)
     return chk
+
+
+def check_cross_refs(root: Path, text: str, where: str, chk: Check) -> None:
+    """Every `note.md [Sn] [Sm]` reference points to an existing source of that note."""
+    for m in re.finditer(r"`?([\w-]+\.md)`?((?:\s*\[S\d+(?:\s*[,;]\s*S\d+)*\])+)", text):
+        note = root / "docs" / "research" / m.group(1)
+        refs = set(re.findall(r"S\d+", m.group(2)))
+        if not note.is_file():
+            chk.fail(f"{where}: renvoie à {m.group(1)} qui n'existe pas dans docs/research/")
+            continue
+        rows = source_rows(note.read_text(encoding="utf-8")) or []
+        known = {row[0] for row in rows if row}
+        missing = sorted(refs - known)
+        if missing:
+            chk.fail(f"{where}: {m.group(1)} {', '.join(missing)} introuvable(s)")
 
 
 def check_cost_model(root: Path) -> Check:
@@ -453,6 +547,19 @@ def check_cost_model(root: Path) -> Check:
         chk.fail("contient TODO/TBD/FIXME/XXX")
     if "economics.md" not in text:
         chk.fail("ne renvoie pas aux paramètres sourcés de docs/research/economics.md")
+    generated = section(text, "tables generees")
+    gen_path = root / "tools" / "cost_model.py"
+    if generated is None:
+        chk.fail("section '## Tables générées' absente")
+    elif gen_path.is_file():
+        try:
+            out = subprocess.run([sys.executable, str(gen_path)], capture_output=True, text=True, check=True).stdout
+        except (OSError, subprocess.CalledProcessError) as exc:
+            chk.fail(f"tools/cost_model.py ne s'exécute pas : {exc}")
+        else:
+            if generated.strip() != out.strip():
+                chk.fail("les tables diffèrent de la sortie de tools/cost_model.py : régénérer")
+    check_cross_refs(root, text, "COST_MODEL", chk)
     return chk
 
 
@@ -500,6 +607,17 @@ def check_secrets(root: Path) -> Check:
         for pat in SECRET_PATTERNS:
             if pat.search(text):
                 chk.fail(f"{rel}: motif de secret '{pat.pattern[:30]}…'")
+    try:
+        history = subprocess.run(
+            ["git", "log", "--all", "-p", "--no-color", "--unified=0"], cwd=root, capture_output=True, check=True
+        ).stdout.decode("utf-8", "ignore")
+    except (OSError, subprocess.CalledProcessError):
+        chk.info("historique git illisible : seul l'arbre de travail a été scanné")
+        return chk
+    added = "\n".join(line[1:] for line in history.splitlines() if line.startswith("+") and not line.startswith("+++"))
+    for pat in SECRET_PATTERNS:
+        if pat.search(added):
+            chk.fail(f"historique git : motif de secret '{pat.pattern[:30]}…' dans un commit passé")
     return chk
 
 

@@ -16,7 +16,7 @@ Critère de sortie : `make verify-phase-0` → 0.
 - [x] `docs/MISSION.md` enregistré tel quel (commit `docs: mission initiale`)
 - [x] Fichiers d'état : `CLAUDE.md`, `docs/PLAN.md`, `docs/PROGRESS.md`, `docs/DECISIONS.md`, `docs/NEEDS_HUMAN.md`, `docs/PARAMETERS.md`
 - [x] 9 sous-agents de construction dans `.claude/agents/` (format vérifié dans la doc Claude Code, frontmatter validé)
-- [x] `make verify-phase-0` v1 + 19 tests (`tests/tools/`) ; `make doctor` v1
+- [x] `make verify-phase-0` (v2 après revue : sources datées et citées, constats sourcés, ADR non vides et références résolues, tables du modèle de coût régénérées, outliers mesurés par l'API, historique git scanné) ; `make doctor` v1 ; 64 tests
 - [x] `docs/research/platform-policies.md` (29 sources, 20 officielles)
 - [x] `docs/research/apis.md` (43 sources, dont l'état de l'usage de `claude -p` sur abonnement)
 - [x] `docs/research/video-image-models.md` (66 sources)
@@ -29,7 +29,8 @@ Critère de sortie : `make verify-phase-0` → 0.
 - [x] ADR-001 architecture
 - [x] ADR-002 stratégie fournisseurs (modèles locaux, licences) ; ADR-003 corrections proposées ; ADR-004 preuve de demande
 - [x] `docs/COST_MODEL.md` (généré par `tools/cost_model.py`, testé)
-- [~] Revue `critic` de la phase 0
+- [x] Revue `critic` de la phase 0 : refusée (3 bloquants, 8 majeurs), corrections appliquées
+- [ ] Contre-revue `critic` des corrections
 - [ ] Choix humain des concepts (H2) → hors critère de sortie, bloque la phase 2
 
 ## Phase 1 — Squelette, contrats, mocks

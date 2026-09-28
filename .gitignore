@@ -25,3 +25,12 @@ htmlcov/
 
 # Divers
 .DS_Store
+
+# Brouillons de recherche (peuvent citer du contenu privé : jamais dans un dépôt public)
+docs/research/_work/
+
+# Audio
+*.mp3
+*.flac
+*.m4a
+*.ogg

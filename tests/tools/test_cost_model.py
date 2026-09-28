@@ -18,7 +18,7 @@ _spec.loader.exec_module(cm)
 
 def test_every_parameter_has_an_origin() -> None:
     for name, p in cm.P.items():
-        assert p.origin.startswith(("economics.md", "H")), name
+        assert p.origin.startswith(("economics.md", "HC")), name
 
 
 @pytest.mark.parametrize("fmt", ["long", "short"])
@@ -45,6 +45,11 @@ def test_fixed_costs_are_fully_allocated_at_planned_cadence() -> None:
         + cm.CADENCE["short_per_week"] * cm.per_video("short", s)["fixed_share_eur"]
     )
     assert allocated == pytest.approx(fixed["idle_energy_eur"] + fixed["amortization_eur"])
+
+
+def test_rejected_ideas_add_gate_time() -> None:
+    assert cm.per_video("long", "central")["human_min"] == pytest.approx(3 / 0.5 + 10 + 1)
+    assert cm.per_video("long", "low")["human_min"] < cm.per_video("long", "high")["human_min"]
 
 
 def test_markdown_renders() -> None:

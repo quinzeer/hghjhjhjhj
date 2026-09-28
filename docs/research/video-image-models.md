@@ -157,6 +157,14 @@
 | **Lecture YouTube** | YouTube applique un label IA automatique quand des métadonnées C2PA sont détectées (en plus de la détection interne) ; label non ajustable par le créateur dans ce cas | [S50] |
 | **Lecture TikTok** | Non re-vérifié dans cette session (budget de recherche épuisé) — la mission mentionne une détection C2PA automatique avec label non retirable ; **à confirmer par une source officielle TikTok en phase 0 complémentaire ou phase 5** | Question ouverte |
 
+## Correction après revue (2026-09-28)
+
+| # | Constat corrigé | Sources | Confiance | Conséquence pour le studio |
+|---|---|---|---|---|
+| C1 | **PuLID dépend aussi d'InsightFace** : `pulid/pipeline.py` importe `insightface` et charge `FaceAnalysis(name='antelopev2')`, la même dépendance non commerciale qui fait écarter InstantID. La licence Apache 2.0 du code [S30] ne couvre pas ces poids. La version 1 de cette note présentait PuLID comme l'alternative « sans dépendance non commerciale » : c'est faux. | [S30] [S31] | élevée | PuLID passe en « refusé » (ADR-002). Cohérence d'identité par LoRA de personnage entraînée localement ou par Qwen-Image-Edit. |
+| C2 | L'inventaire Wan n'est pas exhaustif : des variantes Apache 2.0 publiées en juillet 2026 (Wan2.2-Animate-2-14B, Wan-Dancer-14B) n'y figurent pas. | Inférence (signalé en revue, non ouvert pendant la rédaction) | moyenne | Re-lister les poids de l'organisation Wan-AI sur Hugging Face avant `make bench-models`. |
+| C3 | Licence LTX-2 (§6) : le concédant peut restreindre l'usage à distance, impose d'utiliser la dernière version et interdit de retirer le filigrane. Ces clauses heurtent l'épinglage de révision prévu par ADR-002. | [S7] | moyenne | LTX-2 sort de la shortlist par défaut ; il reste un candidat à évaluer après avis juridique. |
+
 ## Écarts avec MISSION §4
 
 | Affirmation de la mission | Verdict | Sources | Correction proposée |
@@ -249,7 +257,7 @@
 | S65 | lodestones/Chroma — README HuggingFace (Apache 2.0, dérivé FLUX.1-schnell) | https://huggingface.co/lodestones/Chroma/blob/main/README.md | 2025 | 2026-09-28 | officiel | moyenne |
 | S30 | ToTheBeginning/PuLID — LICENSE (Apache 2.0) | https://github.com/ToTheBeginning/PuLID/blob/main/LICENSE | 2024-04 | 2026-09-28 | officiel | élevée |
 | S66 | HiDream-ai/HiDream-I1 — dépôt GitHub (licence MIT) | https://github.com/HiDream-ai/HiDream-I1 | 2025-04-07 | 2026-09-28 | officiel | moyenne |
-| S31 | instantX-research/InstantID — discussion HuggingFace sur la dépendance InsightFace non-commerciale | https://huggingface.co/InstantX/InstantID/discussions/2 | 2024 | 2026-09-28 | officiel | élevée |
+| S31 | instantX-research/InstantID — discussion HuggingFace sur la dépendance InsightFace non-commerciale | https://huggingface.co/InstantX/InstantID/discussions/2 | 2024 | 2026-09-28 | praticien | moyenne |
 | S32 | tencent-ailab/IP-Adapter — LICENSE (Apache 2.0) + issue sur FaceID | https://github.com/tencent-ailab/IP-Adapter/blob/main/LICENSE | 2023-09 | 2026-09-28 | officiel | élevée |
 | S33 | ByteDance-Seed/SeedVR — dépôt officiel GitHub (SeedVR2, Apache 2.0) | https://github.com/ByteDance-Seed/SeedVR | 2025 | 2026-09-28 | officiel | moyenne |
 | S34 | FlashVSR — dépôt GitHub (CVPR 2026, licence Apache) | https://github.com/azhai219/FlashVSR | 2025-10 | 2026-09-28 | officiel | moyenne |

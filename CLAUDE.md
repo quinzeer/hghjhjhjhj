@@ -29,7 +29,7 @@ docs/PROGRESS.md       journal daté + sorties des commandes de preuve
 docs/DECISIONS.md      ADR
 docs/NEEDS_HUMAN.md    actions humaines, triées par urgence
 docs/COST_MODEL.md     coût par format, plafonds
-docs/research/         notes sourcées (_TEMPLATE.md = format imposé ; _work/ = brouillons)
+docs/research/         notes sourcées (_TEMPLATE.md = format imposé ; _work/ = brouillons, ignorés par git)
 .claude/agents/        9 sous-agents de construction (MISSION §10)
 tools/                 vérificateurs et outillage (stdlib)
 tests/                 pytest
@@ -51,14 +51,20 @@ Arrivent en phase 1 : `studio/` (paquet Python), `knowledge/`, `evals/`, `studio
 - Format : `docs/research/_TEMPLATE.md`. Sections : Synthèse, Constats, Écarts avec MISSION §4, Questions ouvertes, Sources.
 - Table Sources : `ID | Titre | URL | Date source | Consulté | Type | Confiance`.
   Type ∈ officiel, publication, presse, praticien, données. Chaque `[Sn]` cité existe dans la table.
-- Critères phase 0 : ≥ 8 sources datées par note ; ≥ 3 officielles pour `platform-policies.md` et `apis.md`.
-- Une URL n'est citée que si elle a été ouverte pendant la rédaction.
+- Critères phase 0 : ≥ 8 sources datées **et citées** par note ; ≥ 3 officielles citées pour `platform-policies.md` et `apis.md`.
+- Chaque ligne de « Constats » cite [Sn] ou se déclare « Inférence » / « non trouvé ».
+- Une URL citée a été ouverte. Source bloquée ou lue via un résultat de recherche : confiance ≤ moyenne. Non ouverte : retirée.
+- « officiel » = plateforme, régulateur, éditeur, fichier de licence ; jamais un forum, une discussion Hugging Face ou Wikipédia.
 - Outlier (phase 0) : ligne avec ratio ≥ 3× (vs 30 vidéos précédentes du même format) et publication ≤ 18 mois,
   mesurée par `tools/outliers.py`. Jamais d'accès automatisé aux pages youtube.com / tiktok.com (ADR-004).
 
 ## ADR (`docs/DECISIONS.md`)
 Titre `## ADR-NNN — …` puis `### Statut`, `### Contexte`, `### Options`, `### Décision`, `### Conséquences`,
 `### Coût d'un retour arrière`, `### Sources`. Aucun TODO/TBD : l'inconnu devient une hypothèse avec son test.
+
+## Revue `critic` du 2026-09-28 (phase 0)
+Refus motivé → corrigé : vérificateur renforcé, faits faux corrigés (Digital Omnibus, RPM France, PuLID),
+ADR-001 révisé (DBOS + scénarios de panne). Ne jamais relâcher ces contrôles pour faire passer une porte.
 
 ## Fin de phase (procédure fixe)
 `make verify-phase-N` → sortie dans PROGRESS → revue `critic` → PR → `/code-review` → merge après accord humain.
@@ -82,7 +88,7 @@ Fin de session : résumé ≤ 15 lignes (état de la phase, prochaines tâches, 
 - VM cloud : 4 vCPU, 16 Go RAM, pas de GPU, commandes ≤ 10 min. Tout ce qui exige un GPU = mock ici,
   `make gpu-smoke` sur la machine GPU.
 - `claude --help` (v2.1.283) n'affiche plus `--max-turns` ; `--json-schema` existe (sortie structurée).
-  `--bare` ignore l'auth OAuth : ne pas l'utiliser pour le studio.
+  `--bare` ignore l'auth OAuth et deviendra le défaut de `-p` : `ClaudeCodeRunner` doit s'en protéger (ADR-001).
 - Python système = 3.11 ; `uv` fournit 3.12 (`/usr/bin/python3.12`) pour le projet. Le vérificateur de phase 0
   reste en stdlib pour tourner sans installation.
 - Machine GPU : 4× RTX 4070 Ti Super 16 Go, Ada sm_89, sans NVLink : pas d'espace VRAM unifié de 64 Go.

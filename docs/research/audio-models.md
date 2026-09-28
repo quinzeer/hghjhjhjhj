@@ -219,7 +219,7 @@ Aucune page d'aide officielle Google (YouTube) ou documentation développeur/new
 | S17 | GitHub — SWivid/F5-TTS — LICENSE | https://github.com/SWivid/F5-TTS/blob/main/LICENSE | s.d. | 2026-09-28 | officiel | élevée |
 | S18 | Hugging Face — SWivid/F5-TTS — README.md | https://huggingface.co/SWivid/F5-TTS/blob/main/README.md | s.d. | 2026-09-28 | officiel | élevée |
 | S19 | Hugging Face — coqui/XTTS-v2 — LICENSE.txt (CPML 1.0.0) | https://huggingface.co/coqui/XTTS-v2/blob/main/LICENSE.txt | s.d. | 2026-09-28 | officiel | élevée |
-| S20 | Hugging Face — fishaudio/openaudio-s1-mini — discussion #7 (licence CC-BY-NC-SA-4.0) | https://huggingface.co/fishaudio/openaudio-s1-mini/discussions/7 | s.d. | 2026-09-28 | officiel | moyenne |
+| S20 | Hugging Face — fishaudio/openaudio-s1-mini — discussion #7 (licence CC-BY-NC-SA-4.0) | https://huggingface.co/fishaudio/openaudio-s1-mini/discussions/7 | s.d. | 2026-09-28 | praticien | moyenne |
 | S21 | GitHub — fishaudio/fish-speech (README, licence code) | https://github.com/fishaudio/fish-speech | s.d. | 2026-09-28 | officiel | élevée |
 | S22 | GitHub — nari-labs/dia — LICENSE | https://github.com/nari-labs/dia/blob/main/LICENSE | s.d. | 2026-09-28 | officiel | élevée |
 | S23 | GitHub — canopyai/Orpheus-TTS — LICENSE | https://github.com/canopyai/Orpheus-TTS/blob/main/LICENSE | 2025-03 | 2026-09-28 | officiel | élevée |

@@ -30,7 +30,10 @@ def sources_table(n: int, official: int = 3, date: str = "2026-07-16", consulted
     return "\n".join(rows)
 
 
-def note(n_sources: int = 8, official: int = 3, cite: str = "[S1] [S2]", **kw: str) -> str:
+ALL_CITED = " ".join(f"[S{i}]" for i in range(1, 9))
+
+
+def note(n_sources: int = 8, official: int = 3, cite: str = ALL_CITED, **kw: str) -> str:
     return f"""# Note
 
 ## Synthèse
@@ -63,9 +66,12 @@ def write(path: Path, text: str) -> Path:
     return path
 
 
+MEASURED = "API YouTube Data v3 ; médiane des 30 longs de la chaîne les plus proches en date"
+
+
 def concept(k: int, outliers: int = 2) -> str:
     urls = "\n".join(
-        f"| V{j} | Chaîne | en | 2026-01 | 1 M | 100 k | 10× | https://www.youtube.com/watch?v=abc{k}{j} |"
+        f"| V{j} | Chaîne | en | 2026-01 | 1 000 000 | 100 000 ({MEASURED}) | 10,0× | https://www.youtube.com/watch?v=abc{k}{j} |"
         for j in range(outliers)
     )
     return f"""### C{k:02d} — Concept {k}
@@ -88,33 +94,47 @@ def concepts_doc(n: int = 6, outliers: int = 2) -> str:
     return body
 
 
-ADR_OK = """# Décisions
+WORDS = (
+    "Ce paragraphe décrit les contraintes, les options comparées et la décision avec assez de détail pour être relu "
+    "par un humain qui doit comprendre pourquoi ce choix a été fait, ce qu'il coûte, ce qui le ferait changer et "
+    "comment on le vérifie en pratique."
+)
+
+ADR_OK = f"""# Décisions
 
 ## ADR-001 — Architecture
 
 ### Statut
 Accepté.
 ### Contexte
-X.
+{WORDS} Voir `economics.md` [S1].
 ### Options
-A, B.
+{WORDS}
 ### Décision
-A.
+{WORDS}
+### Conséquences
+Tests de phase 1.
 ### Coût d'un retour arrière
 Faible.
+### Sources
+`economics.md` [S2].
 
 ## ADR-002 — Fournisseurs
 
 ### Statut
 Accepté.
 ### Contexte
-X.
+{WORDS}
 ### Options
-A, B.
+{WORDS}
 ### Décision
-B.
+{WORDS}
+### Conséquences
+Benchmark.
 ### Coût d'un retour arrière
 Moyen.
+### Sources
+`economics.md` [S3].
 """
 
 
@@ -132,7 +152,7 @@ def repo(tmp_path: Path) -> Path:
     write(
         tmp_path / "docs/COST_MODEL.md",
         "# Coûts\n\nParamètres : docs/research/economics.md\n\n## Hypothèses\n\n| a | b |\n|---|---|\n| 1 | 2 |\n\n"
-        "## Long format\n\nx\n\n## Short\n\ny\n",
+        "## Long format\n\nx\n\n## Short\n\ny\n\n## Tables générées\n\n| t |\n|---|\n",
     )
     for name, model in vp.SUBAGENTS.items():
         write(tmp_path / ".claude/agents" / f"{name}.md", agent_file(name, model))
@@ -172,6 +192,35 @@ def test_note_defects_are_rejected(tmp_path: Path, text: str, expected: str) -> 
     assert any(expected in d for d in chk.details), chk.details
 
 
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        (note(cite="[S1] [S2] [S3] [S4] [S5] [S6] [S7]"), "datées et citées"),
+        (note().replace("https://src.test/1 ", "https://huggingface.co/x/discussions/2 "), "forum"),
+        (note().replace("https://src.test/2 ", "https://en.wikipedia.org/wiki/X "), "forum"),
+        (note().replace("| Source 3 |", "| Source 3 (HTTP 404) |"), "non ouverte"),
+        (note().replace("| Source 4 |", "| Source 4 (vue en résultat de recherche) |"), "indirectement"),
+        (
+            note().replace(
+                "| 2026-07-16 | 2026-09-28 | officiel | élevée |", "| 2026-09-20 | 2026-09-10 | officiel | élevée |", 1
+            ),
+            "postérieure",
+        ),
+        (note().replace("| 1 | Fait | [S1, S3] |", "| 1 | Fait | presse |"), "constat sans source"),
+    ],
+)
+def test_hollow_notes_are_rejected(tmp_path: Path, text: str, expected: str) -> None:
+    chk = vp.check_note(write(tmp_path / "x.md", text), TODAY)
+    assert not chk.ok
+    assert any(expected in d for d in chk.details), chk.details
+
+
+def test_labelled_inference_or_absence_is_accepted(tmp_path: Path) -> None:
+    for label in ("Inférence (non sourcé)", "non trouvé"):
+        text = note().replace("| 1 | Fait | [S1, S3] |", f"| 1 | Fait | {label} |")
+        assert vp.check_note(write(tmp_path / "x.md", text), TODAY).ok
+
+
 def test_policy_note_needs_three_official_sources(tmp_path: Path) -> None:
     chk = vp.check_note(write(tmp_path / "apis.md", note(official=2)), TODAY)
     assert not chk.ok
@@ -194,12 +243,14 @@ def test_concepts_need_six_sections_and_two_outliers(tmp_path: Path) -> None:
 @pytest.mark.parametrize(
     ("row", "counted"),
     [
-        ("| V | C | en | 2026-01-10 | 1 M | 100 k | 10× | https://youtu.be/abcdefghijk |", True),
-        ("| V | C | en | 2026-01 | 1 M | 100 k | 3,4× | https://youtu.be/abcdefghijk |", True),
-        ("| V | C | en | 2026-01-10 | 1 M | 100 k | 2,9× | https://youtu.be/abcdefghijk |", False),
-        ("| V | C | en | 2026-01-10 | 1 M | 100 k | non calculé | https://youtu.be/abcdefghijk |", False),
-        ("| V | C | en | 2023-05-01 | 1 M | 100 k | 12× | https://youtu.be/abcdefghijk |", False),
-        ("| V | C | en | s.d. | 1 M | 100 k | 12× | https://youtu.be/abcdefghijk |", False),
+        (f"| V | C | en | 2026-01-10 | 1 000 000 | 100 000 ({MEASURED}) | 10× | https://youtu.be/abcdefghijk |", True),
+        (f"| V | C | en | 2026-01 | 340 000 | 100 000 ({MEASURED}) | 3,4× | https://youtu.be/abcdefghijk |", True),
+        (f"| V | C | en | 2026-01-10 | 290 000 | 100 000 ({MEASURED}) | 2,9× | https://youtu.be/abcdefghijk |", False),
+        (f"| V | C | en | 2026-01-10 | 1 000 000 | 100 000 ({MEASURED}) | non calculé | https://youtu.be/abcdefghijk |", False),
+        (f"| V | C | en | 2023-05-01 | 1 200 000 | 100 000 ({MEASURED}) | 12× | https://youtu.be/abcdefghijk |", False),
+        (f"| V | C | en | s.d. | 1 200 000 | 100 000 ({MEASURED}) | 12× | https://youtu.be/abcdefghijk |", False),
+        ("| V | C | en | 2026-01-10 | 1 000 000 | 100 000 (médiane de niche) | 10× | https://youtu.be/abcdefghijk |", False),
+        (f"| V | C | en | 2026-01-10 | 1 000 000 | 100 000 ({MEASURED}) | 25× | https://youtu.be/abcdefghijk |", False),
     ],
 )
 def test_outlier_rows_need_measured_ratio_and_recent_date(row: str, counted: bool) -> None:
@@ -222,8 +273,23 @@ def test_concepts_not_required_once_confirmed(repo: Path) -> None:
 def test_adr_with_todo_or_missing_section_fails(repo: Path) -> None:
     write(repo / "docs/DECISIONS.md", ADR_OK.replace("Faible.", "TODO"))
     assert any("TODO" in d for d in vp.check_decisions(repo).details)
-    write(repo / "docs/DECISIONS.md", ADR_OK.replace("### Options\nA, B.\n### Décision\nB.", "### Décision\nB."))
-    assert any("options" in d for d in vp.check_decisions(repo).details)
+    write(repo / "docs/DECISIONS.md", ADR_OK.replace("### Conséquences\nBenchmark.\n", ""))
+    assert any("consequences" in d for d in vp.check_decisions(repo).details)
+
+
+def test_hollow_adr_is_rejected(repo: Path) -> None:
+    hollow = ADR_OK.replace("### Décision\n" + ADR_OK.split("### Décision\n")[1].split("\n")[0], "### Décision\nA.", 1)
+    write(repo / "docs/DECISIONS.md", hollow)
+    assert any("trop courte" in d for d in vp.check_decisions(repo).details)
+    write(repo / "docs/DECISIONS.md", ADR_OK.replace("`economics.md` [S2]", "`economics.md` [S99]"))
+    assert any("S99" in d for d in vp.check_decisions(repo).details)
+
+
+def test_cost_model_must_match_generator(repo: Path) -> None:
+    write(repo / "tools/cost_model.py", "print('| t |')\nprint('|---|')\n")
+    assert vp.check_cost_model(repo).ok
+    write(repo / "tools/cost_model.py", "print('| autre |')\n")
+    assert any("régénérer" in d for d in vp.check_cost_model(repo).details)
 
 
 def test_subagent_model_mismatch_fails(repo: Path) -> None:

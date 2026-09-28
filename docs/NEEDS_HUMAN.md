@@ -14,7 +14,9 @@ Trié par urgence. Chaque entrée : quoi faire, pourquoi, comment vérifier que 
 - **Constat (2026-09-28)** : `quinzeer/hghjhjhjhj` est **public**. Tout ce qui est poussé (mission, stratégie de chaînes, futures bibles, dossiers d'audit API, prompts des agents) est lisible par tous.
 - **Recommandation** : passer le dépôt en privé (GitHub → Settings → General → Danger Zone → Change repository visibility → Private). Coût : les minutes GitHub Actions deviennent limitées sur un compte gratuit (vérifie ton offre GitHub).
 - **Vérification** : le badge « Private » apparaît à côté du nom du dépôt.
-- **En attendant** : je ne copie pas ton skill `scenariste-youtube` dans `knowledge/imports/` (il deviendrait public) ; les agents le lisent depuis ta session. Aucun secret n'est jamais versionné (`make verify-phase-0` le contrôle).
+- **En attendant** : je ne copie pas ton skill `scenariste-youtube` dans `knowledge/imports/` (il deviendrait public) ; les agents le lisent depuis ta session. Aucun secret n'est jamais versionné (`make verify-phase-0` scanne l'arbre et l'historique git).
+- **Fuite partielle déjà poussée** : deux brouillons de recherche (`docs/research/_work/concepts-a.md` et `concepts-b.md`, commits `a436236` à `0abbeb1`) reprenaient la grille pondérée de ton skill et des repères chiffrés. Ils sont retirés de la branche et ignorés par git, mais **restent dans l'historique**. `docs/research/craft.md` cite aussi quelques affirmations courtes du skill pour les vérifier.
+- **Choix** : (a) passer le dépôt en privé, ce qui règle tout ; (b) le garder public et me demander de réécrire l'historique de la branche (force-push : irréversible pour les clones existants) et de paraphraser `craft.md`.
 
 ### H2 — Choisir les concepts des chaînes A et B
 - **Quoi** : lire `docs/research/channel-concepts.md` (6 concepts classés) et répondre « A = Cx, B = Cy », ou proposer autre chose.

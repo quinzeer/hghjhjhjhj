@@ -1,11 +1,11 @@
 # Concepts de chaînes : 6 concepts classés
 
-> Consulté le : 2026-09-28 · Auteur : fusion des lots A (C01-C06) et B (C07-C12) par l'ingénieur en chef · Version : 1 · Portée : MISSION §9 phase 0, concepts des chaînes A et B (§0 = « propose »). Détail par concept (épisodes, grilles complètes) : `docs/research/_work/concepts-a.md` et `docs/research/_work/concepts-b.md`.
+> Consulté le : 2026-09-28 · Auteur : fusion des lots A (C01-C06) et B (C07-C12) par l'ingénieur en chef · Version : 1 · Portée : MISSION §9 phase 0, concepts des chaînes A et B (§0 = « propose »). Les brouillons détaillés par concept (épisodes, notes par critère) sont gardés hors du dépôt : ils citent la grille privée du skill `scenariste-youtube` et le dépôt est public (NEEDS_HUMAN H1).
 
 ## Synthèse
 
 - **La preuve de demande n'est pas encore mesurée.** Aucun des 12 candidats n'a d'outlier mesuré par une méthode conforme. Le lot A n'a pu obtenir aucun ratio. Le lot B a calculé des ratios en lisant par script des pages YouTube, dont des pages de résultats de recherche que le `robots.txt` de YouTube interdit ; pour 3 concepts, il les a comparés à une médiane « de niche » au lieu de la médiane de la chaîne. Ces ratios sont gardés comme **indices** et ne comptent pas comme preuve (ADR-004). La mesure conforme passe par `tools/outliers.py` (API YouTube Data), dès que la clé `YOUTUBE_API_KEY` sera disponible (NEEDS_HUMAN H0).
-- **Classement provisoire** sur les 80 points de la grille du skill hors « demande prouvée » (20 points ajoutés à la mesure). Deux évaluateurs différents ont noté les lots A et B : un écart de ±3 points est du bruit.
+- **Classement provisoire** sur la grille du skill `scenariste-youtube` **hors critère « demande prouvée »** (score sur 80), le critère de demande s'ajoutera à la mesure. Deux évaluateurs différents ont noté les lots A et B : un écart de ±3 points est du bruit, et le top 6 (61-64) comme C05 (60) tiennent dans ce bruit. Le choix se fait donc sur l'adéquation stratégique ci-dessous, puis sur la mesure de la demande.
 - **Top 6** : C03 Échelles impossibles (64), C11 Géographie et données animées (64), C02 Comment on a construit (63), C09 Terre profonde (62,5), C07 Mondes disparus (61,5), C04 Scénarios « et si » (61).
 - **Recommandation** : une chaîne « Civilisations reconstruites » (fusion de C02 et C07) et une chaîne « Échelles de l'espace et du temps » (fusion de C03 et C09). Alternative à coût minimal pour B : C11.
 - **Contexte économique** : à partir du 01/02/2027, une nouvelle chaîne devra réunir 8 000 h de visionnage pour entrer au YPP, et le partage des revenus Shorts exigera 10 M de vues Shorts sur 90 jours [S3]. Le long format porte l'économie ; les Shorts servent à la découverte.
@@ -24,12 +24,12 @@
 
 ## Classement
 
-Score = somme (note / 5 × poids) de la grille du skill `scenariste-youtube` hors « demande prouvée », sur 80. Notes par critère : fichiers `_work/`.
+Score = grille du skill `scenariste-youtube` hors critère « demande prouvée », sur 80 (pondérations non reproduites : dépôt public).
 
 | Rang | Concept | Hors demande /80 | Indice de demande (non compté) | RPM (`economics.md`) | Risque politique | Sérialité | Coût unitaire (long / Short) |
 |---|---|---|---|---|---|---|---|
 | 1 | C03 Échelles impossibles | 64 | preuve de genre au niveau chaîne seulement | généraliste ; niche science plus haute (confiance moyenne) | faible, mais risque de gabarit | 100+ | faible / faible |
-| 1 ex æquo | C11 Géographie et données animées | 64 | indices 21,1× (2024) et 3,7× sur médiane de niche | généraliste à éducation | moyen (frontières contestées) | illimitée | faible / faible |
+| 1 ex æquo | C11 Géographie et données animées | 64 | un indice 3,7× sur médiane de niche (l'autre, de 2024, est hors fenêtre) | généraliste à éducation | moyen (frontières contestées) | illimitée | faible / faible |
 | 3 | C02 Comment on a construit | 63 | aucun ratio obtenu | éducation / ingénierie | faible | 30-50 | faible-moyen / faible |
 | 4 | C09 Terre profonde | 62,5 | indices 5,5× et 4,0× sur médiane de niche | éducation / science | faible | dizaines, avec sous-arcs | moyen / moyen |
 | 5 | C07 Mondes disparus | 61,5 | indices 7,9× et 3,6× sur médiane de chaîne (méthode non conforme) | éducation / histoire | faible-moyen | dizaines à centaines | moyen / moyen |
