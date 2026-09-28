@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Protocol, runtime_checkable
 
-from studio.domain import CostEntry, CostKind, ResourceClass
+from studio.domain import CostEntry, CostKind, GateDecision, GateName, ResourceClass
 
 # ------------------------------------------------------------------ errors
 
@@ -30,6 +30,10 @@ class StepClaimed(StudioError):
 
 class ArtifactMissing(StudioError):
     pass
+
+
+class GateNotApproved(StudioError):
+    """A step that requires an approval ran into a missing or negative gate decision."""
 
 
 # ------------------------------------------------------------------ artifacts
@@ -185,7 +189,17 @@ class StepSpec:
     estimated_cost: Mapping[CostKind, float] = field(default_factory=dict)
     model_id: str | None = None
     draft: bool = False
-    gate: bool = False  # human gate: waits for a decision artifact instead of running code
+    # A gate step runs no code: it waits for a decision on the output of `inputs[0]` (its subject).
+    gate: GateName | None = None
+    # (gate, subject step): this step may run only if that gate approved that step's exact output.
+    requires_approval: tuple[tuple[GateName, str], ...] = ()
+
+
+@runtime_checkable
+class DecisionSource(Protocol):
+    """Where gate decisions come from (validation UI, compliance agent, or a test fake)."""
+
+    def get(self, gate: GateName, subject_key: str) -> GateDecision | None: ...
 
 
 @dataclass
