@@ -4,7 +4,8 @@ node_modules/
 dist/
 assets/polyhaven/
 episodes/_test/
-episodes/*/build/
+episodes/*/build/*
+!episodes/*/build/tts_cache/
 episodes/*/out/final.mp4
 episodes/*/out/preview.mp4
 *.part

@@ -94,7 +94,7 @@ def build(ep_dir):
         vo, words = None, []
         if sc.get('voix_off'):
             # Cache : même texte + mêmes réglages → même prise (le TTS est aléatoire ; les plaques 3D restent synchrones).
-            key = hashlib.sha1(json.dumps([model, sc['voix_off'], vcfg.get('length_scale', 0.86), lex], ensure_ascii=False).encode()).hexdigest()[:16]
+            key = hashlib.sha1(json.dumps([vcfg.get('modele', 'fr_FR-siwis-medium'), sc['voix_off'], vcfg.get('length_scale', 0.86), lex], ensure_ascii=False).encode()).hexdigest()[:16]
             cdir = os.path.join(out, 'tts_cache')
             os.makedirs(cdir, exist_ok=True)
             cwav, cjson = os.path.join(cdir, key + '.npy'), os.path.join(cdir, key + '.json')
