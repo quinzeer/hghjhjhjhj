@@ -1,0 +1,13 @@
+# Chaîne A — ADR-005 (décision par délégation, réversible). Concept : C02 + C07 de docs/research/channel-concepts.md.
+id: channel-a
+name: Reconstructed Civilizations (working title)
+language: en
+concept: >-
+  How great structures of the past were built and how lost cities looked and worked, reconstructed in 3D from
+  published plans and archaeology; every reconstruction is announced as such.
+formats: [long, short]
+voice_id: narrator-main
+visual_bible: knowledge/bibles/channel-a.md
+# Chaînes concurrentes à mesurer (tools/outliers.py) : à renseigner en @handle vérifié par l'API (NEEDS_HUMAN H0).
+watchlist: []
+platforms: [youtube, tiktok]

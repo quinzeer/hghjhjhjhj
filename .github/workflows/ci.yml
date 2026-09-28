@@ -1,0 +1,39 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 12
+    env:
+      STUDIO_TEST_PG_URL: postgresql+psycopg://postgres@localhost:5432/postgres
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends ffmpeg
+      - name: Dependencies
+        run: uv sync --group dev
+      - name: Doctor (fails if ANTHROPIC_API_KEY exists)
+        run: make doctor
+      - name: Lint (ruff + mypy strict)
+        run: make lint
+      - name: Tests
+        run: make test
+      - name: Phase 0 gate (informative until the YouTube API key exists, NEEDS_HUMAN H0)
+        run: make verify-phase-0
+        continue-on-error: true

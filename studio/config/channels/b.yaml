@@ -1,0 +1,12 @@
+# Chaîne B — ADR-005 (décision par délégation, réversible). Concept : C03 + C09 de docs/research/channel-concepts.md.
+id: channel-b
+name: Scales of Space and Time (working title)
+language: en
+concept: >-
+  Impossible scales and deep time: each episode answers one precise question about size or duration with
+  procedural 3D renders, never a plain line-up of objects.
+formats: [long, short]
+voice_id: narrator-main
+visual_bible: knowledge/bibles/channel-b.md
+watchlist: []
+platforms: [youtube, tiktok]
