@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><title>Rendu vidéo 3D</title>
+<link href="/fonts/fonts.css" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<style>html,body{margin:0;background:#000}#gl{display:none}</style></head>
+<body><canvas id="gl"></canvas><canvas id="out"></canvas>
+<script type="module">
+// Piloté par render.mjs : window.__frame(i) rend l'image i et renvoie un JPEG.
+import { setup } from '/engine/app.js';
+const q = new URLSearchParams(location.search);
+const fps = +(q.get('fps') || 30);
+try {
+  const S = await setup({ glCanvas: document.getElementById('gl'), outCanvas: document.getElementById('out'), quality: q.get('q') || 'high', renderScale: +(q.get('rs') || 0.75) });
+  window.__meta = { duration: S.T.duration, fps, frames: Math.floor(S.T.duration * fps), events: S.events, beats: S.T.beats.map(({ words, ...b }) => b) };
+  window.__frame = (i, qual = 0.95) => { S.frame(i / fps); return document.getElementById('out').toDataURL('image/jpeg', qual); };
+  window.__ready = true;
+} catch (e) { window.__error = String(e && e.stack || e); }
+</script></body></html>

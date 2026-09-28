@@ -1,0 +1,16 @@
+{
+  "title": "Top 3",
+  "look": "night",
+  "music": "tension",
+  "items": [
+    { "name": "TROISIÈME", "value": "…", "color": "#e09a5a", "shape": "box" },
+    { "name": "DEUXIÈME", "value": "…", "color": "#d9dee6", "shape": "cylinder" },
+    { "name": "PREMIER", "value": "…", "color": "#ffc83d", "shape": "sphere" }
+  ],
+  "beats": [
+    { "id": "hook", "rank": 1, "say": "Voici le numéro un. Mais d'abord, les deux autres.", "text": "TOP 3", "energy": 0.55 },
+    { "id": "n3", "rank": 3, "say": "Numéro trois.", "text": "N°3", "energy": 0.6 },
+    { "id": "n2", "rank": 2, "say": "Numéro deux.", "text": "N°2", "energy": 0.75 },
+    { "id": "n1", "rank": 1, "say": "Et numéro un.", "text": "N°1", "drop": true, "energy": 0.95 }
+  ]
+}

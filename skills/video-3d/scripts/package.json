@@ -1,0 +1,6 @@
+{
+  "name": "video-3d-engine",
+  "private": true,
+  "type": "module",
+  "description": "Moteur de vidéos verticales 3D (three.js) : scène, habillage, voix, audio, rendu MP4."
+}

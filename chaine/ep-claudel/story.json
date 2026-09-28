@@ -1,0 +1,91 @@
+{
+  "title": "Le Camille Claudel de la remise",
+  "look": "dark",
+  "music": "mystery",
+  "voice": "fr-FR-RemyMultilingualNeural",
+  "rate": "+7%",
+  "highlight": [
+    "CLAUDEL",
+    "REMISE",
+    "INCROYABLE",
+    "DROUOT",
+    "MILLIONS",
+    "MILLION"
+  ],
+  "beats": [
+    {
+      "id": "hook",
+      "station": "tv",
+      "say": "C'est l'histoire de deux frères qui voient à la télé une sculpture vendue plus de trois millions d'euros… et qui reconnaissent celle qui dort dans leur remise.",
+      "text": "3,1 M€\nDANS LEUR REMISE ?",
+      "energy": 0.55
+    },
+    {
+      "id": "oeuvre",
+      "station": "galerie",
+      "say": "Cette sculpture, c'est L'Âge mûr, de Camille Claudel. Un bronze fondu à partir de 1907, en seulement cinq exemplaires.",
+      "text": "5 EXEMPLAIRES",
+      "energy": 0.45
+    },
+    {
+      "id": "n1",
+      "station": "galerie",
+      "say": "Le numéro un a été retrouvé en 2024, sous un drap, dans un appartement parisien. Vendu 3,1 millions d'euros.",
+      "sfx": [
+        "coin@4.2"
+      ],
+      "energy": 0.55
+    },
+    {
+      "id": "freres",
+      "station": "remise",
+      "say": "Mais les deux frères, eux, ont la même. Dans la remise de la maison familiale. Depuis une quarantaine d'années.",
+      "energy": 0.6
+    },
+    {
+      "id": "appel",
+      "station": "remise",
+      "say": "Huit jours après la vente, ils appellent le commissaire-priseur. Sa réaction :",
+      "energy": 0.7,
+      "pad": 0.15
+    },
+    {
+      "id": "reveal",
+      "station": "remise",
+      "say": "« Vous avez un truc incroyable ! »",
+      "drop": true,
+      "sfx": [
+        "whoosh@0.0",
+        "swell@0.3"
+      ],
+      "energy": 0.85,
+      "pad": 0.6
+    },
+    {
+      "id": "preuve",
+      "station": "socle",
+      "say": "Signé C. Claudel. Numéro cinq. La marque du fondeur Eugène Blot. On avait perdu sa trace depuis plus d'un siècle.",
+      "text": "N°5",
+      "energy": 0.7
+    },
+    {
+      "id": "vente",
+      "station": "drouot",
+      "say": "Le 20 septembre, à Drouot, le marteau tombe : un million et demi d'euros.",
+      "drop": true,
+      "text": "ADJUGÉ\n1,5 M€",
+      "textPos": "top",
+      "energy": 0.95,
+      "pad": 0.6,
+      "textAt": 2.35
+    },
+    {
+      "id": "fin",
+      "station": "galerie",
+      "say": "Il en reste deux introuvables : le numéro deux et le numéro quatre. Et si l'un d'eux dormait dans une remise… près de chez toi ?",
+      "text": "N°2 ? N°4 ?",
+      "energy": 0.5,
+      "pad": 0.5
+    }
+  ]
+}

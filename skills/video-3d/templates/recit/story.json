@@ -1,0 +1,69 @@
+{
+  "title": "Le trombone rouge",
+  "look": "studio",
+  "music": "mystery",
+  "voice": "fr-FR-RemyMultilingualNeural",
+  "rate": "+6%",
+  "highlight": [
+    "TROMBONE",
+    "MAISON",
+    "14"
+  ],
+  "beats": [
+    {
+      "id": "hook",
+      "station": 0,
+      "say": "C'est l'histoire d'un trombone rouge qui est devenu une maison.",
+      "text": "1 TROMBONE\n= 1 MAISON ?",
+      "energy": 0.5
+    },
+    {
+      "id": "defi",
+      "station": 0,
+      "say": "En 2005, un Canadien se lance un défi : échanger ce trombone contre un objet un peu mieux. Puis recommencer.",
+      "energy": 0.45
+    },
+    {
+      "id": "stylo",
+      "station": 1,
+      "say": "Le trombone devient un stylo en forme de poisson.",
+      "sfx": [
+        "land@0.3"
+      ],
+      "energy": 0.55
+    },
+    {
+      "id": "poignee",
+      "station": 2,
+      "say": "Le stylo, une poignée de porte sculptée à la main.",
+      "sfx": [
+        "land@0.3"
+      ],
+      "energy": 0.6
+    },
+    {
+      "id": "boule",
+      "station": 3,
+      "say": "Dix échanges plus tard, il tient une boule à neige… que beaucoup jugent ridicule.",
+      "text": "ERREUR ?",
+      "energy": 0.7
+    },
+    {
+      "id": "twist",
+      "station": 3,
+      "say": "Sauf un réalisateur, collectionneur de boules à neige, qui l'échange contre un rôle dans son film.",
+      "drop": true,
+      "energy": 0.85
+    },
+    {
+      "id": "maison",
+      "station": 4,
+      "say": "Et une petite ville offre sa maison pour ce rôle. Quatorze échanges, un an : un trombone est devenu une maison.",
+      "text": "14 ÉCHANGES",
+      "sfx": [
+        "impact@0.2"
+      ],
+      "energy": 0.95
+    }
+  ]
+}

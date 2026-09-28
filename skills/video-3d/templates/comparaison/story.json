@@ -1,0 +1,19 @@
+{
+  "title": "Du plus petit au plus grand",
+  "look": "studio",
+  "music": "playful",
+  "highlight": ["CENTIMÈTRES"],
+  "items": [
+    { "name": "BILLE", "value": "1,6 cm", "size": 0.016, "color": "#39d5ff", "shape": "sphere" },
+    { "name": "PING-PONG", "value": "4 cm", "size": 0.04, "color": "#ffffff", "shape": "sphere" },
+    { "name": "TENNIS", "value": "6,7 cm", "size": 0.067, "color": "#d7f23a", "shape": "sphere" },
+    { "name": "FOOT", "value": "22 cm", "size": 0.22, "color": "#f2f2f2", "shape": "sphere" }
+  ],
+  "beats": [
+    { "id": "hook", "item": 3, "say": "Tu vois ce ballon de foot ? On va remonter jusqu'à lui en partant d'une bille.", "text": "×14", "energy": 0.5 },
+    { "id": "bille", "item": 0, "say": "Une bille : un virgule six centimètres.", "energy": 0.55 },
+    { "id": "pingpong", "item": 1, "say": "Une balle de ping-pong : quatre centimètres.", "energy": 0.6 },
+    { "id": "tennis", "item": 2, "say": "Une balle de tennis : six virgule sept.", "energy": 0.7 },
+    { "id": "foot", "item": 3, "say": "Et le ballon de foot : vingt-deux centimètres, quatorze fois la bille.", "text": "22 CM", "drop": true, "energy": 0.9 }
+  ]
+}
