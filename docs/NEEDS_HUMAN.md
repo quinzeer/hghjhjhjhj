@@ -7,7 +7,7 @@ Trié par urgence. Chaque entrée : quoi faire, pourquoi, comment vérifier que 
 ### H0 — Clé d'API YouTube Data en lecture seule (bloque la fin de la phase 0)
 - **Pourquoi** : la preuve de demande des concepts (≥ 2 outliers récents mesurés par concept) ne peut se faire légitimement que par l'API officielle (ADR-004). Sans clé, `make verify-phase-0` reste à 13/14.
 - **Quoi** : Google Cloud Console → nouveau projet → activer « YouTube Data API v3 » → Identifiants → Créer une clé API → la restreindre à cette API. Puis, dans les paramètres de l'environnement cloud (menu de l'environnement dans la barre de titre de la session → Modifier), ajouter la variable **`YOUTUBE_API_KEY`**. Ne pas la coller dans le chat ni dans le dépôt.
-- **Vérification** : dans une nouvelle session, `python3 tools/outliers.py channel @GeographyNow --months 18` affiche un tableau (code 0). Coût : quelques unités sur les 10 000 du quota quotidien.
+- **Vérification** : dans une nouvelle session, `python3 tools/outliers.py channel @GeographyNow --months 18` affiche un tableau (code 0). Coût : quelques unités sur les 10 000 du quota quotidien. Ensuite, je mesure les chaînes de `channel-concepts.md` avec `--save`, et la phase 0 se clôt par `make verify-phase-0-online`.
 - **En attendant** : concepts classés sur les 80 points hors demande ; listes de chaînes à mesurer prêtes dans `docs/research/channel-concepts.md`.
 
 ### H1 — Dépôt public : décider de sa visibilité

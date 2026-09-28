@@ -2,6 +2,37 @@
 
 Entrées datées, la plus récente en haut. Chaque affirmation « fait » est suivie de la commande qui le prouve et de sa sortie.
 
+## 2026-09-28 — Session 1 (fin) : contre-revue `critic` et corrections
+
+### Fait
+- Contre-revue `critic` (opus) : **acceptée avec réserves**. Elle a démontré que 12 lignes d'outliers tapées à la main faisaient passer la porte à 14/14 (R1), que des notes et des ADR creux passaient encore (R2), et relevé des trous dans l'ADR-001 (R3), une note modèles contradictoire (R4) et des sources non ouvertes (R5).
+- Corrections :
+  - R1 : `tools/outliers.py --save` garde les mesures brutes ; la porte recalcule chaque ratio à partir de ces fichiers ; `make verify-phase-0-online` re-mesure par l'API avant toute clôture. L'attaque a été rejouée sur une copie du dépôt : les lignes forgées sont écartées ;
+  - R2 : tableau de constats d'au moins 3 lignes ; nombre minimal de mots par section ; une source ne compte que si elle appuie une ligne de tableau ; ADR répétitifs ou sans renvoi `note.md [Sn]` refusés ;
+  - R3 : l'ADR-001 ajoute un verrou global par étape, un identifiant d'exécuteur DBOS par worker, l'interruption effective des étapes GPU et un nettoyeur des réservations de budget ;
+  - R4 : PuLID et LTX-2 sont corrigés dans le corps de la note, et la dépendance InsightFace est sourcée sur `pulid/pipeline.py` (fichier vérifié) ;
+  - R5 : la source EUR-Lex non ouverte est retirée ; le prix d'une carte passe en « non sourcé » ;
+  - R6 : médiane nulle, arrondi du ratio et « | » dans un nom de chaîne sont gérés ;
+  - R7 : vidéo générative à 260 GPU-s/s au central, déduit du seul repère publié.
+- Préalablement : l'affirmation TechCrunch sur le comptage des vues (17/08/2026) a été ouverte et vérifiée.
+- Non corrigeable par moi : l'historique git public contient encore les brouillons retirés (NEEDS_HUMAN H1).
+
+### Preuves
+```
+$ make test
+69 passed in 0.42s
+
+$ make lint
+All checks passed!
+
+$ make verify-phase-0
+verify-phase-0 : 13/14 contrôles OK, 1 en échec
+
+$ python3 tools/verify_phase0.py --online   # sans clé
+    - re-mesure API : --online exige YOUTUBE_API_KEY
+```
+État : phase 0 **ouverte**. Seul critère non rempli : la preuve de demande mesurée (NEEDS_HUMAN H0). Clôture = `make verify-phase-0-online` à 14/14, puis revue `critic` finale.
+
 ## 2026-09-28 — Session 1 (suite) : recherches livrées, revue `critic`, corrections
 
 ### Fait

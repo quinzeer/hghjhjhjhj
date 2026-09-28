@@ -17,7 +17,8 @@ Ce dépôt construit le logiciel d'un studio vidéo automatisé (YouTube long + 
 | `python3 tools/verify_phase0.py --note docs/research/X.md` | contrôle d'une seule note |
 | `make test` / `make lint` / `make fmt` | pytest / ruff (via `uv run --group dev`) |
 | `make check` | doctor + lint + test : à passer avant toute PR |
-| `python3 tools/outliers.py channel @handle …` | outliers récents via l'API YouTube Data (`YOUTUBE_API_KEY`) |
+| `make verify-phase-0-online` | idem + re-mesure des outliers par l'API : obligatoire avant de clore la phase 0 |
+| `python3 tools/outliers.py channel @handle … --save docs/research/outliers/<date>.json` | outliers via l'API YouTube Data ; `--save` garde les mesures brutes que la porte recalcule |
 | `python3 tools/cost_model.py` | tables de `docs/COST_MODEL.md` (régénérer après tout changement de paramètre) |
 
 ## Carte du dépôt
@@ -55,8 +56,8 @@ Arrivent en phase 1 : `studio/` (paquet Python), `knowledge/`, `evals/`, `studio
 - Chaque ligne de « Constats » cite [Sn] ou se déclare « Inférence » / « non trouvé ».
 - Une URL citée a été ouverte. Source bloquée ou lue via un résultat de recherche : confiance ≤ moyenne. Non ouverte : retirée.
 - « officiel » = plateforme, régulateur, éditeur, fichier de licence ; jamais un forum, une discussion Hugging Face ou Wikipédia.
-- Outlier (phase 0) : ligne avec ratio ≥ 3× (vs 30 vidéos précédentes du même format) et publication ≤ 18 mois,
-  mesurée par `tools/outliers.py`. Jamais d'accès automatisé aux pages youtube.com / tiktok.com (ADR-004).
+- Outlier (phase 0) : ratio ≥ 3× contre les 30 vidéos du même format les plus proches en date, publication ≤ 18 mois,
+  **recalculé depuis les mesures brutes** `docs/research/outliers/*.json`. Jamais d'accès automatisé à youtube.com (ADR-004).
 
 ## ADR (`docs/DECISIONS.md`)
 Titre `## ADR-NNN — …` puis `### Statut`, `### Contexte`, `### Options`, `### Décision`, `### Conséquences`,

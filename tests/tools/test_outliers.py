@@ -95,6 +95,7 @@ def test_ratio_uses_nearest_uploads_of_same_format() -> None:
     assert m.baseline_median == 10_000  # Shorts at 1M views are excluded from the long baseline
     assert "plus proches en date" in m.method
     assert m.ratio == 5.0
+    assert m.baseline_n == len(m.baseline_views) == len(m.baseline_ids) == 30
     assert "search" not in api.calls  # search.list costs 100 units: never used
 
 
@@ -159,19 +160,43 @@ def test_video_id(ref: str) -> None:
 
 
 def test_markdown_rows_satisfy_phase0_outlier_pattern() -> None:
+    """A row printed by outliers.py plus its saved raw record passes the phase 0 gate; the row alone does not."""
+    from dataclasses import asdict
+
     api = MockYouTubeApi(make_channel())
-    md = ol.to_markdown(ol.measure_videos(api, ["L0000000060"], window=30, now=NOW), lang="en")
-    assert "5,0×" in md
+    rows = ol.measure_videos(api, ["L0000000060"], window=30, now=NOW)
+    md = ol.to_markdown(rows, lang="en")
+    assert "5,00×" in md
     spec = importlib.util.spec_from_file_location("vp", ROOT / "tools" / "verify_phase0.py")
     assert spec and spec.loader
     vp = importlib.util.module_from_spec(spec)
     sys.modules["vp"] = vp
     spec.loader.exec_module(vp)
-    assert vp.OUTLIER_URL.search(md)
-    import datetime as _dt
+    today = dt.date(2026, 9, 28)
+    records = {r.video_id: asdict(r) for r in rows}
+    counted, rejected = vp.measured_outliers(md, today, records)
+    assert len(counted) == 1, rejected
+    counted, _ = vp.measured_outliers(md, today, {})
+    assert not counted
 
-    counted, rejected = vp.measured_outliers(md, _dt.date(2026, 9, 28))
-    assert len(counted) == 1, rejected  # a row produced by outliers.py passes the phase 0 gate
+
+def test_ratio_is_truncated_never_rounded_up() -> None:
+    m = ol.Measure("abcdefghijk", "u", "t", "C|D", "2026-01-01", 296, "long", 100, 30, 2.96, "API YouTube Data v3")
+    md = ol.to_markdown([m])
+    assert "2,96×" in md and "3,0" not in md
+    assert "C/D" in md  # a pipe in the channel name must not shift the columns
+
+
+def test_save_merges_records(tmp_path: Path) -> None:
+    api = MockYouTubeApi(make_channel())
+    rows = ol.measure_videos(api, ["L0000000060"], window=30, now=NOW)
+    f = tmp_path / "o.json"
+    ol.save(rows, f)
+    ol.save(rows, f)
+    import json
+
+    data = json.loads(f.read_text())
+    assert len(data) == 1 and data[0]["baseline_views"] and data[0]["measured_at"]
 
 
 def test_missing_key_exits_2(monkeypatch: pytest.MonkeyPatch) -> None:

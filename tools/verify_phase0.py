@@ -14,8 +14,11 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import importlib.util
 import json
+import os
 import re
+import statistics
 import subprocess
 import sys
 import unicodedata
@@ -61,8 +64,14 @@ NOT_OFFICIAL_URL = re.compile(
     r"example\.|/discussions?/|/issues/|/pull/|wikipedia\.org|fandom\.com|reddit\.com|medium\.com|substack\.com"
 )
 # A source that was never opened cannot be cited; one read only through a search summary cannot be "élevée".
+NOTE_MIN_CONSTATS = 3
+NOTE_MIN_WORDS = {"synthese": 40, "ecarts avec mission": 15, "questions ouvertes": 5}
+ADR_MIN_DISTINCT_WORDS = 25
+MIN_BASELINE = 10  # an outlier ratio needs at least this many comparison videos
+OUTLIER_DIR = Path("docs/research/outliers")
 NOT_OPENED = re.compile(
-    r"(?:HTTP|code|erreur)\s*404|404\s*(?:not found|introuvable)|non ouvert|not opened|jamais ouvert", re.IGNORECASE
+    r"(?:HTTP|code|erreur)\s*404|404\s*(?:not found|introuvable)|non ouvert|not opened|jamais ouvert|pas pu [êe]tre ouvert",
+    re.IGNORECASE,
 )
 WEAKLY_READ = re.compile(r"\b403\b|bloqu|inaccessible|via (?:un )?r[ée]sum|vue? (?:en|via|dans un) r[ée]sultat", re.IGNORECASE)
 OUTLIER_METHOD = "API YouTube Data v3"  # rows produced by tools/outliers.py
@@ -216,9 +225,14 @@ def in_future(parsed: tuple[str, dt.date], today: dt.date) -> bool:
 # ---------------------------------------------------------------- notes
 
 
-def cited_ids(text: str) -> set[str]:
-    """IDs cited as [S1], [S1, S3] or [S1][S2] in the body (before '## Sources')."""
+def cited_ids(text: str, tables_only: bool = False) -> set[str]:
+    """IDs cited as [S1], [S1, S3] or [S1][S2] in the body (before '## Sources').
+
+    tables_only: count only citations inside table rows, where a source backs one precise claim
+    (a list of 8 sources in one sentence proves nothing)."""
     before = text.split("\n## Sources", 1)[0] if "\n## Sources" in text else text
+    if tables_only:
+        before = "\n".join(line for line in before.splitlines() if line.strip().startswith("|"))
     cited: set[str] = set()
     for group in re.findall(r"\[([^\]]+)\]", before):
         if re.fullmatch(r"\s*S\d+(\s*[,;]\s*S\d+)*\s*", group):
@@ -240,6 +254,7 @@ def check_sources(text: str, name: str, today: dt.date, chk: Check, min_official
         chk.fail(f"{name}: section '## Sources' ou table des sources absente (colonnes : {', '.join(SOURCE_COLUMNS)})")
         return
     cited = cited_ids(text)
+    backing = cited_ids(text, tables_only=True)
     ids: set[str] = set()
     urls: set[str] = set()
     dated = official = 0
@@ -288,15 +303,15 @@ def check_sources(text: str, name: str, today: dt.date, chk: Check, min_official
             chk.fail(f"{where}: typé « officiel » mais l'URL est un forum, un wiki ou un exemple")
         if norm(conf) not in CONFIDENCE:
             chk.fail(f"{where}: confiance '{conf}' hors liste")
-        if sid in cited:  # only sources the note actually uses count toward the thresholds
+        if sid in backing:  # only sources that back a claim in a table row count toward the thresholds
             dated += is_dated
             official += norm(typ) == "officiel"
     if dated < MIN_DATED_SOURCES:
-        chk.fail(f"{name}: {dated} sources datées et citées < {MIN_DATED_SOURCES}")
+        chk.fail(f"{name}: {dated} sources datées et citées dans un tableau < {MIN_DATED_SOURCES}")
     if official < min_official:
         chk.fail(f"{name}: {official} sources officielles citées < {min_official}")
     uncited = sorted(ids - cited, key=lambda x: int(x[1:]) if x[1:].isdigit() else 0)
-    chk.info(f"{name}: {len(rows)} sources, {dated} datées et citées, {official} officielles citées")
+    chk.info(f"{name}: {len(rows)} sources, {dated} datées et citées dans un tableau, {official} officielles citées")
     if uncited:
         chk.info(f"{name}: sources jamais citées (non comptées) : {', '.join(uncited)}")
     missing = sorted(cited - ids, key=lambda x: int(x[1:]))
@@ -311,9 +326,15 @@ def check_constats(text: str, name: str, chk: Check) -> None:
     body = section(text, "constats")
     if body is None:
         return
-    for tbl in tables(body)[:1]:
+    tbls = tables(body)
+    if not tbls or len(tbls[0]) - 1 < NOTE_MIN_CONSTATS:
+        chk.fail(f"{name}: la section Constats doit contenir un tableau d'au moins {NOTE_MIN_CONSTATS} constats")
+    for tbl in tbls[:1]:
         for row in tbl[1:]:
             joined = " ".join(row)
+            confidence = norm(row[3]) if len(row) > 3 else ""
+            if NOT_OPENED.search(joined) and "elevee" in confidence:
+                chk.fail(f"{name}: constat appuyé sur une source non ouverte mais noté « élevée » : « {joined[:60]} »")
             labelled = any(k in norm(joined) for k in ("inference", "non trouve", "non verifi", "absence"))
             if not re.search(r"\[\s*S\d+", joined) and not labelled:
                 chk.fail(
@@ -334,6 +355,10 @@ def check_note(path: Path, today: dt.date, min_official: int | None = None) -> C
             chk.fail(f"{name}: section '## {sec}' absente")
     if PLACEHOLDER.search(text):
         chk.fail(f"{name}: marqueur de travail inachevé (TODO/TBD/…) présent")
+    for sec, minimum in NOTE_MIN_WORDS.items():
+        body = section(text, sec)
+        if body is not None and len(re.findall(r"\w+", body)) < minimum:
+            chk.fail(f"{name}: section '{sec}' trop courte (< {minimum} mots)")
     if min_official is None:
         min_official = OFFICIAL_REQUIRED.get(name, 0)
     check_constats(text, name, chk)
@@ -358,8 +383,32 @@ def concepts_required(root: Path) -> bool:
     return confirmed < 2
 
 
-def measured_outliers(body: str, today: dt.date) -> tuple[set[str], list[str]]:
-    """Distinct outlier URLs whose table row carries a ratio >= MIN_OUTLIER_RATIO and a recent date."""
+def load_outlier_records(root: Path) -> dict[str, dict]:
+    """Raw measurements written by `tools/outliers.py --save`, by video id."""
+    records: dict[str, dict] = {}
+    folder = root / OUTLIER_DIR
+    for f in sorted(folder.glob("*.json")) if folder.is_dir() else []:
+        try:
+            for rec in json.loads(f.read_text(encoding="utf-8")):
+                if isinstance(rec, dict) and rec.get("video_id"):
+                    records[rec["video_id"]] = rec
+        except (json.JSONDecodeError, OSError):
+            continue
+    return records
+
+
+def record_ratio(rec: dict) -> float | None:
+    """Ratio recomputed from the raw baseline, or None when the record cannot support one."""
+    views = rec.get("baseline_views") or []
+    if len(views) < MIN_BASELINE or OUTLIER_METHOD not in rec.get("method", ""):
+        return None
+    median = statistics.median(views)
+    return rec["views"] / median if median > 0 else None
+
+
+def measured_outliers(body: str, today: dt.date, records: dict[str, dict] | None = None) -> tuple[set[str], list[str]]:
+    """Outlier URLs whose row matches a raw measurement: recomputed ratio >= 3x, recent, same numbers."""
+    records = records or {}
     ok: set[str] = set()
     rejected: list[str] = []
     for line in body.splitlines():
@@ -369,34 +418,59 @@ def measured_outliers(body: str, today: dt.date) -> tuple[set[str], list[str]]:
         if not urls:
             continue
         cells = split_row(line)
-        ratios = [
-            float(m.group(1).replace(",", "."))
-            for c in cells
-            if (m := re.fullmatch(r"[≥>~≈]?\s*(\d+(?:[.,]\d+)?)\s*[×x]", c.strip()))
-        ]
-        dates = [p for c in cells if (p := parse_date(c.strip())) and p[0] in ("day", "month")]
+        vid = re.search(r"(?:v=|youtu\.be/|shorts/|video/)([\w-]+)", urls[0])
+        vid = vid.group(1) if vid else urls[0][-11:]
         # columns: Vidéo | Chaîne | Langue | Publiée | Vues | Médiane (méthode) | Ratio | URL
         numbers = [
             int(re.sub(r"[\s\u202f\u00a0]", "", m.group(0)))
             for c in cells[4:6]
             if (m := re.match(r"\d{1,3}(?:[\s\u202f\u00a0]\d{3})+|\d+", c.strip()))
         ]
-        vid = urls[0][-11:]
-        if not ratios or max(ratios) < MIN_OUTLIER_RATIO:
-            rejected.append(f"{vid} sans ratio ≥ {MIN_OUTLIER_RATIO:g}×")
-        elif not dates or (today - dates[0][1]).days > RECENT_DAYS:
+        rec = records.get(vid)
+        ratio = record_ratio(rec) if rec else None
+        published = parse_date(rec.get("published", "")) if rec else None
+        if rec is None:
+            rejected.append(f"{vid} absent des mesures brutes ({OUTLIER_DIR}/*.json, tools/outliers.py --save)")
+        elif ratio is None:
+            rejected.append(f"{vid} mesure brute inexploitable (méthode ou base < {MIN_BASELINE} vidéos)")
+        elif ratio < MIN_OUTLIER_RATIO:
+            rejected.append(f"{vid} ratio recalculé {ratio:.2f} < {MIN_OUTLIER_RATIO:g}")
+        elif published is None or (today - published[1]).days > RECENT_DAYS:
             rejected.append(f"{vid} non récent ou non daté")
-        elif OUTLIER_METHOD not in line:
-            rejected.append(f"{vid} non mesuré par {OUTLIER_METHOD} (tools/outliers.py)")
-        elif len(numbers) < 2 or abs(numbers[0] / numbers[1] - max(ratios)) > RATIO_TOLERANCE * max(ratios):
-            rejected.append(f"{vid} ratio incohérent avec vues ÷ médiane")
+        elif len(numbers) < 2 or numbers[0] != rec["views"] or abs(numbers[1] - statistics.median(rec["baseline_views"])) > 1:
+            rejected.append(f"{vid} vues ou médiane du tableau différentes de la mesure brute")
         else:
             ok.add(urls[0])
     return ok, rejected
 
 
-def check_concepts(path: Path, today: dt.date) -> Check:
+def online_recheck(root: Path, records: dict[str, dict], counted_ids: set[str]) -> list[str]:
+    """Re-measure counted outliers through the API (views drift: ±25 % tolerated). Returns problems."""
+    if not os.environ.get("YOUTUBE_API_KEY"):
+        return ["--online exige YOUTUBE_API_KEY"]
+    spec = importlib.util.spec_from_file_location("outliers", root / "tools" / "outliers.py")
+    if spec is None or spec.loader is None:
+        return ["tools/outliers.py introuvable"]
+    ol = importlib.util.module_from_spec(spec)
+    sys.modules["outliers"] = ol
+    spec.loader.exec_module(ol)
+    fetch = ol.http_fetch(os.environ["YOUTUBE_API_KEY"])
+    now = dt.datetime.now(dt.UTC)
+    problems = []
+    for m in ol.measure_videos(fetch, sorted(counted_ids), 30, now):
+        before = record_ratio(records[m.video_id]) or 0
+        if m.ratio is None or m.ratio < MIN_OUTLIER_RATIO or abs(m.ratio - before) > 0.25 * before:
+            problems.append(f"{m.video_id} : ratio enregistré {before:.2f}, re-mesuré {m.ratio}")
+    missing = counted_ids - {m.video_id for m in ol.measure_videos(fetch, sorted(counted_ids), 30, now)}
+    problems += [f"{v} : introuvable par l'API" for v in sorted(missing)]
+    return problems
+
+
+def check_concepts(path: Path, today: dt.date, root: Path | None = None, online: bool = False) -> Check:
     chk = check_note(path, today)
+    root = root or path.resolve().parents[2]
+    records = load_outlier_records(root)
+    counted_ids: set[str] = set()
     chk.id, chk.label = "concepts", "Concepts de chaînes (6 classés, ≥ 2 outliers chacun)"
     if not path.is_file():
         return chk
@@ -412,7 +486,8 @@ def check_concepts(path: Path, today: dt.date) -> Check:
                 end = j
                 break
         body = "\n".join(lines[i + 1 : end])
-        outliers, rejected = measured_outliers(body, today)
+        outliers, rejected = measured_outliers(body, today, records)
+        counted_ids |= {u.rsplit("=", 1)[-1].rsplit("/", 1)[-1] for u in outliers}
         if len(outliers) < MIN_OUTLIERS_PER_CONCEPT:
             why = f" ; lignes écartées : {'; '.join(rejected[:3])}" if rejected else ""
             chk.fail(
@@ -425,6 +500,11 @@ def check_concepts(path: Path, today: dt.date) -> Check:
                 chk.fail(f"{title[:40]} : champ '{fld}' absent")
     if section(text, "classement") is None:
         chk.fail("section '## Classement' absente")
+    if online:
+        for problem in online_recheck(root, records, counted_ids):
+            chk.fail(f"re-mesure API : {problem}")
+    elif counted_ids:
+        chk.info("outliers vérifiés contre les mesures brutes ; lancer --online (clé API) avant de clore la phase")
     return chk
 
 
@@ -504,11 +584,16 @@ def check_decisions(root: Path) -> Check:
             if content is None:
                 chk.fail(f"{adr}: sous-section '### {sec}' absente")
                 continue
-            words = len(re.findall(r"\w+", content))
+            tokens = re.findall(r"\w+", content.lower())
+            words = len(tokens)
             if words == 0:
                 chk.fail(f"{adr}: sous-section '{sec}' vide")
             elif words < ADR_MIN_WORDS.get(sec, 1):
                 chk.fail(f"{adr}: sous-section '{sec}' trop courte ({words} mots < {ADR_MIN_WORDS[sec]})")
+            elif sec in ADR_MIN_WORDS and len(set(tokens)) < ADR_MIN_DISTINCT_WORDS:
+                chk.fail(f"{adr}: sous-section '{sec}' répétitive ({len(set(tokens))} mots distincts)")
+            if sec == "sources" and not re.search(r"[\w-]+\.md`?\s*\[S\d+", content):
+                chk.fail(f"{adr}: '### Sources' sans renvoi `note.md [Sn]` vers une note de recherche")
         if PLACEHOLDER.search(body):
             chk.fail(f"{adr}: contient TODO/TBD/FIXME/XXX/« à compléter »")
         check_cross_refs(root, body, adr, chk)
@@ -624,7 +709,7 @@ def check_secrets(root: Path) -> Check:
 # ---------------------------------------------------------------- driver
 
 
-def run_all(root: Path, today: dt.date) -> list[Check]:
+def run_all(root: Path, today: dt.date, online: bool = False) -> list[Check]:
     research = root / "docs" / "research"
     checks = [check_state_files(root), check_subagents(root)]
     for name in REQUIRED_NOTES:
@@ -641,7 +726,7 @@ def run_all(root: Path, today: dt.date) -> list[Check]:
     for path in extra:
         checks.append(check_note(path, today))
     if concepts_required(root):
-        checks.append(check_concepts(research / "channel-concepts.md", today))
+        checks.append(check_concepts(research / "channel-concepts.md", today, root, online))
     checks += [check_decisions(root), check_cost_model(root), check_plan(root), check_secrets(root)]
     return checks
 
@@ -665,12 +750,16 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--note", type=Path, help="check a single research note")
     ap.add_argument("--today", type=dt.date.fromisoformat, default=dt.date.today())
     ap.add_argument("--json", action="store_true")
+    ap.add_argument("--online", action="store_true", help="re-measure counted outliers through the YouTube API")
     args = ap.parse_args(argv)
     if args.note:
         path = args.note if args.note.is_absolute() else Path.cwd() / args.note
-        checks = [check_concepts(path, args.today) if path.name == "channel-concepts.md" else check_note(path, args.today)]
+        if path.name == "channel-concepts.md":
+            checks = [check_concepts(path, args.today, args.root.resolve(), args.online)]
+        else:
+            checks = [check_note(path, args.today)]
     else:
-        checks = run_all(args.root.resolve(), args.today)
+        checks = run_all(args.root.resolve(), args.today, args.online)
     report(checks, args.json)
     return 0 if all(c.ok for c in checks) else 1
 

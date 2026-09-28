@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import datetime as dt
 import importlib.util
+import json
 import sys
 from pathlib import Path
 
@@ -33,26 +34,35 @@ def sources_table(n: int, official: int = 3, date: str = "2026-07-16", consulted
 ALL_CITED = " ".join(f"[S{i}]" for i in range(1, 9))
 
 
+SYNTH = (
+    "La synthèse résume les faits qui changent l'architecture du studio, chacun avec sa source, sa date et sa "
+    "confiance, puis précise ce qui reste incertain et ce que le studio doit en conclure pour ses règles de "
+    "production, de conformité et de publication, sans rien inventer au passage."
+)
+
+
 def note(n_sources: int = 8, official: int = 3, cite: str = ALL_CITED, **kw: str) -> str:
+    rows = "\n".join(f"| {i} | Fait précis numéro {i} | [S{i}] | élevée | Règle {i} |" for i in range(2, 9))
     return f"""# Note
 
 ## Synthèse
 
-Fait établi {cite}.
+{SYNTH} {cite}.
 
 ## Constats
 
 | # | Constat | Sources | Confiance | Conséquence |
 |---|---|---|---|---|
 | 1 | Fait | [S1, S3] | élevée | Règle |
+{rows}
 
 ## Écarts avec MISSION §4
 
-Aucun écart [S2].
+Aucun écart constaté sur les affirmations de la mission couvertes par cette note, qui restent exactes [S2].
 
 ## Questions ouvertes
 
-- Rien.
+- Rien d'important ne reste ouvert pour cette note.
 
 ## Sources
 
@@ -69,9 +79,21 @@ def write(path: Path, text: str) -> Path:
 MEASURED = "API YouTube Data v3 ; médiane des 30 longs de la chaîne les plus proches en date"
 
 
+def record(vid: str, views: int = 1_000_000, published: str = "2026-01-10", median: int = 100_000) -> dict:
+    return {
+        "video_id": vid,
+        "views": views,
+        "published": published,
+        "method": MEASURED,
+        "baseline_views": [median] * 30,
+        "baseline_ids": [f"b{i:010d}" for i in range(30)],
+    }
+
+
 def concept(k: int, outliers: int = 2) -> str:
     urls = "\n".join(
-        f"| V{j} | Chaîne | en | 2026-01 | 1 000 000 | 100 000 ({MEASURED}) | 10,0× | https://www.youtube.com/watch?v=abc{k}{j} |"
+        f"| V{j} | Chaîne | en | 2026-01-10 | 1 000 000 | 100 000 ({MEASURED}) | 10,0× "
+        f"| https://www.youtube.com/watch?v=abc{k}{j} |"
         for j in range(outliers)
     )
     return f"""### C{k:02d} — Concept {k}
@@ -159,6 +181,8 @@ def repo(tmp_path: Path) -> Path:
     for name in vp.REQUIRED_NOTES:
         write(tmp_path / "docs/research" / name, note())
     write(tmp_path / "docs/research/channel-concepts.md", concepts_doc())
+    recs = [record(f"abc{k}{j}") for k in range(1, 7) for j in range(2)]
+    write(tmp_path / "docs/research/outliers/fixture.json", json.dumps(recs))
     return tmp_path
 
 
@@ -195,7 +219,8 @@ def test_note_defects_are_rejected(tmp_path: Path, text: str, expected: str) -> 
 @pytest.mark.parametrize(
     ("text", "expected"),
     [
-        (note(cite="[S1] [S2] [S3] [S4] [S5] [S6] [S7]"), "datées et citées"),
+        (note().replace("| [S8] |", "| — |"), "datées et citées"),
+        (note().replace(SYNTH, "Court."), "synthese"),
         (note().replace("https://src.test/1 ", "https://huggingface.co/x/discussions/2 "), "forum"),
         (note().replace("https://src.test/2 ", "https://en.wikipedia.org/wiki/X "), "forum"),
         (note().replace("| Source 3 |", "| Source 3 (HTTP 404) |"), "non ouverte"),
@@ -217,7 +242,8 @@ def test_hollow_notes_are_rejected(tmp_path: Path, text: str, expected: str) -> 
 
 def test_labelled_inference_or_absence_is_accepted(tmp_path: Path) -> None:
     for label in ("Inférence (non sourcé)", "non trouvé"):
-        text = note().replace("| 1 | Fait | [S1, S3] |", f"| 1 | Fait | {label} |")
+        extra = f"| 1 | Fait | [S1, S3] | élevée | Règle |\n| 9 | Fait sans source | {label} | faible | Règle |"
+        text = note().replace("| 1 | Fait | [S1, S3] | élevée | Règle |", extra)
         assert vp.check_note(write(tmp_path / "x.md", text), TODAY).ok
 
 
@@ -241,21 +267,53 @@ def test_concepts_need_six_sections_and_two_outliers(tmp_path: Path) -> None:
 
 
 @pytest.mark.parametrize(
-    ("row", "counted"),
+    ("row", "recs", "counted"),
     [
-        (f"| V | C | en | 2026-01-10 | 1 000 000 | 100 000 ({MEASURED}) | 10× | https://youtu.be/abcdefghijk |", True),
-        (f"| V | C | en | 2026-01 | 340 000 | 100 000 ({MEASURED}) | 3,4× | https://youtu.be/abcdefghijk |", True),
-        (f"| V | C | en | 2026-01-10 | 290 000 | 100 000 ({MEASURED}) | 2,9× | https://youtu.be/abcdefghijk |", False),
-        (f"| V | C | en | 2026-01-10 | 1 000 000 | 100 000 ({MEASURED}) | non calculé | https://youtu.be/abcdefghijk |", False),
-        (f"| V | C | en | 2023-05-01 | 1 200 000 | 100 000 ({MEASURED}) | 12× | https://youtu.be/abcdefghijk |", False),
-        (f"| V | C | en | s.d. | 1 200 000 | 100 000 ({MEASURED}) | 12× | https://youtu.be/abcdefghijk |", False),
-        ("| V | C | en | 2026-01-10 | 1 000 000 | 100 000 (médiane de niche) | 10× | https://youtu.be/abcdefghijk |", False),
-        (f"| V | C | en | 2026-01-10 | 1 000 000 | 100 000 ({MEASURED}) | 25× | https://youtu.be/abcdefghijk |", False),
+        (f"| V | C | en | 2026-01-10 | 1 000 000 | 100 000 ({MEASURED}) | 10× | https://youtu.be/abcdefghijk |", None, True),
+        (
+            f"| V | C | en | 2026-01-10 | 340 000 | 100 000 ({MEASURED}) | 3,4× | https://youtu.be/abcdefghijk |",
+            record("abcdefghijk", views=340_000),
+            True,
+        ),
+        (
+            f"| V | C | en | 2026-01-10 | 296 000 | 100 000 ({MEASURED}) | 3,0× | https://youtu.be/abcdefghijk |",
+            record("abcdefghijk", views=296_000),
+            False,  # 2.96 recomputed: rounding in the table does not help
+        ),
+        (
+            f"| V | C | en | 2023-05-01 | 1 000 000 | 100 000 ({MEASURED}) | 10× | https://youtu.be/abcdefghijk |",
+            record("abcdefghijk", published="2023-05-01"),
+            False,
+        ),
+        (f"| V | C | en | 2026-01-10 | 1 000 000 | 100 000 ({MEASURED}) | 10× | https://youtu.be/zzzzzzzzzzz |", None, False),
+        (
+            f"| V | C | en | 2026-01-10 | 2 000 000 | 100 000 ({MEASURED}) | 20× | https://youtu.be/abcdefghijk |",
+            None,
+            False,  # table says 2 M views, raw measurement says 1 M
+        ),
+        (
+            f"| V | C | en | 2026-01-10 | 1 000 000 | 100 000 ({MEASURED}) | 10× | https://youtu.be/abcdefghijk |",
+            {**record("abcdefghijk"), "baseline_views": [100_000] * 5},
+            False,  # baseline too small
+        ),
+        (
+            f"| V | C | en | 2026-01-10 | 1 000 000 | 0 ({MEASURED}) | 10× | https://youtu.be/abcdefghijk |",
+            {**record("abcdefghijk"), "baseline_views": [0] * 30},
+            False,  # zero median must fail cleanly, not crash
+        ),
     ],
 )
-def test_outlier_rows_need_measured_ratio_and_recent_date(row: str, counted: bool) -> None:
-    ok, _ = vp.measured_outliers(row, TODAY)
-    assert bool(ok) is counted
+def test_outlier_rows_must_match_raw_measurements(row: str, recs: dict | None, counted: bool) -> None:
+    rec = recs or record("abcdefghijk")
+    ok, rejected = vp.measured_outliers(row, TODAY, {rec["video_id"]: rec})
+    assert bool(ok) is counted, rejected
+
+
+def test_hand_typed_outlier_rows_do_not_count() -> None:
+    """The contre-revue forged 12 rows that claimed the API method: without raw records they must not count."""
+    row = "| V | C | en | 2026-01-10 | 400 000 | 100 000 (API YouTube Data v3 ; inventé) | 4,0× | https://youtu.be/FAKE0000001 |"
+    ok, rejected = vp.measured_outliers(row, TODAY, {})
+    assert not ok and "absent des mesures brutes" in rejected[0]
 
 
 def test_concepts_not_required_once_confirmed(repo: Path) -> None:
@@ -283,6 +341,13 @@ def test_hollow_adr_is_rejected(repo: Path) -> None:
     assert any("trop courte" in d for d in vp.check_decisions(repo).details)
     write(repo / "docs/DECISIONS.md", ADR_OK.replace("`economics.md` [S2]", "`economics.md` [S99]"))
     assert any("S99" in d for d in vp.check_decisions(repo).details)
+
+
+def test_repetitive_adr_or_adr_without_sources_is_rejected(repo: Path) -> None:
+    write(repo / "docs/DECISIONS.md", ADR_OK.replace(WORDS, " ".join(["mot"] * 45), 1))
+    assert any("répétitive" in d for d in vp.check_decisions(repo).details)
+    write(repo / "docs/DECISIONS.md", ADR_OK.replace("`economics.md` [S2].", "Néant."))
+    assert any("Sources" in d for d in vp.check_decisions(repo).details)
 
 
 def test_cost_model_must_match_generator(repo: Path) -> None:

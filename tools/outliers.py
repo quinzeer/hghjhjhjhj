@@ -12,9 +12,12 @@ Quota cost (default 10 000 units/day): 1 unit per API call; a channel scan of 18
 costs a few units per 50 uploads. `search.list` (100 units) is never used.
 
 Usage:
-    YOUTUBE_API_KEY=... python3 tools/outliers.py video <url-or-id> [...]
-    YOUTUBE_API_KEY=... python3 tools/outliers.py channel @handle [...] --months 18 --min-ratio 3
-Output: markdown rows ready for docs/research/channel-concepts.md (or --json).
+    YOUTUBE_API_KEY=... python3 tools/outliers.py video <url-or-id> [...] [--save FILE]
+    YOUTUBE_API_KEY=... python3 tools/outliers.py channel @handle [...] --months 18 --min-ratio 3 [--save FILE]
+Output: markdown rows ready for docs/research/channel-concepts.md (or --json). `--save` appends the raw
+measurements (target views and the views of every baseline video) to a JSON file under
+docs/research/outliers/: `make verify-phase-0` recomputes every ratio from it, and
+`python3 tools/verify_phase0.py --online` re-measures the recorded videos through the API.
 """
 
 from __future__ import annotations
@@ -29,7 +32,8 @@ import sys
 import urllib.parse
 import urllib.request
 from collections.abc import Callable, Iterable
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
+from pathlib import Path
 
 API = "https://www.googleapis.com/youtube/v3/"
 SHORT_MAX_SECONDS = 180
@@ -66,6 +70,9 @@ class Measure:
     baseline_n: int
     ratio: float | None
     method: str
+    baseline_ids: list[str] = field(default_factory=list)
+    baseline_views: list[int] = field(default_factory=list)
+    measured_at: str = ""
 
 
 def http_fetch(api_key: str) -> Fetch:
@@ -175,7 +182,7 @@ def measure(target: Video, history: list[Video], window: int, now: dt.datetime) 
     fmt = "short" if target.is_short else "long"
     old_enough = (now - target.published).days >= MIN_AGE_DAYS
     median = statistics.median(v.views for v in same) if same else None
-    ratio = round(target.views / median, 2) if median and old_enough else None
+    ratio = target.views / median if median and old_enough else None
     method = f"API YouTube Data v3 ; médiane des {len(same)} {fmt}s de la chaîne les plus proches en date"
     if not old_enough:
         method += f" ; vidéo de moins de {MIN_AGE_DAYS} j : ratio non calculé"
@@ -191,6 +198,9 @@ def measure(target: Video, history: list[Video], window: int, now: dt.datetime) 
         baseline_n=len(same),
         ratio=ratio,
         method=method,
+        baseline_ids=[v.id for v in same],
+        baseline_views=[v.views for v in same],
+        measured_at=now.isoformat(timespec="seconds"),
     )
 
 
@@ -231,10 +241,12 @@ def to_markdown(rows: list[Measure], lang: str = "?") -> str:
     ]
     for m in rows:
         median = f"{m.baseline_median:,.0f}".replace(",", " ") if m.baseline_median is not None else "n/d"
-        ratio = f"{m.ratio:.1f}×".replace(".", ",") if m.ratio is not None else "non calculé"
+        # truncate, never round up: 2.96 must not print as 3.0
+        ratio = f"{int(m.ratio * 100) / 100:.2f}×".replace(".", ",") if m.ratio is not None else "non calculé"
         title = m.title.replace("|", "/")
+        channel = m.channel.replace("|", "/")
         views = f"{m.views:,}".replace(",", " ")
-        lines.append(f"| {title} | {m.channel} | {lang} | {m.published} | {views} | {median} ({m.method}) | {ratio} | {m.url} |")
+        lines.append(f"| {title} | {channel} | {lang} | {m.published} | {views} | {median} ({m.method}) | {ratio} | {m.url} |")
     return "\n".join(lines)
 
 
@@ -248,6 +260,7 @@ def main(argv: list[str] | None = None) -> int:
     pc.add_argument("--months", type=int, default=18)
     pc.add_argument("--min-ratio", type=float, default=3.0)
     for p in (pv, pc):
+        p.add_argument("--save", type=Path, help="append raw measurements to this JSON file")
         p.add_argument("--window", type=int, default=30)
         p.add_argument("--lang", default="?")
         p.add_argument("--json", action="store_true")
@@ -263,8 +276,19 @@ def main(argv: list[str] | None = None) -> int:
         rows = measure_videos(fetch, args.refs, args.window, now)
     else:
         rows = scan_channels(fetch, args.channels, args.months, args.min_ratio, args.window, now)
+    if args.save:
+        save(rows, args.save)
     print(json.dumps([asdict(r) for r in rows], ensure_ascii=False, indent=2) if args.json else to_markdown(rows, args.lang))
     return 0
+
+
+def save(rows: list[Measure], path: Path) -> None:
+    """Append measurements to a JSON list, replacing earlier records of the same video."""
+    old = json.loads(path.read_text(encoding="utf-8")) if path.is_file() else []
+    new_ids = {r.video_id for r in rows}
+    data = [r for r in old if r.get("video_id") not in new_ids] + [asdict(r) for r in rows]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":

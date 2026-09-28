@@ -35,15 +35,19 @@ P: dict[str, Param] = {
     # sourced (docs/research/economics.md)
     "kwh_price": Param(0.2001, 0.2001, 0.2001, "€/kWh", "economics.md [S14][S8]"),
     "system_power_w": Param(1140, 1400, 1500, "W, 4 GPU en charge", "economics.md (inférence depuis [S9], faible)"),
-    "gpu_price": Param(430, 600, 950, "€ par carte (occasion)", "HC2 : bornes economics.md [S27] (faible), centre choisi"),
+    "gpu_price": Param(
+        430, 600, 950, "€ par carte (occasion)", "HC2 : non sourcé (seule source trouvée, economics.md S27, bloquée)"
+    ),
     "claude_sub": Param(87.70, 90.0, 105.24, "€/mois, Max 5x", "HC5 : 87,70 € HT (economics.md [S10][S13]) ; haut = +20 % TVA"),
     "rpm_long_fr": Param(3.50, 2.29, 1.20, "$/1000 vues", "economics.md [S15]"),
     "usd_per_eur": Param(1.1403, 1.1403, 1.1403, "$ pour 1 €", "economics.md [S13]"),
     # hypotheses (to be measured)
     "idle_power_w": Param(80, 120, 200, "W, machine au repos", "HC1"),
     "amort_years": Param(4, 3, 2, "ans (amortissement linéaire des 4 cartes, coût fixe)", "HC2"),
-    # unfavourable: 4 undistilled passes ≈ 4 × 190 GPU-s/s (≈ 9 min per 5 s on a 4090, ×1.75 on a 4070 Ti Super)
-    "gps_gen_video": Param(60, 180, 800, "GPU-s par s finale", "HC3 (Wan 2.2 : brouillons ×3 + final 720p + upscale)"),
+    # one full 720p pass ≈ 190 GPU-s/s (< 9 min per 5 s on a 4090, video-image-models.md, ×1.75 on a 4070 Ti Super:
+    # inference). Central = 3 distilled drafts (≈ 0.1 pass each) + 1 full final pass + upscale ≈ 260;
+    # favourable = everything distilled; unfavourable = 4 undistilled passes.
+    "gps_gen_video": Param(60, 260, 800, "GPU-s par s finale", "HC3 (Wan 2.2 : brouillons ×3 + final 720p + upscale)"),
     "gps_blender": Param(24, 96, 480, "GPU-s par s finale", "HC3 (EEVEE majoritaire, Cycles ponctuel, 24 i/s)"),
     "gps_image_25d": Param(4, 12, 40, "GPU-s par s finale", "HC3 (image + variantes + parallaxe)"),
     "gps_motion": Param(0.5, 2, 5, "GPU-s par s finale", "HC3 (Remotion + NVENC)"),

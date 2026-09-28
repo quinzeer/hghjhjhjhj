@@ -10,7 +10,7 @@
 - Meilleure base vidéo ouverte, sans restriction territoriale ni seuil, pour la production : **Wan 2.2** (T2V/I2V/TI2V/S2V/Animate, Apache 2.0) [S1][S2][S3], et en alternative **CogVideoX1.5** — mais attention, CogVideoX1.5 n'est **pas** Apache 2.0 : licence propriétaire « CogVideoX License » avec enregistrement commercial gratuit et plafond de 1 M visites/mois [S18]. **LongCat-Video** (MIT, Meituan) et **Open-Sora 2** (Apache 2.0) et **Step-Video-T2V** (MIT) et **Kandinsky 5.0** (MIT/Apache) et **MAGI-1** (Apache 2.0) et **Mochi 1** (Apache 2.0) sont des alternatives pleinement permissives [S12][S13][S14][S15][S16][S17].
 - Seul **Wan2.2-TI2V-5B** (5B, dense, 720p/24fps/5s) tient nativement dans 24 Go et s'approche de 16 Go avec quantification ; les variantes A14B (14B×2 MoE) exigent l'offload ou le multi-GPU (xDiT/USP) sur 4070 Ti Super [S3][S24][S43].
 - Côté image, **FLUX.1 [schnell]**, **Qwen-Image / Qwen-Image-Edit**, **Z-Image (Turbo)**, **Chroma** et le **FLUX.2 [klein] 4B** sont Apache 2.0 pleinement commerciaux [S19][S20][S21][S28][S29]. **FLUX.1 [dev]/[Kontext dev]** et **FLUX.2 [dev] 32B** restent en licence non-commerciale sur le modèle (mais sorties commerciales autorisées) — zone grise à éviter pour un pipeline de revenu [S22][S23]. **SD 3.5** bascule en payant au-delà de 1 M$ de revenu annuel [S25]. **HunyuanImage 2.1/3.0** exclus UE.
-- Outils d'identité : **PuLID**, **InstantID** (code) et **IP-Adapter** sont Apache 2.0, mais **InstantID** dépend d'InsightFace/antelopev2 en licence **non-commerciale** — risque à isoler [S30][S31][S32].
+- Outils d'identité : le code de **PuLID**, **InstantID** et **IP-Adapter** est sous Apache 2.0, mais **PuLID** et **InstantID** chargent les poids InsightFace `antelopev2`, réservés à un usage **non commercial** : exclus. La cohérence de personnage passe par une LoRA entraînée localement et Qwen-Image-Edit [S30][S31][S32][S67].
 - Upscaling/interpolation : **SeedVR2** et **FlashVSR** (Apache 2.0) tiennent en 16 Go via GGUF/FP8 ; **Real-ESRGAN** BSD-3 ; **RIFE** MIT ; **GIMM-VFI** en **S-Lab License 1.0 non-commerciale** — à exclure du pipeline commercial [S33][S34][S35][S36][S37].
 - Lip-sync : **LatentSync**, **MuseTalk**, **InfiniteTalk**, **EchoMimic v3** sont tous Apache 2.0/MIT [S38][S39][S40][S41]. Topaz et équivalents propriétaires sont **hors règle** (poids fermés).
 - ComfyUI est **GPL-3.0** ; l'exécuter en service privé (sans distribution) ne déclenche pas d'obligation de publication du code, d'après la clause GPLv3 sur la « conveyance » [S42].
@@ -101,7 +101,7 @@
 |---|---|---|---|
 | **musubi-tuner (kohya-ss)** | Apache 2.0 [S43] | conçu pour GPU contraint ; supporte Wan 2.1/2.2, HunyuanVideo, FramePack, FLUX Kontext/2, Qwen-Image, Z-Image | Outil d'entraînement LoRA recommandé, base légale propre si entraîné sur Wan 2.2/Qwen-Image/Z-Image |
 | **ai-toolkit (ostris)** | MIT [S44] | LowVRAM mode pour 16 Go, 8 Go minimum documenté | Entraînement actuel majoritairement testé sur FLUX.1-dev → **hérite alors de la licence non-commerciale de FLUX.1-dev** ; entraîner plutôt sur une base Apache 2.0 pour un LoRA de personnage exploitable commercialement |
-| **PuLID** | Apache 2.0 [S30] | variante PuLID-FLUX tourne sur 16 Go d'après le dépôt officiel | Pas de dépendance InsightFace non-commerciale identifiée dans les sources consultées — candidat le plus sûr pour la cohérence de personnage |
+| **PuLID** | code Apache 2.0 [S30] | variante PuLID-FLUX tourne sur 16 Go d'après le dépôt officiel | **Exclu** : `pulid/pipeline.py` importe `insightface` et télécharge `antelopev2` [S67], poids non commerciaux (même dépendance qu'InstantID) |
 | **InstantID** | Code Apache 2.0, **mais dépendance InsightFace antelopev2 en licence recherche non-commerciale** [S31] | non mesuré | **Risque licence** : à éviter en pipeline commercial tant que le détecteur de visage n'est pas remplacé |
 | **IP-Adapter (standard)** | Apache 2.0 [S32] | léger, tient en 16 Go | Variante FaceID (InsightFace) exclue pour la même raison qu'InstantID |
 | **Qwen-Image-Edit / FLUX.1 Kontext [dev]** | Apache 2.0 / non-commercial (cf. tableau §2) | GGUF/FP8 dans 16 Go pour Qwen-Image-Edit | Qwen-Image-Edit = chemin d'édition d'image sans ambiguïté de licence ; Kontext[dev] porte la même zone grise que FLUX.1-dev |
@@ -161,7 +161,7 @@
 
 | # | Constat corrigé | Sources | Confiance | Conséquence pour le studio |
 |---|---|---|---|---|
-| C1 | **PuLID dépend aussi d'InsightFace** : `pulid/pipeline.py` importe `insightface` et charge `FaceAnalysis(name='antelopev2')`, la même dépendance non commerciale qui fait écarter InstantID. La licence Apache 2.0 du code [S30] ne couvre pas ces poids. La version 1 de cette note présentait PuLID comme l'alternative « sans dépendance non commerciale » : c'est faux. | [S30] [S31] | élevée | PuLID passe en « refusé » (ADR-002). Cohérence d'identité par LoRA de personnage entraînée localement ou par Qwen-Image-Edit. |
+| C1 | **PuLID dépend aussi d'InsightFace** : `pulid/pipeline.py` importe `insightface` et charge `FaceAnalysis(name='antelopev2')`, la même dépendance non commerciale qui fait écarter InstantID. La licence Apache 2.0 du code [S30] ne couvre pas ces poids. La version 1 de cette note présentait PuLID comme l'alternative « sans dépendance non commerciale » : c'est faux. | [S67] [S30] [S31] | élevée | PuLID passe en « refusé » (ADR-002). Cohérence d'identité par LoRA de personnage entraînée localement ou par Qwen-Image-Edit. |
 | C2 | L'inventaire Wan n'est pas exhaustif : des variantes Apache 2.0 publiées en juillet 2026 (Wan2.2-Animate-2-14B, Wan-Dancer-14B) n'y figurent pas. | Inférence (signalé en revue, non ouvert pendant la rédaction) | moyenne | Re-lister les poids de l'organisation Wan-AI sur Hugging Face avant `make bench-models`. |
 | C3 | Licence LTX-2 (§6) : le concédant peut restreindre l'usage à distance, impose d'utiliser la dernière version et interdit de retirer le filigrane. Ces clauses heurtent l'épinglage de révision prévu par ADR-002. | [S7] | moyenne | LTX-2 sort de la shortlist par défaut ; il reste un candidat à évaluer après avis juridique. |
 
@@ -191,7 +191,7 @@
 
 1. **Wan2.2 TI2V-5B** (vidéo, T2V+I2V unifié, Apache 2.0, sans restriction) — base de référence, seul modèle dense proche de 16 Go.
 2. **Wan2.2 I2V-A14B + LoRA de distillation lightx2v** (vidéo, Apache 2.0) — chemin qualité supérieure avec multi-GPU (xDiT/USP) ou offload, et chemin brouillon rapide via distillation.
-3. **LTX-2 (fast/base)** (vidéo avec audio natif, licence à seuil 10 M$ ARR — compatible tant que le studio reste petit) — seul candidat avec son natif synchronisé, à comparer en qualité/vitesse face à Wan.
+3. **Kandinsky 5.0 Lite** (vidéo, MIT / Apache 2.0 [S14]) — seconde famille pour ne pas dépendre de Wan ; remplaçant : LongCat-Video (MIT [S12]). LTX-2 sort de la shortlist : sa licence permet au concédant de restreindre l'usage à distance et impose la dernière version (correction C3).
 4. **Z-Image Turbo** (image, Apache 2.0, #1 classement Artificial Analysis Image Arena poids ouverts) — chemin image principal.
 5. **Qwen-Image-Edit** (image, Apache 2.0) — édition/cohérence d'identité sans ambiguïté de licence.
 6. **SeedVR2** (upscaler, Apache 2.0, tient en 16 Go via GGUF).
@@ -202,7 +202,8 @@
 - **FLUX.1 [dev] / Kontext [dev] / FLUX.2 [dev] 32B** : licence non-commerciale sur le modèle, zone grise pour un pipeline générateur de revenu — réservés aux tests, pas au chemin de production par défaut [S22][S23][S29].
 - **CogVideoX1.5** : licence propriétaire à enregistrement + plafond de trafic — utilisable seulement après démarche administrative documentée dans NEEDS_HUMAN ; pas retenu par défaut [S18].
 - **GIMM-VFI** : licence S-Lab explicitement non-commerciale — exclu, RIFE couvre le même besoin [S37].
-- **InstantID / IP-Adapter-FaceID** : dépendance InsightFace non-commerciale — exclus au profit de PuLID [S31][S32].
+- **InstantID / IP-Adapter-FaceID / PuLID** : dépendance InsightFace non commerciale — exclus ; cohérence d'identité par LoRA de personnage et Qwen-Image-Edit [S31][S32][S67].
+- **LTX-2** : clauses de contrôle à distance et de dernière version obligatoire (correction C3) — hors shortlist tant qu'un avis juridique n'a pas tranché [S7].
 - **Wan 2.5/2.6/2.7/3.0, Mochi 1 (VRAM), Step-Video-T2V (30B), MAGI-1 24B** : indisponibles en poids ouverts, ou hors budget 16 Go sans multi-GPU non encore validé.
 - **Topaz et upscalers/interpolateurs propriétaires** : poids fermés, hors règle du studio par construction (MISSION §5).
 
@@ -212,9 +213,9 @@
 |---|---|---|
 | Reconstitution historique, échelle impossible, science visualisée sans humain en gros plan | **Blender procédural (Cycles/EEVEE) + assets CC0 Poly Haven/ambientCG** | Aucune contrainte de licence, qualité photoréaliste contrôlable, coût GPU prévisible [S51][S52][S53] |
 | Plan avec mouvement vivant indispensable (personnage, action) | **Wan2.2 I2V-A14B ou TI2V-5B**, brouillon via LoRA lightx2v puis final sans distillation | Seul chemin vidéo pleinement ouvert et documenté, multi-GPU disponible via xDiT/USP [S1][S57][S59] |
-| Plan avec son/musique synchronisée à l'image (ambiance, dialogue court) | **LTX-2** (audio natif) ou Wan2.2-S2V-14B | Évite un pipeline TTS+vidéo séparé pour les plans où le son doit coller au mouvement [S6][S1] |
+| Plan avec son/musique synchronisée à l'image (ambiance, dialogue court) | **Wan2.2-S2V-14B** (son → vidéo) ; LTX-2 seulement après avis juridique | Évite un pipeline TTS+vidéo séparé pour les plans où le son doit coller au mouvement [S1] |
 | Image fixe animée en 2,5D (parallaxe, caméra virtuelle) | **Z-Image Turbo ou Qwen-Image** (image) + **Remotion/three.js** (mouvement de caméra) | Coût GPU minimal, licence propre sous le seuil d'effectif Remotion [S63][S54][S64] |
-| Visage humain en gros plan (à éviter par défaut, MISSION §6) | Si indispensable : **PuLID** (cohérence) + **LatentSync/EchoMimic v3** (lip-sync) sur base Wan2.2, jamais InstantID/FaceID | Seuls outils de cohérence faciale sans dépendance non-commerciale identifiée [S30][S38][S41] |
+| Visage humain en gros plan (à éviter par défaut, MISSION §6) | Si indispensable : **LoRA de personnage** entraînée localement + **LatentSync/EchoMimic v3** (lip-sync) sur base Wan2.2 ; jamais PuLID, InstantID ni FaceID | Seule voie de cohérence faciale sans dépendance non commerciale [S38][S41][S67] |
 | Upscale final avant export | **SeedVR2** (ou FlashVSR en comparaison) | Apache 2.0, tient en 16 Go via GGUF [S33][S34] |
 | Fluidification / conversion de cadence | **RIFE** | MIT, très léger, temps réel documenté [S36] |
 | Marquage de divulgation à l'export | **c2pa-python/c2patool** + `digitalSourceType` adapté (`trainedAlgorithmicMedia` pour un plan 100 % généré, `compositeSynthetic` pour un composite Blender+IA) | Double licence Apache/MIT, vocabulaire IPTC officiel couvrant exactement nos cas [S47][S48][S49] |
@@ -289,3 +290,4 @@
 | S60 | xDiT — article académique (arXiv 2411.01738), moteur d'inférence parallèle pour DiT | https://arxiv.org/pdf/2411.01738 | 2024-11 | 2026-09-28 | publication | moyenne |
 | S61 | Wan-Video/Wan2.1 — dépôt officiel GitHub (FSDP + xDiT USP) | https://github.com/Wan-Video/Wan2.1 | 2025-02 | 2026-09-28 | officiel | moyenne |
 | S64 | mrdoob/three.js — LICENSE (MIT, texte cité) | https://github.com/mrdoob/three.js/blob/dev/LICENSE | 2026 | 2026-09-28 | officiel | élevée |
+| S67 | ToTheBeginning/PuLID — `pulid/pipeline.py` (ligne 4 : `import insightface` ; ligne 86 : téléchargement d'`antelopev2`) | https://github.com/ToTheBeginning/PuLID/blob/main/pulid/pipeline.py | s.d. | 2026-09-28 | officiel | élevée |

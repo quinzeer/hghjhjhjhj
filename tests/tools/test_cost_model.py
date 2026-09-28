@@ -31,8 +31,8 @@ def test_scenarios_are_ordered_and_full_cost_covers_marginal(fmt: str) -> None:
 
 
 def test_central_long_gpu_hours_match_hand_computation() -> None:
-    # 600 s × (0.20×180 + 0.35×96 + 0.25×12 + 0.20×2) × 1.2 + 600 × 0.75, in hours
-    expected = (600 * (0.20 * 180 + 0.35 * 96 + 0.25 * 12 + 0.20 * 2) * 1.2 + 600 * 0.75) / 3600
+    # 600 s × (0.20×260 + 0.35×96 + 0.25×12 + 0.20×2) × 1.2 + 600 × 0.75, in hours
+    expected = (600 * (0.20 * 260 + 0.35 * 96 + 0.25 * 12 + 0.20 * 2) * 1.2 + 600 * 0.75) / 3600
     assert cm.gpu_hours("long", "central") == pytest.approx(expected)
 
 
