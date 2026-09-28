@@ -21,13 +21,15 @@ const tlPath = path.join(epDir, 'build', 'timeline.json');
 const tl = JSON.parse(fs.readFileSync(tlPath, 'utf8'));
 const scale = parseFloat(opt('scale', '1'));
 const quality = opt('q', 'final');
-const workers = parseInt(opt('workers', '2'), 10);
+const workers = parseInt(opt('workers', opt('mode', 'full') === 'overlay' ? '4' : '2'), 10);
 const total = Math.round(tl.duration * tl.fps);
 const from = parseInt(opt('from', '0'), 10);
 const to = Math.min(parseInt(opt('to', String(total)), 10), total);
 const div = parseInt(opt('fps-div', '1'), 10);
 const stills = opt('stills', null);
-const framesDir = path.join(epDir, 'build', stills ? 'stills' : 'frames');
+const mode = opt('mode', 'full'); // full | plate (3D seule) | overlay (habillage sur plaques)
+const framesDir = path.join(epDir, 'build', stills ? 'stills' : mode === 'plate' ? 'plates' : 'frames');
+const platesRel = path.relative(ROOT, path.join(epDir, 'build', 'plates')).split(path.sep).join('/');
 fs.mkdirSync(framesDir, { recursive: true });
 
 const MIME = { '.js': 'text/javascript', '.html': 'text/html', '.json': 'application/json', '.ttf': 'font/ttf', '.hdr': 'application/octet-stream', '.gltf': 'model/gltf+json', '.bin': 'application/octet-stream', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp' };
@@ -45,7 +47,7 @@ const server = http.createServer((req, res) => {
 await new Promise((r) => server.listen(0, '127.0.0.1', r));
 const port = server.address().port;
 const rel = path.relative(ROOT, tlPath).split(path.sep).join('/');
-const url = `http://127.0.0.1:${port}/src/index.html?timeline=/${rel}&scale=${scale}&q=${quality}&rs=${opt('rs', '1')}`;
+const url = `http://127.0.0.1:${port}/src/index.html?timeline=/${rel}&scale=${scale}&q=${quality}&rs=${opt('rs', '1')}&mode=${mode}&plates=/${platesRel}`;
 
 let list;
 if (stills) list = stills.split(',').map((x) => parseInt(x, 10));
@@ -62,7 +64,7 @@ async function worker(idx, frames) {
   if (err) { console.error(err); process.exit(2); }
   let n = 0; const t0 = Date.now();
   for (const f of frames) {
-    const b64 = await page.evaluate(async (i) => { window.renderFrame(i); return await window.grabFrame(0.95); }, f);
+    const b64 = await page.evaluate(async ([i, q]) => { await window.renderFrame(i); return await window.grabFrame(q); }, [f, mode === 'plate' ? 0.97 : 0.95]);
     fs.writeFileSync(path.join(framesDir, `f_${String(f).padStart(5, '0')}.jpg`), Buffer.from(b64, 'base64'));
     n++;
     if (n % 20 === 0 || n === frames.length) {
@@ -80,7 +82,7 @@ if (W > 0) await Promise.all(Array.from({ length: W }, (_, i) => worker(i, list.
 server.close();
 console.log(`rendu terminé : ${list.length} images en ${((Date.now() - t0) / 60000).toFixed(1)} min`);
 
-if (!stills && !flag('no-video')) {
+if (!stills && mode !== 'plate' && !flag('no-video')) {
   const outDir = path.join(epDir, 'out'); fs.mkdirSync(outDir, { recursive: true });
   const mix = path.join(epDir, 'build', 'mix.wav');
   const isPreview = quality === 'draft' || scale < 1 || div > 1;

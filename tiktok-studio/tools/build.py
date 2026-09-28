@@ -9,6 +9,7 @@ Sorties (episodes/<slug>/build/) :
   mix_sans_voix.wav  musique + bruitages (pour enregistrer sa propre voix par-dessus)
   sous-titres.srt    sous-titres horodatés
 """
+import hashlib
 import json
 import os
 import re
@@ -92,8 +93,19 @@ def build(ep_dir):
         start = snap(t, step) if scenes else 0.0
         vo, words = None, []
         if sc.get('voix_off'):
-            vo, words = synth(model, sc['voix_off'], length_scale=vcfg.get('length_scale', 0.86), lexicon=lex)
-            vo = voice_chain(vo)
+            # Cache : même texte + mêmes réglages → même prise (le TTS est aléatoire ; les plaques 3D restent synchrones).
+            key = hashlib.sha1(json.dumps([model, sc['voix_off'], vcfg.get('length_scale', 0.86), lex], ensure_ascii=False).encode()).hexdigest()[:16]
+            cdir = os.path.join(out, 'tts_cache')
+            os.makedirs(cdir, exist_ok=True)
+            cwav, cjson = os.path.join(cdir, key + '.npy'), os.path.join(cdir, key + '.json')
+            if os.path.exists(cwav) and os.path.exists(cjson):
+                vo, words = np.load(cwav), json.load(open(cjson, encoding='utf-8'))
+            else:
+                vo, words = synth(model, sc['voix_off'], length_scale=vcfg.get('length_scale', 0.86), lexicon=lex)
+                vo = voice_chain(vo)
+                np.save(cwav, vo)
+                json.dump(words, open(cjson, 'w', encoding='utf-8'), ensure_ascii=False)
+            words = [dict(w) for w in words]
         lead = sc.get('lead', 0.08 if scenes else 0.12)
         vo_dur = (len(vo) / SR) if vo is not None else 0.0
         spoken_end = (words[-1]['end'] if words else 0.0)

@@ -68,7 +68,7 @@ export class Overlay {
     ctx.letterSpacing = '-1px';
     // Mise en page : 1 ou 2 lignes, largeur max 880.
     const all = chunk.words.map((w) => w.text.toUpperCase());
-    const measure = (arr) => arr.reduce((a, w) => a + ctx.measureText(w).width * 1.1, 0) + (arr.length - 1) * size * 0.3;
+    const measure = (arr) => arr.reduce((a, w) => a + ctx.measureText(w).width * 1.19, 0) + (arr.length - 1) * size * 0.27;
     while (measure(all) > 1700 && size > 60) { size -= 4; ctx.font = CAP_FONT(size); }
     let lines = [chunk.words];
     if (measure(all) > 860) {
@@ -82,8 +82,8 @@ export class Overlay {
     const lh = size * 1.08;
     lines.forEach((line, li) => {
       const texts = line.map((w) => w.text.toUpperCase());
-      const widths = texts.map((x, i) => ctx.measureText(x).width * (line[i].hl ? 1.1 * 1.04 : 1.04));
-      const gap = size * 0.3;
+      const widths = texts.map((x, i) => ctx.measureText(x).width * (line[i].hl ? 1.1 : 1) * 1.04 * 1.07);
+      const gap = size * 0.27;
       const total = widths.reduce((a, b) => a + b, 0) + gap * (line.length - 1);
       let x = cx - total / 2;
       const y = cy + (li - (lines.length - 1) / 2) * lh;
@@ -92,7 +92,7 @@ export class Overlay {
         const wx = x + width / 2;
         x += width + gap;
         if (t < w.start - 0.02) return;
-        const k = popScale(t - w.start + 0.02, 0.14, 1.16);
+        const k = popScale(t - w.start + 0.02, 0.13, 1.07);
         const active = t >= w.start && t < w.end + 0.08;
         const hl = w.hl;
         const color = hl === 'red' ? RED : hl === 'green' ? GREEN : hl ? Y : WHITE;

@@ -98,7 +98,7 @@ function drawWallInner(ctx, w, h, spec = {}, lt = 0, images = new Map()) {
     ctx.fillStyle = rg; ctx.fillRect(0, 0, w, h);
     const k = ease.outExpo(clamp(lt / 1.2));
     const v = lerp(spec.from || 0, spec.to || 0, k);
-    const txt = (spec.prefix || '') + v.toFixed(spec.decimals || 0).replace('.', ',') + (spec.suffix || '');
+    const txt = (spec.prefix || '') + v.toFixed(spec.decimals || 0).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0') + (spec.suffix || '');
     fitText(ctx, txt, w * 0.92, Math.round(h * 0.42), '{s}px Anton'); ctx.fillStyle = Y; ctx.shadowColor = 'rgba(255,200,0,0.8)'; ctx.shadowBlur = 40;
     ctx.fillText(txt, w / 2, h * 0.45); ctx.shadowBlur = 0;
     if (spec.label) { ctx.fillStyle = '#fff'; wrapLines(ctx, spec.label.toUpperCase(), w * 0.9).length; fitText(ctx, spec.label.toUpperCase(), w * 0.92, Math.round(h * 0.08), '900 {s}px Montserrat'); ctx.fillText(spec.label.toUpperCase(), w / 2, h * 0.78); }

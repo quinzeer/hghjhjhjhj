@@ -12,6 +12,10 @@ const TL_URL = qs.get('timeline');
 const SCALE = parseFloat(qs.get('scale') || '1');
 const QUALITY = qs.get('q') || 'final';
 const RS = parseFloat(qs.get('rs') || '1'); // échelle du rendu 3D interne (l'habillage reste en pleine définition)
+// full : 3D + habillage ; plate : 3D seule (passe lente) ; overlay : habillage sur plaques déjà rendues (passe rapide)
+const MODE = qs.get('mode') || 'full';
+const PLATES = qs.get('plates') || '';
+const pad5 = (i) => String(i).padStart(5, '0');
 
 async function boot() {
   const tl = await (await fetch(TL_URL)).json();
@@ -19,6 +23,34 @@ async function boot() {
   const out = document.createElement('canvas'); out.width = W; out.height = H;
   document.body.appendChild(out);
   const octx = out.getContext('2d');
+  window.grabFrame = async (q = 0.95) => {
+    const blob = await new Promise((r) => out.toBlob(r, 'image/jpeg', q));
+    const buf = new Uint8Array(await blob.arrayBuffer());
+    let s = '';
+    for (let i = 0; i < buf.length; i += 0x8000) s += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000));
+    return btoa(s);
+  };
+  window.TL = { frames: Math.round(tl.duration * tl.fps), fps: tl.fps, W, H };
+
+  if (MODE === 'overlay') {
+    // Passe rapide : aucune 3D, on pose l'habillage sur les plaques rendues.
+    const assets = new Assets(null, '/');
+    await assets.loadFonts();
+    const overlay = new Overlay(tl, W, H, assets);
+    await overlay.preload();
+    window.renderFrame = async (i) => {
+      const img = new Image();
+      img.src = `${PLATES}/f_${pad5(i)}.jpg`;
+      await img.decode();
+      octx.imageSmoothingQuality = 'high';
+      octx.drawImage(img, 0, 0, W, H);
+      overlay.draw(octx, i / tl.fps);
+      return true;
+    };
+    window.ready = true;
+    return;
+  }
+
   const R = createRenderer(Math.round(W * RS / 2) * 2, Math.round(H * RS / 2) * 2, { quality: QUALITY });
   const assets = new Assets(R.renderer, '/');
   await assets.loadFonts();
@@ -98,18 +130,9 @@ async function boot() {
     R.render(set.scene, set.camera, fx, i);
     octx.imageSmoothingQuality = 'high';
     octx.drawImage(R.canvas, 0, 0, W, H);
-    overlay.draw(octx, t);
+    if (MODE !== 'plate') overlay.draw(octx, t);
     return true;
   };
-
-  window.grabFrame = async (q = 0.95) => {
-    const blob = await new Promise((r) => out.toBlob(r, 'image/jpeg', q));
-    const buf = new Uint8Array(await blob.arrayBuffer());
-    let s = '';
-    for (let i = 0; i < buf.length; i += 0x8000) s += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000));
-    return btoa(s);
-  };
-  window.TL = { frames: Math.round(tl.duration * tl.fps), fps: tl.fps, W, H };
   window.ready = true;
 }
 

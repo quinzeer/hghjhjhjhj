@@ -44,9 +44,14 @@ npm run build                                              # compile le moteur (
 .venv/bin/python tools/build.py episodes/nasdas-01         # voix + musique + timeline + mix
 .venv/bin/python tools/script_doc.py episodes/nasdas-01    # script lisible (SCRIPT.md)
 node tools/render.mjs episodes/nasdas-01 --scale 0.5 --fps-div 3 --workers 2   # aperçu rapide (10 fps)
-node tools/render.mjs episodes/nasdas-01 --workers 2       # rendu final → episodes/nasdas-01/out/final.mp4
-node tools/render.mjs episodes/nasdas-01 --stills 0,90,300 # images fixes de contrôle
+node tools/render.mjs episodes/nasdas-01 --mode plate --rs 0.9   # passe lente : plaques 3D sans texte (build/plates)
+node tools/render.mjs episodes/nasdas-01 --mode overlay          # passe rapide : habillage + encodage → out/final.mp4
+node tools/render.mjs episodes/nasdas-01 --stills 0,90,300       # images fixes de contrôle (3D + habillage)
 ```
+
+**Deux passes** : la 3D (lente) est rendue une fois en « plaques » ; sous-titres, titres et compteurs sont posés ensuite en quelques minutes.
+Pour corriger un texte, modifie `episode.json` puis relance `build.py` et seulement `--mode overlay`.
+La voix off est mise en cache par scène (`build/tts_cache/`) : tant que le texte lu ne change pas, les timings restent identiques et les plaques restent synchrones. Si tu changes une `voix_off`, relance aussi `--mode plate`.
 
 Temps mesurés sur 4 cœurs CPU sans GPU (WebGL logiciel) : aperçu ≈ 12 min, rendu final ≈ 1 h 30 à 2 h pour 62 s.
 Avec une vraie carte graphique (Chrome lancé avec `--use-angle=vulkan` ou sans les options SwiftShader), le rendu tombe à quelques minutes.

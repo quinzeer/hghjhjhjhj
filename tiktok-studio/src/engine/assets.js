@@ -18,7 +18,7 @@ export class Assets {
   constructor(renderer, base = '/') {
     this.renderer = renderer;
     this.base = base;
-    this.pmrem = new THREE.PMREMGenerator(renderer);
+    this.pmrem = null;
     this.cache = new Map();
     this.gltf = new GLTFLoader();
     this.hdr = new HDRLoader();
@@ -46,6 +46,7 @@ export class Assets {
     return this.once('env:' + name, async () => {
       const t = await this.hdr.loadAsync(this.url(`assets/polyhaven/hdri/${name}.hdr`));
       t.mapping = THREE.EquirectangularReflectionMapping;
+      this.pmrem = this.pmrem || new THREE.PMREMGenerator(this.renderer);
       const env = this.pmrem.fromEquirectangular(t).texture;
       return { env, raw: t };
     });
