@@ -19,11 +19,12 @@ verify-phase-0-online: ## Idem + re-mesure des outliers par l'API (YOUTUBE_API_K
 test: ## Tests unitaires (outillage de vérification en phase 0)
 	@$(UV) run --group dev pytest
 
-lint: ## ruff (lint + format vérifié)
-	@$(UV) run --group dev ruff check tools tests
-	@$(UV) run --group dev ruff format --check tools tests
+lint: ## ruff (lint + format vérifié) + mypy strict sur studio/
+	@$(UV) run --group dev ruff check tools tests studio
+	@$(UV) run --group dev ruff format --check tools tests studio
+	@$(UV) run --group dev mypy
 
 fmt: ## Formate le code
-	@$(UV) run --group dev ruff format tools tests
+	@$(UV) run --group dev ruff format tools tests studio
 
 check: doctor lint test ## Tout ce qui doit être vert avant une PR
