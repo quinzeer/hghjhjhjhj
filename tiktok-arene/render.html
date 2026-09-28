@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><title>Rendu image par image</title>
+
+<link href="assets/fonts/fonts.css" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<style>html,body{margin:0;background:#000}#gl{display:none}#out{display:block}</style></head>
+<body><canvas id="gl"></canvas><canvas id="out"></canvas>
+<script type="module">
+// Page pilotée par tools/render.mjs : window.__frame(i) rend l'image i et renvoie un JPEG.
+import { setup } from './src/app.js';
+const q = new URLSearchParams(location.search);
+const ep = q.get('ep') || 'episodes/ep01';
+const meta = await (await fetch(`${ep}/episode.json`)).json();
+const scale = +(q.get('scale') || 1);
+const S = await setup({ seed: meta.seed, epDir: ep, glCanvas: document.getElementById('gl'), outCanvas: document.getElementById('out'), renderScale: +(q.get('rs') || 0.75),
+  quality: q.get('q') || 'high', width: Math.round(1080 * scale), height: Math.round(1920 * scale), episode: +(meta.episode || 'ep1').replace(/\D/g, '') || 1 });
+const fps = +(q.get('fps') || 30);
+window.__meta = { duration: S.D.duration, fps, frames: Math.floor(S.D.duration * fps), scenes: S.D.scenes, lines: S.D.lines.map(({ words, ...l }) => l), winner: S.rec.winner };
+window.__frame = (i, fmt = 'image/jpeg', qual = 0.95) => { S.frame(i / fps); return document.getElementById('out').toDataURL(fmt, qual); };
+window.__ready = true;
+</script></body></html>

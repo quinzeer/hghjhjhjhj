@@ -1,0 +1,375 @@
+{
+  "seed": 356,
+  "episode": "ep01",
+  "winner": "Algérie",
+  "ranking": [
+    {
+      "rank": 1,
+      "country": "Algérie"
+    },
+    {
+      "rank": 2,
+      "country": "Brésil"
+    },
+    {
+      "rank": 3,
+      "country": "Maroc"
+    },
+    {
+      "rank": 4,
+      "country": "Argentine"
+    },
+    {
+      "rank": 5,
+      "country": "Tunisie"
+    },
+    {
+      "rank": 6,
+      "country": "Suisse"
+    },
+    {
+      "rank": 7,
+      "country": "Allemagne"
+    },
+    {
+      "rank": 8,
+      "country": "Angleterre"
+    },
+    {
+      "rank": 9,
+      "country": "France"
+    },
+    {
+      "rank": 10,
+      "country": "Portugal"
+    },
+    {
+      "rank": 11,
+      "country": "Niger"
+    },
+    {
+      "rank": 12,
+      "country": "Gabon"
+    },
+    {
+      "rank": 13,
+      "country": "Canada"
+    },
+    {
+      "rank": 14,
+      "country": "Japon"
+    },
+    {
+      "rank": 15,
+      "country": "Belgique"
+    },
+    {
+      "rank": 16,
+      "country": "Burkina Faso"
+    },
+    {
+      "rank": 17,
+      "country": "Haïti"
+    },
+    {
+      "rank": 18,
+      "country": "Mali"
+    },
+    {
+      "rank": 19,
+      "country": "RD Congo"
+    },
+    {
+      "rank": 20,
+      "country": "Espagne"
+    },
+    {
+      "rank": 21,
+      "country": "Togo"
+    },
+    {
+      "rank": 22,
+      "country": "Sénégal"
+    },
+    {
+      "rank": 23,
+      "country": "Madagascar"
+    },
+    {
+      "rank": 24,
+      "country": "Turquie"
+    },
+    {
+      "rank": 25,
+      "country": "Côte d'Ivoire"
+    },
+    {
+      "rank": 26,
+      "country": "États-Unis"
+    },
+    {
+      "rank": 27,
+      "country": "Bénin"
+    },
+    {
+      "rank": 28,
+      "country": "Mexique"
+    },
+    {
+      "rank": 29,
+      "country": "Guinée"
+    },
+    {
+      "rank": 30,
+      "country": "Pays-Bas"
+    },
+    {
+      "rank": 31,
+      "country": "Italie"
+    },
+    {
+      "rank": 32,
+      "country": "Cameroun"
+    }
+  ],
+  "estimatedDuration": 61.04,
+  "lines": [
+    {
+      "id": "hook",
+      "text": "Trente-deux pays. Un seul survivant.",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+6%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "choose",
+      "text": "Choisis ton pays. Maintenant.",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+8%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "e0",
+      "text": "Premier éliminé : le Cameroun !",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+14%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "e1",
+      "text": "Bye bye l'Italie !",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+14%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "e2",
+      "text": "Les Pays-Bas et la Guinée tombent ensemble !",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+14%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "e4",
+      "text": "Le Mexique saute !",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+14%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "e5",
+      "text": "Le Bénin et les États-Unis tombent ensemble !",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+14%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "e7",
+      "text": "La Côte d'Ivoire, c'est fini !",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+14%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "e8",
+      "text": "La Turquie saute !",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+14%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "e9",
+      "text": "Bye bye Madagascar !",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+14%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "e10",
+      "text": "Double élimination !",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+14%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "e12",
+      "text": "Double élimination !",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+14%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "e14",
+      "text": "Le Mali et Haïti tombent ensemble !",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+14%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "e16",
+      "text": "Le Burkina tombe !",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+14%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "e17",
+      "text": "Adieu la Belgique !",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+14%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "e18",
+      "text": "Le Japon et le Canada tombent ensemble !",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+14%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "e20",
+      "text": "Le Gabon et le Niger tombent ensemble !",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+14%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "e22",
+      "text": "Le Portugal et la France tombent ensemble !",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+14%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "e24",
+      "text": "Bye bye l'Angleterre !",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+14%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "e25",
+      "text": "L'Allemagne et la Suisse tombent ensemble !",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+14%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "e27",
+      "text": "Double élimination !",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+14%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "r2",
+      "text": "Manche deux : le bras de la mort !",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+6%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "r3",
+      "text": "Manche trois : plus aucune barrière !",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+6%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "ten",
+      "text": "Plus que dix !",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+10%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "three",
+      "text": "Il en reste trois.",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+2%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "final",
+      "text": "C'est la finale. L'Algérie contre le Brésil.",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "-4%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "crack",
+      "text": "Qui va craquer ?",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+0%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "win",
+      "text": "L'Algérie gagne !",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+4%",
+      "pitch": "+2Hz"
+    },
+    {
+      "id": "replay",
+      "text": "Regarde bien. Tout s'est joué ici.",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "-2%",
+      "pitch": "+0Hz"
+    },
+    {
+      "id": "end",
+      "text": "Et ton pays, il a fini où ?",
+      "voice": "fr-FR-RemyMultilingualNeural",
+      "rate": "+4%",
+      "pitch": "+0Hz"
+    }
+  ],
+  "crowd": {
+    "voices": [
+      "fr-FR-DeniseNeural",
+      "fr-FR-HenriNeural",
+      "fr-FR-EloiseNeural",
+      "fr-FR-VivienneMultilingualNeural",
+      "fr-CA-SylvieNeural",
+      "fr-CA-JeanNeural",
+      "fr-CA-AntoineNeural",
+      "fr-CA-ThierryNeural",
+      "fr-BE-CharlineNeural",
+      "fr-BE-GerardNeural",
+      "fr-CH-ArianeNeural",
+      "fr-CH-FabriceNeural"
+    ],
+    "lines": {
+      "oh": "Ooooh !",
+      "non": "Nooon !",
+      "ouais": "Ouaiiis !",
+      "b1": "Allez, allez !",
+      "b2": "Oh là là, regarde !",
+      "b3": "Il va tomber !",
+      "b4": "Vas-y, vas-y !",
+      "b5": "C'est chaud !",
+      "b6": "Mais non !"
+    }
+  }
+}

@@ -1,0 +1,2056 @@
+{
+ "lines": {
+  "non_0": {
+   "file": "non_0.mp3",
+   "text": "Nooon !",
+   "dur": 0.768,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Nooon !",
+     "t": 0.104,
+     "d": 0.584
+    }
+   ],
+   "sig": "586c4315ee9e"
+  },
+  "oh_0": {
+   "file": "oh_0.mp3",
+   "text": "Ooooh !",
+   "dur": 0.469,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Ooooh !",
+     "t": 0.104,
+     "d": 0.285
+    }
+   ],
+   "sig": "6f0b857d57ac"
+  },
+  "ouais_0": {
+   "file": "ouais_0.mp3",
+   "text": "Ouaiiis !",
+   "dur": 0.646,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Ouaiiis !",
+     "t": 0.104,
+     "d": 0.462
+    }
+   ],
+   "sig": "109b11cd9e2d"
+  },
+  "b1_0": {
+   "file": "b1_0.mp3",
+   "text": "Allez, allez !",
+   "dur": 1.393,
+   "fileDur": 2.28,
+   "words": [
+    {
+     "w": "Allez,",
+     "t": 0.104,
+     "d": 0.435
+    },
+    {
+     "w": "allez !",
+     "t": 0.892,
+     "d": 0.421
+    }
+   ],
+   "sig": "1ce41cbdba7f"
+  },
+  "b3_0": {
+   "file": "b3_0.mp3",
+   "text": "Il va tomber !",
+   "dur": 1.041,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Il",
+     "t": 0.104,
+     "d": 0.19
+    },
+    {
+     "w": "va",
+     "t": 0.308,
+     "d": 0.136
+    },
+    {
+     "w": "tomber !",
+     "t": 0.458,
+     "d": 0.503
+    }
+   ],
+   "sig": "f14b15021034"
+  },
+  "b2_0": {
+   "file": "b2_0.mp3",
+   "text": "Oh là là, regarde !",
+   "dur": 1.761,
+   "fileDur": 2.64,
+   "words": [
+    {
+     "w": "Oh",
+     "t": 0.104,
+     "d": 0.136
+    },
+    {
+     "w": "là",
+     "t": 0.254,
+     "d": 0.149
+    },
+    {
+     "w": "là,",
+     "t": 0.417,
+     "d": 0.231
+    },
+    {
+     "w": "regarde !",
+     "t": 0.988,
+     "d": 0.693
+    }
+   ],
+   "sig": "4056402f40b9"
+  },
+  "b4_0": {
+   "file": "b4_0.mp3",
+   "text": "Vas-y, vas-y !",
+   "dur": 1.624,
+   "fileDur": 2.5,
+   "words": [
+    {
+     "w": "Vas-y,",
+     "t": 0.104,
+     "d": 0.571
+    },
+    {
+     "w": "vas-y !",
+     "t": 1.001,
+     "d": 0.543
+    }
+   ],
+   "sig": "4fcc36254154"
+  },
+  "b5_0": {
+   "file": "b5_0.mp3",
+   "text": "C'est chaud !",
+   "dur": 0.863,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "C'est",
+     "t": 0.104,
+     "d": 0.285
+    },
+    {
+     "w": "chaud !",
+     "t": 0.403,
+     "d": 0.38
+    }
+   ],
+   "sig": "8abdfced5c85"
+  },
+  "b6_0": {
+   "file": "b6_0.mp3",
+   "text": "Mais non !",
+   "dur": 0.796,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Mais",
+     "t": 0.104,
+     "d": 0.258
+    },
+    {
+     "w": "non !",
+     "t": 0.376,
+     "d": 0.34
+    }
+   ],
+   "sig": "af8d59951347"
+  },
+  "oh_1": {
+   "file": "oh_1.mp3",
+   "text": "Ooooh !",
+   "dur": 0.396,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Ooooh !",
+     "t": 0.101,
+     "d": 0.215
+    }
+   ],
+   "sig": "53b6d758dbbc"
+  },
+  "non_1": {
+   "file": "non_1.mp3",
+   "text": "Nooon !",
+   "dur": 0.673,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Nooon !",
+     "t": 0.101,
+     "d": 0.492
+    }
+   ],
+   "sig": "29f505826ace"
+  },
+  "ouais_1": {
+   "file": "ouais_1.mp3",
+   "text": "Ouaiiis !",
+   "dur": 0.56,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Ouaiiis !",
+     "t": 0.101,
+     "d": 0.379
+    }
+   ],
+   "sig": "597b80c1093d"
+  },
+  "b1_1": {
+   "file": "b1_1.mp3",
+   "text": "Allez, allez !",
+   "dur": 1.115,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Allez,",
+     "t": 0.101,
+     "d": 0.354
+    },
+    {
+     "w": "allez !",
+     "t": 0.707,
+     "d": 0.328
+    }
+   ],
+   "sig": "3cc9c67bc30e"
+  },
+  "b2_1": {
+   "file": "b2_1.mp3",
+   "text": "Oh là là, regarde !",
+   "dur": 1.418,
+   "fileDur": 2.23,
+   "words": [
+    {
+     "w": "Oh",
+     "t": 0.101,
+     "d": 0.139
+    },
+    {
+     "w": "là",
+     "t": 0.252,
+     "d": 0.088
+    },
+    {
+     "w": "là,",
+     "t": 0.353,
+     "d": 0.177
+    },
+    {
+     "w": "regarde !",
+     "t": 0.757,
+     "d": 0.581
+    }
+   ],
+   "sig": "b848d03531de"
+  },
+  "b3_1": {
+   "file": "b3_1.mp3",
+   "text": "Il va tomber !",
+   "dur": 0.964,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Il",
+     "t": 0.101,
+     "d": 0.177
+    },
+    {
+     "w": "va",
+     "t": 0.29,
+     "d": 0.126
+    },
+    {
+     "w": "tomber !",
+     "t": 0.429,
+     "d": 0.455
+    }
+   ],
+   "sig": "c46be9179b83"
+  },
+  "b4_1": {
+   "file": "b4_1.mp3",
+   "text": "Vas-y, vas-y !",
+   "dur": 1.266,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Vas-y,",
+     "t": 0.101,
+     "d": 0.455
+    },
+    {
+     "w": "vas-y !",
+     "t": 0.782,
+     "d": 0.404
+    }
+   ],
+   "sig": "77230026c607"
+  },
+  "b5_1": {
+   "file": "b5_1.mp3",
+   "text": "C'est chaud !",
+   "dur": 0.774,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "C'est",
+     "t": 0.101,
+     "d": 0.253
+    },
+    {
+     "w": "chaud !",
+     "t": 0.366,
+     "d": 0.328
+    }
+   ],
+   "sig": "2b9980caa0ad"
+  },
+  "b6_1": {
+   "file": "b6_1.mp3",
+   "text": "Mais non !",
+   "dur": 0.648,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Mais",
+     "t": 0.101,
+     "d": 0.202
+    },
+    {
+     "w": "non !",
+     "t": 0.315,
+     "d": 0.253
+    }
+   ],
+   "sig": "2ef3fb521857"
+  },
+  "non_2": {
+   "file": "non_2.mp3",
+   "text": "Nooon !",
+   "dur": 0.58,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Nooon !",
+     "t": 0.099,
+     "d": 0.401
+    }
+   ],
+   "sig": "452a3a7a876c"
+  },
+  "oh_2": {
+   "file": "oh_2.mp3",
+   "text": "Ooooh !",
+   "dur": 0.402,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Ooooh !",
+     "t": 0.098,
+     "d": 0.224
+    }
+   ],
+   "sig": "d4799d5828ee"
+  },
+  "ouais_2": {
+   "file": "ouais_2.mp3",
+   "text": "Ouaiiis !",
+   "dur": 0.495,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Ouaiiis !",
+     "t": 0.097,
+     "d": 0.318
+    }
+   ],
+   "sig": "69ff281476a4"
+  },
+  "b1_2": {
+   "file": "b1_2.mp3",
+   "text": "Allez, allez !",
+   "dur": 1.121,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Allez,",
+     "t": 0.097,
+     "d": 0.318
+    },
+    {
+     "w": "allez !",
+     "t": 0.687,
+     "d": 0.354
+    }
+   ],
+   "sig": "60e9cbbf5928"
+  },
+  "b2_2": {
+   "file": "b2_2.mp3",
+   "text": "Oh là là, regarde !",
+   "dur": 1.533,
+   "fileDur": 2.28,
+   "words": [
+    {
+     "w": "Oh",
+     "t": 0.097,
+     "d": 0.106
+    },
+    {
+     "w": "là",
+     "t": 0.215,
+     "d": 0.118
+    },
+    {
+     "w": "là,",
+     "t": 0.345,
+     "d": 0.2
+    },
+    {
+     "w": "regarde !",
+     "t": 0.852,
+     "d": 0.601
+    }
+   ],
+   "sig": "a37edfb01861"
+  },
+  "b4_2": {
+   "file": "b4_2.mp3",
+   "text": "Vas-y, vas-y !",
+   "dur": 1.392,
+   "fileDur": 2.14,
+   "words": [
+    {
+     "w": "Vas-y,",
+     "t": 0.097,
+     "d": 0.472
+    },
+    {
+     "w": "vas-y !",
+     "t": 0.852,
+     "d": 0.46
+    }
+   ],
+   "sig": "e41cdee2afe8"
+  },
+  "b3_2": {
+   "file": "b3_2.mp3",
+   "text": "Il va tomber !",
+   "dur": 0.944,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Il",
+     "t": 0.097,
+     "d": 0.165
+    },
+    {
+     "w": "va",
+     "t": 0.274,
+     "d": 0.13
+    },
+    {
+     "w": "tomber !",
+     "t": 0.416,
+     "d": 0.448
+    }
+   ],
+   "sig": "dc4c8a0ad8c6"
+  },
+  "b5_2": {
+   "file": "b5_2.mp3",
+   "text": "C'est chaud !",
+   "dur": 0.743,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "C'est",
+     "t": 0.097,
+     "d": 0.224
+    },
+    {
+     "w": "chaud !",
+     "t": 0.333,
+     "d": 0.33
+    }
+   ],
+   "sig": "edd2cc523f3d"
+  },
+  "b6_2": {
+   "file": "b6_2.mp3",
+   "text": "Mais non !",
+   "dur": 0.684,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Mais",
+     "t": 0.097,
+     "d": 0.212
+    },
+    {
+     "w": "non !",
+     "t": 0.321,
+     "d": 0.283
+    }
+   ],
+   "sig": "54f6f1e7785a"
+  },
+  "oh_3": {
+   "file": "oh_3.mp3",
+   "text": "Ooooh !",
+   "dur": 0.356,
+   "fileDur": 0.6,
+   "words": [
+    {
+     "w": "Ooooh !",
+     "t": 0.055,
+     "d": 0.221
+    }
+   ],
+   "sig": "a20b8e17cc73"
+  },
+  "non_3": {
+   "file": "non_3.mp3",
+   "text": "Nooon !",
+   "dur": 0.544,
+   "fileDur": 0.79,
+   "words": [
+    {
+     "w": "Nooon !",
+     "t": 0.044,
+     "d": 0.42
+    }
+   ],
+   "sig": "f9aa4a250458"
+  },
+  "ouais_3": {
+   "file": "ouais_3.mp3",
+   "text": "Ouaiiis !",
+   "dur": 0.876,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Ouaiiis !",
+     "t": 0.055,
+     "d": 0.741
+    }
+   ],
+   "sig": "ed79228c8ce4"
+  },
+  "b1_3": {
+   "file": "b1_3.mp3",
+   "text": "Allez, allez !",
+   "dur": 1.12,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Allez,",
+     "t": 0.066,
+     "d": 0.332
+    },
+    {
+     "w": "allez !",
+     "t": 0.686,
+     "d": 0.354
+    }
+   ],
+   "sig": "5813e67c1a71"
+  },
+  "b2_3": {
+   "file": "b2_3.mp3",
+   "text": "Oh là là, regarde !",
+   "dur": 1.463,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Oh",
+     "t": 0.066,
+     "d": 0.288
+    },
+    {
+     "w": "là",
+     "t": 0.354,
+     "d": 0.133
+    },
+    {
+     "w": "là,",
+     "t": 0.487,
+     "d": 0.254
+    },
+    {
+     "w": "regarde !",
+     "t": 0.996,
+     "d": 0.387
+    }
+   ],
+   "sig": "2ca2935bf6fe"
+  },
+  "b3_3": {
+   "file": "b3_3.mp3",
+   "text": "Il va tomber !",
+   "dur": 0.938,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Il",
+     "t": 0.05,
+     "d": 0.188
+    },
+    {
+     "w": "va",
+     "t": 0.238,
+     "d": 0.122
+    },
+    {
+     "w": "tomber !",
+     "t": 0.36,
+     "d": 0.498
+    }
+   ],
+   "sig": "76be5dc0d35f"
+  },
+  "b5_3": {
+   "file": "b5_3.mp3",
+   "text": "C'est chaud !",
+   "dur": 0.578,
+   "fileDur": 0.82,
+   "words": [
+    {
+     "w": "C'est",
+     "t": 0.055,
+     "d": 0.144
+    },
+    {
+     "w": "chaud !",
+     "t": 0.199,
+     "d": 0.299
+    }
+   ],
+   "sig": "796ba06a00af"
+  },
+  "b4_3": {
+   "file": "b4_3.mp3",
+   "text": "Vas-y, vas-y !",
+   "dur": 1.93,
+   "fileDur": 2.16,
+   "words": [
+    {
+     "w": "Vas-y,",
+     "t": 0.047,
+     "d": 0.675
+    },
+    {
+     "w": "vas-y !",
+     "t": 1.153,
+     "d": 0.697
+    }
+   ],
+   "sig": "1624105347b3"
+  },
+  "b6_3": {
+   "file": "b6_3.mp3",
+   "text": "Mais non !",
+   "dur": 0.534,
+   "fileDur": 0.77,
+   "words": [
+    {
+     "w": "Mais",
+     "t": 0.066,
+     "d": 0.122
+    },
+    {
+     "w": "non !",
+     "t": 0.188,
+     "d": 0.266
+    }
+   ],
+   "sig": "1767c8c6a812"
+  },
+  "oh_4": {
+   "file": "oh_4.mp3",
+   "text": "Ooooh !",
+   "dur": 0.491,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Ooooh !",
+     "t": 0.102,
+     "d": 0.309
+    }
+   ],
+   "sig": "750b642f44c6"
+  },
+  "non_4": {
+   "file": "non_4.mp3",
+   "text": "Nooon !",
+   "dur": 0.762,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Nooon !",
+     "t": 0.102,
+     "d": 0.58
+    }
+   ],
+   "sig": "75bd012baa65"
+  },
+  "ouais_4": {
+   "file": "ouais_4.mp3",
+   "text": "Ouaiiis !",
+   "dur": 0.633,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Ouaiiis !",
+     "t": 0.102,
+     "d": 0.451
+    }
+   ],
+   "sig": "3de4fad1f75f"
+  },
+  "b2_4": {
+   "file": "b2_4.mp3",
+   "text": "Oh là là, regarde !",
+   "dur": 1.651,
+   "fileDur": 2.47,
+   "words": [
+    {
+     "w": "Oh",
+     "t": 0.102,
+     "d": 0.116
+    },
+    {
+     "w": "là",
+     "t": 0.23,
+     "d": 0.129
+    },
+    {
+     "w": "là,",
+     "t": 0.372,
+     "d": 0.193
+    },
+    {
+     "w": "regarde !",
+     "t": 0.849,
+     "d": 0.722
+    }
+   ],
+   "sig": "bb721b235243"
+  },
+  "b1_4": {
+   "file": "b1_4.mp3",
+   "text": "Allez, allez !",
+   "dur": 1.264,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Allez,",
+     "t": 0.102,
+     "d": 0.361
+    },
+    {
+     "w": "allez !",
+     "t": 0.759,
+     "d": 0.425
+    }
+   ],
+   "sig": "06366ae72f7a"
+  },
+  "b3_4": {
+   "file": "b3_4.mp3",
+   "text": "Il va tomber !",
+   "dur": 1.083,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Il",
+     "t": 0.102,
+     "d": 0.193
+    },
+    {
+     "w": "va",
+     "t": 0.308,
+     "d": 0.155
+    },
+    {
+     "w": "tomber !",
+     "t": 0.475,
+     "d": 0.528
+    }
+   ],
+   "sig": "dcc1d32782ff"
+  },
+  "b5_4": {
+   "file": "b5_4.mp3",
+   "text": "C'est chaud !",
+   "dur": 0.826,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "C'est",
+     "t": 0.102,
+     "d": 0.258
+    },
+    {
+     "w": "chaud !",
+     "t": 0.372,
+     "d": 0.374
+    }
+   ],
+   "sig": "04c93b58d5bd"
+  },
+  "b4_4": {
+   "file": "b4_4.mp3",
+   "text": "Vas-y, vas-y !",
+   "dur": 1.47,
+   "fileDur": 2.3,
+   "words": [
+    {
+     "w": "Vas-y,",
+     "t": 0.102,
+     "d": 0.503
+    },
+    {
+     "w": "vas-y !",
+     "t": 0.862,
+     "d": 0.528
+    }
+   ],
+   "sig": "16c8d5e66b7d"
+  },
+  "oh_5": {
+   "file": "oh_5.mp3",
+   "text": "Ooooh !",
+   "dur": 0.382,
+   "fileDur": 1.25,
+   "words": [
+    {
+     "w": "Ooooh !",
+     "t": 0.098,
+     "d": 0.204
+    }
+   ],
+   "sig": "0c3efbe13b11"
+  },
+  "b6_4": {
+   "file": "b6_4.mp3",
+   "text": "Mais non !",
+   "dur": 0.774,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Mais",
+     "t": 0.102,
+     "d": 0.245
+    },
+    {
+     "w": "non !",
+     "t": 0.359,
+     "d": 0.335
+    }
+   ],
+   "sig": "d33ecf40b20e"
+  },
+  "non_5": {
+   "file": "non_5.mp3",
+   "text": "Nooon !",
+   "dur": 0.587,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Nooon !",
+     "t": 0.098,
+     "d": 0.409
+    }
+   ],
+   "sig": "80ebb7e25a4a"
+  },
+  "ouais_5": {
+   "file": "ouais_5.mp3",
+   "text": "Ouaiiis !",
+   "dur": 0.454,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Ouaiiis !",
+     "t": 0.098,
+     "d": 0.276
+    }
+   ],
+   "sig": "fd462c937b45"
+  },
+  "b2_5": {
+   "file": "b2_5.mp3",
+   "text": "Oh là là, regarde !",
+   "dur": 1.548,
+   "fileDur": 2.47,
+   "words": [
+    {
+     "w": "Oh",
+     "t": 0.098,
+     "d": 0.12
+    },
+    {
+     "w": "là",
+     "t": 0.23,
+     "d": 0.168
+    },
+    {
+     "w": "là,",
+     "t": 0.399,
+     "d": 0.228
+    },
+    {
+     "w": "regarde !",
+     "t": 0.819,
+     "d": 0.649
+    }
+   ],
+   "sig": "5d4eecddcc99"
+  },
+  "b1_5": {
+   "file": "b1_5.mp3",
+   "text": "Allez, allez !",
+   "dur": 1.02,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Allez,",
+     "t": 0.098,
+     "d": 0.325
+    },
+    {
+     "w": "allez !",
+     "t": 0.567,
+     "d": 0.373
+    }
+   ],
+   "sig": "4ed77af2eff9"
+  },
+  "b3_5": {
+   "file": "b3_5.mp3",
+   "text": "Il va tomber !",
+   "dur": 0.924,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Il",
+     "t": 0.098,
+     "d": 0.096
+    },
+    {
+     "w": "va",
+     "t": 0.218,
+     "d": 0.144
+    },
+    {
+     "w": "tomber !",
+     "t": 0.387,
+     "d": 0.457
+    }
+   ],
+   "sig": "651cd7df323e"
+  },
+  "b4_5": {
+   "file": "b4_5.mp3",
+   "text": "Vas-y, vas-y !",
+   "dur": 1.344,
+   "fileDur": 2.21,
+   "words": [
+    {
+     "w": "Vas-y,",
+     "t": 0.098,
+     "d": 0.517
+    },
+    {
+     "w": "vas-y !",
+     "t": 0.771,
+     "d": 0.493
+    }
+   ],
+   "sig": "0d9b532ce27f"
+  },
+  "b5_5": {
+   "file": "b5_5.mp3",
+   "text": "C'est chaud !",
+   "dur": 0.767,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "C'est",
+     "t": 0.098,
+     "d": 0.204
+    },
+    {
+     "w": "chaud !",
+     "t": 0.314,
+     "d": 0.373
+    }
+   ],
+   "sig": "ea0b58c12dcd"
+  },
+  "b6_5": {
+   "file": "b6_5.mp3",
+   "text": "Mais non !",
+   "dur": 0.634,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Mais",
+     "t": 0.098,
+     "d": 0.18
+    },
+    {
+     "w": "non !",
+     "t": 0.278,
+     "d": 0.276
+    }
+   ],
+   "sig": "92858bcf1f72"
+  },
+  "oh_6": {
+   "file": "oh_6.mp3",
+   "text": "Ooooh !",
+   "dur": 0.389,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Ooooh !",
+     "t": 0.095,
+     "d": 0.214
+    }
+   ],
+   "sig": "fd4b58ab386c"
+  },
+  "non_6": {
+   "file": "non_6.mp3",
+   "text": "Nooon !",
+   "dur": 0.569,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Nooon !",
+     "t": 0.095,
+     "d": 0.394
+    }
+   ],
+   "sig": "3008c6a30b36"
+  },
+  "ouais_6": {
+   "file": "ouais_6.mp3",
+   "text": "Ouaiiis !",
+   "dur": 0.457,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Ouaiiis !",
+     "t": 0.095,
+     "d": 0.282
+    }
+   ],
+   "sig": "4da216680d2a"
+  },
+  "b1_6": {
+   "file": "b1_6.mp3",
+   "text": "Allez, allez !",
+   "dur": 1.098,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Allez,",
+     "t": 0.095,
+     "d": 0.417
+    },
+    {
+     "w": "allez !",
+     "t": 0.703,
+     "d": 0.315
+    }
+   ],
+   "sig": "ed1aba68d2a6"
+  },
+  "b2_6": {
+   "file": "b2_6.mp3",
+   "text": "Oh là là, regarde !",
+   "dur": 1.323,
+   "fileDur": 2.11,
+   "words": [
+    {
+     "w": "Oh",
+     "t": 0.095,
+     "d": 0.146
+    },
+    {
+     "w": "là",
+     "t": 0.264,
+     "d": 0.124
+    },
+    {
+     "w": "là,",
+     "t": 0.399,
+     "d": 0.214
+    },
+    {
+     "w": "regarde !",
+     "t": 0.793,
+     "d": 0.45
+    }
+   ],
+   "sig": "a98e96925cce"
+  },
+  "b3_6": {
+   "file": "b3_6.mp3",
+   "text": "Il va tomber !",
+   "dur": 0.907,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Il",
+     "t": 0.095,
+     "d": 0.158
+    },
+    {
+     "w": "va",
+     "t": 0.275,
+     "d": 0.124
+    },
+    {
+     "w": "tomber !",
+     "t": 0.455,
+     "d": 0.372
+    }
+   ],
+   "sig": "cc0746d59236"
+  },
+  "b4_6": {
+   "file": "b4_6.mp3",
+   "text": "Vas-y, vas-y !",
+   "dur": 1.391,
+   "fileDur": 2.14,
+   "words": [
+    {
+     "w": "Vas-y,",
+     "t": 0.095,
+     "d": 0.529
+    },
+    {
+     "w": "vas-y !",
+     "t": 0.827,
+     "d": 0.484
+    }
+   ],
+   "sig": "af4a3598e199"
+  },
+  "b5_6": {
+   "file": "b5_6.mp3",
+   "text": "C'est chaud !",
+   "dur": 0.66,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "C'est",
+     "t": 0.095,
+     "d": 0.214
+    },
+    {
+     "w": "chaud !",
+     "t": 0.377,
+     "d": 0.203
+    }
+   ],
+   "sig": "65048e0e7287"
+  },
+  "oh_7": {
+   "file": "oh_7.mp3",
+   "text": "Ooooh !",
+   "dur": 0.575,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Ooooh !",
+     "t": 0.1,
+     "d": 0.395
+    }
+   ],
+   "sig": "bed8885cc561"
+  },
+  "b6_6": {
+   "file": "b6_6.mp3",
+   "text": "Mais non !",
+   "dur": 0.648,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Mais",
+     "t": 0.095,
+     "d": 0.191
+    },
+    {
+     "w": "non !",
+     "t": 0.32,
+     "d": 0.248
+    }
+   ],
+   "sig": "1b52ad21ac96"
+  },
+  "non_7": {
+   "file": "non_7.mp3",
+   "text": "Nooon !",
+   "dur": 0.706,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Nooon !",
+     "t": 0.1,
+     "d": 0.526
+    }
+   ],
+   "sig": "3fb6eb300f73"
+  },
+  "ouais_7": {
+   "file": "ouais_7.mp3",
+   "text": "Ouaiiis !",
+   "dur": 0.562,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Ouaiiis !",
+     "t": 0.1,
+     "d": 0.382
+    }
+   ],
+   "sig": "8adfd818bbd0"
+  },
+  "b1_7": {
+   "file": "b1_7.mp3",
+   "text": "Allez, allez !",
+   "dur": 1.223,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Allez,",
+     "t": 0.129,
+     "d": 0.408
+    },
+    {
+     "w": "allez !",
+     "t": 0.761,
+     "d": 0.382
+    }
+   ],
+   "sig": "38f2dd689fea"
+  },
+  "b2_7": {
+   "file": "b2_7.mp3",
+   "text": "Oh là là, regarde !",
+   "dur": 1.562,
+   "fileDur": 2.4,
+   "words": [
+    {
+     "w": "Oh",
+     "t": 0.1,
+     "d": 0.197
+    },
+    {
+     "w": "là",
+     "t": 0.311,
+     "d": 0.118
+    },
+    {
+     "w": "là,",
+     "t": 0.442,
+     "d": 0.224
+    },
+    {
+     "w": "regarde !",
+     "t": 0.85,
+     "d": 0.632
+    }
+   ],
+   "sig": "807ec8eea783"
+  },
+  "b3_7": {
+   "file": "b3_7.mp3",
+   "text": "Il va tomber !",
+   "dur": 1.063,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Il",
+     "t": 0.101,
+     "d": 0.211
+    },
+    {
+     "w": "va",
+     "t": 0.325,
+     "d": 0.145
+    },
+    {
+     "w": "tomber !",
+     "t": 0.483,
+     "d": 0.5
+    }
+   ],
+   "sig": "ecfae51616fb"
+  },
+  "b4_7": {
+   "file": "b4_7.mp3",
+   "text": "Vas-y, vas-y !",
+   "dur": 1.403,
+   "fileDur": 2.26,
+   "words": [
+    {
+     "w": "Vas-y,",
+     "t": 0.1,
+     "d": 0.592
+    },
+    {
+     "w": "vas-y !",
+     "t": 0.876,
+     "d": 0.447
+    }
+   ],
+   "sig": "dfb55ca8b409"
+  },
+  "b5_7": {
+   "file": "b5_7.mp3",
+   "text": "C'est chaud !",
+   "dur": 0.76,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "C'est",
+     "t": 0.101,
+     "d": 0.224
+    },
+    {
+     "w": "chaud !",
+     "t": 0.338,
+     "d": 0.342
+    }
+   ],
+   "sig": "0a9c771ab510"
+  },
+  "b6_7": {
+   "file": "b6_7.mp3",
+   "text": "Mais non !",
+   "dur": 0.732,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Mais",
+     "t": 0.1,
+     "d": 0.25
+    },
+    {
+     "w": "non !",
+     "t": 0.363,
+     "d": 0.289
+    }
+   ],
+   "sig": "0defc893f362"
+  },
+  "non_8": {
+   "file": "non_8.mp3",
+   "text": "Nooon !",
+   "dur": 0.498,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Nooon !",
+     "t": 0.099,
+     "d": 0.319
+    }
+   ],
+   "sig": "e3a2a26fe18f"
+  },
+  "oh_8": {
+   "file": "oh_8.mp3",
+   "text": "Ooooh !",
+   "dur": 0.448,
+   "fileDur": 1.27,
+   "words": [
+    {
+     "w": "Ooooh !",
+     "t": 0.111,
+     "d": 0.257
+    }
+   ],
+   "sig": "0d866e294a1d"
+  },
+  "b1_8": {
+   "file": "b1_8.mp3",
+   "text": "Allez, allez !",
+   "dur": 1.025,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Allez,",
+     "t": 0.099,
+     "d": 0.319
+    },
+    {
+     "w": "allez !",
+     "t": 0.663,
+     "d": 0.282
+    }
+   ],
+   "sig": "f71d3964a51c"
+  },
+  "ouais_8": {
+   "file": "ouais_8.mp3",
+   "text": "Ouaiiis !",
+   "dur": 0.608,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Ouaiiis !",
+     "t": 0.099,
+     "d": 0.429
+    }
+   ],
+   "sig": "199eb94718a9"
+  },
+  "b3_8": {
+   "file": "b3_8.mp3",
+   "text": "Il va tomber !",
+   "dur": 0.829,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Il",
+     "t": 0.111,
+     "d": 0.135
+    },
+    {
+     "w": "va",
+     "t": 0.246,
+     "d": 0.123
+    },
+    {
+     "w": "tomber !",
+     "t": 0.43,
+     "d": 0.319
+    }
+   ],
+   "sig": "125372e3b94c"
+  },
+  "b2_8": {
+   "file": "b2_8.mp3",
+   "text": "Oh là là, regarde !",
+   "dur": 1.367,
+   "fileDur": 2.26,
+   "words": [
+    {
+     "w": "Oh",
+     "t": 0.099,
+     "d": 0.074
+    },
+    {
+     "w": "là",
+     "t": 0.197,
+     "d": 0.123
+    },
+    {
+     "w": "là,",
+     "t": 0.332,
+     "d": 0.208
+    },
+    {
+     "w": "regarde !",
+     "t": 0.785,
+     "d": 0.502
+    }
+   ],
+   "sig": "876c27cd5356"
+  },
+  "oh_9": {
+   "file": "oh_9.mp3",
+   "text": "Ooooh !",
+   "dur": 0.497,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Ooooh !",
+     "t": 0.096,
+     "d": 0.321
+    }
+   ],
+   "sig": "bb147ce0652e"
+  },
+  "b5_8": {
+   "file": "b5_8.mp3",
+   "text": "C'est chaud !",
+   "dur": 0.62,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "C'est",
+     "t": 0.111,
+     "d": 0.184
+    },
+    {
+     "w": "chaud !",
+     "t": 0.393,
+     "d": 0.147
+    }
+   ],
+   "sig": "dbe66b0c9638"
+  },
+  "b4_8": {
+   "file": "b4_8.mp3",
+   "text": "Vas-y, vas-y !",
+   "dur": 1.343,
+   "fileDur": 2.16,
+   "words": [
+    {
+     "w": "Vas-y,",
+     "t": 0.099,
+     "d": 0.515
+    },
+    {
+     "w": "vas-y !",
+     "t": 0.81,
+     "d": 0.453
+    }
+   ],
+   "sig": "32315be8ec9c"
+  },
+  "b6_8": {
+   "file": "b6_8.mp3",
+   "text": "Mais non !",
+   "dur": 0.522,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Mais",
+     "t": 0.111,
+     "d": 0.172
+    },
+    {
+     "w": "non !",
+     "t": 0.295,
+     "d": 0.147
+    }
+   ],
+   "sig": "82a3589b38ce"
+  },
+  "non_9": {
+   "file": "non_9.mp3",
+   "text": "Nooon !",
+   "dur": 0.463,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Nooon !",
+     "t": 0.096,
+     "d": 0.287
+    }
+   ],
+   "sig": "54744683c95e"
+  },
+  "b1_9": {
+   "file": "b1_9.mp3",
+   "text": "Allez, allez !",
+   "dur": 1.002,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Allez,",
+     "t": 0.096,
+     "d": 0.321
+    },
+    {
+     "w": "allez !",
+     "t": 0.612,
+     "d": 0.31
+    }
+   ],
+   "sig": "4168b43b4a49"
+  },
+  "ouais_9": {
+   "file": "ouais_9.mp3",
+   "text": "Ouaiiis !",
+   "dur": 0.543,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Ouaiiis !",
+     "t": 0.096,
+     "d": 0.367
+    }
+   ],
+   "sig": "a40a0586aa5c"
+  },
+  "b2_9": {
+   "file": "b2_9.mp3",
+   "text": "Oh là là, regarde !",
+   "dur": 1.254,
+   "fileDur": 2.11,
+   "words": [
+    {
+     "w": "Oh",
+     "t": 0.096,
+     "d": 0.115
+    },
+    {
+     "w": "là",
+     "t": 0.234,
+     "d": 0.103
+    },
+    {
+     "w": "là,",
+     "t": 0.348,
+     "d": 0.195
+    },
+    {
+     "w": "regarde !",
+     "t": 0.727,
+     "d": 0.447
+    }
+   ],
+   "sig": "b10040a4148e"
+  },
+  "b5_9": {
+   "file": "b5_9.mp3",
+   "text": "C'est chaud !",
+   "dur": 0.634,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "C'est",
+     "t": 0.096,
+     "d": 0.229
+    },
+    {
+     "w": "chaud !",
+     "t": 0.348,
+     "d": 0.206
+    }
+   ],
+   "sig": "f5a3495a198d"
+  },
+  "b3_9": {
+   "file": "b3_9.mp3",
+   "text": "Il va tomber !",
+   "dur": 0.853,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Il",
+     "t": 0.096,
+     "d": 0.161
+    },
+    {
+     "w": "va",
+     "t": 0.256,
+     "d": 0.126
+    },
+    {
+     "w": "tomber !",
+     "t": 0.44,
+     "d": 0.333
+    }
+   ],
+   "sig": "9470e90aff1d"
+  },
+  "b4_9": {
+   "file": "b4_9.mp3",
+   "text": "Vas-y, vas-y !",
+   "dur": 1.197,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Vas-y,",
+     "t": 0.096,
+     "d": 0.447
+    },
+    {
+     "w": "vas-y !",
+     "t": 0.727,
+     "d": 0.39
+    }
+   ],
+   "sig": "bfc89f386921"
+  },
+  "b6_9": {
+   "file": "b6_9.mp3",
+   "text": "Mais non !",
+   "dur": 0.589,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Mais",
+     "t": 0.096,
+     "d": 0.206
+    },
+    {
+     "w": "non !",
+     "t": 0.314,
+     "d": 0.195
+    }
+   ],
+   "sig": "40eaf1a109ac"
+  },
+  "oh_10": {
+   "file": "oh_10.mp3",
+   "text": "Ooooh !",
+   "dur": 0.704,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Ooooh !",
+     "t": 0.1,
+     "d": 0.524
+    }
+   ],
+   "sig": "94be65fdab5a"
+  },
+  "non_10": {
+   "file": "non_10.mp3",
+   "text": "Nooon !",
+   "dur": 0.96,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Nooon !",
+     "t": 0.1,
+     "d": 0.78
+    }
+   ],
+   "sig": "9203b1465e34"
+  },
+  "ouais_10": {
+   "file": "ouais_10.mp3",
+   "text": "Ouaiiis !",
+   "dur": 0.933,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Ouaiiis !",
+     "t": 0.1,
+     "d": 0.753
+    }
+   ],
+   "sig": "e673c91971a7"
+  },
+  "b1_10": {
+   "file": "b1_10.mp3",
+   "text": "Allez, allez !",
+   "dur": 1.43,
+   "fileDur": 2.26,
+   "words": [
+    {
+     "w": "Allez,",
+     "t": 0.1,
+     "d": 0.524
+    },
+    {
+     "w": "allez !",
+     "t": 0.812,
+     "d": 0.538
+    }
+   ],
+   "sig": "b2afb5c41472"
+  },
+  "b2_10": {
+   "file": "b2_10.mp3",
+   "text": "Oh là là, regarde !",
+   "dur": 1.766,
+   "fileDur": 2.59,
+   "words": [
+    {
+     "w": "Oh",
+     "t": 0.1,
+     "d": 0.202
+    },
+    {
+     "w": "là",
+     "t": 0.302,
+     "d": 0.161
+    },
+    {
+     "w": "là,",
+     "t": 0.463,
+     "d": 0.229
+    },
+    {
+     "w": "regarde !",
+     "t": 0.893,
+     "d": 0.793
+    }
+   ],
+   "sig": "bdedfedc6a78"
+  },
+  "b3_10": {
+   "file": "b3_10.mp3",
+   "text": "Il va tomber !",
+   "dur": 1.229,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Il",
+     "t": 0.1,
+     "d": 0.269
+    },
+    {
+     "w": "va",
+     "t": 0.369,
+     "d": 0.148
+    },
+    {
+     "w": "tomber !",
+     "t": 0.517,
+     "d": 0.632
+    }
+   ],
+   "sig": "42dcc09fbf27"
+  },
+  "b5_10": {
+   "file": "b5_10.mp3",
+   "text": "C'est chaud !",
+   "dur": 1.027,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "C'est",
+     "t": 0.1,
+     "d": 0.323
+    },
+    {
+     "w": "chaud !",
+     "t": 0.423,
+     "d": 0.524
+    }
+   ],
+   "sig": "a7b906edb29a"
+  },
+  "b4_10": {
+   "file": "b4_10.mp3",
+   "text": "Vas-y, vas-y !",
+   "dur": 1.604,
+   "fileDur": 2.45,
+   "words": [
+    {
+     "w": "Vas-y,",
+     "t": 0.1,
+     "d": 0.632
+    },
+    {
+     "w": "vas-y !",
+     "t": 0.933,
+     "d": 0.591
+    }
+   ],
+   "sig": "b809acefc563"
+  },
+  "b6_10": {
+   "file": "b6_10.mp3",
+   "text": "Mais non !",
+   "dur": 0.906,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Mais",
+     "t": 0.1,
+     "d": 0.282
+    },
+    {
+     "w": "non !",
+     "t": 0.382,
+     "d": 0.444
+    }
+   ],
+   "sig": "ead0af99634e"
+  },
+  "non_11": {
+   "file": "non_11.mp3",
+   "text": "Nooon !",
+   "dur": 0.78,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Nooon !",
+     "t": 0.138,
+     "d": 0.562
+    }
+   ],
+   "sig": "16da309cc177"
+  },
+  "oh_11": {
+   "file": "oh_11.mp3",
+   "text": "Ooooh !",
+   "dur": 0.705,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Ooooh !",
+     "t": 0.138,
+     "d": 0.487
+    }
+   ],
+   "sig": "734ca2d3699d"
+  },
+  "ouais_11": {
+   "file": "ouais_11.mp3",
+   "text": "Ouaiiis !",
+   "dur": 0.78,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Ouaiiis !",
+     "t": 0.15,
+     "d": 0.55
+    }
+   ],
+   "sig": "854e06b50f77"
+  },
+  "b3_11": {
+   "file": "b3_11.mp3",
+   "text": "Il va tomber !",
+   "dur": 1.192,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Il",
+     "t": 0.1,
+     "d": 0.3
+    },
+    {
+     "w": "va",
+     "t": 0.4,
+     "d": 0.163
+    },
+    {
+     "w": "tomber !",
+     "t": 0.562,
+     "d": 0.55
+    }
+   ],
+   "sig": "43656a206cd6"
+  },
+  "b1_11": {
+   "file": "b1_11.mp3",
+   "text": "Allez, allez !",
+   "dur": 1.393,
+   "fileDur": 2.16,
+   "words": [
+    {
+     "w": "Allez,",
+     "t": 0.15,
+     "d": 0.375
+    },
+    {
+     "w": "allez !",
+     "t": 0.838,
+     "d": 0.475
+    }
+   ],
+   "sig": "37693f2edce6"
+  },
+  "b4_11": {
+   "file": "b4_11.mp3",
+   "text": "Vas-y, vas-y !",
+   "dur": 1.58,
+   "fileDur": 2.35,
+   "words": [
+    {
+     "w": "Vas-y,",
+     "t": 0.15,
+     "d": 0.463
+    },
+    {
+     "w": "vas-y !",
+     "t": 0.963,
+     "d": 0.537
+    }
+   ],
+   "sig": "f1dfed421fef"
+  },
+  "b2_11": {
+   "file": "b2_11.mp3",
+   "text": "Oh là là, regarde !",
+   "dur": 1.743,
+   "fileDur": 2.52,
+   "words": [
+    {
+     "w": "Oh",
+     "t": 0.15,
+     "d": 0.113
+    },
+    {
+     "w": "là",
+     "t": 0.263,
+     "d": 0.138
+    },
+    {
+     "w": "là,",
+     "t": 0.4,
+     "d": 0.188
+    },
+    {
+     "w": "regarde !",
+     "t": 0.975,
+     "d": 0.688
+    }
+   ],
+   "sig": "6cd40442d995"
+  },
+  "b6_11": {
+   "file": "b6_11.mp3",
+   "text": "Mais non !",
+   "dur": 0.842,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Mais",
+     "t": 0.1,
+     "d": 0.25
+    },
+    {
+     "w": "non !",
+     "t": 0.35,
+     "d": 0.412
+    }
+   ],
+   "sig": "64b74a06843b"
+  },
+  "b5_11": {
+   "file": "b5_11.mp3",
+   "text": "C'est chaud !",
+   "dur": 0.88,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "C'est",
+     "t": 0.1,
+     "d": 0.275
+    },
+    {
+     "w": "chaud !",
+     "t": 0.375,
+     "d": 0.425
+    }
+   ],
+   "sig": "c1073cf294f8"
+  }
+ }
+}

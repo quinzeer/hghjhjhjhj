@@ -1,0 +1,5 @@
+node_modules/
+episodes/*/tmp/
+# masters vidéo (≈70 Mo chacun) : régénérables à l'identique avec tools/render.mjs
+episodes/*/out/*.mp4
+dev/

@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arène des Nations · Studio</title>
+<link href="assets/fonts/fonts.css" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<style>
+  :root { --bg:#07080d; --panel:#10131c; --line:#232838; --ink:#eef1f8; --mute:#8b93a8; --red:#ff2d3d; --yel:#ffe11a; --cyan:#39d5ff; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font: 15px/1.45 Montserrat, system-ui, sans-serif; }
+  main { display: grid; grid-template-columns: auto minmax(300px, 420px); gap: 28px; padding: 24px; height: 100%; align-items: start; justify-content: center; }
+  .phone { position: relative; height: calc(100vh - 48px); aspect-ratio: 9/16; border-radius: 28px; overflow: hidden; background: #000; box-shadow: 0 0 0 10px #151822, 0 30px 80px rgba(0,0,0,.6); }
+  .phone canvas#out { width: 100%; height: 100%; display: block; }
+  #gl { display: none; }
+  .safe { position: absolute; inset: 0; pointer-events: none; display: none; }
+  .safe.on { display: block; }
+  .safe div { position: absolute; background: rgba(255,45,61,.18); border: 1px dashed rgba(255,45,61,.7); color: #fff; font: 700 11px Montserrat; padding: 4px; }
+  aside { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 20px; display: grid; gap: 16px; }
+  h1 { font: 400 34px/1 Anton, Impact, sans-serif; letter-spacing: .5px; margin: 0; }
+  h1 span { color: var(--yel); }
+  .sub { color: var(--mute); margin-top: 6px; font-size: 13px; }
+  label { font-weight: 700; font-size: 12px; letter-spacing: .6px; text-transform: uppercase; color: var(--mute); display: block; margin-bottom: 6px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  button, select, input { font: 700 14px Montserrat, sans-serif; color: var(--ink); background: #181c28; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  button { cursor: pointer; }
+  button.primary { background: var(--red); border-color: var(--red); }
+  button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+  input[type=range] { width: 100%; padding: 0; accent-color: var(--red); }
+  input[type=number] { width: 110px; }
+  .time { font: 400 22px Anton, sans-serif; letter-spacing: .5px; }
+  .note { font-size: 12.5px; color: var(--mute); border-top: 1px solid var(--line); padding-top: 12px; }
+  code { background: #181c28; padding: 1px 6px; border-radius: 6px; font-size: 12px; }
+  #status { font-size: 13px; color: var(--cyan); min-height: 1.2em; }
+  a { color: var(--cyan); }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; height: auto; } .phone { height: auto; width: 100%; } }
+</style>
+</head>
+<body>
+<main>
+  <div class="phone">
+    <canvas id="out" width="1080" height="1920"></canvas>
+    <canvas id="gl"></canvas>
+    <div class="safe" id="safe">
+      <div style="left:0;right:0;top:0;height:8.3%">onglets TikTok</div>
+      <div style="left:0;right:0;bottom:0;height:18.8%">légende · musique · pseudo</div>
+      <div style="right:0;top:45.8%;width:12%;height:35.4%">boutons</div>
+    </div>
+  </div>
+  <aside>
+    <div>
+      <h1>ARÈNE <span>DES NATIONS</span></h1>
+      <div class="sub">32 pays · 1 plateforme · 1 seul survivant. Simulation physique déterministe : un seed = une partie, rejouable à l'identique.</div>
+    </div>
+    <div>
+      <label for="mode">Partie</label>
+      <div class="row">
+        <select id="mode"><option value="ep01">Épisode 1 · seed 356 (voix neuronales)</option><option value="free">Seed libre (voix du navigateur)</option></select>
+        <input id="seed" type="number" min="1" max="999999" value="356" aria-label="Seed">
+        <button id="dice" title="Seed au hasard">🎲</button>
+      </div>
+    </div>
+    <div>
+      <label for="quality">Qualité d'aperçu</label>
+      <select id="quality"><option value="draft">Fluide (aperçu)</option><option value="high">Haute (lente sans GPU)</option></select>
+    </div>
+    <div>
+      <div class="row" style="justify-content:space-between"><button id="play" class="primary">▶ Lecture</button><span class="time" id="time">0,0 s</span></div>
+      <input id="scrub" type="range" min="0" max="1000" value="0" aria-label="Position">
+    </div>
+    <div class="row">
+      <button id="safeBtn">Zones sûres TikTok</button>
+      <button id="rec">⏺ Enregistrer (temps réel)</button>
+    </div>
+    <div id="status"></div>
+    <div class="note">
+      Rendu final image par image, sans perte d'images : <code>node tools/render.mjs episodes/ep01</code>.<br>
+      Nouvel épisode : <code>node tools/seed_search.mjs 1 400</code> → <code>node tools/episode.mjs &lt;seed&gt; episodes/ep02</code> → <code>python3 tools/tts.py episodes/ep02</code> → <code>node tools/render.mjs episodes/ep02</code>.
+    </div>
+  </aside>
+</main>
+<script type="module">
+import { setup, buildMix } from './src/app.js';
+
+const $ = (id) => document.getElementById(id);
+const out = $('out');
+let S = null, mix = null, actx = null, src = null, playing = false, t0 = 0, v = 0, recorder = null, recDest = null;
+let spoken = new Set();
+const status = (t) => ($('status').textContent = t);
+const fmt = (x) => `${x.toFixed(1).replace('.', ',')} s`;
+
+async function load() {
+  stop();
+  const free = $('mode').value === 'free';
+  const seed = free ? Math.max(1, +$('seed').value | 0) : 356;
+  $('seed').value = seed;
+  const q = $('quality').value;
+  status('Simulation de la partie…');
+  await new Promise((r) => setTimeout(r, 20));
+  // un nouveau contexte WebGL à chaque chargement : on remplace le canvas
+  if (S) { S.arena.renderer.dispose(); S.arena.renderer.forceContextLoss(); }
+  const fresh = document.createElement('canvas'); fresh.id = 'gl'; $('gl').replaceWith(fresh);
+  S = await setup({ seed, epDir: free ? null : 'episodes/ep01', glCanvas: fresh, outCanvas: out, quality: q, renderScale: q === 'high' ? 0.75 : 0.4 });
+  window.S = S;
+  v = 0; S.frame(0);
+  status('Mixage audio (bruitages, musique, foule, voix)…');
+  mix = await buildMix(S.D, free ? null : 'episodes/ep01', 'assets/crowd', { onProgress: status });
+  status(free ? `Seed ${seed} prêt. Voix : synthèse du navigateur (aperçu seulement).` : 'Épisode 1 prêt.');
+}
+
+function audioBuffer() {
+  actx = actx || new AudioContext({ sampleRate: 48000 });
+  const b = actx.createBuffer(2, mix[0].length, 48000);
+  b.copyToChannel(mix[0], 0); b.copyToChannel(mix[1], 1);
+  return b;
+}
+function start(from = v) {
+  if (!S || !mix) return;
+  actx = actx || new AudioContext({ sampleRate: 48000 });
+  src = actx.createBufferSource(); src.buffer = audioBuffer();
+  src.connect(actx.destination);
+  if (recDest) src.connect(recDest);
+  t0 = actx.currentTime - from;
+  src.start(0, from);
+  playing = true; $('play').textContent = '❚❚ Pause';
+  spoken = new Set(S.D.lines.filter((l) => l.v < from).map((l) => l.id));
+}
+function stop() {
+  if (src) { try { src.stop(); } catch {} src = null; }
+  playing = false; $('play').textContent = '▶ Lecture';
+  if (window.speechSynthesis) speechSynthesis.cancel();
+}
+function browserVoice(L) {
+  if (L.file || !window.speechSynthesis) return;
+  const u = new SpeechSynthesisUtterance(L.text);
+  const fr = speechSynthesis.getVoices().filter((x) => x.lang && x.lang.startsWith('fr'));
+  if (fr.length) u.voice = fr.find((x) => /natural|neural|online/i.test(x.name)) || fr[0];
+  u.lang = 'fr-FR'; u.rate = 1.12;
+  speechSynthesis.speak(u);
+}
+function tick() {
+  if (S) {
+    if (playing) {
+      v = actx.currentTime - t0;
+      for (const L of S.D.lines) if (!spoken.has(L.id) && v >= L.v) { spoken.add(L.id); if (!L.file) browserVoice(L); }
+      if (v >= S.D.duration) { stop(); v = 0; if (recorder) recorder.stop(); }
+    }
+    S.frame(Math.min(v, S.D.duration - 0.001));
+    $('time').textContent = `${fmt(v)} / ${fmt(S.D.duration)}`;
+    $('scrub').value = Math.round((v / S.D.duration) * 1000);
+  }
+  requestAnimationFrame(tick);
+}
+
+$('play').onclick = () => (playing ? (stop()) : start(v));
+$('scrub').oninput = (e) => { const was = playing; stop(); v = (e.target.value / 1000) * (S ? S.D.duration : 1); if (was) start(v); };
+$('mode').onchange = load; $('quality').onchange = load;
+$('seed').onchange = () => { $('mode').value = 'free'; load(); };
+$('dice').onclick = () => { $('seed').value = 1 + Math.floor(Math.random() * 99999); $('mode').value = 'free'; load(); };
+$('safeBtn').onclick = () => $('safe').classList.toggle('on');
+$('rec').onclick = () => {
+  if (!S || !mix) return;
+  if (recorder) { recorder.stop(); return; }
+  actx = actx || new AudioContext({ sampleRate: 48000 });
+  recDest = actx.createMediaStreamDestination();
+  const stream = new MediaStream([...out.captureStream(30).getVideoTracks(), ...recDest.stream.getAudioTracks()]);
+  const types = ['video/mp4;codecs=avc1.640028,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm'];
+  const mimeType = types.find((t) => window.MediaRecorder && MediaRecorder.isTypeSupported(t)) || '';
+  const chunks = [];
+  recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 12e6 });
+  recorder.ondataavailable = (e) => e.data.size && chunks.push(e.data);
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: recorder.mimeType });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = `arene-seed-${S.rec.seed}.${recorder.mimeType.includes('mp4') ? 'mp4' : 'webm'}`;
+    a.textContent = `Télécharger ${a.download}`;
+    $('status').replaceChildren(a);
+    recorder = null; recDest = null; $('rec').textContent = '⏺ Enregistrer (temps réel)';
+  };
+  stop(); v = 0; recorder.start(250); start(0);
+  $('rec').textContent = '■ Arrêter';
+  status('Enregistrement… (les voix du navigateur ne sont pas capturées)');
+};
+
+load().then(() => requestAnimationFrame(tick)).catch((e) => status('Erreur : ' + e.message));
+</script>
+</body>
+</html>

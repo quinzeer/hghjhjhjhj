@@ -1,0 +1,16 @@
+{
+  "name": "arene-des-nations",
+  "private": true,
+  "type": "module",
+  "description": "Générateur de TikTok 3D (three.js) : 32 pays, une plateforme, un seul survivant.",
+  "scripts": {
+    "seeds": "node tools/seed_search.mjs",
+    "episode": "node tools/episode.mjs",
+    "render": "node tools/render.mjs",
+    "serve": "npx http-server -p 8080 -c-1 ."
+  },
+  "devDependencies": {
+    "playwright": "1.56.1",
+    "three": "0.170.0"
+  }
+}

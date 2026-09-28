@@ -1,0 +1,425 @@
+{
+  "version": "1.0",
+  "format": "short",
+  "plateforme": "tiktok",
+  "langue": "fr",
+  "duree_totale_s": 61.04,
+  "promesse": "Tu vas voir lequel des 32 pays survit seul sur la plateforme.",
+  "titres": [
+    "32 pays, 1 seul survivant",
+    "Ton pays tient combien de temps ?",
+    "Le dernier pays debout gagne"
+  ],
+  "titre_en": "32 countries, only 1 survives",
+  "premiere_image": "Pluie de 32 billes-drapeaux sur un plateau de jeu télé, titre « 32 PAYS · 1 SEUL SURVIVANT »",
+  "video_suivante": "Épisode 2 : revanche avec un nouveau seed",
+  "divulgation_ia": {
+    "requise": true,
+    "raison": "voix off synthétique réaliste (TTS neuronal) ; images de synthèse 3D"
+  },
+  "controle": {
+    "publiable": true,
+    "raisons_blocage": [],
+    "faits_a_verifier": [],
+    "seed": 356
+  },
+  "scenes": [
+    {
+      "id": "S01",
+      "role": "hook",
+      "debut_s": 0,
+      "duree_s": 2.9,
+      "voix_off": "Trente-deux pays. Un seul survivant.",
+      "ton": "posé, tranchant",
+      "avatar": "hors_champ",
+      "visuel": "Plan grue : pluie de 32 billes-drapeaux sur le plateau",
+      "texte_ecran": "32 PAYS · 1 SEUL SURVIVANT",
+      "son": "clics de billes, musique tendue",
+      "boucles": {
+        "ouvre": [
+          "Q1"
+        ],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S02",
+      "role": "contenu",
+      "debut_s": 2.9,
+      "duree_s": 5.24,
+      "voix_off": "Choisis ton pays. Maintenant. Premier éliminé : le Cameroun !",
+      "ton": "énergique, rapide",
+      "avatar": "hors_champ",
+      "visuel": "Plan large 3/4 type retransmission, légère orbite — élimination(s) : Cameroun, Italie",
+      "texte_ecran": "CAMEROUN OUT",
+      "son": "clics de billes, musique tendue",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S03",
+      "role": "contenu",
+      "debut_s": 8.14,
+      "duree_s": 1.33,
+      "voix_off": "Les Pays-Bas et la Guinée tombent ensemble !",
+      "ton": "énergique, rapide",
+      "avatar": "hors_champ",
+      "visuel": "Zoom coup de poing sur la chute — élimination(s) : Pays-Bas, Guinée",
+      "texte_ecran": "PAYS-BAS OUT",
+      "son": "clics de billes, musique tendue",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S04",
+      "role": "contenu",
+      "debut_s": 9.47,
+      "duree_s": 3.55,
+      "voix_off": "Le Mexique saute !",
+      "ton": "énergique, rapide",
+      "avatar": "hors_champ",
+      "visuel": "Plan large 3/4 type retransmission, légère orbite — élimination(s) : Mexique",
+      "texte_ecran": "MEXIQUE OUT",
+      "son": "clics de billes, musique tendue",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S05",
+      "role": "contenu",
+      "debut_s": 13.02,
+      "duree_s": 1.33,
+      "voix_off": "Le Bénin et les États-Unis tombent ensemble !",
+      "ton": "énergique, rapide",
+      "avatar": "hors_champ",
+      "visuel": "Zoom coup de poing sur la chute — élimination(s) : Bénin, États-Unis",
+      "texte_ecran": "BÉNIN OUT",
+      "son": "clics de billes, musique tendue",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S06",
+      "role": "contenu",
+      "debut_s": 14.35,
+      "duree_s": 5,
+      "voix_off": "La Côte d'Ivoire, c'est fini ! La Turquie saute !",
+      "ton": "énergique, rapide",
+      "avatar": "hors_champ",
+      "visuel": "Plan large 3/4 type retransmission, légère orbite — élimination(s) : Côte d'Ivoire, Turquie",
+      "texte_ecran": "CÔTE D'IVOIRE OUT",
+      "son": "clics de billes, musique tendue",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S07",
+      "role": "contenu",
+      "debut_s": 19.35,
+      "duree_s": 0.99,
+      "voix_off": "",
+      "ton": "énergique, rapide",
+      "avatar": "hors_champ",
+      "visuel": "Plan large 3/4 type retransmission, légère orbite — élimination(s) : Madagascar",
+      "texte_ecran": "MADAGASCAR OUT",
+      "son": "clics de billes, musique tendue",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S08",
+      "role": "relance",
+      "debut_s": 20.33,
+      "duree_s": 2.69,
+      "voix_off": "Manche deux : le bras de la mort !",
+      "ton": "énergique, rapide",
+      "avatar": "hors_champ",
+      "visuel": "Plan bas en travelling circulaire — élimination(s) : Sénégal, Togo, Espagne, RD Congo",
+      "texte_ecran": "MANCHE 2 · LE BRAS DE LA MORT",
+      "son": "clics de billes, musique tendue",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S09",
+      "role": "contenu",
+      "debut_s": 23.03,
+      "duree_s": 1.33,
+      "voix_off": "Le Mali et Haïti tombent ensemble !",
+      "ton": "énergique, rapide",
+      "avatar": "hors_champ",
+      "visuel": "Zoom coup de poing sur la chute — élimination(s) : Mali, Haïti",
+      "texte_ecran": "MALI OUT",
+      "son": "clics de billes, musique tendue",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S10",
+      "role": "contenu",
+      "debut_s": 24.36,
+      "duree_s": 5,
+      "voix_off": "Le Burkina tombe ! Adieu la Belgique !",
+      "ton": "énergique, rapide",
+      "avatar": "hors_champ",
+      "visuel": "Plan large 3/4 type retransmission, légère orbite — élimination(s) : Burkina Faso, Belgique",
+      "texte_ecran": "BURKINA FASO OUT",
+      "son": "clics de billes, musique tendue",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S11",
+      "role": "contenu",
+      "debut_s": 29.36,
+      "duree_s": 0.91,
+      "voix_off": "",
+      "ton": "énergique, rapide",
+      "avatar": "hors_champ",
+      "visuel": "Plan large 3/4 type retransmission, légère orbite",
+      "texte_ecran": "",
+      "son": "clics de billes, musique tendue",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S12",
+      "role": "contenu",
+      "debut_s": 30.27,
+      "duree_s": 1.33,
+      "voix_off": "",
+      "ton": "énergique, rapide",
+      "avatar": "hors_champ",
+      "visuel": "Zoom coup de poing sur la chute — élimination(s) : Japon, Canada",
+      "texte_ecran": "JAPON OUT",
+      "son": "clics de billes, musique tendue",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S13",
+      "role": "contenu",
+      "debut_s": 31.6,
+      "duree_s": 3.11,
+      "voix_off": "Plus que dix !",
+      "ton": "énergique, rapide",
+      "avatar": "hors_champ",
+      "visuel": "Plan large 3/4 type retransmission, légère orbite — élimination(s) : Gabon, Niger",
+      "texte_ecran": "GABON OUT",
+      "son": "clics de billes, musique tendue",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S14",
+      "role": "relance",
+      "debut_s": 34.71,
+      "duree_s": 2.55,
+      "voix_off": "Manche trois : plus aucune barrière !",
+      "ton": "énergique, rapide",
+      "avatar": "hors_champ",
+      "visuel": "Plan bas en travelling circulaire — élimination(s) : Portugal, France",
+      "texte_ecran": "MANCHE 3 · PLUS DE BARRIÈRES",
+      "son": "clics de billes, musique tendue",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S15",
+      "role": "contenu",
+      "debut_s": 37.26,
+      "duree_s": 0.44,
+      "voix_off": "",
+      "ton": "énergique, rapide",
+      "avatar": "hors_champ",
+      "visuel": "Plan large 3/4 type retransmission, légère orbite",
+      "texte_ecran": "",
+      "son": "clics de billes, musique tendue",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S16",
+      "role": "contenu",
+      "debut_s": 37.7,
+      "duree_s": 1.33,
+      "voix_off": "L'Allemagne et la Suisse tombent ensemble !",
+      "ton": "énergique, rapide",
+      "avatar": "hors_champ",
+      "visuel": "Zoom coup de poing sur la chute — élimination(s) : Angleterre, Allemagne, Suisse",
+      "texte_ecran": "ANGLETERRE OUT",
+      "son": "clics de billes, musique tendue",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S17",
+      "role": "contenu",
+      "debut_s": 39.03,
+      "duree_s": 1.27,
+      "voix_off": "",
+      "ton": "énergique, rapide",
+      "avatar": "hors_champ",
+      "visuel": "Plan large 3/4 type retransmission, légère orbite — élimination(s) : Tunisie, Argentine",
+      "texte_ecran": "TUNISIE OUT",
+      "son": "clics de billes, musique tendue",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S18",
+      "role": "relance",
+      "debut_s": 40.3,
+      "duree_s": 5,
+      "voix_off": "C'est la finale. L'Algérie contre le Brésil.",
+      "ton": "énergique, rapide",
+      "avatar": "hors_champ",
+      "visuel": "Plan serré en orbite sur les deux finalistes — élimination(s) : Maroc",
+      "texte_ecran": "FINALE",
+      "son": "clics de billes, musique tendue",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S19",
+      "role": "contenu",
+      "debut_s": 45.3,
+      "duree_s": 1.31,
+      "voix_off": "Qui va craquer ?",
+      "ton": "énergique, rapide",
+      "avatar": "hors_champ",
+      "visuel": "Plan serré en orbite sur les deux finalistes",
+      "texte_ecran": "",
+      "son": "clics de billes, musique tendue",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S20",
+      "role": "payoff",
+      "debut_s": 46.6,
+      "duree_s": 4.71,
+      "voix_off": "L'Algérie gagne !",
+      "ton": "explosif",
+      "avatar": "hors_champ",
+      "visuel": "Plan rapproché, ralenti 0,2× — élimination(s) : Brésil",
+      "texte_ecran": "BRÉSIL OUT",
+      "son": "impact + foule en liesse",
+      "boucles": {
+        "ouvre": [],
+        "ferme": [
+          "Q1"
+        ]
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S21",
+      "role": "contenu",
+      "debut_s": 51.31,
+      "duree_s": 4.13,
+      "voix_off": "Regarde bien. Tout s'est joué ici.",
+      "ton": "énergique, rapide",
+      "avatar": "hors_champ",
+      "visuel": "Replay latéral au ralenti 0,4×",
+      "texte_ecran": "",
+      "son": "clics de billes, musique tendue",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S22",
+      "role": "payoff",
+      "debut_s": 55.44,
+      "duree_s": 1.7,
+      "voix_off": "",
+      "ton": "explosif",
+      "avatar": "hors_champ",
+      "visuel": "Orbite autour du vainqueur en lévitation, confettis",
+      "texte_ecran": "",
+      "son": "impact + foule en liesse",
+      "boucles": {
+        "ouvre": [],
+        "ferme": [
+          "Q1"
+        ]
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S23",
+      "role": "boucle",
+      "debut_s": 57.14,
+      "duree_s": 3.9,
+      "voix_off": "Et ton pays, il a fini où ?",
+      "ton": "énergique, rapide",
+      "avatar": "hors_champ",
+      "visuel": "Orbite autour du vainqueur en lévitation, confettis",
+      "texte_ecran": "",
+      "son": "clics de billes, musique tendue",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    }
+  ]
+}

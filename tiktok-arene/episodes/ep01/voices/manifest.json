@@ -1,0 +1,955 @@
+{
+ "engine": "edge",
+ "lines": {
+  "hook": {
+   "file": "hook.mp3",
+   "text": "Trente-deux pays. Un seul survivant.",
+   "dur": 2.5,
+   "fileDur": 2.74,
+   "words": [
+    {
+     "w": "Trente-deux",
+     "t": 0.083,
+     "d": 0.377
+    },
+    {
+     "w": "pays.",
+     "t": 0.46,
+     "d": 0.46
+    },
+    {
+     "w": "Un",
+     "t": 1.241,
+     "d": 0.236
+    },
+    {
+     "w": "seul",
+     "t": 1.477,
+     "d": 0.283
+    },
+    {
+     "w": "survivant.",
+     "t": 1.76,
+     "d": 0.66
+    }
+   ],
+   "sig": "c02b09339fec"
+  },
+  "choose": {
+   "file": "choose.mp3",
+   "text": "Choisis ton pays. Maintenant.",
+   "dur": 2.086,
+   "fileDur": 2.33,
+   "words": [
+    {
+     "w": "Choisis",
+     "t": 0.081,
+     "d": 0.382
+    },
+    {
+     "w": "ton",
+     "t": 0.463,
+     "d": 0.15
+    },
+    {
+     "w": "pays.",
+     "t": 0.613,
+     "d": 0.428
+    },
+    {
+     "w": "Maintenant.",
+     "t": 1.358,
+     "d": 0.648
+    }
+   ],
+   "sig": "4210854ba7d5"
+  },
+  "r2": {
+   "file": "r2.mp3",
+   "text": "Manche deux : le bras de la mort !",
+   "dur": 2.026,
+   "fileDur": 2.28,
+   "words": [
+    {
+     "w": "Manche",
+     "t": 0.083,
+     "d": 0.307
+    },
+    {
+     "w": "deux :",
+     "t": 0.389,
+     "d": 0.259
+    },
+    {
+     "w": "le",
+     "t": 1.05,
+     "d": 0.094
+    },
+    {
+     "w": "bras",
+     "t": 1.144,
+     "d": 0.2
+    },
+    {
+     "w": "de",
+     "t": 1.344,
+     "d": 0.083
+    },
+    {
+     "w": "la",
+     "t": 1.427,
+     "d": 0.094
+    },
+    {
+     "w": "mort !",
+     "t": 1.521,
+     "d": 0.425
+    }
+   ],
+   "sig": "dedaa8a89dab"
+  },
+  "r3": {
+   "file": "r3.mp3",
+   "text": "Manche trois : plus aucune barrière !",
+   "dur": 2.203,
+   "fileDur": 2.45,
+   "words": [
+    {
+     "w": "Manche",
+     "t": 0.094,
+     "d": 0.271
+    },
+    {
+     "w": "trois :",
+     "t": 0.366,
+     "d": 0.354
+    },
+    {
+     "w": "plus",
+     "t": 1.014,
+     "d": 0.236
+    },
+    {
+     "w": "aucune",
+     "t": 1.25,
+     "d": 0.248
+    },
+    {
+     "w": "barrière !",
+     "t": 1.498,
+     "d": 0.625
+    }
+   ],
+   "sig": "338a08ab8c22"
+  },
+  "ten": {
+   "file": "ten.mp3",
+   "text": "Plus que dix !",
+   "dur": 1.061,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Plus",
+     "t": 0.05,
+     "d": 0.295
+    },
+    {
+     "w": "que",
+     "t": 0.345,
+     "d": 0.125
+    },
+    {
+     "w": "dix !",
+     "t": 0.47,
+     "d": 0.511
+    }
+   ],
+   "sig": "8f301907d759"
+  },
+  "three": {
+   "file": "three.mp3",
+   "text": "Il en reste trois.",
+   "dur": 1.183,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Il",
+     "t": 0.086,
+     "d": 0.172
+    },
+    {
+     "w": "en",
+     "t": 0.257,
+     "d": 0.061
+    },
+    {
+     "w": "reste",
+     "t": 0.319,
+     "d": 0.355
+    },
+    {
+     "w": "trois.",
+     "t": 0.674,
+     "d": 0.429
+    }
+   ],
+   "sig": "5c6fad8b0ee9"
+  },
+  "crack": {
+   "file": "crack.mp3",
+   "text": "Qui va craquer ?",
+   "dur": 1.055,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Qui",
+     "t": 0.087,
+     "d": 0.125
+    },
+    {
+     "w": "va",
+     "t": 0.212,
+     "d": 0.125
+    },
+    {
+     "w": "craquer ?",
+     "t": 0.338,
+     "d": 0.637
+    }
+   ],
+   "sig": "7f3bc07671ff"
+  },
+  "replay": {
+   "file": "replay.mp3",
+   "text": "Regarde bien. Tout s'est joué ici.",
+   "dur": 2.566,
+   "fileDur": 2.86,
+   "words": [
+    {
+     "w": "Regarde",
+     "t": 0.077,
+     "d": 0.472
+    },
+    {
+     "w": "bien.",
+     "t": 0.548,
+     "d": 0.395
+    },
+    {
+     "w": "Tout",
+     "t": 1.287,
+     "d": 0.217
+    },
+    {
+     "w": "s'est",
+     "t": 1.504,
+     "d": 0.179
+    },
+    {
+     "w": "joué",
+     "t": 1.683,
+     "d": 0.255
+    },
+    {
+     "w": "ici.",
+     "t": 1.938,
+     "d": 0.548
+    }
+   ],
+   "sig": "4f976464dfad"
+  },
+  "end": {
+   "file": "end.mp3",
+   "text": "Et ton pays, il a fini où ?",
+   "dur": 1.822,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Et",
+     "t": 0.084,
+     "d": 0.084
+    },
+    {
+     "w": "ton",
+     "t": 0.168,
+     "d": 0.168
+    },
+    {
+     "w": "pays,",
+     "t": 0.337,
+     "d": 0.397
+    },
+    {
+     "w": "il",
+     "t": 1.01,
+     "d": 0.108
+    },
+    {
+     "w": "a",
+     "t": 1.118,
+     "d": 0.048
+    },
+    {
+     "w": "fini",
+     "t": 1.166,
+     "d": 0.373
+    },
+    {
+     "w": "où ?",
+     "t": 1.538,
+     "d": 0.204
+    }
+   ],
+   "sig": "1caaf3ade546"
+  },
+  "e1": {
+   "file": "e1.mp3",
+   "text": "Bye bye l'Italie !",
+   "dur": 1.182,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Bye",
+     "t": 0.05,
+     "d": 0.296
+    },
+    {
+     "w": "bye",
+     "t": 0.346,
+     "d": 0.208
+    },
+    {
+     "w": "l'Italie !",
+     "t": 0.554,
+     "d": 0.548
+    }
+   ],
+   "sig": "3d56720de8b3"
+  },
+  "e2": {
+   "file": "e2.mp3",
+   "text": "Les Pays-Bas et la Guinée tombent ensemble !",
+   "dur": 2.108,
+   "fileDur": 2.35,
+   "words": [
+    {
+     "w": "Les",
+     "t": 0.088,
+     "d": 0.132
+    },
+    {
+     "w": "Pays-Bas",
+     "t": 0.219,
+     "d": 0.493
+    },
+    {
+     "w": "et",
+     "t": 0.8,
+     "d": 0.055
+    },
+    {
+     "w": "la",
+     "t": 0.855,
+     "d": 0.11
+    },
+    {
+     "w": "Guinée",
+     "t": 0.965,
+     "d": 0.274
+    },
+    {
+     "w": "tombent",
+     "t": 1.239,
+     "d": 0.186
+    },
+    {
+     "w": "ensemble !",
+     "t": 1.425,
+     "d": 0.603
+    }
+   ],
+   "sig": "bc06499b26ad"
+  },
+  "e0": {
+   "file": "e0.mp3",
+   "text": "Premier éliminé : le Cameroun !",
+   "dur": 2.168,
+   "fileDur": 2.4,
+   "words": [
+    {
+     "w": "Premier",
+     "t": 0.048,
+     "d": 0.428
+    },
+    {
+     "w": "éliminé :",
+     "t": 0.476,
+     "d": 0.559
+    },
+    {
+     "w": "le",
+     "t": 1.353,
+     "d": 0.077
+    },
+    {
+     "w": "Cameroun !",
+     "t": 1.43,
+     "d": 0.658
+    }
+   ],
+   "sig": "2b29ad4c2363"
+  },
+  "e4": {
+   "file": "e4.mp3",
+   "text": "Le Mexique saute !",
+   "dur": 1.198,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Le",
+     "t": 0.077,
+     "d": 0.164
+    },
+    {
+     "w": "Mexique",
+     "t": 0.241,
+     "d": 0.362
+    },
+    {
+     "w": "saute !",
+     "t": 0.603,
+     "d": 0.515
+    }
+   ],
+   "sig": "9be808904966"
+  },
+  "e5": {
+   "file": "e5.mp3",
+   "text": "Le Bénin et les États-Unis tombent ensemble !",
+   "dur": 2.273,
+   "fileDur": 2.5,
+   "words": [
+    {
+     "w": "Le",
+     "t": 0.088,
+     "d": 0.164
+    },
+    {
+     "w": "Bénin",
+     "t": 0.252,
+     "d": 0.384
+    },
+    {
+     "w": "et",
+     "t": 0.713,
+     "d": 0.044
+    },
+    {
+     "w": "les",
+     "t": 0.757,
+     "d": 0.088
+    },
+    {
+     "w": "États-Unis",
+     "t": 0.844,
+     "d": 0.537
+    },
+    {
+     "w": "tombent",
+     "t": 1.382,
+     "d": 0.197
+    },
+    {
+     "w": "ensemble !",
+     "t": 1.579,
+     "d": 0.614
+    }
+   ],
+   "sig": "366d8699911c"
+  },
+  "e7": {
+   "file": "e7.mp3",
+   "text": "La Côte d'Ivoire, c'est fini !",
+   "dur": 1.846,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "La",
+     "t": 0.088,
+     "d": 0.121
+    },
+    {
+     "w": "Côte",
+     "t": 0.208,
+     "d": 0.186
+    },
+    {
+     "w": "d'Ivoire,",
+     "t": 0.395,
+     "d": 0.515
+    },
+    {
+     "w": "c'est",
+     "t": 1.195,
+     "d": 0.121
+    },
+    {
+     "w": "fini !",
+     "t": 1.316,
+     "d": 0.45
+    }
+   ],
+   "sig": "c4a191cd33ad"
+  },
+  "e8": {
+   "file": "e8.mp3",
+   "text": "La Turquie saute !",
+   "dur": 1.176,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "La",
+     "t": 0.088,
+     "d": 0.143
+    },
+    {
+     "w": "Turquie",
+     "t": 0.23,
+     "d": 0.351
+    },
+    {
+     "w": "saute !",
+     "t": 0.581,
+     "d": 0.515
+    }
+   ],
+   "sig": "21508ff4c12a"
+  },
+  "e9": {
+   "file": "e9.mp3",
+   "text": "Bye bye Madagascar !",
+   "dur": 1.413,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Bye",
+     "t": 0.05,
+     "d": 0.252
+    },
+    {
+     "w": "bye",
+     "t": 0.302,
+     "d": 0.143
+    },
+    {
+     "w": "Madagascar !",
+     "t": 0.445,
+     "d": 0.888
+    }
+   ],
+   "sig": "1c1952b01d1d"
+  },
+  "e10": {
+   "file": "e10.mp3",
+   "text": "Double élimination !",
+   "dur": 1.347,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Double",
+     "t": 0.05,
+     "d": 0.384
+    },
+    {
+     "w": "élimination !",
+     "t": 0.445,
+     "d": 0.822
+    }
+   ],
+   "sig": "f171805c21e5"
+  },
+  "e12": {
+   "file": "e12.mp3",
+   "text": "Double élimination !",
+   "dur": 1.347,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Double",
+     "t": 0.05,
+     "d": 0.384
+    },
+    {
+     "w": "élimination !",
+     "t": 0.445,
+     "d": 0.822
+    }
+   ],
+   "sig": "f171805c21e5"
+  },
+  "e16": {
+   "file": "e16.mp3",
+   "text": "Le Burkina tombe !",
+   "dur": 1.242,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Le",
+     "t": 0.088,
+     "d": 0.153
+    },
+    {
+     "w": "Burkina",
+     "t": 0.241,
+     "d": 0.439
+    },
+    {
+     "w": "tombe !",
+     "t": 0.68,
+     "d": 0.482
+    }
+   ],
+   "sig": "63ef505c3465"
+  },
+  "e17": {
+   "file": "e17.mp3",
+   "text": "Adieu la Belgique !",
+   "dur": 1.199,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Adieu",
+     "t": 0.088,
+     "d": 0.274
+    },
+    {
+     "w": "la",
+     "t": 0.362,
+     "d": 0.088
+    },
+    {
+     "w": "Belgique !",
+     "t": 0.45,
+     "d": 0.669
+    }
+   ],
+   "sig": "0036dde1ba76"
+  },
+  "e14": {
+   "file": "e14.mp3",
+   "text": "Le Mali et Haïti tombent ensemble !",
+   "dur": 1.856,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Le",
+     "t": 0.088,
+     "d": 0.143
+    },
+    {
+     "w": "Mali",
+     "t": 0.23,
+     "d": 0.318
+    },
+    {
+     "w": "et",
+     "t": 0.559,
+     "d": 0.099
+    },
+    {
+     "w": "Haïti",
+     "t": 0.658,
+     "d": 0.329
+    },
+    {
+     "w": "tombent",
+     "t": 0.987,
+     "d": 0.186
+    },
+    {
+     "w": "ensemble !",
+     "t": 1.173,
+     "d": 0.603
+    }
+   ],
+   "sig": "528a72d36e12"
+  },
+  "e18": {
+   "file": "e18.mp3",
+   "text": "Le Japon et le Canada tombent ensemble !",
+   "dur": 2.163,
+   "fileDur": 2.4,
+   "words": [
+    {
+     "w": "Le",
+     "t": 0.088,
+     "d": 0.153
+    },
+    {
+     "w": "Japon",
+     "t": 0.241,
+     "d": 0.417
+    },
+    {
+     "w": "et",
+     "t": 0.735,
+     "d": 0.077
+    },
+    {
+     "w": "le",
+     "t": 0.811,
+     "d": 0.088
+    },
+    {
+     "w": "Canada",
+     "t": 0.899,
+     "d": 0.384
+    },
+    {
+     "w": "tombent",
+     "t": 1.283,
+     "d": 0.197
+    },
+    {
+     "w": "ensemble !",
+     "t": 1.48,
+     "d": 0.603
+    }
+   ],
+   "sig": "a1b4931a3300"
+  },
+  "e20": {
+   "file": "e20.mp3",
+   "text": "Le Gabon et le Niger tombent ensemble !",
+   "dur": 2.043,
+   "fileDur": 2.28,
+   "words": [
+    {
+     "w": "Le",
+     "t": 0.088,
+     "d": 0.153
+    },
+    {
+     "w": "Gabon",
+     "t": 0.241,
+     "d": 0.351
+    },
+    {
+     "w": "et",
+     "t": 0.603,
+     "d": 0.077
+    },
+    {
+     "w": "le",
+     "t": 0.68,
+     "d": 0.077
+    },
+    {
+     "w": "Niger",
+     "t": 0.757,
+     "d": 0.406
+    },
+    {
+     "w": "tombent",
+     "t": 1.162,
+     "d": 0.186
+    },
+    {
+     "w": "ensemble !",
+     "t": 1.349,
+     "d": 0.614
+    }
+   ],
+   "sig": "1db5cf17a5a5"
+  },
+  "e24": {
+   "file": "e24.mp3",
+   "text": "Bye bye l'Angleterre !",
+   "dur": 1.368,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Bye",
+     "t": 0.048,
+     "d": 0.285
+    },
+    {
+     "w": "bye",
+     "t": 0.334,
+     "d": 0.208
+    },
+    {
+     "w": "l'Angleterre !",
+     "t": 0.542,
+     "d": 0.746
+    }
+   ],
+   "sig": "4d0bab069dcc"
+  },
+  "e22": {
+   "file": "e22.mp3",
+   "text": "Le Portugal et la France tombent ensemble !",
+   "dur": 2.141,
+   "fileDur": 2.38,
+   "words": [
+    {
+     "w": "Le",
+     "t": 0.088,
+     "d": 0.132
+    },
+    {
+     "w": "Portugal",
+     "t": 0.219,
+     "d": 0.482
+    },
+    {
+     "w": "et",
+     "t": 0.702,
+     "d": 0.022
+    },
+    {
+     "w": "la",
+     "t": 0.724,
+     "d": 0.11
+    },
+    {
+     "w": "France",
+     "t": 0.833,
+     "d": 0.417
+    },
+    {
+     "w": "tombent",
+     "t": 1.261,
+     "d": 0.186
+    },
+    {
+     "w": "ensemble !",
+     "t": 1.447,
+     "d": 0.614
+    }
+   ],
+   "sig": "8b9f71f2aae2"
+  },
+  "e27": {
+   "file": "e27.mp3",
+   "text": "Double élimination !",
+   "dur": 1.347,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "Double",
+     "t": 0.05,
+     "d": 0.384
+    },
+    {
+     "w": "élimination !",
+     "t": 0.445,
+     "d": 0.822
+    }
+   ],
+   "sig": "f171805c21e5"
+  },
+  "e25": {
+   "file": "e25.mp3",
+   "text": "L'Allemagne et la Suisse tombent ensemble !",
+   "dur": 1.922,
+   "fileDur": 2.16,
+   "words": [
+    {
+     "w": "L'Allemagne",
+     "t": 0.088,
+     "d": 0.482
+    },
+    {
+     "w": "et",
+     "t": 0.581,
+     "d": 0.033
+    },
+    {
+     "w": "la",
+     "t": 0.614,
+     "d": 0.11
+    },
+    {
+     "w": "Suisse",
+     "t": 0.724,
+     "d": 0.318
+    },
+    {
+     "w": "tombent",
+     "t": 1.042,
+     "d": 0.186
+    },
+    {
+     "w": "ensemble !",
+     "t": 1.228,
+     "d": 0.614
+    }
+   ],
+   "sig": "8aae127aaa8e"
+  },
+  "win": {
+   "file": "win.mp3",
+   "text": "L'Algérie gagne !",
+   "dur": 1.258,
+   "fileDur": 2.09,
+   "words": [
+    {
+     "w": "L'Algérie",
+     "t": 0.084,
+     "d": 0.553
+    },
+    {
+     "w": "gagne !",
+     "t": 0.637,
+     "d": 0.541
+    }
+   ],
+   "sig": "ca1284bcd76e"
+  },
+  "final": {
+   "file": "final.mp3",
+   "text": "C'est la finale. L'Algérie contre le Brésil.",
+   "dur": 3.543,
+   "fileDur": 3.82,
+   "words": [
+    {
+     "w": "C'est",
+     "t": 0.051,
+     "d": 0.286
+    },
+    {
+     "w": "la",
+     "t": 0.337,
+     "d": 0.13
+    },
+    {
+     "w": "finale.",
+     "t": 0.467,
+     "d": 0.69
+    },
+    {
+     "w": "L'Algérie",
+     "t": 1.562,
+     "d": 0.69
+    },
+    {
+     "w": "contre",
+     "t": 2.253,
+     "d": 0.326
+    },
+    {
+     "w": "le",
+     "t": 2.578,
+     "d": 0.104
+    },
+    {
+     "w": "Brésil.",
+     "t": 2.682,
+     "d": 0.781
+    }
+   ],
+   "sig": "087682917554"
+  }
+ }
+}
