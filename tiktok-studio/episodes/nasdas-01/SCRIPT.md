@@ -37,7 +37,7 @@ Durée : **61.6 s** · 174 mots · 2.82 mots/s · 31 plans (moyenne 1.99 s) · 1
 | B | Team Nasdas : les 4 actus de l'été que t'as ratées | 50 |
 | C | Nasdas n'a plus fait de live depuis le 19 juin | 46 |
 
-**1re image** : Plateau TV sombre, téléphone géant sur un podium en direct, compteur doré « 446 773 » plein écran, mur LED rouge « EN DIRECT ».
+**1re image** : Plateau TV sombre, téléphone géant en direct sur un podium, compteur doré « 446 773 » en haut de l'écran, mur LED rouge « RECORD / EN DIRECT ».
 
 **Texte à l'écran (0-3 s)** : 446 773 EN DIRECT
 
@@ -46,13 +46,13 @@ Durée : **61.6 s** · 174 mots · 2.82 mots/s · 31 plans (moyenne 1.99 s) · 1
 | # | Temps | Voix off | Visuel | Texte écran | Son |
 |---|---|---|---|---|---|
 | S01 | 0:00.0–0:04.1 | [HOOK] [Q1 ouverte] 446 773 personnes en direct. En même temps. | Plateau TV, téléphone géant en direct sur le podium, compteur doré plein écran. *(plans : travelling → phone → wall)* | 446 773 EN DIRECT | Impact grave + drop du beat dès la 1re image |
-| S02 | 0:04.2–0:09.1 | [RELANCE] [Q2 ouverte] Le record de Nasdas. Et depuis le 19 juin ? Plus un seul live sur Twitch. | Mur LED : « 19 JUIN » ; tampon rouge « 0 LIVE ». *(plans : hero → wall → phone)* | 0 LIVE DEPUIS LE 19 JUIN | Coupure de la musique sur « Plus », impact |
+| S02 | 0:04.2–0:09.1 | [RELANCE] [Q2 ouverte] Le record de Nasdas. Et depuis le 19 juin ? Plus un seul live sur Twitch. | Mur LED : « 19 JUIN » ; tampon rouge « 0 LIVE ». *(plans : hero → wall → phone)* | 0 LIVE | Coupure de la musique sur « Plus », impact |
 | S03 | 0:09.2–0:11.9 |  Pendant ce temps, voici ce que t'as raté dans la team. | Plan large du plateau, mur LED « TEAM NASDAS · ÉTÉ 2026 », totems « 4 ACTUS ». *(plans : wide → push)* | CE QUE T'AS RATÉ | Reprise du beat |
 | S04 | 0:11.9–0:20.2 |  Numéro 4 : Anis, de la team, demande en mariage Polska, chroniqueuse télé. En public. Elle dit oui ! Mais certains parlent déjà de mise en scène. | Écrin en velours qui s'ouvre, bague en or et diamant sur le podium ; mur LED « ANIS × POLSKA ». *(plans : macro → heroLeft → orbit → low → wall)* | ELLE A DIT OUI | Ding sur « oui », tension sur « Mais » |
 | S05 | 0:20.2–0:32.5 |  Numéro 3 : l'effet Nasdas. Il reprend la chanson d'une pizzeria de Bruxelles. Résultat : des clients débarquent de Liège, de Charleroi, et même de Paris. Seul au départ, le patron a dû appeler du renfort. | Pizza sur planche en bois au podium ; mur LED : carte avec arcs Liège, Charleroi, Paris → Bruxelles. *(plans : food → food → wall → food → food)* | L'EFFET NASDAS | Pops sur les villes |
 | S06 | 0:32.6–0:41.2 |  Numéro 2 : Bilel VTC, son chauffeur, se présente maintenant comme son ex-chauffeur. Il lance sa chaîne YouTube, et sa vidéo dépasse les 300 000 vues. | Voiture bâchée sur le plateau, puis téléphone avec une carte vidéo générique et compteur de vues. *(plans : car → carSide → phone → wall)* | L'EX-CHAUFFEUR | Glitch sur « ex-chauffeur », montée finale vers le numéro 1 |
 | S07 | 0:41.2–0:50.1 | [PAYOFF] Et numéro 1 : le 18 juillet, Nasdas est devenu papa pour la deuxième fois. Une petite fille, Aiyana. Son message : « Aylan est devenu grand frère ». | Texte 3D doré « PAPA X2 » sur le podium, pluie de confettis rose et or, mur LED « BIENVENUE AIYANA ». *(plans : crane → macro → wall → push)* | PAPA ×2 | Drop + impact sur « numéro 1 », ding sur « papa » |
-| S08 | 0:50.2–0:57.8 | [PAYOFF] [Q1 fermée] Et ce record ? En avril, avec seulement 11 heures de live, il était numéro 1 en France. Six fois plus de spectateurs que le deuxième. | Graphique 3D : barre dorée Nasdas qui écrase les barres des 4 suivants ; compteur 258 767. *(plans : chart → chart → wall → low)* | ×6 | Tic-tac du compteur, impact sur « Six » |
+| S08 | 0:50.2–0:57.8 | [PAYOFF] [Q1 fermée] Et ce record ? En avril, avec seulement 11 heures de live, il était numéro 1 en France. Six fois plus de spectateurs que le deuxième. | Graphique 3D : barre dorée de Nasdas qui écrase celles d'Aminematue et de Squeezie ; mur LED « 258 767 spectateurs en moyenne ». *(plans : chart → chart → wall → low)* | ×6 | Tic-tac du compteur, impact sur « Six » |
 | S09 | 0:57.9–1:00.7 | [CTA][BOUCLE] Alors, il revient en live quand, d'après toi ? | Retour au plateau : mur LED « ? » (prochain live), téléphone en direct à 0 spectateur, poussée caméra qui raccorde avec la 1re image. *(plans : push)* | IL REVIENT QUAND ? | Montée qui raccorde avec l'impact du début (boucle) |
 
 ## 4. Ouvertures alternatives (0-3 s)

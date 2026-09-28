@@ -14,7 +14,7 @@
     "Nasdas n'a plus fait de live depuis le 19 juin"
   ],
   "titre_en": "Nasdas: 446,773 live viewers… then nothing since June",
-  "premiere_image": "Plateau TV sombre, téléphone géant sur un podium en direct, compteur doré « 446 773 » plein écran, mur LED rouge « EN DIRECT ».",
+  "premiere_image": "Plateau TV sombre, téléphone géant en direct sur un podium, compteur doré « 446 773 » en haut de l'écran, mur LED rouge « RECORD / EN DIRECT ».",
   "video_suivante": "Épisode 2 : l'actu de la semaine d'un autre gros créateur (même format, même plateau).",
   "divulgation_ia": {
     "requise": false,
@@ -305,7 +305,7 @@
       "role": "relance",
       "voix_off": "Le record de Nasdas. Et depuis le 19 juin ? Plus un seul live sur Twitch.",
       "ton": "grave puis coupure",
-      "texte_ecran": "0 LIVE DEPUIS LE 19 JUIN",
+      "texte_ecran": "0 LIVE",
       "visuel": "Mur LED : « 19 JUIN » ; tampon rouge « 0 LIVE ».",
       "son": "Coupure de la musique sur « Plus », impact",
       "boucles": {
@@ -1533,7 +1533,7 @@
       "voix_off": "Et ce record ? En avril, avec seulement 11 heures de live, il était numéro 1 en France. Six fois plus de spectateurs que le deuxième.",
       "ton": "impressionné",
       "texte_ecran": "×6",
-      "visuel": "Graphique 3D : barre dorée Nasdas qui écrase les barres des 4 suivants ; compteur 258 767.",
+      "visuel": "Graphique 3D : barre dorée de Nasdas qui écrase celles d'Aminematue et de Squeezie ; mur LED « 258 767 spectateurs en moyenne ».",
       "son": "Tic-tac du compteur, impact sur « Six »",
       "boucles": {
         "ouvre": [],

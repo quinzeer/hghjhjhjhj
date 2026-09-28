@@ -46,9 +46,10 @@ header.top .lede{max-width:560px;color:var(--muted);font-size:17px}
 section{padding-top:48px;display:grid;gap:20px}
 .grid-hero{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:32px;align-items:start}
 @media (max-width:860px){.grid-hero{grid-template-columns:1fr}}
+@media (max-width:520px){.specs{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .phone{position:relative;width:100%;max-width:340px;aspect-ratio:9/16;border-radius:34px;padding:10px;background:#07080B;box-shadow:var(--shadow);margin-inline:auto}
 .phone video,.phone img{width:100%;height:100%;object-fit:cover;border-radius:26px;display:block;background:#000}
-.specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.specs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
 .spec{background:var(--surface);padding:14px 16px;display:grid;gap:2px}
 .spec b{font-family:var(--display);font-weight:400;font-size:34px;line-height:1;font-variant-numeric:tabular-nums}
 .spec span{font-size:13px;color:var(--muted)}
@@ -236,6 +237,29 @@ flowchart LR
       <pre id="pin">{{PINNED}}</pre>
       <button class="copy" type="button" data-target="pin">Copier le commentaire</button>
     </div>
+  </div>
+</section>
+
+<section aria-labelledby="hooks">
+  <p class="eyebrow">Pour les prochains épisodes</p>
+  <h2 id="hooks">Formules d'accroche à faire tourner</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Formule</th><th>Mécanisme</th><th>Exemple (faits de l'épisode 1)</th></tr></thead>
+      <tbody>
+        <tr><td><b>Chiffre choc + silence</b></td><td>Un record, puis une rupture</td><td>« 446 773 personnes en direct. Et depuis le 19 juin : plus un seul live. »</td></tr>
+        <tr><td><b>Échelle concrète</b></td><td>Traduire un chiffre en image mentale</td><td>« Plus de cinq Stades de France devant un seul live. »</td></tr>
+        <tr><td><b>Liste avec promesse</b></td><td>Compte à rebours, le meilleur à la fin</td><td>« Un bébé, une demande en mariage, un ex-chauffeur : l'été de la Team Nasdas. »</td></tr>
+        <tr><td><b>Effet papillon</b></td><td>Petite cause, grosse conséquence</td><td>« Il reprend la chanson d'une pizzeria : des clients arrivent de Paris. »</td></tr>
+        <tr><td><b>Duel chiffré</b></td><td>Comparaison injuste qui fait réagir</td><td>« 11 heures de live contre 204 : devine qui a fait le plus de spectateurs. »</td></tr>
+        <tr><td><b>Question de débat</b></td><td>Déclenche les commentaires sans attaquer personne</td><td>« Demande en mariage sincère ou mise en scène ? »</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="cols">
+    <div class="card"><h3>Check-list avant chaque publication</h3><ul class="clean"><li>Chaque chiffre, date et nom a une source A ou B, notée dans le commentaire épinglé.</li><li>Aucune accusation non jugée présentée comme un fait ; aucune adresse, aucun mineur exposé.</li><li>Fichier 1080×1920, 30 i/s, H.264, plus de 60 s pour les formats premium.</li><li>Upload depuis un ordinateur, option haute qualité activée, sans filigrane d'une autre plateforme.</li><li>Nom du créateur dit à l'oral avant 3 s et écrit dans la légende.</li></ul></div>
+    <div class="card"><h3>Réalisme : ce qui est en place</h3><ul class="clean"><li>Matériaux physiques (PBR), éclairage studio par boîtes à lumière HDR, sol à reflets floutés.</li><li>Profondeur de champ, flou de mouvement d'obturateur, aberration chromatique, grain, caméra « à l'épaule ».</li><li>Voiture photogrammétrée Poly Haven (CC0), diamant irisé, velours, pizza, texte or.</li></ul></div>
+    <div class="card"><h3>Réalisme : ce qui manque encore</h3><ul class="clean"><li>Visages réels des créateurs : à n'ajouter qu'avec des images dont tu as les droits (emplacements déjà prévus).</li><li>Une voix humaine : le plus gros gain de crédibilité disponible.</li><li>Un GPU pour passer de 2 h à quelques minutes de rendu par épisode.</li></ul></div>
   </div>
 </section>
 
