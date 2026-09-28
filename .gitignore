@@ -1,0 +1,27 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Média et artefacts de production (jamais dans le dépôt)
+/var/
+/artifacts/
+/media/
+*.mp4
+*.mov
+*.wav
+*.safetensors
+*.gguf
+
+# Divers
+.DS_Store
