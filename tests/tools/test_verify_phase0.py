@@ -191,6 +191,22 @@ def test_concepts_need_six_sections_and_two_outliers(tmp_path: Path) -> None:
     assert any("outlier" in d for d in chk.details)
 
 
+@pytest.mark.parametrize(
+    ("row", "counted"),
+    [
+        ("| V | C | en | 2026-01-10 | 1 M | 100 k | 10× | https://youtu.be/abcdefghijk |", True),
+        ("| V | C | en | 2026-01 | 1 M | 100 k | 3,4× | https://youtu.be/abcdefghijk |", True),
+        ("| V | C | en | 2026-01-10 | 1 M | 100 k | 2,9× | https://youtu.be/abcdefghijk |", False),
+        ("| V | C | en | 2026-01-10 | 1 M | 100 k | non calculé | https://youtu.be/abcdefghijk |", False),
+        ("| V | C | en | 2023-05-01 | 1 M | 100 k | 12× | https://youtu.be/abcdefghijk |", False),
+        ("| V | C | en | s.d. | 1 M | 100 k | 12× | https://youtu.be/abcdefghijk |", False),
+    ],
+)
+def test_outlier_rows_need_measured_ratio_and_recent_date(row: str, counted: bool) -> None:
+    ok, _ = vp.measured_outliers(row, TODAY)
+    assert bool(ok) is counted
+
+
 def test_concepts_not_required_once_confirmed(repo: Path) -> None:
     (repo / "docs/research/channel-concepts.md").unlink()
     assert vp.concepts_required(repo)

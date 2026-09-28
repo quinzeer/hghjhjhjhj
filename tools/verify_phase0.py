@@ -41,6 +41,10 @@ UNDATED = {"s.d.", "sd", "n.d.", "nd"}
 
 MIN_CONCEPTS = 6
 MIN_OUTLIERS_PER_CONCEPT = 2
+# An outlier counts only if its table row shows a measured ratio >= 3x (MISSION §2) and a
+# publication date within RECENT_DAYS ("récents", MISSION §9 phase 0; 18 months, see CLAUDE.md).
+MIN_OUTLIER_RATIO = 3.0
+RECENT_DAYS = 548
 CONCEPT_FIELDS = {
     "rpm": ("rpm",),
     "legitimite": ("legitimite",),
@@ -294,6 +298,32 @@ def concepts_required(root: Path) -> bool:
     return confirmed < 2
 
 
+def measured_outliers(body: str, today: dt.date) -> tuple[set[str], list[str]]:
+    """Distinct outlier URLs whose table row carries a ratio >= MIN_OUTLIER_RATIO and a recent date."""
+    ok: set[str] = set()
+    rejected: list[str] = []
+    for line in body.splitlines():
+        if not line.strip().startswith("|"):
+            continue
+        urls = OUTLIER_URL.findall(line)
+        if not urls:
+            continue
+        cells = split_row(line)
+        ratios = [
+            float(m.group(1).replace(",", "."))
+            for c in cells
+            if (m := re.fullmatch(r"[≥>~≈]?\s*(\d+(?:[.,]\d+)?)\s*[×x]", c.strip()))
+        ]
+        dates = [p for c in cells if (p := parse_date(c.strip())) and p[0] in ("day", "month")]
+        if not ratios or max(ratios) < MIN_OUTLIER_RATIO:
+            rejected.append(f"{urls[0][-11:]} sans ratio ≥ {MIN_OUTLIER_RATIO:g}×")
+        elif not dates or (today - dates[0][1]).days > RECENT_DAYS:
+            rejected.append(f"{urls[0][-11:]} non récent ou non daté")
+        else:
+            ok.add(urls[0])
+    return ok, rejected
+
+
 def check_concepts(path: Path, today: dt.date) -> Check:
     chk = check_note(path, today)
     chk.id, chk.label = "concepts", "Concepts de chaînes (6 classés, ≥ 2 outliers chacun)"
@@ -311,9 +341,13 @@ def check_concepts(path: Path, today: dt.date) -> Check:
                 end = j
                 break
         body = "\n".join(lines[i + 1 : end])
-        outliers = set(OUTLIER_URL.findall(body))
+        outliers, rejected = measured_outliers(body, today)
         if len(outliers) < MIN_OUTLIERS_PER_CONCEPT:
-            chk.fail(f"{title[:40]} : {len(outliers)} URL(s) d'outlier < {MIN_OUTLIERS_PER_CONCEPT}")
+            why = f" ; lignes écartées : {'; '.join(rejected[:3])}" if rejected else ""
+            chk.fail(
+                f"{title[:40]} : {len(outliers)} outlier(s) mesuré(s) (ratio ≥ {MIN_OUTLIER_RATIO:g}×, "
+                f"publié depuis ≤ {RECENT_DAYS} j) < {MIN_OUTLIERS_PER_CONCEPT}{why}"
+            )
         nb = norm(body)
         for fld, keys in CONCEPT_FIELDS.items():
             if not any(k in nb for k in keys):
