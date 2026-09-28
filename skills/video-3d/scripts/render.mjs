@@ -157,7 +157,8 @@ async function renderChunk(w, a, b) {
   const master = path.join(out, 'video.mp4');
   execFileSync(FF, ['-y', '-v', 'error', '-i', path.join(tmp, 'video.mp4'), '-i', path.join(tmp, 'mix_norm.wav'), '-map', '0:v', '-map', '1:a', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', '-shortest', '-movflags', '+faststart', master]);
   // version légère < 30 Mio (envoi par messagerie / outils limités), encodage 2 passes
-  if (!flag('no-light')) {
+  if (!flag('no-light') && fs.statSync(master).size < 29 * 1048576) fs.copyFileSync(master, path.join(out, 'video_light.mp4')); // le master tient déjà sous 30 Mio
+  else if (!flag('no-light')) {
     const kbps = Math.max(1500, Math.floor((28 * 8 * 1024 * 1024) / T.duration / 1000) - 180);
     for (const pass of [1, 2]) execFileSync(FF, ['-y', '-v', 'error', '-i', path.join(tmp, 'video.mp4'), '-c:v', 'libx264', '-preset', 'slow', '-tune', 'film', '-b:v', `${kbps}k`, '-maxrate', `${Math.round(kbps * 1.5)}k`, '-bufsize', `${kbps * 2}k`, '-pix_fmt', 'yuv420p', '-pass', String(pass), '-passlogfile', path.join(tmp, 'x264'), '-an', '-f', 'mp4', pass === 1 ? '/dev/null' : path.join(tmp, 'light.mp4')]);
     execFileSync(FF, ['-y', '-v', 'error', '-i', path.join(tmp, 'light.mp4'), '-i', path.join(tmp, 'mix_norm.wav'), '-map', '0:v', '-map', '1:a', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '160k', '-shortest', '-movflags', '+faststart', path.join(out, 'video_light.mp4')]);
