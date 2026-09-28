@@ -87,7 +87,7 @@ Longs :
 
 Shorts :
 - La Grande Pyramide construite en 40 secondes
-- Comment tenaient les aqueducs romains, sans ciment ?
+- Comment tenaient les aqueducs romains ?
 
 **2. Preuve de demande.**
 
@@ -130,10 +130,10 @@ Verdict : **outlier chiffré non établi.** Plusieurs vidéos IA sur « comment 
 **1. Promesse et épisodes.** Promesse type : « Tu vas voir à quel point [chose] est petite ou immense face à [chose] — à l'échelle. »
 Longs :
 1. L'univers, du plus petit au plus grand
-2. Fosse des Mariannes contre Everest : le vrai vertige
-3. Tous les plus hauts bâtiments du monde, à l'échelle
-4. Les créatures les plus énormes de l'histoire de la Terre
-5. 1 million contre 1 milliard : ce que ça change vraiment
+2. Fosse des Mariannes contre l'Everest
+3. Tous les plus hauts bâtiments du monde
+4. Les créatures les plus énormes de l'histoire
+5. 1 million contre 1 milliard : ce que ça change
 
 Shorts :
 - La Terre à côté du plus gros trou noir connu
@@ -180,13 +180,13 @@ Verdict : **outlier chiffré non établi au sens strict** (pas de vidéo isolée
 Longs :
 1. Et si la Lune disparaissait cette nuit ?
 2. Et si la Terre arrêtait de tourner d'un coup ?
-3. Et si tous les glaciers fondaient en une semaine ?
+3. Et si tous les glaciers fondaient d'un coup ?
 4. Et si le Soleil s'éteignait une heure ?
-5. Et si on creusait un tunnel jusqu'au centre de la Terre ?
+5. Et si on creusait jusqu'au centre de la Terre ?
 
 Shorts :
 - Et si la gravité doublait pendant 10 secondes ?
-- Et si l'oxygène disparaissait pendant 5 secondes ?
+- Et si l'air disparaissait pendant 5 secondes ?
 
 **2. Preuve de demande.**
 
@@ -230,7 +230,7 @@ Longs :
 1. Voyage jusqu'aux confins du système solaire
 2. À l'intérieur d'un trou noir
 3. La mort du Soleil, dans 5 milliards d'années
-4. Combien de temps pour atteindre Mars aujourd'hui ?
+4. Combien de temps pour atteindre Mars ?
 5. La Voie lactée, de la Terre à sa périphérie
 
 Shorts :

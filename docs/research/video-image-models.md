@@ -196,7 +196,7 @@
 - **GIMM-VFI** : licence S-Lab explicitement non-commerciale — exclu, RIFE couvre le même besoin [S37].
 - **InstantID / IP-Adapter-FaceID** : dépendance InsightFace non-commerciale — exclus au profit de PuLID [S31][S32].
 - **Wan 2.5/2.6/2.7/3.0, Mochi 1 (VRAM), Step-Video-T2V (30B), MAGI-1 24B** : indisponibles en poids ouverts, ou hors budget 16 Go sans multi-GPU non encore validé.
-- **Topaz et upscalers/interpolateurs propriétaires** : poids fermés, hors règle du studio par construction (MISSION §5) .
+- **Topaz et upscalers/interpolateurs propriétaires** : poids fermés, hors règle du studio par construction (MISSION §5).
 
 ### Matrice famille de plan → technique recommandée
 
