@@ -1,0 +1,54 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "hypothesis": {
+      "minLength": 1,
+      "title": "Hypothesis",
+      "type": "string"
+    },
+    "id": {
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "metric": {
+      "minLength": 1,
+      "title": "Metric",
+      "type": "string"
+    },
+    "min_sample": {
+      "minimum": 1,
+      "title": "Min Sample",
+      "type": "integer"
+    },
+    "preregistered_at": {
+      "format": "date-time",
+      "title": "Preregistered At",
+      "type": "string"
+    },
+    "status": {
+      "default": "planned",
+      "pattern": "^(planned|running|stopped|analysed)$",
+      "title": "Status",
+      "type": "string"
+    },
+    "variants": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 2,
+      "title": "Variants",
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "hypothesis",
+    "metric",
+    "variants",
+    "min_sample",
+    "preregistered_at"
+  ],
+  "title": "Experiment",
+  "type": "object"
+}

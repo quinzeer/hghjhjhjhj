@@ -1,0 +1,91 @@
+{
+  "$defs": {
+    "ThumbnailConcept": {
+      "additionalProperties": false,
+      "properties": {
+        "concept": {
+          "minLength": 1,
+          "title": "Concept",
+          "type": "string"
+        },
+        "elements": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Elements",
+          "type": "array"
+        },
+        "id": {
+          "pattern": "^[A-Z]$",
+          "title": "Id",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "concept",
+        "elements"
+      ],
+      "title": "ThumbnailConcept",
+      "type": "object"
+    },
+    "VideoFormat": {
+      "enum": [
+        "long",
+        "short"
+      ],
+      "title": "VideoFormat",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "first_frame": {
+      "default": "",
+      "title": "First Frame",
+      "type": "string"
+    },
+    "format": {
+      "$ref": "#/$defs/VideoFormat"
+    },
+    "idea_id": {
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$",
+      "title": "Idea Id",
+      "type": "string"
+    },
+    "on_screen_text": {
+      "default": "",
+      "title": "On Screen Text",
+      "type": "string"
+    },
+    "thumbnails": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ThumbnailConcept"
+      },
+      "title": "Thumbnails",
+      "type": "array"
+    },
+    "titles": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Titles",
+      "type": "array"
+    }
+  },
+  "required": [
+    "idea_id",
+    "format",
+    "titles"
+  ],
+  "title": "Package",
+  "type": "object"
+}

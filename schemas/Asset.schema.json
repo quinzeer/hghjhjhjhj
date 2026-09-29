@@ -1,0 +1,39 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "key": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Key",
+      "type": "string"
+    },
+    "kind": {
+      "pattern": "^(image|video|audio|subtitle|json|text)$",
+      "title": "Kind",
+      "type": "string"
+    },
+    "media_type": {
+      "minLength": 3,
+      "title": "Media Type",
+      "type": "string"
+    },
+    "producer_step": {
+      "minLength": 1,
+      "title": "Producer Step",
+      "type": "string"
+    },
+    "size_bytes": {
+      "minimum": 0,
+      "title": "Size Bytes",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "key",
+    "kind",
+    "media_type",
+    "size_bytes",
+    "producer_step"
+  ],
+  "title": "Asset",
+  "type": "object"
+}

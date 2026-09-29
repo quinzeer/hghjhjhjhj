@@ -1,0 +1,82 @@
+{
+  "$defs": {
+    "VideoFormat": {
+      "enum": [
+        "long",
+        "short"
+      ],
+      "title": "VideoFormat",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "duration_s": {
+      "exclusiveMinimum": 0,
+      "title": "Duration S",
+      "type": "number"
+    },
+    "format": {
+      "$ref": "#/$defs/VideoFormat"
+    },
+    "fps": {
+      "exclusiveMinimum": 0,
+      "title": "Fps",
+      "type": "number"
+    },
+    "has_audio": {
+      "title": "Has Audio",
+      "type": "boolean"
+    },
+    "height": {
+      "exclusiveMinimum": 0,
+      "title": "Height",
+      "type": "integer"
+    },
+    "integrated_lufs": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Integrated Lufs"
+    },
+    "true_peak_dbtp": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "True Peak Dbtp"
+    },
+    "video_key": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Video Key",
+      "type": "string"
+    },
+    "width": {
+      "exclusiveMinimum": 0,
+      "title": "Width",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "format",
+    "width",
+    "height",
+    "fps",
+    "duration_s",
+    "video_key",
+    "has_audio"
+  ],
+  "title": "Render",
+  "type": "object"
+}

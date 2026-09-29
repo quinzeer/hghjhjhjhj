@@ -1,0 +1,58 @@
+{
+  "$defs": {
+    "CostKind": {
+      "enum": [
+        "gpu_seconds",
+        "kwh",
+        "claude_input_tokens",
+        "claude_output_tokens",
+        "claude_calls",
+        "claude_seconds",
+        "human_minutes",
+        "eur"
+      ],
+      "title": "CostKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "at": {
+      "format": "date-time",
+      "title": "At",
+      "type": "string"
+    },
+    "estimated": {
+      "default": false,
+      "title": "Estimated",
+      "type": "boolean"
+    },
+    "kind": {
+      "$ref": "#/$defs/CostKind"
+    },
+    "quantity": {
+      "minimum": 0,
+      "title": "Quantity",
+      "type": "number"
+    },
+    "run_id": {
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "step_key": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Step Key",
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_id",
+    "step_key",
+    "kind",
+    "quantity",
+    "at"
+  ],
+  "title": "CostEntry",
+  "type": "object"
+}

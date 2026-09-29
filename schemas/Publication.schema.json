@@ -1,0 +1,106 @@
+{
+  "$defs": {
+    "Platform": {
+      "enum": [
+        "youtube",
+        "tiktok"
+      ],
+      "title": "Platform",
+      "type": "string"
+    },
+    "Privacy": {
+      "enum": [
+        "private",
+        "unlisted",
+        "public"
+      ],
+      "title": "Privacy",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "contains_synthetic_media": {
+      "title": "Contains Synthetic Media",
+      "type": "boolean"
+    },
+    "description": {
+      "default": "",
+      "title": "Description",
+      "type": "string"
+    },
+    "external_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "External Id"
+    },
+    "is_aigc": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "TikTok AIGC flag; None on YouTube",
+      "title": "Is Aigc"
+    },
+    "localizations": {
+      "additionalProperties": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "type": "object"
+      },
+      "title": "Localizations",
+      "type": "object"
+    },
+    "platform": {
+      "$ref": "#/$defs/Platform"
+    },
+    "privacy": {
+      "$ref": "#/$defs/Privacy",
+      "default": "private"
+    },
+    "publish_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Publish At"
+    },
+    "render_key": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Render Key",
+      "type": "string"
+    },
+    "title": {
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    }
+  },
+  "required": [
+    "platform",
+    "render_key",
+    "title",
+    "contains_synthetic_media"
+  ],
+  "title": "Publication",
+  "type": "object"
+}

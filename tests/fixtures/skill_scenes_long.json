@@ -1,0 +1,215 @@
+{
+  "version": "1.0",
+  "format": "long",
+  "langue": "fr",
+  "debit_mots_min": 150,
+  "duree_totale_s": 66.8,
+  "promesse": "Le morceau de verre taillé qui a permis de voir une petite flamme depuis la haute mer, démonté pièce par pièce.",
+  "titres": [
+    "Le morceau de verre qui a changé les phares",
+    "Pourquoi les lentilles de phare ressemblent à des anneaux",
+    "Moins de verre, plus de lumière : l'astuce des phares"
+  ],
+  "titre_en": "The glass trick that made a candle visible from the open sea",
+  "miniatures": [
+    {
+      "id": "A",
+      "concept": "Lentille de phare géante éclairée de nuit",
+      "elements": [
+        "lentille à anneaux en gros plan",
+        "faisceau vers la mer",
+        "ciel nocturne"
+      ],
+      "texte": "Moins de verre"
+    },
+    {
+      "id": "B",
+      "concept": "Loupe pleine face à lentille en anneaux sur une balance",
+      "elements": [
+        "deux lentilles côte à côte",
+        "balance en laiton",
+        "flèche"
+      ],
+      "texte": "Même lumière ?"
+    },
+    {
+      "id": "C",
+      "concept": "Main tenant une loupe devant une lampe de poche",
+      "elements": [
+        "main",
+        "loupe",
+        "point lumineux sur un mur"
+      ],
+      "texte": "30 km"
+    }
+  ],
+  "premiere_image": "Faisceau blanc qui balaie une mer sombre, vu depuis la galerie du phare.",
+  "video_suivante": "Comment on faisait tourner des lentilles de plusieurs tonnes sans moteur",
+  "divulgation_ia": {
+    "requise": true,
+    "raison": "plans générés d'un phare du XIXe siècle rendus de façon photoréaliste"
+  },
+  "controle": {
+    "publiable": true,
+    "raisons_blocage": [],
+    "faits_a_verifier": [
+      "Année de la première lentille à échelons installée dans un phare",
+      "Portée annoncée d'environ 30 km"
+    ],
+    "score_idee": 74
+  },
+  "scenes": [
+    {
+      "id": "S01",
+      "role": "hook",
+      "debut_s": 0,
+      "duree_s": 10.8,
+      "voix_off": "En 1823, une lampe à huile pas plus puissante qu'une bougie de salon devient visible depuis le large. Le secret tient dans un morceau de verre taillé.",
+      "ton": "intrigué, posé",
+      "avatar": "hors_champ",
+      "visuel": "Nuit sur l'estuaire, un faisceau blanc traverse la brume.",
+      "prompt_visuel_en": "Night seascape, a single white lighthouse beam cutting through light fog, wide shot, slow push-in, cold blue palette, cinematic realism",
+      "texte_ecran": "Une bougie, 30 km",
+      "son": "nappe grave, vagues lointaines",
+      "boucles": {
+        "ouvre": [
+          "Q1"
+        ],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S02",
+      "role": "cadre",
+      "debut_s": 10.8,
+      "duree_s": 10.8,
+      "voix_off": "Avant cette idée, les phares brûlaient des quantités folles d'huile pour une lueur qui se perdait dans le ciel. On va démonter la solution pièce par pièce.",
+      "ton": "complice",
+      "avatar": "face_camera",
+      "visuel": "Présentateur à son établi, lampe de poche et loupe posées devant lui.",
+      "prompt_visuel_en": "Presenter at a wooden workbench with a flashlight and a large magnifying glass, medium shot, warm practical light",
+      "texte_ecran": "Pièce par pièce",
+      "son": "tic-tac d'horloge discret",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S03",
+      "role": "contenu",
+      "debut_s": 21.6,
+      "duree_s": 8.0,
+      "voix_off": "Première pièce : une loupe concentre la lumière. Mais pour un phare, il faudrait une loupe énorme, lourde et fragile.",
+      "ton": "explicatif",
+      "avatar": "hors_champ",
+      "visuel": "Une loupe géante en verre plein, posée sur une balance qui penche.",
+      "prompt_visuel_en": "Oversized solid glass lens resting on an old brass scale tipping down, studio tabletop, soft key light, same cold palette",
+      "texte_ecran": "Trop lourd",
+      "son": "grincement de balance",
+      "boucles": {
+        "ouvre": [
+          "Q2"
+        ],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S04",
+      "role": "relance",
+      "debut_s": 29.6,
+      "duree_s": 6.8,
+      "voix_off": "Et c'est là que ça devient étrange : la solution consiste à retirer presque tout le verre.",
+      "ton": "suspens léger",
+      "avatar": "face_camera",
+      "visuel": "Le présentateur lève la loupe et fait mine de la couper en tranches.",
+      "prompt_visuel_en": "Presenter raising a magnifying glass and miming slicing it, close-up on hands, shallow depth of field",
+      "texte_ecran": "Enlever le verre ?",
+      "son": "coupure nette de la musique",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S05",
+      "role": "contenu",
+      "debut_s": 36.4,
+      "duree_s": 6.8,
+      "voix_off": "L'ingénieur découpe la lentille en anneaux. Chaque anneau garde seulement sa courbure utile, et l'épaisseur inutile disparaît.",
+      "ton": "posé, précis",
+      "avatar": "personnage_dans_scene",
+      "visuel": "Un ingénieur en redingote assemble des anneaux de verre sur une table à dessin.",
+      "prompt_visuel_en": "Nineteenth-century engineer in a frock coat assembling concentric glass rings on a drafting table, candlelight, painterly realism",
+      "texte_ecran": "Des anneaux",
+      "son": "craquement de bois, plume sur papier",
+      "boucles": {
+        "ouvre": [],
+        "ferme": [
+          "Q2"
+        ]
+      },
+      "note_traduction": "Garder « lentille à échelons » : terme technique, pas de jeu de mots."
+    },
+    {
+      "id": "S06",
+      "role": "contenu",
+      "debut_s": 43.2,
+      "duree_s": 7.6,
+      "voix_off": "Il ajoute des prismes tout autour, qui rattrapent les rayons partis vers le ciel et les renvoient vers l'horizon.",
+      "ton": "enthousiaste",
+      "avatar": "hors_champ",
+      "visuel": "Animation : des rayons jaunes rebondissent dans des prismes et repartent à l'horizontale.",
+      "prompt_visuel_en": "Clean 3D diagram of light rays bouncing inside glass prisms and exiting horizontally, dark background, yellow rays, same palette",
+      "texte_ecran": "Rien ne se perd",
+      "son": "arpèges légers",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S07",
+      "role": "payoff",
+      "debut_s": 50.8,
+      "duree_s": 9.2,
+      "voix_off": "Résultat : une flamme modeste, un faisceau qui porte jusqu'au large. Tu retrouves la même astuce dans les feux arrière de ta voiture.",
+      "ton": "satisfait",
+      "avatar": "hors_champ",
+      "visuel": "Raccord entre la lentille du phare et un feu arrière de voiture sous la pluie.",
+      "prompt_visuel_en": "Match cut from a lighthouse lens to a car tail light in the rain, macro shot, red and blue reflections",
+      "texte_ecran": "La même idée",
+      "son": "retour de la nappe, plus ample",
+      "boucles": {
+        "ouvre": [],
+        "ferme": [
+          "Q1"
+        ]
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S08",
+      "role": "cta",
+      "debut_s": 60.0,
+      "duree_s": 6.8,
+      "voix_off": "Comment faisait-on tourner des lentilles de plusieurs tonnes sans moteur ? C'est la prochaine vidéo, juste ici.",
+      "ton": "chaleureux",
+      "avatar": "face_camera",
+      "visuel": "Le présentateur montre l'écran de fin, la lentille tourne derrière lui.",
+      "prompt_visuel_en": "Presenter pointing towards an end screen, rotating lighthouse lens softly lit in the background, medium shot",
+      "texte_ecran": "",
+      "son": "sortie musicale douce",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    }
+  ]
+}

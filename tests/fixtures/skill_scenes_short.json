@@ -1,0 +1,124 @@
+{
+  "version": "1.0",
+  "format": "short",
+  "langue": "fr",
+  "debit_mots_min": 165,
+  "duree_totale_s": 18.1,
+  "promesse": "Pourquoi un miel très ancien peut rester mangeable, en deux raisons simples.",
+  "titres": [
+    "Ce miel a 3000 ans et il se mange encore",
+    "Le miel ne pourrit presque jamais : voici pourquoi"
+  ],
+  "titre_en": "This honey could be 3,000 years old and still edible",
+  "miniatures": [],
+  "premiere_image": "Pot en terre ouvert, miel ambré qui brille sous une lumière rasante, texte « 3000 ans ? ».",
+  "video_suivante": "Pourquoi le sel conserve la viande",
+  "divulgation_ia": {
+    "requise": true,
+    "raison": "plans rapprochés d'objets anciens générés de façon réaliste"
+  },
+  "controle": {
+    "publiable": true,
+    "raisons_blocage": [],
+    "faits_a_verifier": [
+      "Âge des pots de miel retrouvés en contexte archéologique"
+    ],
+    "score_idee": 68.5
+  },
+  "scenes": [
+    {
+      "id": "S01",
+      "role": "hook",
+      "debut_s": 0,
+      "duree_s": 3.6,
+      "voix_off": "Ce pot de miel aurait plus de trois mille ans.",
+      "ton": "intrigué",
+      "avatar": "hors_champ",
+      "visuel": "Gros plan sur un pot en terre ouvert, miel ambré qui brille.",
+      "prompt_visuel_en": "Macro shot of an ancient clay jar filled with glowing amber honey, raking light, vertical frame, warm palette",
+      "texte_ecran": "3000 ans ?",
+      "son": "souffle grave",
+      "boucles": {
+        "ouvre": [
+          "Q1"
+        ],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S02",
+      "role": "cadre",
+      "debut_s": 3.6,
+      "duree_s": 2.5,
+      "voix_off": "Et pourtant, on pourrait encore le manger.",
+      "ton": "complice",
+      "avatar": "face_camera",
+      "visuel": "Présentatrice qui plonge une cuillère dans un pot.",
+      "prompt_visuel_en": "Presenter dipping a wooden spoon into a honey jar, close-up, vertical frame, warm palette",
+      "texte_ecran": "Comestible",
+      "son": "cuillère contre la terre cuite",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S03",
+      "role": "contenu",
+      "debut_s": 6.1,
+      "duree_s": 4.0,
+      "voix_off": "Le miel contient si peu d'eau que les bactéries s'y dessèchent.",
+      "ton": "explicatif",
+      "avatar": "hors_champ",
+      "visuel": "Animation : une bactérie qui se ratatine au contact du miel.",
+      "prompt_visuel_en": "Stylised 2D animation of a cartoon bacterium shrinking inside a golden honey drop, vertical frame",
+      "texte_ecran": "Trop sec pour vivre",
+      "son": "petit effet de succion",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    },
+    {
+      "id": "S04",
+      "role": "payoff",
+      "debut_s": 10.1,
+      "duree_s": 4.0,
+      "voix_off": "Les abeilles y ajoutent une enzyme qui fabrique un antiseptique naturel.",
+      "ton": "satisfait",
+      "avatar": "personnage_dans_scene",
+      "visuel": "Une abeille dépose une goutte brillante dans une alvéole.",
+      "prompt_visuel_en": "Extreme close-up of a honeybee depositing a shining drop into a wax cell, vertical frame, shallow depth of field",
+      "texte_ecran": "Antiseptique maison",
+      "son": "bourdonnement doux",
+      "boucles": {
+        "ouvre": [],
+        "ferme": [
+          "Q1"
+        ]
+      },
+      "note_traduction": "« Enzyme » se traduit sans ambiguïté ; garder le rythme court."
+    },
+    {
+      "id": "S05",
+      "role": "boucle",
+      "debut_s": 14.1,
+      "duree_s": 4.0,
+      "voix_off": "Alors, ce pot de trois mille ans, tu y goûterais ?",
+      "ton": "taquin",
+      "avatar": "face_camera",
+      "visuel": "Retour au pot en terre, la cuillère approche.",
+      "prompt_visuel_en": "Clay honey jar with a spoon slowly approaching, same framing as the opening shot, vertical frame",
+      "texte_ecran": "Tu goûterais ?",
+      "son": "retour au souffle du début",
+      "boucles": {
+        "ouvre": [],
+        "ferme": []
+      },
+      "note_traduction": ""
+    }
+  ]
+}

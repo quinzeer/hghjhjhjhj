@@ -1,0 +1,94 @@
+{
+  "$defs": {
+    "Platform": {
+      "enum": [
+        "youtube",
+        "tiktok"
+      ],
+      "title": "Platform",
+      "type": "string"
+    },
+    "VideoFormat": {
+      "enum": [
+        "long",
+        "short"
+      ],
+      "title": "VideoFormat",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "concept": {
+      "minLength": 1,
+      "title": "Concept",
+      "type": "string"
+    },
+    "formats": {
+      "default": [
+        "long",
+        "short"
+      ],
+      "items": {
+        "$ref": "#/$defs/VideoFormat"
+      },
+      "title": "Formats",
+      "type": "array"
+    },
+    "id": {
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "language": {
+      "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+      "title": "Language",
+      "type": "string"
+    },
+    "name": {
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "platforms": {
+      "default": [
+        "youtube"
+      ],
+      "items": {
+        "$ref": "#/$defs/Platform"
+      },
+      "title": "Platforms",
+      "type": "array"
+    },
+    "visual_bible": {
+      "description": "path or id of the channel's visual bible",
+      "minLength": 1,
+      "title": "Visual Bible",
+      "type": "string"
+    },
+    "voice_id": {
+      "minLength": 1,
+      "title": "Voice Id",
+      "type": "string"
+    },
+    "watchlist": {
+      "default": [],
+      "description": "competitor channels (@handle or UC… id) for scout",
+      "items": {
+        "type": "string"
+      },
+      "title": "Watchlist",
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "language",
+    "concept",
+    "voice_id",
+    "visual_bible"
+  ],
+  "title": "Channel",
+  "type": "object"
+}

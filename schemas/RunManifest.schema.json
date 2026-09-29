@@ -1,0 +1,135 @@
+{
+  "$defs": {
+    "CostEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "format": "date-time",
+          "title": "At",
+          "type": "string"
+        },
+        "estimated": {
+          "default": false,
+          "title": "Estimated",
+          "type": "boolean"
+        },
+        "kind": {
+          "$ref": "#/$defs/CostKind"
+        },
+        "quantity": {
+          "minimum": 0,
+          "title": "Quantity",
+          "type": "number"
+        },
+        "run_id": {
+          "minLength": 1,
+          "title": "Run Id",
+          "type": "string"
+        },
+        "step_key": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Step Key",
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id",
+        "step_key",
+        "kind",
+        "quantity",
+        "at"
+      ],
+      "title": "CostEntry",
+      "type": "object"
+    },
+    "CostKind": {
+      "enum": [
+        "gpu_seconds",
+        "kwh",
+        "claude_input_tokens",
+        "claude_output_tokens",
+        "claude_calls",
+        "claude_seconds",
+        "human_minutes",
+        "eur"
+      ],
+      "title": "CostKind",
+      "type": "string"
+    },
+    "VideoFormat": {
+      "enum": [
+        "long",
+        "short"
+      ],
+      "title": "VideoFormat",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "channel_id": {
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$",
+      "title": "Channel Id",
+      "type": "string"
+    },
+    "costs": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/CostEntry"
+      },
+      "title": "Costs",
+      "type": "array"
+    },
+    "dry_run": {
+      "title": "Dry Run",
+      "type": "boolean"
+    },
+    "format": {
+      "$ref": "#/$defs/VideoFormat"
+    },
+    "locked": {
+      "additionalProperties": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "description": "step name -> locked output key",
+      "title": "Locked",
+      "type": "object"
+    },
+    "mock": {
+      "description": "True when any adapter used is a mock (MISSION §3.2)",
+      "title": "Mock",
+      "type": "boolean"
+    },
+    "run_id": {
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "step_keys": {
+      "additionalProperties": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "description": "step name -> step key",
+      "title": "Step Keys",
+      "type": "object"
+    },
+    "versions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Versions",
+      "type": "object"
+    }
+  },
+  "required": [
+    "run_id",
+    "channel_id",
+    "format",
+    "dry_run",
+    "mock"
+  ],
+  "title": "RunManifest",
+  "type": "object"
+}

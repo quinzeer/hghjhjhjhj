@@ -1,0 +1,125 @@
+{
+  "$defs": {
+    "AvatarMode": {
+      "enum": [
+        "off_screen",
+        "facing_camera",
+        "character_in_scene"
+      ],
+      "title": "AvatarMode",
+      "type": "string"
+    },
+    "SceneLoops": {
+      "additionalProperties": false,
+      "properties": {
+        "closes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Closes",
+          "type": "array"
+        },
+        "opens": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Opens",
+          "type": "array"
+        }
+      },
+      "title": "SceneLoops",
+      "type": "object"
+    },
+    "SceneRole": {
+      "description": "Roles of the scenariste-youtube scene JSON (v1.0), mapped to English identifiers.",
+      "enum": [
+        "hook",
+        "setup",
+        "relaunch",
+        "content",
+        "payoff",
+        "cta",
+        "loop"
+      ],
+      "title": "SceneRole",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "avatar": {
+      "$ref": "#/$defs/AvatarMode",
+      "default": "off_screen"
+    },
+    "duration_s": {
+      "exclusiveMinimum": 0,
+      "title": "Duration S",
+      "type": "number"
+    },
+    "id": {
+      "pattern": "^S\\d{2,3}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "loops": {
+      "$ref": "#/$defs/SceneLoops",
+      "default": {
+        "closes": [],
+        "opens": []
+      }
+    },
+    "on_screen_text": {
+      "default": "",
+      "title": "On Screen Text",
+      "type": "string"
+    },
+    "role": {
+      "$ref": "#/$defs/SceneRole"
+    },
+    "sound": {
+      "default": "",
+      "title": "Sound",
+      "type": "string"
+    },
+    "start_s": {
+      "minimum": 0,
+      "title": "Start S",
+      "type": "number"
+    },
+    "tone": {
+      "default": "",
+      "title": "Tone",
+      "type": "string"
+    },
+    "translation_note": {
+      "default": "",
+      "title": "Translation Note",
+      "type": "string"
+    },
+    "visual": {
+      "default": "",
+      "title": "Visual",
+      "type": "string"
+    },
+    "visual_prompt_en": {
+      "default": "",
+      "title": "Visual Prompt En",
+      "type": "string"
+    },
+    "voice_over": {
+      "default": "",
+      "title": "Voice Over",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "role",
+    "start_s",
+    "duration_s"
+  ],
+  "title": "Scene",
+  "type": "object"
+}

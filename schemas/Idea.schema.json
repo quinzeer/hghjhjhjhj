@@ -1,0 +1,142 @@
+{
+  "$defs": {
+    "IdeaScore": {
+      "additionalProperties": false,
+      "description": "Score on the channel's grid. Criteria and weights come from knowledge/ (private), not from code.",
+      "properties": {
+        "criteria": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "description": "criterion id -> points awarded",
+          "title": "Criteria",
+          "type": "object"
+        },
+        "eliminatory_failed": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Eliminatory Failed",
+          "type": "array"
+        },
+        "total": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Total",
+          "type": "number"
+        }
+      },
+      "required": [
+        "criteria",
+        "total"
+      ],
+      "title": "IdeaScore",
+      "type": "object"
+    },
+    "OutlierEvidence": {
+      "additionalProperties": false,
+      "description": "One measured outlier backing an idea (ADR-004: measured through the official API only).",
+      "properties": {
+        "baseline_n": {
+          "minimum": 1,
+          "title": "Baseline N",
+          "type": "integer"
+        },
+        "measured_at": {
+          "format": "date-time",
+          "title": "Measured At",
+          "type": "string"
+        },
+        "method": {
+          "minLength": 1,
+          "title": "Method",
+          "type": "string"
+        },
+        "ratio": {
+          "exclusiveMinimum": 0,
+          "title": "Ratio",
+          "type": "number"
+        },
+        "video_id": {
+          "pattern": "^[\\w-]{6,20}$",
+          "title": "Video Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "video_id",
+        "ratio",
+        "baseline_n",
+        "measured_at",
+        "method"
+      ],
+      "title": "OutlierEvidence",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "channel_id": {
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$",
+      "title": "Channel Id",
+      "type": "string"
+    },
+    "evidence": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/OutlierEvidence"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
+    "id": {
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "mechanism": {
+      "description": "proven format mechanism transferred to a new subject",
+      "minLength": 1,
+      "title": "Mechanism",
+      "type": "string"
+    },
+    "promise": {
+      "minLength": 1,
+      "title": "Promise",
+      "type": "string"
+    },
+    "score": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/IdeaScore"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "series_id": {
+      "anyOf": [
+        {
+          "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Series Id"
+    }
+  },
+  "required": [
+    "id",
+    "channel_id",
+    "promise",
+    "mechanism"
+  ],
+  "title": "Idea",
+  "type": "object"
+}

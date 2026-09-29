@@ -1,0 +1,86 @@
+{
+  "$defs": {
+    "ShotTechnique": {
+      "description": "Shot grammar (MISSION §6.6): GPU generation only where live motion is indispensable.",
+      "enum": [
+        "gen_video",
+        "blender",
+        "image_25d",
+        "motion",
+        "archive"
+      ],
+      "title": "ShotTechnique",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "draft": {
+      "default": true,
+      "title": "Draft",
+      "type": "boolean"
+    },
+    "duration_s": {
+      "exclusiveMinimum": 0,
+      "title": "Duration S",
+      "type": "number"
+    },
+    "fps": {
+      "exclusiveMinimum": 0,
+      "maximum": 120,
+      "title": "Fps",
+      "type": "integer"
+    },
+    "height": {
+      "exclusiveMinimum": 0,
+      "title": "Height",
+      "type": "integer"
+    },
+    "id": {
+      "pattern": "^S\\d{2,3}-\\d{2}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "model_id": {
+      "minLength": 1,
+      "title": "Model Id",
+      "type": "string"
+    },
+    "prompt": {
+      "default": "",
+      "title": "Prompt",
+      "type": "string"
+    },
+    "scene_id": {
+      "pattern": "^S\\d{2,3}$",
+      "title": "Scene Id",
+      "type": "string"
+    },
+    "seed": {
+      "minimum": 0,
+      "title": "Seed",
+      "type": "integer"
+    },
+    "technique": {
+      "$ref": "#/$defs/ShotTechnique"
+    },
+    "width": {
+      "exclusiveMinimum": 0,
+      "title": "Width",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "id",
+    "scene_id",
+    "technique",
+    "duration_s",
+    "width",
+    "height",
+    "fps",
+    "seed",
+    "model_id"
+  ],
+  "title": "Shot",
+  "type": "object"
+}

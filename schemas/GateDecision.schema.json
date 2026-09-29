@@ -1,0 +1,75 @@
+{
+  "$defs": {
+    "GateName": {
+      "enum": [
+        "g1",
+        "g2",
+        "g3",
+        "compliance"
+      ],
+      "title": "GateName",
+      "type": "string"
+    },
+    "Verdict": {
+      "enum": [
+        "approve",
+        "reject",
+        "pending"
+      ],
+      "title": "Verdict",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A gate validates one exact artifact (ADR-001 decision 8): a new hash needs a new decision.",
+  "properties": {
+    "agent_reasons": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Agent Reasons",
+      "type": "array"
+    },
+    "agent_verdict": {
+      "$ref": "#/$defs/Verdict"
+    },
+    "decided_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Decided At"
+    },
+    "gate": {
+      "$ref": "#/$defs/GateName"
+    },
+    "human_note": {
+      "default": "",
+      "title": "Human Note",
+      "type": "string"
+    },
+    "human_verdict": {
+      "$ref": "#/$defs/Verdict",
+      "default": "pending"
+    },
+    "subject_key": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Subject Key",
+      "type": "string"
+    }
+  },
+  "required": [
+    "gate",
+    "subject_key",
+    "agent_verdict"
+  ],
+  "title": "GateDecision",
+  "type": "object"
+}

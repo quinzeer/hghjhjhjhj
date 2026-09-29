@@ -1,0 +1,44 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "measured_at": {
+      "format": "date-time",
+      "title": "Measured At",
+      "type": "string"
+    },
+    "name": {
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "title": "Name",
+      "type": "string"
+    },
+    "publication_external_id": {
+      "minLength": 1,
+      "title": "Publication External Id",
+      "type": "string"
+    },
+    "source": {
+      "minLength": 1,
+      "title": "Source",
+      "type": "string"
+    },
+    "value": {
+      "title": "Value",
+      "type": "number"
+    },
+    "window": {
+      "pattern": "^(48h|7d|28d|lifetime)$",
+      "title": "Window",
+      "type": "string"
+    }
+  },
+  "required": [
+    "publication_external_id",
+    "name",
+    "value",
+    "window",
+    "measured_at",
+    "source"
+  ],
+  "title": "Metric",
+  "type": "object"
+}

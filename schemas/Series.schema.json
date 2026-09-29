@@ -1,0 +1,39 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "channel_id": {
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$",
+      "title": "Channel Id",
+      "type": "string"
+    },
+    "id": {
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "premise": {
+      "minLength": 1,
+      "title": "Premise",
+      "type": "string"
+    },
+    "season": {
+      "default": 1,
+      "minimum": 1,
+      "title": "Season",
+      "type": "integer"
+    },
+    "title": {
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "channel_id",
+    "title",
+    "premise"
+  ],
+  "title": "Series",
+  "type": "object"
+}
