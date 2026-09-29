@@ -1,0 +1,538 @@
+"""Steps of the dry-run production graph (docs/design/phase1.md, ADR-001).
+
+The graph is built in two stages because its shape depends on the script (one voice and one shot per
+scene): `front_steps` (idea → package → G1 → script) always exists, `production_steps(script)` is added once
+the script is known. Both stages use the same step names, versions and parameters, so the second stage
+reuses every output of the first (a step key never depends on the graph it sits in).
+
+Content addressing gives each scene two cache lines: `line_<id>` extracts what the voice needs (narration, tone,
+duration) and `visual_<id>` what the shot needs (visual prompt, duration) from the script, and voice and shot
+depend on their own artifact only. Editing the words of one scene, at the same length, recomputes one voice and
+no shot: the GPU-heavy picture stays cached. A scene's start time is in neither artifact, so a change of
+length upstream does not invalidate the scenes after it.
+
+Every adapter here is a mock (`Production.from_mocks`); the step code does not know it: it calls the adapter
+protocols of `studio.adapters.base`.
+"""
+
+from __future__ import annotations
+
+import contextlib
+import json
+import os
+import shutil
+import tempfile
+from collections.abc import Iterator, Mapping
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+from studio.adapters.base import (
+    ImageToVideo,
+    MusicGenerator,
+    TextToImage,
+    TextToSpeech,
+    TextToVideo,
+    VisionCritic,
+)
+from studio.adapters.llm_base import LLMRunner
+from studio.adapters.mock import (
+    MockImageToVideo,
+    MockMusicGenerator,
+    MockTextToImage,
+    MockTextToSpeech,
+    MockTextToVideo,
+    MockVisionCritic,
+)
+from studio.core.interfaces import StepSpec, StoredArtifact, StudioError
+from studio.domain import (
+    Channel,
+    CostKind,
+    GateName,
+    Idea,
+    Package,
+    Platform,
+    Privacy,
+    Publication,
+    Render,
+    ResourceClass,
+    Script,
+    ShotTechnique,
+    StudioModel,
+    VideoFormat,
+    canonical_json,
+)
+from studio.media import ffmpeg, qa
+from studio.pipeline.mock_agents import MockProceduralRenderer, MockStudioLLM, choose_technique
+from studio.scenario.skill_json import from_skill_json
+
+STEP_VERSION = "1"
+DRAFT_DIVISOR = 4  # drafts render at a quarter of the final definition (MISSION §6.5)
+MAX_SHOT_ATTEMPTS = 2  # bounded regeneration after a blocking critique
+LLM_SECONDS_ESTIMATE = 120.0
+# GPU seconds per output second and per technique: docs/COST_MODEL.md, hypothesis HC3, replaced by
+# measurements in phase 3. Techniques absent here run on the CPU.
+GPU_SECONDS_PER_SECOND = {ShotTechnique.GEN_VIDEO: 260.0, ShotTechnique.BLENDER: 96.0, ShotTechnique.IMAGE_25D: 12.0}
+TTS_GPU_SECONDS_PER_SECOND = 0.75
+MUSIC_GPU_SECONDS_PER_SECOND = 0.5
+LUFS_TARGET = -14.0
+TRUE_PEAK_CEILING = -1.0
+
+_SCRIPT_SCHEMA = {"type": "object", "required": ["version", "format", "langue", "scenes"]}
+
+
+class ShotRejected(StudioError):
+    """The visual critic blocked every attempt at a shot."""
+
+
+@dataclass(frozen=True)
+class FormatSpec:
+    width: int
+    height: int
+    fps: int
+
+
+FORMATS: dict[VideoFormat, FormatSpec] = {
+    VideoFormat.SHORT: FormatSpec(1080, 1920, 30),
+    VideoFormat.LONG: FormatSpec(1920, 1080, 30),
+}
+
+
+@dataclass(frozen=True)
+class Production:
+    """One video's channel, format and adapters. All adapters are mocks in the dry run."""
+
+    channel: Channel
+    format: VideoFormat
+    seed: int
+    llm: LLMRunner
+    tts: TextToSpeech
+    t2i: TextToImage
+    i2v: ImageToVideo
+    t2v: TextToVideo
+    music: MusicGenerator
+    critic: VisionCritic
+    renderer: MockProceduralRenderer
+    cwd: Path  # working directory handed to the LLM runner
+
+    @classmethod
+    def from_mocks(
+        cls, channel: Channel, fmt: VideoFormat, seed: int = 0, llm: LLMRunner | None = None, cwd: Path | None = None
+    ) -> Production:
+        return cls(
+            channel=channel,
+            format=fmt,
+            seed=seed,
+            llm=llm if llm is not None else MockStudioLLM(),
+            tts=MockTextToSpeech(),
+            t2i=MockTextToImage(),
+            i2v=MockImageToVideo(),
+            t2v=MockTextToVideo(),
+            music=MockMusicGenerator(),
+            critic=MockVisionCritic(),
+            renderer=MockProceduralRenderer(),
+            cwd=cwd if cwd is not None else Path.cwd(),
+        )
+
+    @property
+    def spec(self) -> FormatSpec:
+        return FORMATS[self.format]
+
+    def adapter_ids(self) -> list[str]:
+        """Ids of every adapter this production can call (a report lists them: each must say `mock`)."""
+        adapters = (self.llm, self.tts, self.t2i, self.i2v, self.t2v, self.music, self.critic, self.renderer)
+        return sorted(a.spec.id for a in adapters)
+
+    def shot_adapter_ids(self, technique: ShotTechnique) -> list[str]:
+        """Ids of the adapters that make a shot of `technique`, and judge it. Only these belong in the shot's step
+        params: another backend (the LLM, the voice) must not change the key of a GPU-heavy step."""
+        if technique is ShotTechnique.GEN_VIDEO:
+            ids = [self.t2v.spec.id]
+        elif technique is ShotTechnique.IMAGE_25D:
+            ids = [self.t2i.spec.id, self.i2v.spec.id]
+        else:  # BLENDER, MOTION, ARCHIVE: procedural rendering
+            ids = [self.renderer.spec.id]
+        return sorted([*ids, self.critic.spec.id])
+
+
+# ------------------------------------------------------------------ helpers
+
+
+def _model_out(model: StudioModel) -> tuple[bytes, str, str]:
+    return model.canonical_json().encode("utf-8"), "json", "application/json"
+
+
+def _json_out(data: Any) -> tuple[bytes, str, str]:
+    return canonical_json(data).encode("utf-8"), "json", "application/json"
+
+
+def _load(artifact: StoredArtifact) -> Any:
+    return json.loads(artifact.path.read_text(encoding="utf-8"))
+
+
+@contextlib.contextmanager
+def _workdir() -> Iterator[Path]:
+    with tempfile.TemporaryDirectory(prefix="studio-step-") as directory:
+        yield Path(directory)
+
+
+def _stage(artifact: StoredArtifact, workdir: Path, name: str) -> Path:
+    """Expose a stored file under a name with the right suffix (the store names files by hash)."""
+    dst = workdir / name
+    try:
+        os.link(artifact.path, dst)
+    except OSError:
+        shutil.copy2(artifact.path, dst)
+    return dst
+
+
+def _file_out(path: Path, kind: str, media_type: str) -> tuple[bytes, str, str]:
+    return path.read_bytes(), kind, media_type
+
+
+def _never(inputs: Mapping[str, StoredArtifact], params: Mapping[str, Any]) -> tuple[bytes, str, str]:
+    raise StudioError("a gate step waits for a decision; it never runs code")
+
+
+def _even(n: int) -> int:
+    return max(2, n // 2 * 2)
+
+
+def _brief(p: Production, **extra: Any) -> dict[str, Any]:
+    ch = p.channel
+    return {
+        "channel": {"id": ch.id, "language": ch.language, "concept": ch.concept},
+        "format": p.format.value,
+        "language": ch.language,
+        "seed": p.seed,
+        **extra,
+    }
+
+
+def _ask(p: Production, agent: str, brief: Mapping[str, Any], schema: dict[str, Any]) -> Any:
+    result = p.llm.run(
+        agent=agent,
+        prompt=canonical_json(brief),
+        model="opus",  # creative decisions run on the strongest tier (MISSION §6)
+        json_schema=schema,
+        max_turns=8,
+        allowed_tools=(),
+        cwd=p.cwd,
+    )
+    return result.output
+
+
+def _agent_params(p: Production, agent: str) -> dict[str, Any]:
+    """What besides its inputs an agent step's output depends on: the agent, the backend and the brief."""
+    return {"agent": agent, "backend": p.llm.spec.id, "brief": _brief(p)}
+
+
+def line_step_name(index: int) -> str:
+    return f"line_S{index + 1:02d}"
+
+
+def visual_step_name(index: int) -> str:
+    return f"visual_S{index + 1:02d}"
+
+
+def voice_step_name(index: int) -> str:
+    return f"voice_S{index + 1:02d}"
+
+
+def shot_step_name(index: int) -> str:
+    return f"shot_S{index + 1:02d}"
+
+
+# ------------------------------------------------------------------ stage 1: idea -> package -> G1 -> script
+
+
+def front_steps(p: Production) -> list[StepSpec]:
+    def idea_run(inputs: Mapping[str, StoredArtifact], params: Mapping[str, Any]) -> tuple[bytes, str, str]:
+        idea = Idea.model_validate(_ask(p, "strategist", _brief(p), Idea.model_json_schema()))
+        if idea.channel_id != p.channel.id:
+            raise StudioError(f"the strategist proposed an idea for channel {idea.channel_id!r}, not {p.channel.id!r}")
+        return _model_out(idea)
+
+    def package_run(inputs: Mapping[str, StoredArtifact], params: Mapping[str, Any]) -> tuple[bytes, str, str]:
+        idea = Idea.model_validate(_load(inputs["idea"]))
+        raw = _ask(p, "packaging_director", _brief(p, idea=idea.model_dump(mode="json")), Package.model_json_schema())
+        package = Package.model_validate(raw)
+        if package.idea_id != idea.id or package.format is not p.format:
+            raise StudioError("the packaging does not match the idea or the format it was asked for")
+        return _model_out(package)
+
+    def script_run(inputs: Mapping[str, StoredArtifact], params: Mapping[str, Any]) -> tuple[bytes, str, str]:
+        idea = Idea.model_validate(_load(inputs["idea"]))
+        package = Package.model_validate(_load(inputs["package"]))
+        brief = _brief(p, idea=idea.model_dump(mode="json"), package=package.model_dump(mode="json"))
+        doc = _ask(p, "head_writer", brief, _SCRIPT_SCHEMA)
+        script, _ = from_skill_json(doc, idea.id)
+        if script.format is not p.format:
+            raise StudioError(f"the head writer produced a {script.format.value} script for a {p.format.value} video")
+        return _model_out(script)
+
+    llm_cost = {CostKind.CLAUDE_SECONDS: LLM_SECONDS_ESTIMATE}
+    return [
+        StepSpec("idea", STEP_VERSION, (), _agent_params(p, "strategist"), ResourceClass.LLM, idea_run, estimated_cost=llm_cost),
+        StepSpec(
+            "package",
+            STEP_VERSION,
+            ("idea",),
+            _agent_params(p, "packaging_director"),
+            ResourceClass.LLM,
+            package_run,
+            estimated_cost=llm_cost,
+        ),
+        StepSpec("g1", STEP_VERSION, ("package",), {}, ResourceClass.HUMAN, _never, gate=GateName.G1),
+        StepSpec(
+            "script",
+            STEP_VERSION,
+            ("idea", "package", "g1"),
+            _agent_params(p, "head_writer"),
+            ResourceClass.LLM,
+            script_run,
+            estimated_cost=llm_cost,
+        ),
+    ]
+
+
+# ------------------------------------------------------------------ stage 2: one voice and one shot per scene
+
+
+def _draft_or_final(
+    p: Production,
+    technique: ShotTechnique,
+    brief: str,
+    width: int,
+    height: int,
+    duration_s: float,
+    fps: int,
+    seed: int,
+    out: Path,
+    workdir: Path,
+) -> None:
+    """Render one clip with the adapter the technique calls for."""
+    if technique is ShotTechnique.GEN_VIDEO:
+        p.t2v.generate(brief, width=width, height=height, duration_s=duration_s, fps=fps, seed=seed, out=out)
+    elif technique is ShotTechnique.IMAGE_25D:
+        still = workdir / f"still-{out.stem}.png"
+        p.t2i.generate(brief, width=width, height=height, seed=seed, out=still)
+        p.i2v.animate(still, brief, duration_s=duration_s, fps=fps, seed=seed, out=out)
+    else:  # BLENDER, MOTION, ARCHIVE: procedural rendering, no generative model
+        p.renderer.render(brief, width=width, height=height, duration_s=duration_s, fps=fps, seed=seed, out=out)
+
+
+def _shot_run(p: Production, index: int, visual_step: str, technique: ShotTechnique) -> Any:
+    spec = p.spec
+
+    def run(inputs: Mapping[str, StoredArtifact], params: Mapping[str, Any]) -> tuple[bytes, str, str]:
+        visual = _load(inputs[visual_step])
+        brief, duration = visual["visual_prompt_en"], float(visual["duration_s"])
+        with _workdir() as wd:
+            final = wd / "shot.mp4"
+            for attempt in range(MAX_SHOT_ATTEMPTS):
+                seed = int(params["seed"]) + attempt
+                draft = wd / f"draft-{attempt}.mp4"
+                _draft_or_final(
+                    p, technique, brief, _even(spec.width // DRAFT_DIVISOR), _even(spec.height // DRAFT_DIVISOR),
+                    duration, spec.fps, seed, draft, wd,
+                )  # fmt: skip
+                critique = p.critic.critique([draft], brief)
+                if not critique.blocking:
+                    _draft_or_final(p, technique, brief, spec.width, spec.height, duration, spec.fps, seed, final, wd)
+                    return _file_out(final, "video", "video/mp4")
+            raise ShotRejected(
+                f"{shot_step_name(index)}: the critic blocked {MAX_SHOT_ATTEMPTS} attempts: {list(critique.defects)}"
+            )
+
+    return run
+
+
+def production_steps(p: Production, script: Script) -> list[StepSpec]:
+    """Steps that follow the script; the caller passes `front_steps(p) + production_steps(p, script)`."""
+    spec = p.spec
+    media = ffmpeg.media_fingerprint()  # what the bytes of a render depend on besides the inputs
+    tts_id, music_id = p.tts.spec.id, p.music.spec.id
+    steps: list[StepSpec] = []
+
+    def timeline_run(inputs: Mapping[str, StoredArtifact], params: Mapping[str, Any]) -> tuple[bytes, str, str]:
+        s = Script.model_validate(_load(inputs["script"]))
+        return _json_out({"duration_s": s.duration_s, "scene_durations": [sc.duration_s for sc in s.scenes]})
+
+    steps.append(StepSpec("timeline", STEP_VERSION, ("script",), {}, ResourceClass.CPU, timeline_run))
+
+    for i, scene in enumerate(script.scenes):
+        line_name, visual_name, voice_name, shot_name = (
+            line_step_name(i),
+            visual_step_name(i),
+            voice_step_name(i),
+            shot_step_name(i),
+        )
+        technique = choose_technique(scene, i)
+
+        def line_run(inputs: Mapping[str, StoredArtifact], params: Mapping[str, Any], i: int = i) -> tuple[bytes, str, str]:
+            scene_i = Script.model_validate(_load(inputs["script"])).scenes[i]
+            return _json_out({"voice_over": scene_i.voice_over, "tone": scene_i.tone, "duration_s": scene_i.duration_s})
+
+        def visual_run(inputs: Mapping[str, StoredArtifact], params: Mapping[str, Any], i: int = i) -> tuple[bytes, str, str]:
+            scene_i = Script.model_validate(_load(inputs["script"])).scenes[i]
+            return _json_out({"visual_prompt_en": scene_i.visual_prompt_en, "duration_s": scene_i.duration_s})
+
+        def voice_run(
+            inputs: Mapping[str, StoredArtifact], params: Mapping[str, Any], line_name: str = line_name
+        ) -> tuple[bytes, str, str]:
+            data = _load(inputs[line_name])
+            with _workdir() as wd:
+                out = wd / "voice.wav"
+                if data["voice_over"].strip():
+                    p.tts.speak(data["voice_over"], voice_id=params["voice_id"], language=params["language"], out=out)
+                else:
+                    ffmpeg.silence(out, float(data["duration_s"]))
+                return _file_out(out, "audio", "audio/wav")
+
+        steps.append(StepSpec(line_name, STEP_VERSION, ("script",), {"index": i}, ResourceClass.CPU, line_run))
+        steps.append(StepSpec(visual_name, STEP_VERSION, ("script",), {"index": i}, ResourceClass.CPU, visual_run))
+        steps.append(
+            StepSpec(
+                voice_name,
+                STEP_VERSION,
+                (line_name,),
+                {"voice_id": p.channel.voice_id, "language": p.channel.language, "adapter": tts_id, "media": media},
+                ResourceClass.GPU,
+                voice_run,
+                estimated_cost={CostKind.GPU_SECONDS: max(1.0, TTS_GPU_SECONDS_PER_SECOND * scene.duration_s)},
+                model_id=tts_id,
+            )
+        )
+        gpu_rate = GPU_SECONDS_PER_SECOND.get(technique)
+        steps.append(
+            StepSpec(
+                shot_name,
+                STEP_VERSION,
+                (visual_name,),
+                {
+                    "technique": technique.value,
+                    "width": spec.width,
+                    "height": spec.height,
+                    "fps": spec.fps,
+                    "seed": p.seed + i,
+                    "adapters": p.shot_adapter_ids(technique),
+                    "media": media,
+                },
+                ResourceClass.GPU if gpu_rate is not None else ResourceClass.CPU,
+                _shot_run(p, i, visual_name, technique),
+                estimated_cost={CostKind.GPU_SECONDS: max(1.0, (gpu_rate or 0.0) * scene.duration_s)} if gpu_rate else {},
+                model_id=technique.value,
+            )
+        )
+
+    def music_run(inputs: Mapping[str, StoredArtifact], params: Mapping[str, Any]) -> tuple[bytes, str, str]:
+        timeline = _load(inputs["timeline"])
+        with _workdir() as wd:
+            out = wd / "bed.wav"
+            p.music.compose(params["brief"], duration_s=float(timeline["duration_s"]), seed=int(params["seed"]), out=out)
+            return _file_out(out, "audio", "audio/wav")
+
+    def mix_run(inputs: Mapping[str, StoredArtifact], params: Mapping[str, Any]) -> tuple[bytes, str, str]:
+        durations = _load(inputs["timeline"])["scene_durations"]
+        with _workdir() as wd:
+            parts: list[Path] = []
+            for i, target in enumerate(durations):
+                voice = _stage(inputs[voice_step_name(i)], wd, f"voice{i}.wav")
+                gap = float(target) - qa.probe(voice).duration_s
+                if gap < -0.05:
+                    raise StudioError(f"{voice_step_name(i)} is {-gap:.2f} s longer than its scene")
+                if gap > 0.001:  # pad each voice to its scene so that voice and picture stay in step
+                    parts.append(ffmpeg.concat_audio(wd / f"scene{i}.wav", [voice, ffmpeg.silence(wd / f"pad{i}.wav", gap)]))
+                else:
+                    parts.append(voice)
+            track = ffmpeg.concat_audio(wd / "voice.wav", parts)
+            bed = _stage(inputs["music"], wd, "bed.wav")
+            mixed = ffmpeg.mix_audio(wd / "mixed.wav", track, bed, bed_gain_db=float(params["bed_gain_db"]))
+            master = ffmpeg.loudnorm_two_pass(
+                wd / "master.wav", mixed, target_lufs=float(params["lufs"]), true_peak_db=float(params["true_peak_db"])
+            )
+            return _file_out(master, "audio", "audio/wav")
+
+    def assemble_run(inputs: Mapping[str, StoredArtifact], params: Mapping[str, Any]) -> tuple[bytes, str, str]:
+        with _workdir() as wd:
+            clips = [_stage(inputs[shot_step_name(i)], wd, f"shot{i}.mp4") for i in range(len(script.scenes))]
+            video = ffmpeg.concat_videos(wd / "video.mp4", clips, width=spec.width, height=spec.height, fps=spec.fps)
+            master = _stage(inputs["mix"], wd, "master.wav")
+            return _file_out(ffmpeg.mux(wd / "render.mp4", video, master), "video", "video/mp4")
+
+    def qa_run(inputs: Mapping[str, StoredArtifact], params: Mapping[str, Any]) -> tuple[bytes, str, str]:
+        expected = float(_load(inputs["timeline"])["duration_s"])
+        with _workdir() as wd:
+            render = _stage(inputs["assemble"], wd, "render.mp4")
+            defects = qa.check_render(render, spec.width, spec.height, spec.fps, expected)
+            info = qa.probe(render)
+            lufs, peak = qa.loudness(render) if info.has_audio else (None, None)
+        described = Render(
+            format=p.format,
+            width=info.width,
+            height=info.height,
+            fps=info.fps,
+            duration_s=info.duration_s,
+            video_key=inputs["assemble"].key,
+            has_audio=info.has_audio,
+            integrated_lufs=lufs,
+            true_peak_dbtp=peak,
+        )
+        return _json_out({"render": described.model_dump(mode="json"), "defects": defects})
+
+    def publish_run(inputs: Mapping[str, StoredArtifact], params: Mapping[str, Any]) -> tuple[bytes, str, str]:
+        s = Script.model_validate(_load(inputs["script"]))
+        note = "AI-generated reconstruction." if s.disclosure.required else ""
+        plan = Publication(
+            platform=Platform.YOUTUBE,
+            render_key=inputs["assemble"].key,
+            title=s.titles[0],
+            description="\n\n".join(part for part in (s.promise, note) if part),
+            privacy=Privacy.PRIVATE,  # a dry run plans a private upload and makes no network call
+            contains_synthetic_media=s.disclosure.required,
+        )
+        return _model_out(plan)
+
+    steps += [
+        StepSpec(
+            "music",
+            STEP_VERSION,
+            ("timeline",),
+            {"brief": f"ambient bed for {p.channel.concept}", "seed": p.seed, "adapter": music_id, "media": media},
+            ResourceClass.GPU,
+            music_run,
+            estimated_cost={CostKind.GPU_SECONDS: max(1.0, MUSIC_GPU_SECONDS_PER_SECOND * script.duration_s)},
+            model_id=music_id,
+        ),
+        StepSpec(
+            "mix",
+            STEP_VERSION,
+            ("timeline", *(voice_step_name(i) for i in range(len(script.scenes))), "music"),
+            {"bed_gain_db": -18.0, "lufs": LUFS_TARGET, "true_peak_db": TRUE_PEAK_CEILING, "media": media},
+            ResourceClass.CPU,
+            mix_run,
+        ),
+        StepSpec(
+            "assemble",
+            STEP_VERSION,
+            ("mix", *(shot_step_name(i) for i in range(len(script.scenes)))),
+            {"width": spec.width, "height": spec.height, "fps": spec.fps, "media": media},
+            ResourceClass.CPU,
+            assemble_run,
+        ),
+        StepSpec("qa", STEP_VERSION, ("assemble", "timeline"), {"media": media}, ResourceClass.CPU, qa_run),
+        StepSpec("compliance", STEP_VERSION, ("assemble",), {}, ResourceClass.HUMAN, _never, gate=GateName.COMPLIANCE),
+        StepSpec("g2", STEP_VERSION, ("assemble",), {}, ResourceClass.HUMAN, _never, gate=GateName.G2),
+        StepSpec(
+            "publish_plan",
+            STEP_VERSION,
+            ("script", "assemble", "qa", "compliance", "g2"),
+            {},
+            ResourceClass.CPU,
+            publish_run,
+            # publication guard (ADR-001 decision 8): the exact render must carry a compliance approval and a G2
+            requires_approval=((GateName.COMPLIANCE, "assemble"), (GateName.G2, "assemble")),
+        ),
+    ]
+    return steps
