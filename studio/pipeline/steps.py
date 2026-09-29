@@ -267,15 +267,42 @@ def _model_out_with_usage(model: StudioModel, result: LLMResult) -> tuple[bytes,
     return data, kind, media_type, usage_costs(result.usage)
 
 
-def contract_fingerprint(*schemas: Mapping[str, Any]) -> str:
-    """SHA-256 of the JSON Schemas a step's output is written under.
+# What a JSON Schema says about a contract without changing what it accepts: pydantic copies docstrings, field
+# descriptions and examples into it, and a release that edits a sentence must not recompute anything.
+_DOCUMENTATION = frozenset({"title", "description", "examples", "$comment", "deprecated"})
+_KEYS_ARE_NAMES = frozenset({"properties", "$defs", "definitions", "patternProperties", "dependentSchemas"})
+_VALUES_ARE_DATA = frozenset({"default", "const", "enum"})
 
-    It is a parameter of the step, like `media_fingerprint()` for a render: a step whose output contract changes gets
-    another key, so an output cached under the old contract is not served again, and an approval given to one candidate
-    does not open the gates of another. The manifest keeps an in-flight video across a change of a step's *version*,
-    never across a change of its parameters (critic R1: a candidate cached by the previous version was served again,
-    with its approvals)."""
-    return bytes_key(canonical_json(list(schemas)).encode("utf-8"))
+
+def _structure(schema: Any, *, names: bool = False) -> Any:
+    """`schema` without its documentation. Under `properties` and the like the keys are names of fields or of
+    definitions, and a field called `title` is structure, not a title."""
+    if isinstance(schema, Mapping):
+        kept: dict[str, Any] = {}
+        for key, value in schema.items():
+            if names:  # `schema` maps names to schemas: every name is kept, every schema is read as a schema
+                kept[key] = _structure(value)
+            elif key in _DOCUMENTATION:
+                continue
+            elif key in _VALUES_ARE_DATA:
+                kept[key] = value
+            else:
+                kept[key] = _structure(value, names=key in _KEYS_ARE_NAMES)
+        return kept
+    if isinstance(schema, list | tuple):
+        return [_structure(item) for item in schema]
+    return schema
+
+
+def contract_fingerprint(*schemas: Mapping[str, Any]) -> str:
+    """SHA-256 of the structure of the JSON Schemas a step's output is written under (never of their documentation).
+
+    It is a parameter of the step, like `media_fingerprint()` for a render: a step whose output contract changes
+    structurally gets another key, so an output cached under the old contract is not served again, and an approval given
+    to one candidate does not open the gates of another. The manifest keeps an in-flight video across a change of a
+    step's *version*, never across a change of its parameters (critic R1: a candidate cached by the previous version was
+    served again, with its approvals). A sentence edited in a docstring changes nothing (critic R9)."""
+    return bytes_key(canonical_json([_structure(schema) for schema in schemas]).encode("utf-8"))
 
 
 def _agent_params(p: Production, agent: str, *schemas: Mapping[str, Any]) -> dict[str, Any]:

@@ -398,7 +398,9 @@ def test_an_output_cached_under_another_contract_is_recomputed_at_the_price_of_c
 ) -> None:
     """Critic R1: the candidate cached by the previous version was served again, with its approvals. A contract is a
     parameter of the step that writes under it, so a changed contract recomputes that step and the manifest's lock does
-    not hold it back; the render, which no contract touches, is not recomputed."""
+    not hold it back; the render, which no contract touches, is not recomputed. The mock LLM answers the same words
+    every time, which is why no GPU second is paid here: a real LLM would answer differently, and what depends on its
+    answer would follow (ADR-001 decision 15, reserve R9)."""
     where = clone(small_run, tmp_path)  # its manifest locks every output, the candidate included
     with pytest.MonkeyPatch.context() as mp:
         mp.setattr(steps_module, "contract_fingerprint", lambda *schemas: "f" * 64)  # the contracts are other ones
@@ -408,6 +410,20 @@ def test_an_output_cached_under_another_contract_is_recomputed_at_the_price_of_c
     assert again["costs"]["gpu_seconds"] == small_run.report["costs"]["gpu_seconds"]  # no GPU second was paid again
     assert again["costs"]["claude_calls"] == small_run.report["costs"]["claude_calls"] + 3  # three agents asked again
     assert again["render_key"] == small_run.report["render_key"] and again["waiting"] == []
+
+
+def test_a_release_that_only_rewords_the_contracts_recomputes_nothing(small_run: Run, tmp_path: Path) -> None:
+    """Critic R9: docstrings and descriptions are copied into the JSON Schemas; editing a sentence of a model must not
+    recompute the LLM steps of the videos in progress, whose answers a real LLM would not repeat."""
+    from studio.domain import Idea, Package, PublicationCandidate, Render, Script
+
+    where = clone(small_run, tmp_path)
+    with pytest.MonkeyPatch.context() as mp:
+        for model in (Idea, Package, Script, PublicationCandidate, Render):
+            mp.setattr(model, "__doc__", f"Reworded documentation of {model.__name__}.")
+        again = run_dry(where.config)
+    assert again["executed"] == [] and len(again["skipped"]) == small_run.report["step_count"]
+    assert again["costs"] == small_run.report["costs"]  # not one Claude call, not one GPU second
 
 
 def test_a_candidate_of_an_older_contract_that_reaches_the_gates_is_reported_in_words_and_publishes_nothing(

@@ -220,6 +220,53 @@ def test_the_contract_fingerprint_follows_the_schemas_it_is_given() -> None:
     assert contract_fingerprint(before, after) != contract_fingerprint(after, before)
 
 
+def test_the_contract_fingerprint_ignores_documentation_and_sees_structure() -> None:
+    """Critic R9: pydantic copies docstrings and descriptions into the schema; a reworded sentence is not a new contract."""
+
+    def schema(**changes: object) -> dict[str, object]:
+        base: dict[str, object] = {
+            "type": "object",
+            "title": "Doc",
+            "description": "What a doc is.",
+            "properties": {"x": {"type": "integer", "title": "X", "description": "The x.", "examples": [1], "default": 1}},
+            "required": ["x"],
+        }
+        return {**base, **changes}
+
+    reference = contract_fingerprint(schema())
+    reworded = schema(title="Other", description="Words that say something else.")
+    reworded["properties"] = {"x": {"type": "integer", "title": "Ex", "description": "Else.", "examples": [2, 3], "default": 1}}
+    assert contract_fingerprint(reworded) == reference  # titles, descriptions and examples are documentation
+
+    retyped = schema(properties={"x": {"type": "string", "default": 1}})
+    grown = schema(properties={"x": {"type": "integer", "default": 1}, "y": {"type": "integer"}})
+    optional = schema(required=[])
+    other_default = schema(properties={"x": {"type": "integer", "default": 2}})
+    for changed in (retyped, grown, optional, other_default):
+        assert contract_fingerprint(changed) != reference  # what the contract accepts and what a missing field means
+
+
+def test_a_field_named_like_a_documentation_keyword_is_structure_not_documentation() -> None:
+    """`Publication` has a `title` and a `description`: dropping or retyping them must change the contract."""
+    with_title = {"type": "object", "properties": {"title": {"type": "string", "description": "shown to viewers"}}}
+    retyped = {"type": "object", "properties": {"title": {"type": "integer", "description": "shown to viewers"}}}
+    renamed = {"type": "object", "properties": {"description": {"type": "string"}}}
+    dropped = {"type": "object", "properties": {}}
+    fingerprints = {contract_fingerprint(x) for x in (with_title, retyped, renamed, dropped)}
+    assert len(fingerprints) == 4
+    nested = {"$defs": {"Publication": with_title}, "$ref": "#/$defs/Publication"}
+    assert contract_fingerprint(nested) != contract_fingerprint(
+        {"$defs": {"Publication": retyped}, "$ref": "#/$defs/Publication"}
+    )
+
+
+def test_editing_the_docstring_of_a_contract_does_not_change_its_fingerprint(monkeypatch: pytest.MonkeyPatch) -> None:
+    before = {m: contract_fingerprint(m.model_json_schema()) for m in (Idea, Package, Script, PublicationCandidate, Render)}
+    for model in before:
+        monkeypatch.setattr(model, "__doc__", f"A sentence that says something else about {model.__name__}.")
+    assert {m: contract_fingerprint(m.model_json_schema()) for m in before} == before
+
+
 @pytest.mark.media
 def test_the_steps_that_use_a_mock_adapter_are_flagged_so_a_real_run_cannot_contain_them(media_tools: None) -> None:
     p = production(roles=SHORT_ROLES)
