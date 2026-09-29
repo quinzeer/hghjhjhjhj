@@ -5,6 +5,7 @@ from __future__ import annotations
 import datetime as dt
 import importlib.util
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -377,6 +378,44 @@ def test_empty_values_in_env_example_are_not_secrets(repo: Path) -> None:
     assert vp.check_secrets(repo).ok
     write(repo / ".env.example", "CLAUDE_CODE_OAUTH_TOKEN=sk-ant-oat01-abcdef\n")
     assert not vp.check_secrets(repo).ok
+
+
+FAKE_KEY = "sk-ant-api03-FAKEfake0123456789"
+
+
+def test_a_listed_placeholder_token_is_not_a_secret(repo: Path) -> None:
+    write(repo / "tests" / "fixture.py", f'FAKE = "{FAKE_KEY}"\nother = "x {FAKE_KEY}, y"\n')
+    assert vp.check_secrets(repo).ok
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        f'key = "{FAKE_KEY}REALSUFFIX0123"',  # continues past the listed placeholder
+        f'key = "prefix-{FAKE_KEY}"',  # starts before it
+        f'key = "{FAKE_KEY[:-1]}0"',  # a lookalike that is not listed (built here: this file is scanned too)
+        f"ANTHROPIC_API_KEY={FAKE_KEY}0123456789\n",
+    ],
+)
+def test_a_lookalike_of_a_listed_placeholder_is_still_a_secret(repo: Path, text: str) -> None:
+    write(repo / "tests" / "fixture.py", text)
+    assert not vp.check_secrets(repo).ok
+
+
+def git(repo: Path, *args: str) -> None:
+    subprocess.run(["git", "-c", "user.email=t@t", "-c", "user.name=t", *args], cwd=repo, check=True, capture_output=True)
+
+
+def test_the_history_scan_applies_the_same_placeholder_rule(tmp_path: Path) -> None:
+    git(tmp_path, "init", "-q")
+    write(tmp_path / "fixture.py", f'FAKE = "{FAKE_KEY}"\n')
+    git(tmp_path, "add", ".")
+    git(tmp_path, "commit", "-q", "-m", "fixture")
+    assert vp.check_secrets(tmp_path).ok
+    write(tmp_path / "leak.py", f'REAL = "{FAKE_KEY}0000"\n')
+    git(tmp_path, "add", ".")
+    git(tmp_path, "commit", "-q", "-m", "leak")
+    assert any("historique git" in d for d in vp.check_secrets(tmp_path).details)
 
 
 def test_plan_needs_every_phase(repo: Path) -> None:

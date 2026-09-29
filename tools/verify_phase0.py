@@ -114,6 +114,21 @@ SECRET_PATTERNS = (
 )
 
 
+# Placeholder tokens that tests feed to the redaction code of the Claude runner. They have the shape of a key on purpose
+# (the code under test must recognise the shape) and are listed one by one: a real key never equals one of them, and a
+# lookalike that is not in this set, or that continues past its end, still fails the gate.
+KNOWN_FAKE_SECRETS = frozenset({"sk-ant-api03-FAKEfake0123456789", "sk-ant-api03-not-a-real-key"})
+_TOKEN_CHARS = r"A-Za-z0-9_\-"
+_KNOWN_FAKES = re.compile(
+    rf"(?<![{_TOKEN_CHARS}])(?:{'|'.join(re.escape(f) for f in sorted(KNOWN_FAKE_SECRETS))})(?![{_TOKEN_CHARS}])"
+)
+
+
+def without_known_fakes(text: str) -> str:
+    """`text` with each listed placeholder token (as a whole token) removed."""
+    return _KNOWN_FAKES.sub("", text)
+
+
 def norm(text: str) -> str:
     """Lowercase, strip accents and surrounding spaces/markup for tolerant matching."""
     text = unicodedata.normalize("NFKD", text)
@@ -689,6 +704,7 @@ def check_secrets(root: Path) -> Check:
             text = path.read_text(encoding="utf-8")
         except (UnicodeDecodeError, OSError):
             continue
+        text = without_known_fakes(text)
         for pat in SECRET_PATTERNS:
             if pat.search(text):
                 chk.fail(f"{rel}: motif de secret '{pat.pattern[:30]}…'")
@@ -699,7 +715,9 @@ def check_secrets(root: Path) -> Check:
     except (OSError, subprocess.CalledProcessError):
         chk.info("historique git illisible : seul l'arbre de travail a été scanné")
         return chk
-    added = "\n".join(line[1:] for line in history.splitlines() if line.startswith("+") and not line.startswith("+++"))
+    added = without_known_fakes(
+        "\n".join(line[1:] for line in history.splitlines() if line.startswith("+") and not line.startswith("+++"))
+    )
     for pat in SECRET_PATTERNS:
         if pat.search(added):
             chk.fail(f"historique git : motif de secret '{pat.pattern[:30]}…' dans un commit passé")
