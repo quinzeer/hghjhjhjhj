@@ -217,7 +217,9 @@ def test_source_changed_during_copy_leaves_no_file(
 
 
 def test_put_rewrites_a_file_removed_after_its_first_check(store: LocalArtifactStore, monkeypatch: pytest.MonkeyPatch) -> None:
-    stored = store.put_bytes(b"raced by a purge", kind="text", media_type="text/plain")
+    """A big object (no integrity check on a put): a purge removes the file between the size check and the index write."""
+    big = LocalArtifactStore(store.root, store.engine, verify_reads_up_to=0)
+    stored = big.put_bytes(b"raced by a purge", kind="text", media_type="text/plain")
     real_present = artifacts_module._present
     calls: list[bool] = []
 
@@ -229,9 +231,55 @@ def test_put_rewrites_a_file_removed_after_its_first_check(store: LocalArtifactS
         return result
 
     monkeypatch.setattr(artifacts_module, "_present", present_then_vanish_mock)
-    assert store.put_bytes(b"raced by a purge", kind="text", media_type="text/plain") == stored
+    assert big.put_bytes(b"raced by a purge", kind="text", media_type="text/plain") == stored
     assert calls == [True, False]
     assert stored.path.read_bytes() == b"raced by a purge"
+
+
+def test_put_rewrites_a_small_file_removed_between_its_integrity_check_and_the_index_write(
+    store: LocalArtifactStore, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    stored = store.put_bytes(b"raced by a purge", kind="text", media_type="text/plain")
+    real_intact = LocalArtifactStore._file_intact
+    real_present = artifacts_module._present
+    checked: list[bool] = []
+    presents: list[bool] = []
+
+    def intact_then_vanish_mock(path: Path, key: str) -> bool:
+        result = real_intact(path, key)
+        if not checked:
+            path.unlink()  # the purge comes after the file was found intact
+        checked.append(result)
+        return result
+
+    def recording_present(path: Path, size: int) -> bool:
+        presents.append(real_present(path, size))
+        return presents[-1]
+
+    monkeypatch.setattr(LocalArtifactStore, "_file_intact", staticmethod(intact_then_vanish_mock))
+    monkeypatch.setattr(artifacts_module, "_present", recording_present)
+    assert store.put_bytes(b"raced by a purge", kind="text", media_type="text/plain") == stored
+    assert checked == [True] and presents == [True, False]  # found intact, then gone at the index write: rewritten there
+    assert stored.path.read_bytes() == b"raced by a purge"
+
+
+def test_put_rewrites_a_small_file_that_vanishes_between_the_size_check_and_the_integrity_check(
+    store: LocalArtifactStore, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    stored = store.put_bytes(b"raced by a purge", kind="text", media_type="text/plain")
+    real_present = artifacts_module._present
+    calls: list[bool] = []
+
+    def present_then_vanish_mock(path: Path, size: int) -> bool:
+        result = real_present(path, size)
+        if not calls:
+            path.unlink()
+        calls.append(result)
+        return result
+
+    monkeypatch.setattr(artifacts_module, "_present", present_then_vanish_mock)
+    assert store.put_bytes(b"raced by a purge", kind="text", media_type="text/plain") == stored
+    assert stored.path.read_bytes() == b"raced by a purge"  # the integrity check found the file gone: rewritten at once
 
 
 def test_default_clock_is_utc_now(tmp_path: Path, engine: Engine) -> None:
