@@ -5,73 +5,68 @@ Entrées datées, la plus récente en haut. Chaque affirmation « fait » est su
 ## 2026-09-29 — Session 2 : phase 1 (squelette, contrats, mocks)
 
 ### Fait
-- **Contrats et schémas** : 15 contrats Pydantic v2 figés et stricts, un JSON Schema par contrat (`schemas/`), mapping sans perte avec le JSON de scènes du skill (fixtures aux contenus inventés).
-- **Cœur** (`studio/core`) : magasin d'artefacts adressé par contenu (fichiers + index SQL, premier écrit gagne, épinglage), registre des coûts à plafonds et réservations atomiques à bail, file de tâches SQL avec verrou global par clé d'étape et jeton de fencing, répartiteur GPU (affinité de modèle, finaux avant brouillons), planificateur de graphe avec manifeste verrouillé et portes liées au hash, décisions de porte en SQL, gestionnaire de quota Claude.
+- **Contrats et schémas** : 16 contrats Pydantic v2 figés et stricts, un JSON Schema par contrat (`schemas/`), mapping sans perte avec le JSON de scènes du skill (fixtures aux contenus inventés).
+- **Cœur** (`studio/core`) : magasin d'artefacts adressé par contenu (fichiers + index SQL, premier écrit gagne, épinglage), registre des coûts à plafonds et réservations atomiques à bail (jetons Claude compris, chaque entrée dit si elle mesure un mock), file de tâches SQL avec verrou global par clé d'étape et jeton de fencing, répartiteur GPU (composants prouvés à part, branchés en phase 3), planificateur de graphe avec manifeste verrouillé recoupé avec le magasin et portes relues à chaque tour, décisions de porte en SQL, gestionnaire de quota Claude.
 - **Adaptateurs et média** : `ClaudeCodeRunner` (`claude -p`, jamais `--bare`, refuse `ANTHROPIC_API_KEY`), LLM mock, mocks de tous les protocoles qui écrivent de vrais fichiers, `studio/media` (ffmpeg déterministe, QA §8, `media_fingerprint()`).
-- **Parcours à blanc** (`studio/pipeline`, `studio/cli.py`) : idée → packaging → G1 → script → une voix et un plan par scène → musique → mixage −14 LUFS → assemblage → QA → conformité → G2 → plan de publication privé, sans réseau. `studio run --channel A --format short --dry-run`.
-- **Essai DBOS 3.1.0** (19 tests, vrais processus, Postgres) puis **ADR-001 révisé** : file tirée maison retenue, DBOS mis de côté (décision 12), décisions 13 à 19, table scénarios de panne → tests (33 tests cités, existence vérifiée).
-- **Outillage** : `make doctor-execution`, porte de phase 1 (aucun test ignoré, Postgres et ffmpeg exigés), CI qui lance la porte, `dbos` déplacé dans le groupe `dev` et `sqlalchemy` déclaré (elle venait de `dbos`).
-- **Volume** : 18 commits, `studio/` 9 175 lignes (35 fichiers), `tests/` 14 442 lignes (26 fichiers de test).
+- **Parcours à blanc** (`studio/pipeline`, `studio/cli.py`) : idée → packaging → G1 → script → une voix et un plan par scène → musique → mixage −14 LUFS → assemblage → QA → **candidat de publication** → conformité (agent et humain) → G2 → plan de publication privé, sans réseau. `studio run --channel A --format short --dry-run`.
+- **Essai DBOS 3.1.0** (19 tests, vrais processus, Postgres) puis **ADR-001 révisé** : file tirée maison retenue, DBOS mis de côté (décision 12), décisions 13 à 20, table pannes → tests (60 tests cités, existence vérifiée).
+- **Outillage** : `make doctor-execution`, porte de phase 1 qui mesure elle-même, CI qui la lance, `dbos` dans le groupe `dev`, `sqlalchemy` déclaré.
+- **Volume** : `studio/` ≈ 9 500 lignes, `tests/` ≈ 15 500 lignes, 1 351 tests.
+
+### Revue `critic` du 2026-09-29 : refusée, corrigée
+La 1re revue (HEAD `ef03588`, 3 h, 181 appels d'outils) a reproduit la porte (5/5) puis **refusé** la phase : 2 bloquants, 10 importants, 7 mineurs. Elle avait raison sur les deux bloquants.
+
+| Constat | Ce que la revue a démontré | Correction | Preuve (mutant correspondant tué) |
+|---|---|---|---|
+| B1 conformité contournable | une v2 du script coupait la divulgation IA ; le rendu restait identique, donc les décisions (sur le hash du rendu) servaient et le plan devenait « non synthétique » sans que personne soit sollicité | `PublicationCandidate` : la conformité et G2 jugent le hash de ce que la plateforme montrera, lié à la chaîne et à la vidéo ; `publish_plan` le libère à l'octet près | `test_a_title_or_a_disclosure_changed_after_the_approvals_needs_new_approvals` |
+| B2 `costs.json` sans `mock` | 0 occurrence du mot dans `costs.json` ; des appels au LLM mock présentés comme mesurés | `costs.json` enveloppé, `CostEntry.mock`, `script.scenes.json` marqué, la porte lit les quatre JSON | `test_every_json_file_of_a_dry_run_says_mock` |
+| I1 approbations mock valides en « réel » | `Runner.run(dry_run=False, mock=False)` publiait avec les décisions du pilote mock | `GateDecision.mock` vérifié à chaque lecture ; un graphe qui contient une étape mock refuse `mock=False` ; le pilote dérive le mode des adaptateurs | `test_a_decision_applies_only_to_a_run_of_its_own_mode` |
+| I2 ordre conformité avant G2 non prouvé | un mutant (tri inversé) laissait la suite verte | le test exige qu'aucun humain ne soit sollicité et qu'aucune décision G2 existe | `test_the_compliance_officer_blocks_a_script_with_an_open_loop_and_no_human_is_asked_at_g2` |
+| I3 aucun nettoyeur ne tourne | 14 `SIGKILL` pendant une étape GPU bloquaient la vidéo pour de bon (988 s GPU réservées par arrêt, plafond 14 400) | `reap_expired` au début de chaque tour ; le propriétaire du dossier libère tout, vide `state/tmp`, retire les JSON à demi écrits | `test_repeated_kills_during_gpu_steps_leave_no_reservation_and_the_video_still_finishes` |
+| I4 la porte croit le rapport | une variante qui retire la dernière scène du rendu passait 5/5 | durée = somme des scènes du script, loudness et crête mesurées par la porte, sha256, longueurs des pistes, instantané de l'état au rejeu, `mock` partout ; `check_e2e`, `check_render`, `check_lint` testés | `tests/tools/test_verify_phase1.py` |
+| I5 la QA ne bloque pas | un défaut QA + un officier qui approuve donnaient un plan | `publish_plan` refuse tout défaut QA, un autre rendu, un rendu dont les octets ont changé | `test_the_publication_plan_refuses_a_render_with_technical_defects_whoever_approved_it` |
+| I6 révocation, corruption, manifeste | G2 révoqué : la porte verrouillée ne relisait pas ; objet du magasin corrompu livré ; manifeste édité : la vidéo B publiait le rendu de A | portes relues à chaque tour (code 3, verrous retirés) ; hash vérifié à la livraison et à la publication ; verrou recoupé avec le magasin (`ManifestMismatch`) | `test_a_revoked_approval_stops_the_replay_with_a_rejection_and_leaves_no_report`, `test_a_stored_render_rotted_in_place_is_never_delivered`, `test_a_manifest_edited_to_lock_another_render_is_refused` |
+| I7 file et verrou d'étape non branchés ; deux `studio run` concurrents | 5 appels Claude facturés au lieu de 3 ; faux refus en code 3 (course sur la lecture de décision) | verrou exclusif du dossier d'état (`StateBusy`) ; course corrigée (un refus n'est conclu que sur une décision qui ne l'approuve pas) ; l'ADR dit « composant prouvé à part, intégration en phase 3 » | `test_a_second_run_on_a_folder_another_process_owns_is_refused_not_run_in_parallel` |
+| I8 jetons non comptés | `result.usage` jeté | une étape rend l'usage de l'appel comme mesure, l'exception d'un appel refusé aussi | `test_the_tokens_of_the_claude_calls_are_recorded_from_their_usage` |
+| I9 conformité automatisable | agent `APPROVE` + humain en attente = approuvé | l'agent ET l'humain, le refus de l'un bloque (MISSION §11) | `test_gate_semantics`, `test_the_compliance_decision_needs_the_agent_and_the_human` |
+| I10 structure du skill publique | le schéma de scènes est dans le dépôt public depuis `84f9469` | **décision humaine** : NEEDS_HUMAN H1 | (ne se corrige pas dans le code) |
+| m1 à m7 | preuve périmée, fixtures transcrites, `/tmp` pollué, clés d'étape horodatées, docs périmées, liste de faux jetons, « jamais » trop fort | sortie de porte déterministe, `state/tmp`, docs et ADR corrigés, faux jetons construits à l'exécution, H14 pour l'enregistrement de vraies sorties | voir ADR-001 décisions 14, 15, 20 |
+
+**Limites reconnues, dites dans l'ADR** : la file, le répartiteur et le verrou d'étape ne sont pas branchés au `Runner` (phase 3) ; « les étapes GPU continuent pendant la pause de quota » n'est pas prouvé ; les fixtures de `ClaudeCodeRunner` sont transcrites, pas enregistrées (H14) ; la structure du skill est déjà publique (H1).
 
 ### Défauts trouvés pendant l'intégration et corrigés
-1. Les fichiers écrits par lot étaient exclus par `.git/info/exclude` : ruff les ignorait. Une fois visibles, 8 constats (imports inutilisés, ligne trop longue), corrigés.
-2. La clé d'un plan GPU portait l'id du LLM : changer de LLM relançait tous les plans. Le test « retoucher une scène » l'a révélé ; les paramètres d'un plan ne nomment plus que les adaptateurs qui le fabriquent (`Production.shot_adapter_ids`).
-3. Le pilote demandait G2 à l'humain après un refus de conformité ; la conformité est répondue d'abord et arrête la vidéo.
-4. Le rendu livré était un lien dur vers le magasin : un outil qui l'éditerait sur place corromprait l'artefact. C'est une copie atomique.
-5. Un `manifest.json` d'un autre run plantait avec une trace ; c'est une erreur claire, jamais un écrasement.
-6. `sqlalchemy` n'était qu'une dépendance implicite de `dbos`.
-7. La porte de phase 1 cherchait « N skipped » dans la dernière ligne de pytest, absente avec `-qq` : elle lit maintenant le rapport JUnit (`tests/tools/test_verify_phase1.py`).
-8. Les jetons factices des tests de rédaction faisaient tomber la porte de phase 0 à 12/14 : liste exacte de deux jetons, comparés comme jetons entiers, dans l'arbre et dans l'historique.
-9. Mutation testing du module média par son agent : 56 mutants sur 56 tués ; un mutant (`timeout` ignoré) faisait pendre un test, qui a reçu une échéance propre.
+1. Les fichiers écrits par lot étaient exclus par `.git/info/exclude` : ruff les ignorait. Une fois visibles, 8 constats, corrigés.
+2. La clé d'un plan GPU portait l'id du LLM : changer de LLM relançait tous les plans. Le test « retoucher une scène » l'a révélé ; les paramètres d'un plan ne nomment plus que les adaptateurs qui le fabriquent.
+3. Le rendu livré était un lien dur vers le magasin : c'est une copie atomique, vérifiée par hash.
+4. `sqlalchemy` n'était qu'une dépendance implicite de `dbos`.
+5. La porte de phase 1 cherchait « N skipped » dans la dernière ligne de pytest, absente avec `-qq` : elle lit le rapport JUnit.
+6. Les jetons factices des tests faisaient tomber la porte de phase 0 à 12/14 : liste exacte de deux jetons dans l'outil, et plus aucun jeton dans l'arbre.
+7. Mutation testing du module média par son agent : 56 mutants sur 56 tués. Mutation testing de ces corrections : **19 mutants sur 19 tués**, chacun par le test prévu.
 
 ### Preuves
 ```
 $ STUDIO_TEST_PG_URL=postgresql+psycopg://postgres@localhost:5432/studio_lead make verify-phase-1
 ✓ Lint : ruff + mypy strict
 ✓ Tests verts, aucun ignoré, couverture ≥ 80 % sur le cœur
-    · pytest : 1279 tests, 0 ignoré(s), 0 échec(s), 0 erreur(s)
-    · couverture du cœur : 99.1 % (2728/2754 lignes)
+    · pytest : 1351 tests, 0 ignoré(s), 0 échec(s), 0 erreur(s)
+    · couverture du cœur : 99.0 % (2876/2906 lignes)
 ✓ e2e-dry channel-a short : rendu 1080×1920, manifeste, coûts, mock, replay
-    · render.mp4 : 1080×1920 @ 30/1, 23.30 s
-    · replay : 36 étapes réutilisées, 0 exécutée
+    · render.mp4 : 1080×1920 @ 30/1, 23.30 s, -14.0 LUFS, -11.4 dBTP
+    · replay : 37 étapes réutilisées, 0 exécutée, état inchangé
 ✓ e2e-dry channel-a long : rendu 1920×1080, manifeste, coûts, mock, replay
-    · render.mp4 : 1920×1080 @ 30/1, 46.50 s
-    · replay : 60 étapes réutilisées, 0 exécutée
+    · render.mp4 : 1920×1080 @ 30/1, 46.50 s, -14.0 LUFS, -10.8 dBTP
+    · replay : 61 étapes réutilisées, 0 exécutée, état inchangé
 ✓ CI GitHub Actions présente
 
-verify-phase-1 : 5/5 contrôles OK        (7 min 47 s)
-
-$ make e2e-dry            # 1re exécution
-channel   channel-a  format short  run dry-channel-a-short-0  [mock, dry-run]
-steps     36 executed, 0 reused, 0 waiting
-channel   channel-a  format long  run dry-channel-a-long-0  [mock, dry-run]
-steps     54 executed, 6 reused, 0 waiting      # 6 voix identiques à celles du Short : réutilisées
-
-$ make e2e-dry            # rejeu
-steps     0 executed, 36 reused, 0 waiting
-steps     0 executed, 60 reused, 0 waiting
-
-$ ffprobe var/e2e/channel-a/short/render.mp4
-stream|codec_name=h264|codec_type=video|width=1080|height=1920|r_frame_rate=30/1|avg_frame_rate=30/1
-stream|codec_name=aac|codec_type=audio|sample_rate=48000|channels=2
-format|duration=23.300000
-$ ffprobe var/e2e/channel-a/long/render.mp4
-stream|codec_name=h264|codec_type=video|width=1920|height=1080|r_frame_rate=30/1|avg_frame_rate=30/1
-stream|codec_name=aac|codec_type=audio|sample_rate=48000|channels=2
-format|duration=46.500000
+verify-phase-1 : 5/5 contrôles OK        (9 min 34 s)
 
 $ make verify-phase-0
 verify-phase-0 : 13/14 contrôles OK, 1 en échec        # seul échec : outliers mesurés (NEEDS_HUMAN H0)
-
-$ make doctor-execution   # sur la VM cloud, sans GPU : les trois manques attendus
-  ✗ nvidia-smi absent : pilote NVIDIA non installé
-  ✗ le démon Docker ne répond pas (docker info)
-  ✗ CLAUDE_CODE_OAUTH_TOKEN absent : les agents `claude -p` ne pourraient pas s'authentifier sur l'abonnement
 ```
-Preuves ciblées : `tests/integration/test_e2e_dry.py` (rejeu à zéro exécution et même fichier, retouche d'une scène = une voix et aucun plan, refus aux portes G1, conformité et G2, pause puis reprise sur limite d'usage, **arrêt brutal (SIGKILL) au milieu d'une vidéo puis reprise sans refaire les étapes finies ni corrompre un objet du magasin**, aucun appel réseau tenté).
+Les durées, loudness et crêtes ci-dessus sont mesurées par la porte elle-même (somme des scènes du script, ffmpeg EBU R128), pas lues dans le rapport. Preuves ciblées : `tests/integration/test_e2e_dry.py` (31 tests : rejeu à zéro exécution, retouche d'une scène = une voix et aucun plan, refus aux portes, divulgation modifiée après approbation, révocation, corruption, manifeste échangé, deux processus, arrêts brutaux répétés, pause puis reprise sur limite d'usage, aucun appel réseau tenté).
 
 ### État
-Phase 1 : critères de sortie remplis en local ; revue `critic` à suivre. Phase 0 : **ouverte** (H0, clé d'API YouTube ; H1, dépôt public).
+Phase 1 : critères de sortie remplis en local, 1re revue `critic` refusée puis corrigée ; **2e revue à passer**. Phase 0 : **ouverte** (H0, clé d'API YouTube ; H1, dépôt public).
 
 ## 2026-09-28 — Session 1 (fin) : contre-revue `critic` et corrections
 
