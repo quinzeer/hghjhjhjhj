@@ -97,7 +97,8 @@ Fin de session : résumé ≤ 15 lignes (état de la phase, prochaines tâches, 
   `STUDIO_REQUIRE_MEDIA=1` (CI, `make verify-phase-1`) transforme l'absence de ffmpeg en échec, et la porte exige l'URL Postgres.
 - **Clés d'étape** : les exécutions `dry_run` et les mocks salent leurs clés (une sortie mock ne sert jamais une exécution réelle).
   Les paramètres d'une étape ne nomment que ce qui peut changer sa sortie : un plan GPU ne porte pas l'id du LLM
-  (`Production.shot_adapter_ids`), sinon changer de LLM relancerait des heures de GPU.
+  (`Production.shot_adapter_ids`), sinon changer de LLM relancerait des heures de GPU. Le contrat de sortie d'une étape est un paramètre
+  (`contract_fingerprint` : empreinte des JSON Schemas) : modifier un contrat modèle change la clé des étapes qui écrivent sous lui, jamais celle d'un plan.
 - **Portes de publication** : la conformité et G2 jugent le **candidat de publication** (rendu + titre + description + divulgation + chaîne + vidéo), pas le rendu seul ;
   la conformité exige l'agent **et** l'humain ; une décision porte son mode (`mock`) ; une porte relit sa décision à chaque tour ; une étape `publishes` exige les deux portes (ADR-001 décisions 17 et 20).
 - **Un seul `studio run` par dossier d'état** (`state/.run.lock`) ; un processus tué se rattrape au démarrage suivant (réservations, fichiers de travail).

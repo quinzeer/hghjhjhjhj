@@ -55,6 +55,15 @@ Critère de sortie : `make verify-phase-1` → 0 (lint, suite complète **sans t
 - [x] `make verify-phase-1`
 - [ ] Revue `critic` de la déclaration de fin de phase : **1re revue : refusée** (2 bloquants, 10 importants, 7 mineurs) ; **2e revue : refusée** (1 bloquant B3, 5 importants, 5 mineurs) ; corrections faites, voir `docs/PROGRESS.md` ; 3e revue restreinte à passer, puis PR (sur demande de l'humain, NEEDS_HUMAN H12) et `/code-review`
 
+### Réserves de la revue `critic` de la phase 1 (3e passe), avec leur date
+
+Acceptées avec ces échéances ; R1, R6, R7 sont corrigées ou inscrites avant la PR de phase 1 (voir `docs/PROGRESS.md`).
+
+- [ ] **R2, avant la fin de la phase 2** : la porte de rejeu prouve « aucun encodage » et non seulement « état inchangé » : pendant le second `studio run`, `STUDIO_FFMPEG` désigne un enveloppeur qui journalise ses appels ; zéro encodage exigé (la sonde d'empreinte reste permise). Une CLI qui recalculerait hors de `state/` puis réimprimerait l'ancien rapport passe la porte actuelle.
+- [ ] **R3, avant la fin de la phase 2** : la propriété d'une base se décide sur l'emplacement de la base et non sur l'absence de `database_url` ; le verrou pris est celui du dossier qui la contient (une SQLite de dossier partagée par `database_url` voit aujourd'hui la réservation d'un voisin libérée par son propriétaire ; une `database_url` qui désigne la SQLite du dossier laisse l'orphelin d'un processus tué jusqu'à l'échéance de son bail).
+- [ ] **R4, phase 3** : un objet de plus de 4 Mio (WAV de musique et de mixage, plans, rendus) est vérifié comme entrée d'une étape qui s'exécute (`store.verify`), ou tient un condensat par morceaux ; l'exécution de la porte sur des plans réels chiffre le coût de ce contrôle.
+- [ ] **R5, avant la fin de la phase 2** (le `put` répare déjà un petit objet corrompu de même taille) : les lecteurs (`_load` des étapes, `_Autopilot._read`) vérifient les octets qu'ils utilisent, comme `publish_run` le fait déjà.
+
 ## Phase 2 — Cerveau éditorial
 
 Critère de sortie : `make eval-editorial` (100 % des cas pièges bloqués ; ≥ 90 % des scripts passent les contrôles déterministes ; accord entre juges publié ; usage Claude moyen par script affiché).
@@ -93,8 +102,9 @@ Critère de sortie : `make e2e-real IDEA=<id>` sur la machine GPU, rapport QA ve
 
 ## Phase 5 — Publication et conformité plateforme
 
-Critère de sortie : upload privé réussi sur une chaîne de test + relecture `videos.list` qui confirme chaque champ ; tests de contrat des API sur fixtures.
+Critère de sortie : upload privé réussi sur une chaîne de test + relecture `videos.list` qui confirme chaque champ ; tests de contrat des API sur fixtures ; **le publisher relit lui-même les décisions réelles** (conformité, agent et humain, et G2) sur le hash exact du candidat qu'il envoie : un test prouve qu'un publisher branché sur des portes qui portent sur un autre sujet, ou sur un rendu nu, refuse d'envoyer.
 
+- [ ] Le publisher relit les décisions réelles (conformité agent + humain, G2, `mock` faux) sur le hash exact du `PublicationCandidate` envoyé, quoi qu'ait fait le graphe (ADR-001 décision 17, réserve R6 de la revue `critic`) ; le candidat s'élargit d'abord de tout champ que l'API enverra (miniatures, titres alternatifs, tags, catégorie, langues, playlists, écran de fin, audience « enfants » ; TikTok : couverture, duo, marque)
 - [ ] Upload YouTube reprenable : `containsSyntheticMedia`, localisations, sous-titres, miniature, planification, playlists
 - [ ] TikTok : Direct Post après audit, sinon brouillon
 - [ ] Gestionnaire de quotas YouTube / TikTok
