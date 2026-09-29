@@ -2,18 +2,25 @@
 """Phase 1 gate (MISSION §9, docs/design/phase1.md): exit 0 only if every criterion holds.
 
 1. lint: ruff + mypy strict;
-2. tests green, coverage >= 80 % on the core (studio/domain, core, scenario, pipeline);
-3. e2e dry run: a Short 1080x1920 and a long 1920x1080 through mocks, with manifest and cost ledger,
-   validated by ffprobe (resolution, constant frame rate, duration, video + audio streams);
-4. a second run executes nothing and yields the same render;
-5. every report and manifest produced with mocks says "mock".
+2. tests green with none skipped (Postgres and ffmpeg required), coverage >= 80 % on the core (studio/domain, core,
+   scenario, pipeline);
+3. e2e dry run: a Short 1080x1920 and a long 1920x1080 through mocks, judged by what this gate measures itself, not by
+   what the run reports about itself: ffprobe (resolution, constant frame rate, tracks), the length of the render
+   against the sum of the script's scenes, the loudness and true peak (ffmpeg, EBU R128), the sha256 of the delivered
+   render against its key, the lengths of the audio and video tracks;
+4. a second run executes nothing: the state folder (artifacts, step bindings, ledger entries, decisions, stored files)
+   is unchanged, whatever the report says;
+5. every JSON the run writes (report, manifest, costs, scenes) and every cost entry says "mock".
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
+import re
+import sqlite3
 import subprocess
 import sys
 import tempfile
@@ -26,6 +33,10 @@ CORE = ("studio/domain", "studio/core", "studio/scenario", "studio/pipeline")
 MIN_COVERAGE = 80.0
 TARGETS = {"short": (1080, 1920), "long": (1920, 1080)}
 DURATION_TOLERANCE_S = 0.15
+AV_TOLERANCE_S = 0.25  # audio and video tracks of a render end within this of each other
+LUFS_TARGET, LUFS_TOLERANCE = -14.0, 1.0
+TRUE_PEAK_CEILING = -1.0
+JSON_OUTPUTS = ("report.json", "manifest.json", "costs.json", "script.scenes.json")
 
 
 @dataclass
@@ -113,6 +124,99 @@ def probe(path: Path) -> dict:
     return json.loads(r.stdout)
 
 
+def measure_loudness(path: Path) -> tuple[float, float]:
+    """Integrated loudness (LUFS) and true peak (dBTP) of a file, measured here with ffmpeg (EBU R128), so that the gate
+    does not take the studio's own QA at its word."""
+    r = run(["ffmpeg", "-hide_banner", "-nostats", "-i", str(path), "-af", "ebur128=peak=true", "-f", "null", "-"])
+    if r.returncode != 0 or "Summary:" not in r.stderr:
+        raise RuntimeError(r.stderr.strip()[-300:])
+    summary = r.stderr[r.stderr.rindex("Summary:") :]
+    integrated = re.search(r"I:\s+(-?[\d.]+) LUFS", summary)
+    peak = re.search(r"Peak:\s+(-?[\d.]+) dBFS", summary)
+    if not integrated or not peak:
+        raise RuntimeError("ffmpeg gave no loudness summary")
+    return float(integrated.group(1)), float(peak.group(1))
+
+
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def state_snapshot(state: Path) -> dict[str, object]:
+    """What a run may add to the state folder: artifacts, step bindings, ledger entries, decisions, stored files."""
+    counts: dict[str, object] = {}
+    db = state / "studio.db"
+    if db.is_file():
+        with sqlite3.connect(db, timeout=10) as conn:
+            for table in ("artifacts", "step_outputs", "entries", "gate_decisions"):
+                counts[table] = conn.execute(f"select count(*) from {table}").fetchone()[0]  # noqa: S608 (fixed names)
+    objects = sorted(f.name for f in (state / "cas").rglob("*") if f.is_file()) if (state / "cas").is_dir() else []
+    counts["cas_files"] = hashlib.sha256("\n".join(objects).encode()).hexdigest()
+    return counts
+
+
+def scenes_total(doc: dict) -> tuple[float, int]:
+    """Total length and scene count from the scene document: the sum of each scene's own duration."""
+    scenes = doc.get("scenes", [])
+    return round(sum(float(scene["duree_s"]) for scene in scenes), 1), len(scenes)
+
+
+def check_render(chk: Check, folder: Path, report: dict, width: int, height: int) -> Path | None:
+    """Independent checks of one render: the file must satisfy the criteria whatever the report claims."""
+    render = Path(report.get("render_path", ""))
+    if not render.is_absolute():
+        render = folder / render
+    try:
+        info = probe(render)
+    except (RuntimeError, OSError) as exc:
+        chk.fail(f"ffprobe : {exc}")
+        return None
+    video = [s for s in info["streams"] if s.get("codec_type") == "video"]
+    audio = [s for s in info["streams"] if s.get("codec_type") == "audio"]
+    if not video or not audio:
+        chk.fail(f"pistes : vidéo={len(video)} audio={len(audio)}")
+        return render
+    v, a = video[0], audio[0]
+    if (v.get("width"), v.get("height")) != (width, height):
+        chk.fail(f"résolution {v.get('width')}×{v.get('height')} ≠ {width}×{height}")
+    if v.get("r_frame_rate") != v.get("avg_frame_rate"):
+        chk.fail(f"cadence variable : r={v.get('r_frame_rate')} avg={v.get('avg_frame_rate')}")
+    duration = float(info["format"].get("duration", 0))
+    try:
+        doc = json.loads((folder / "script.scenes.json").read_text())
+        expected, scene_count = scenes_total(doc)
+    except (OSError, ValueError, KeyError) as exc:
+        chk.fail(f"script.scenes.json illisible : {exc}")
+        expected, scene_count = -1.0, -1
+    if abs(duration - expected) > DURATION_TOLERANCE_S:
+        chk.fail(f"durée {duration:.2f} s ≠ somme des scènes du script {expected:.2f} s")
+    if report.get("scene_count") != scene_count:
+        chk.fail(f"le rapport annonce {report.get('scene_count')} scènes, le script en a {scene_count}")
+    if abs(float(report.get("duration_expected_s", -1)) - expected) > 0.05:
+        chk.fail(f"duration_expected_s du rapport ({report.get('duration_expected_s')}) ≠ script ({expected})")
+    if abs(float(v.get("duration", duration)) - float(a.get("duration", duration))) > AV_TOLERANCE_S:
+        chk.fail(f"pistes de longueurs différentes : vidéo {v.get('duration')} s, audio {a.get('duration')} s")
+    if file_sha256(render) != report.get("render_key"):
+        chk.fail("le sha256 du rendu livré n'est pas la render_key du rapport")
+    try:
+        lufs, peak = measure_loudness(render)
+    except RuntimeError as exc:
+        chk.fail(f"mesure de loudness impossible : {exc}")
+    else:
+        if abs(lufs - LUFS_TARGET) > LUFS_TOLERANCE:
+            chk.fail(f"loudness {lufs:.1f} LUFS hors de {LUFS_TARGET:g} ± {LUFS_TOLERANCE:g}")
+        if peak > TRUE_PEAK_CEILING:
+            chk.fail(f"crête vraie {peak:.1f} dBTP au-dessus de {TRUE_PEAK_CEILING:g}")
+        chk.details.append(
+            f"{render.name} : {width}×{height} @ {v.get('r_frame_rate')}, {duration:.2f} s, {lufs:.1f} LUFS, {peak:.1f} dBTP"
+        )
+    return render
+
+
 def check_e2e(out: Path, channel: str) -> list[Check]:
     checks = []
     for fmt, (width, height) in TARGETS.items():
@@ -125,49 +229,33 @@ def check_e2e(out: Path, channel: str) -> list[Check]:
             continue
         folder = out / channel / fmt
         try:
-            report = json.loads((folder / "report.json").read_text())
-            manifest = json.loads((folder / "manifest.json").read_text())
-            costs = json.loads((folder / "costs.json").read_text())
+            docs = {name: json.loads((folder / name).read_text()) for name in JSON_OUTPUTS}
         except (OSError, json.JSONDecodeError) as exc:
             chk.fail(f"sorties manquantes ou illisibles : {exc}")
             checks.append(chk)
             continue
+        report, manifest, costs = docs["report.json"], docs["manifest.json"], docs["costs.json"]
         if not report.get("executed"):
             chk.fail("1re exécution : aucune étape exécutée")
         if report.get("qa_defects"):
             chk.fail(f"défauts QA : {report['qa_defects']}")
         if report.get("waiting"):
             chk.fail(f"étapes en attente : {report['waiting']}")
-        if report.get("mock") is not True or manifest.get("mock") is not True:
-            chk.fail("report.json et manifest.json doivent porter mock=true")
+        for name, doc in docs.items():  # criterion 5: every JSON the run writes says mock, not only two of them
+            if doc.get("mock") is not True:
+                chk.fail(f"{name} doit porter mock=true")
         if not all("mock" in a for a in report.get("adapters", [])) or not report.get("adapters"):
             chk.fail(f"adaptateurs non mock ou absents : {report.get('adapters')}")
-        if not costs:
-            chk.fail("registre de coûts vide")
-        render = Path(report.get("render_path", ""))
-        if not render.is_absolute():
-            render = folder / render
-        try:
-            info = probe(render)
-        except (RuntimeError, OSError) as exc:
-            chk.fail(f"ffprobe : {exc}")
+        entries = costs.get("entries", [])
+        if not entries or not all(e.get("mock") is True for e in entries):
+            chk.fail("registre de coûts vide ou dont une entrée ne porte pas mock=true")
+        if len(manifest.get("step_keys", {})) != report.get("step_count"):
+            chk.fail("le manifeste ne compte pas autant d'étapes que le rapport")
+        render = check_render(chk, folder, report, width, height)
+        if render is None:
             checks.append(chk)
             continue
-        video = [s for s in info["streams"] if s.get("codec_type") == "video"]
-        audio = [s for s in info["streams"] if s.get("codec_type") == "audio"]
-        if not video or not audio:
-            chk.fail(f"pistes : vidéo={len(video)} audio={len(audio)}")
-        else:
-            v = video[0]
-            if (v.get("width"), v.get("height")) != (width, height):
-                chk.fail(f"résolution {v.get('width')}×{v.get('height')} ≠ {width}×{height}")
-            if v.get("r_frame_rate") != v.get("avg_frame_rate"):
-                chk.fail(f"cadence variable : r={v.get('r_frame_rate')} avg={v.get('avg_frame_rate')}")
-            duration = float(info["format"].get("duration", 0))
-            expected = float(report.get("duration_expected_s", -1))
-            if abs(duration - expected) > DURATION_TOLERANCE_S:
-                chk.fail(f"durée {duration:.2f} s ≠ attendue {expected:.2f} s")
-            chk.details.append(f"{render.name} : {v.get('width')}×{v.get('height')} @ {v.get('r_frame_rate')}, {duration:.2f} s")
+        before, stamp = state_snapshot(out / "state"), (render.stat().st_ino, render.stat().st_mtime_ns)
         second = run(cmd)
         if second.returncode != 0:
             chk.fail("2e exécution en échec")
@@ -177,7 +265,11 @@ def check_e2e(out: Path, channel: str) -> list[Check]:
                 chk.fail(f"2e exécution : étapes réexécutées {report2['executed']}")
             if report2.get("render_key") != report.get("render_key"):
                 chk.fail("2e exécution : rendu différent")
-            chk.details.append(f"replay : {len(report2.get('skipped', []))} étapes réutilisées, 0 exécutée")
+            if state_snapshot(out / "state") != before:  # independent of what the report says it did
+                chk.fail("2e exécution : l'état (artefacts, étapes, coûts, décisions, fichiers) a changé")
+            if (render.stat().st_ino, render.stat().st_mtime_ns) != stamp:
+                chk.details.append("le rendu livré a été réécrit à l'identique")
+            chk.details.append(f"replay : {len(report2.get('skipped', []))} étapes réutilisées, 0 exécutée, état inchangé")
         checks.append(chk)
     return checks
 
