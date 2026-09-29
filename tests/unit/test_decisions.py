@@ -5,6 +5,7 @@ from __future__ import annotations
 import datetime as dt
 import os
 import uuid
+from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
@@ -21,19 +22,32 @@ NOON = dt.datetime(2026, 9, 29, 12, 0, tzinfo=dt.UTC)
 
 
 @pytest.fixture(params=["sqlite", "postgres"])
-def store(request: pytest.FixtureRequest, tmp_path: Path) -> SqlDecisionStore:
+def store(request: pytest.FixtureRequest, tmp_path: Path) -> Iterator[SqlDecisionStore]:
+    """One store per test. On Postgres it lives in a schema of its own, created for the test and dropped after it:
+    whatever database STUDIO_TEST_PG_URL points to, its tables are never touched (wiping a table of the default
+    schema of a real database would erase the human decisions it holds)."""
     if request.param == "sqlite":
         engine = make_engine(f"sqlite:///{tmp_path / 'd.db'}")
-    else:
-        url = os.environ.get("STUDIO_TEST_PG_URL")
-        if not url:
-            pytest.skip("STUDIO_TEST_PG_URL not set")
-        engine = make_engine(url)
-        with engine.begin() as conn:
-            conn.execute(text("DROP TABLE IF EXISTS gate_decisions"))
-    s = SqlDecisionStore(engine)
-    s.create_schema()
-    return s
+        s = SqlDecisionStore(engine)
+        s.create_schema()
+        yield s
+        engine.dispose()
+        return
+    url = os.environ.get("STUDIO_TEST_PG_URL")
+    if not url:
+        pytest.skip("STUDIO_TEST_PG_URL not set")
+    admin = make_engine(url)
+    schema = f"test_decisions_{uuid.uuid4().hex[:12]}"
+    with admin.begin() as conn:
+        conn.execute(text(f'CREATE SCHEMA "{schema}"'))
+    try:
+        s = SqlDecisionStore(admin.execution_options(schema_translate_map={None: schema}))
+        s.create_schema()
+        yield s
+    finally:
+        with admin.begin() as conn:
+            conn.execute(text(f'DROP SCHEMA IF EXISTS "{schema}" CASCADE'))
+        admin.dispose()
 
 
 def decision(gate: GateName = GateName.G2, subject: str = A, **kw: object) -> GateDecision:
