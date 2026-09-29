@@ -323,7 +323,7 @@ Conséquence : **DBOS ne peut pas implémenter le Protocol `JobQueue` actuel**, 
 - **Version d'application.** La reprise et le défilement filtrent sur la version d'application (`_sys_db.py:2617`, `start_queued_workflows`). Par défaut DBOS la calcule à partir du code source des workflows : après `make update` avec un code modifié, les workflows `PENDING` de l'ancienne version ne sont plus repris automatiquement par la nouvelle.
 - **Tentatives de reprise.** `max_recovery_attempts` vaut 100 par défaut (`_registrations.py:10`) ; au-delà, le workflow passe `MAX_RECOVERY_ATTEMPTS_EXCEEDED`. Un workflow qui fait planter la carte (OOM) serait relancé jusqu'à 100 fois.
 - **Identifiant par défaut.** Sans configuration ni `DBOS__VMID`, l'identifiant vaut `"local"` pour tous les processus : deux workers mal configurés reprendraient les workflows l'un de l'autre, et le verrou d'exécuteur de 5d empêcherait le second de démarrer.
-- **Version de DBOS.** `pyproject.toml` accepte `dbos>=2` ; `uv.lock` fixe 3.1.0. Les constats ci-dessus (API, comportements, numéros de ligne) valent pour 3.1.0 seulement.
+- **Version de DBOS.** `pyproject.toml` épingle `dbos>=3.1,<4` dans le groupe `dev` (ADR-001 décision 12 : DBOS n'est plus une dépendance d'exécution) ; `uv.lock` fixe 3.1.0. Les constats ci-dessus (API, comportements, numéros de ligne) valent pour 3.1.0 seulement.
 
 ## Conclusion
 
@@ -340,7 +340,7 @@ Conséquence : **DBOS ne peut pas implémenter le Protocol `JobQueue` actuel**, 
 9. **Une tâche à la fois par carte : `worker_concurrency=1` et `global_concurrency=1`.** `worker_concurrency` compte par processus (2b). `global_concurrency=1` sur chaque `gpuN` est une défense peu coûteuse contre un second écouteur mal configuré. Elle ne remplace pas le verrou d'exécuteur, car elle ne voit pas le doublon de 5c.
 10. **Toute annulation d'un workflow d'étape passe `cancel_children=True`** (chien de garde, arrêt manuel), ou bien l'étape n'a pas d'enfant (4b).
 11. **Tout `resume` ou `fork` d'un workflow GPU passe `queue_name=<gpuN d'origine>`.** Le répartiteur conserve cette file, puisque DBOS l'efface à l'annulation (5e, 5f). `dbos workflow resume` et `dbos workflow fork`, qui n'ont pas d'option de file, sont **interdits en exploitation** : la reprise passe par l'outil du studio. Une reprise redonne un délai complet au workflow.
-12. **Version de DBOS épinglée.** Contrainte `dbos>=3.1,<4` dans `pyproject.toml` (demande hors du périmètre de cet essai). **Cet essai est relancé à chaque montée de version de DBOS**, même mineure. `test_8b` échoue tant que la version installée diffère de celle qu'indique l'en-tête de ce document.
+12. **Version de DBOS épinglée.** Contrainte `dbos>=3.1,<4` dans le groupe `dev` de `pyproject.toml` (posée à la fin de la phase 1). **Cet essai est relancé à chaque montée de version de DBOS**, même mineure. `test_8b` échoue tant que la version installée diffère de celle qu'indique l'en-tête de ce document.
 
 Mise à jour à prévoir dans ADR-001 (hors du périmètre de cet essai) :
 - la phrase « L'annulation DBOS n'agissant qu'entre deux étapes » vaut pour les étapes synchrones ; une étape asynchrone `preemptible=True` est interrompue en moins d'une seconde environ ;

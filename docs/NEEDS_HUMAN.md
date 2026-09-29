@@ -16,6 +16,7 @@ Trié par urgence. Chaque entrée : quoi faire, pourquoi, comment vérifier que 
 - **Vérification** : le badge « Private » apparaît à côté du nom du dépôt.
 - **En attendant** : je ne copie pas ton skill `scenariste-youtube` dans `knowledge/imports/` (il deviendrait public) ; les agents le lisent depuis ta session. Aucun secret n'est jamais versionné (`make verify-phase-0` scanne l'arbre et l'historique git).
 - **Fuite partielle déjà poussée** : deux brouillons de recherche (`docs/research/_work/concepts-a.md` et `concepts-b.md`, commits `a436236` à `0abbeb1`) reprenaient la grille pondérée de ton skill et des repères chiffrés. Ils sont retirés de la branche et ignorés par git, mais **restent dans l'historique**. `docs/research/craft.md` cite aussi quelques affirmations courtes du skill pour les vérifier.
+- **Structure du skill déjà publique (constat de la revue `critic`, 2026-09-29)** : le schéma JSON de scènes du skill (noms de champs, rôles `hook/cadre/relance/contenu/payoff/cta/boucle`, `avatar: hors_champ`, bloc `controle`) figure dans `studio/scenario/skill_json.py`, `schemas/`, `tests/fixtures/skill_scenes_*.json` et le LLM mock, depuis le commit `84f9469`. C'est l'interface d'entrée de la production (MISSION §5 : « mappe-le vers tes modèles internes sans le casser »), sans texte de règles ni valeur de grille ; les contenus des fixtures sont inventés. Si tu juges cette structure privée, le dépôt privé règle aussi ce point ; l'historique ne peut pas être purgé par moi (voir ci-dessous).
 - **Choix** : (a) passer le dépôt en privé, ce qui règle tout ; (b) le garder public et réécrire l'historique de la branche (force-push). Le 2026-09-28, sur délégation, j'ai tenté (b) : le garde-fou de sécurité de la session a refusé cette opération git destructive. **Elle reste donc à ta main** (passer le dépôt en privé, ou autoriser la réécriture).
 
 ### H2 — Concepts des chaînes A et B · décidé par délégation (ADR-005), à confirmer ou renverser
@@ -45,6 +46,11 @@ Trié par urgence. Chaque entrée : quoi faire, pourquoi, comment vérifier que 
 - Installer Ubuntu 24.04 (ou confirmer un autre OS), pilote NVIDIA, Docker + NVIDIA Container Toolkit.
 - **Vérification** : `make doctor-execution` sort en 0 (ffmpeg avec libx264 et aac, démon Docker, 4 cartes vues par `nvidia-smi -L`, jeton Claude présent), et `docker run --rm --gpus all nvidia/cuda:12.4.1-base-ubuntu22.04 nvidia-smi` liste les 4 cartes.
 - Choisir comment `make gpu-smoke` sera lancé : par toi, ou via Remote Control depuis une session Claude Code.
+
+### H14 — Consentement à consommer du quota pour enregistrer de vraies sorties de `claude -p`
+- Les fixtures de `ClaudeCodeRunner` (`tests/fixtures/llm/claude_cli/*.json`) sont transcrites de la documentation, pas enregistrées (revue `critic`, mineur m2). Enregistrer 6 à 8 sorties réelles (succès structuré, limite atteinte, sortie invalide, hors tours) coûte une dizaine d'appels de ton abonnement.
+- **Quand** : au début de la phase 2, sur la machine d'exécution, après H7. **Vérification** : `tests/fixtures/llm/claude_cli/` porte les sorties réelles et leur date, et `test_claude_code.py` les rejoue.
+- **En attendant** : le comportement suit la documentation officielle (`docs/research/apis.md`) et une mise à jour de la CLI doit repasser le test de contrat.
 
 ### H7 — Jeton Claude Code pour le studio
 - Sur la machine d'exécution : `claude setup-token`, puis placer la valeur dans `.env` (`CLAUDE_CODE_OAUTH_TOKEN=`), jamais dans le dépôt.

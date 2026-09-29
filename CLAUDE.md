@@ -98,6 +98,9 @@ Fin de session : résumé ≤ 15 lignes (état de la phase, prochaines tâches, 
 - **Clés d'étape** : les exécutions `dry_run` et les mocks salent leurs clés (une sortie mock ne sert jamais une exécution réelle).
   Les paramètres d'une étape ne nomment que ce qui peut changer sa sortie : un plan GPU ne porte pas l'id du LLM
   (`Production.shot_adapter_ids`), sinon changer de LLM relancerait des heures de GPU.
+- **Portes de publication** : la conformité et G2 jugent le **candidat de publication** (rendu + titre + description + divulgation + chaîne + vidéo), pas le rendu seul ;
+  la conformité exige l'agent **et** l'humain ; une décision porte son mode (`mock`) ; une porte relit sa décision à chaque tour ; une étape `publishes` exige les deux portes (ADR-001 décisions 17 et 20).
+- **Un seul `studio run` par dossier d'état** (`state/.run.lock`) ; un processus tué se rattrape au démarrage suivant (réservations, fichiers de travail).
 - **File de tâches** : ADR-001 décision 12 : `SqlJobQueue` (tirée, avec fencing), pas DBOS. `dbos` n'est qu'une dépendance de test (essai rejouable).
 - **Dépôt public** (2026-09-28) : ne jamais y copier de contenu privé de l'utilisateur (skill `scenariste-youtube`,
   voix, bibles) tant que H1 n'est pas réglé.
