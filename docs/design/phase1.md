@@ -45,7 +45,7 @@
 
 Commande : `uv run studio run --channel <id|lettre> --format <short|long> --dry-run --out <dossier> [--seed N] [--run-id ID]`, lancée par `make e2e-dry` pour `channel-a` en `short` puis en `long` dans `var/e2e/`. Sans `--dry-run` la commande refuse (code 2) : la phase 1 ne contient que des mocks.
 
-Codes de sortie : 0 terminé · 1 échec (dont `StateBusy` : un autre `studio run` tient le dossier d'état) · 2 usage · 3 une porte tient un refus (`GateRejected`, y compris une approbation révoquée après coup) · 75 pause jusqu'à la réinitialisation du quota Claude (`RunPaused`, `EX_TEMPFAIL` : relancer la même commande après l'heure affichée).
+Codes de sortie : 0 terminé · 1 échec (dont `StateBusy` : un autre `studio run` tient le dossier d'état) · 2 usage · 3 une porte tient un refus (`GateRejected`, y compris une approbation révoquée après coup) · 4 une porte attend un verdict que personne n'a donné (`GateWaiting` : la moitié humaine d'une décision est encore en attente ; ce n'est pas un refus) · 75 pause jusqu'à la réinitialisation du quota Claude (`RunPaused`, `EX_TEMPFAIL` : relancer la même commande après l'heure affichée).
 
 Graphe de démonstration (tout adaptateur est un mock). Il se construit en deux temps, parce que sa forme dépend du script (une voix et un plan par scène) : `front_steps` (`idea` → `package` → `g1` → `script`) puis `production_steps(script)`. Les deux temps utilisent les mêmes noms, versions et paramètres : la seconde passe réutilise les sorties de la première.
 
@@ -64,10 +64,10 @@ Graphe de démonstration (tout adaptateur est un mock). Il se construit en deux 
 | `mix` | cpu | `timeline`, `voice_*`, `music` | voix calées sur leur scène, lit −18 dB sous la voix, loudnorm deux passes vers −14 LUFS / −1 dBTP |
 | `assemble` | cpu | `mix`, `shot_*` | concaténation à 30 i/s constants, multiplexage de la piste audio |
 | `qa` | cpu | `assemble`, `timeline` | `studio/media/qa.check_render` (résolution, cadence, durée, pistes, loudness, true peak) : aucun défaut attendu |
-| `candidate` | cpu | `script`, `assemble`, `qa` | le **candidat de publication** (`PublicationCandidate`) : ce que la plateforme montrera (titre, description, vie privée, drapeaux de divulgation), lié au hash du rendu, à la chaîne et à la vidéo ; vérifie le hash du rendu avant de le nommer |
+| `candidate` | cpu | `script`, `assemble`, `qa` | le **candidat de publication** (`PublicationCandidate`, `StepSpec.candidate`) : ce que la plateforme montrera (titre, description, vie privée, drapeaux de divulgation), lié au hash du rendu, à la chaîne, à la vidéo **et aux clés du script et du rapport QA que le juge lit** ; vérifie le hash du rendu avant de le nommer |
 | `compliance` | human | `candidate` | verdict conformité sur le hash du candidat : l'agent (`MockComplianceOfficer` applique des contrôles réels sur le script, le rapport QA et le candidat) **et** l'humain ; un refus de l'un ou de l'autre bloque ; répondu **avant** G2 et sans demander l'humain si l'agent refuse |
 | `g2` | human | `candidate` | porte G2 sur le hash du candidat |
-| `publish_plan` | cpu | `candidate`, `assemble`, `qa`, `compliance`, `g2` | libère le candidat approuvé à l'octet près, après avoir refusé tout défaut QA, un candidat qui nomme un autre rendu et un rendu dont les octets ne correspondent plus à leur hash ; `requires_approval` = conformité + G2 sur le candidat, `publishes` : le graphe refuse à sa construction une étape de publication sans ces deux garde-fous ; **aucun appel réseau** |
+| `publish_plan` | cpu | `candidate`, `script`, `assemble`, `qa`, `compliance`, `g2` | libère le candidat approuvé à l'octet près (il en re-hache les octets), après avoir refusé tout défaut QA, un candidat qui nomme un autre rendu, un autre script ou un autre rapport QA que ceux qui ont été jugés, et un rendu dont les octets ne correspondent plus à leur hash ; `requires_approval` = conformité + G2 sur le candidat, `publishes` : le graphe refuse à sa construction une étape de publication sans ces deux garde-fous ; **aucun appel réseau** |
 
 Lignes de cache. `line_SNN` et `visual_SNN` extraient du script ce dont la voix et le plan dépendent, sans l'heure de début de la scène. Une clé d'étape suit le contenu de ses entrées (coupure précoce) : retoucher les mots d'une scène à longueur égale relance le script, les extractions, **une** voix, le mixage, l'assemblage, la QA, le candidat et les portes ; aucun plan, aucune musique, aucune autre voix. Le test `test_editing_the_words_of_one_scene_recomputes_one_voice_and_no_shot` le prouve. Les paramètres d'un plan nomment les seuls adaptateurs qui le fabriquent et le jugent (`Production.shot_adapter_ids`) : changer de LLM ne relance pas un plan. La sortie d'une porte est un JSON canonique sans date ni note : les clés en aval d'une porte sont les mêmes d'une exécution à l'autre.
 
@@ -86,3 +86,11 @@ Sorties dans `<dossier>/<channel>/<format>/` (le dossier est résolu en chemin a
 - L'état (index SQLite, registre des coûts, décisions, fichiers adressés par contenu, fichiers de travail) vit dans `<dossier>/state/`.
 
 Une seconde exécution sur le même dossier donne `executed == []`, le même `render_key` et le même fichier. Un `manifest.json` d'un autre `run_id` est refusé (`StudioError`), jamais écrasé.
+
+## Ce qui entre dans le candidat de publication (phases 4 et 5)
+
+Tout champ que la plateforme affichera ou que l'API enverra entre dans `PublicationCandidate` avant d'être publié, pour que la conformité et G2 le jugent sur son hash : miniatures (image et texte), titres alternatifs du test A/B, tags, catégorie, langue audio et sous-titres SRT, playlists, écran de fin, audience « enfants » ; pour TikTok, couverture, duo et collage, contenu de marque. Le publisher de la phase 5 relit lui-même les décisions réelles (conformité et G2) sur le hash exact qu'il envoie.
+
+## Base partagée et état d'une autre version
+
+`DryRunConfig.database_url` remplace la SQLite du dossier (`state/studio.db`) par une base que d'autres écrivains partagent : le pilote n'y libère que les baux échus (la réservation vivante d'un voisin reste tenue), alors qu'il libère toutes celles de sa propre base, dont il est seul propriétaire. Un dossier ou une base écrits par une autre version du code sont refusés en clair (`SchemaMismatch`, code 1) : les colonnes de chaque table sont comparées à celles que le code déclare, et rien ne migre encore.

@@ -17,7 +17,7 @@ Ce dépôt construit le logiciel d'un studio vidéo automatisé (YouTube long + 
 | `python3 tools/verify_phase0.py --note docs/research/X.md` | contrôle d'une seule note |
 | `make test` / `make lint` / `make fmt` | pytest / ruff + mypy strict (via `uv run --group dev`) |
 | `make verify-phase-1` | porte de la phase 1 (`tools/verify_phase1.py`) : lint, suite complète **sans test ignoré** (exige `STUDIO_TEST_PG_URL` et ffmpeg), couverture ≥ 80 % du cœur, `make e2e-dry` lancé deux fois |
-| `make e2e-dry` | parcours à blanc par les mocks : un Short et un long dans `var/e2e/` (`uv run studio run --channel a --format short --dry-run --out DIR` ; sortie 0 ok, 1 échec, 2 usage, 3 porte refusée, 75 quota Claude à attendre) |
+| `make e2e-dry` | parcours à blanc par les mocks : un Short et un long dans `var/e2e/` (`uv run studio run --channel a --format short --dry-run --out DIR` ; sortie 0 ok, 1 échec, 2 usage, 3 porte refusée, 4 porte en attente d'un verdict, 75 quota Claude à attendre ; un dossier `var/e2e` d'une version plus ancienne du code est refusé en clair : le supprimer) |
 | `make doctor-execution` | santé de la machine GPU (ffmpeg, Docker, 4 cartes, jeton Claude) |
 | `make check` | doctor + lint + test : à passer avant toute PR |
 | `make verify-phase-0-online` | idem + re-mesure des outliers par l'API : obligatoire avant de clore la phase 0 |

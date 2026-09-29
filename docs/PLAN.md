@@ -36,7 +36,7 @@ Critère de sortie : `make verify-phase-0` → 0.
 
 ## Phase 1 — Squelette, contrats, mocks
 
-Critère de sortie : `make verify-phase-1` → 0 (lint, suite complète **sans test ignoré** avec Postgres et ffmpeg, couverture ≥ 80 % sur le cœur, `make e2e-dry` rejoué deux fois sans régénération, contrôles `ffprobe`). Conception : `docs/design/phase1.md`. Décisions : ADR-001 révisé (décisions 12 à 19).
+Critère de sortie : `make verify-phase-1` → 0 (lint, suite complète **sans test ignoré** avec Postgres et ffmpeg, couverture ≥ 80 % sur le cœur, `make e2e-dry` rejoué deux fois sans régénération, contrôles `ffprobe`). Conception : `docs/design/phase1.md`. Décisions : ADR-001 révisé (décisions 12 à 20).
 
 - [x] Structure du dépôt `studio/` (paquet Python 3.12, uv, ruff, mypy strict)
 - [x] Modèles de domaine Pydantic v2 : Channel, Series, Idea, Package, Script, Scene, Shot, Asset, Render, Publication, Metric, Experiment, CostEntry (+ GateDecision, RunManifest)
@@ -48,12 +48,12 @@ Critère de sortie : `make verify-phase-1` → 0 (lint, suite complète **sans t
 - [x] Ordonnanceur de file multi-GPU simulé (4 workers mock, priorités, finaux avant brouillons, restitution des brouillons) : composant prouvé à part, branché au `Runner` en phase 3 avec les vrais workers (ADR-001 décision 12)
 - [x] Interfaces d'adaptateurs (texte→image, image→vidéo, texte→vidéo, lip-sync, TTS, musique, SFX, upscaling, interpolation, transcription, LLM, critique visuelle) + mocks déterministes nommés `mock`
 - [x] `ClaudeCodeRunner` (interface + backend `claude -p` + backend mock) et gestionnaire de quota (détection de limite, pause, reprise) testés sur des sorties transcrites de la documentation, pas enregistrées : l'enregistrement de vraies sorties consomme du quota (NEEDS_HUMAN H14, phase 2)
-- [x] CLI `studio run --channel A --format short --dry-run` (codes de sortie 0, 1, 2, 3, 75)
+- [x] CLI `studio run --channel A --format short --dry-run` (codes de sortie 0, 1, 2, 3, 4, 75)
 - [x] `make e2e-dry` : un Short 1080×1920 et un long 1920×1080 via mocks, manifeste + registre de coûts, validés par `ffprobe`
 - [x] `make doctor` v2 : `make doctor-execution` (ffmpeg et encodeurs, Docker, 4 cartes, jeton Claude) ; s'exécute pour de bon sur la machine GPU (NEEDS_HUMAN H6, H7)
 - [x] CI GitHub Actions : doctor, lint, `make verify-phase-1` (tests, couverture, `make e2e-dry`), `make verify-phase-0` informatif
 - [x] `make verify-phase-1`
-- [ ] Revue `critic` de la déclaration de fin de phase : **1re revue : refusée** (2 bloquants, 10 importants, 7 mineurs ; corrections faites, voir `docs/PROGRESS.md`) ; 2e revue à passer, puis PR (sur demande de l'humain, NEEDS_HUMAN H12) et `/code-review`
+- [ ] Revue `critic` de la déclaration de fin de phase : **1re revue : refusée** (2 bloquants, 10 importants, 7 mineurs) ; **2e revue : refusée** (1 bloquant B3, 5 importants, 5 mineurs) ; corrections faites, voir `docs/PROGRESS.md` ; 3e revue restreinte à passer, puis PR (sur demande de l'humain, NEEDS_HUMAN H12) et `/code-review`
 
 ## Phase 2 — Cerveau éditorial
 
