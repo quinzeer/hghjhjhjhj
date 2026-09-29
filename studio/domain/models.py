@@ -190,7 +190,7 @@ class Script(StudioModel):
             raise ValueError("scene ids must be unique")
         t = 0.0
         for s in self.scenes:
-            if abs(s.start_s - t) > TIMELINE_TOLERANCE_S:
+            if round(abs(s.start_s - t), 6) > TIMELINE_TOLERANCE_S:  # rounded: 1.05 - 1.0 is 0.05000000000000004
                 raise ValueError(f"scene {s.id} starts at {s.start_s}s, expected {t:.2f}s (contiguous timeline)")
             t = s.start_s + s.duration_s
         return self

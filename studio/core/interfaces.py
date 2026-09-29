@@ -25,7 +25,8 @@ class BudgetExceeded(StudioError):
 
 
 class StepClaimed(StudioError):
-    """Another executor holds the global lock on this step key."""
+    """The caller's lease is no longer the live claim of this step key: another executor holds it, or the
+    caller's own lease expired, was released or re-queued, or the step ended in another state."""
 
 
 class ArtifactMissing(StudioError):
@@ -64,10 +65,15 @@ class ArtifactStore(Protocol):
         """Bind a step to its output, first write wins: returns the key actually bound.
 
         If another producer already committed this step, its key is returned and the caller's output is
-        discarded (the caller logs its cost as waste)."""
+        discarded (the caller logs its cost as waste). One exception: a winner whose output is no longer
+        readable (purged, or its file is gone) is replaced by the caller's output, so a replan can always
+        recompute the step. Raises ArtifactMissing when `artifact_key` itself is not stored."""
         ...
 
-    def step_output(self, step_key: str) -> str | None: ...
+    def step_output(self, step_key: str) -> str | None:
+        """The output bound to this step, or None when there is none or it is no longer readable (the
+        step must then be recomputed)."""
+        ...
 
     def pin(self, artifact_key: str, owner: str) -> None:
         """Reference an artifact from a manifest: pinned artifacts are never purged by retention."""
@@ -75,7 +81,15 @@ class ArtifactStore(Protocol):
 
     def unpin(self, artifact_key: str, owner: str) -> None: ...
 
-    def purge_unpinned(self, older_than: dt.timedelta) -> list[str]: ...
+    def pinned(self, owner: str) -> list[str]:
+        """Keys pinned by `owner`, sorted: lets a run release every pin it holds even when the caller
+        lost its manifest."""
+        ...
+
+    def purge_unpinned(self, older_than: dt.timedelta) -> list[str]:
+        """Delete unpinned artifacts whose last put is older than `older_than`, with the step bindings
+        that point to them. Returns the deleted keys."""
+        ...
 
 
 # ------------------------------------------------------------------ costs
@@ -105,6 +119,12 @@ class CostLedger(Protocol):
 
     def reserve(self, scopes: Sequence[str], kind: CostKind, amount: float, lease: dt.timedelta) -> Reservation:
         """Reserve `amount` on every scope at once, or raise BudgetExceeded and reserve nothing."""
+        ...
+
+    def renew(self, reservation_id: str, lease_until: dt.datetime) -> Reservation:
+        """Extend the lease of an active reservation (never shortens it). A reaped reservation becomes
+        active again only if every capped scope still has room, else BudgetExceeded. Called from the queue
+        heartbeat, so a job that outlives its first lease keeps its reservation."""
         ...
 
     def settle(self, reservation_id: str, entry: CostEntry) -> None:
@@ -157,7 +177,10 @@ class JobQueue(Protocol):
         """False when the step key is already claimed or queued anywhere (global dedup)."""
         ...
 
-    def claim(self, queue: str, executor_id: str, now: dt.datetime, lease: dt.timedelta) -> Lease | None: ...
+    def claim(self, queue: str, executor_id: str, now: dt.datetime, lease: dt.timedelta) -> Lease | None:
+        """Take the next queued job of `queue` (lowest priority number, then oldest). The lease carries the
+        attempt number used as fencing token by heartbeat, complete and fail."""
+        ...
 
     def heartbeat(self, lease: Lease, now: dt.datetime, extend: dt.timedelta) -> Lease: ...
 
@@ -166,10 +189,38 @@ class JobQueue(Protocol):
     def fail(self, lease: Lease, error: str, retry: bool) -> None: ...
 
     def expire(self, now: dt.datetime) -> list[str]:
-        """Make jobs whose lease expired claimable again (attempt + 1). Returns their step keys."""
+        """Make jobs whose lease expired claimable again: the next claim gets attempt + 1. Returns their
+        step keys."""
         ...
 
     def pending(self, queue: str | None = None) -> list[Job]: ...
+
+
+@runtime_checkable
+class DispatchableQueue(JobQueue, Protocol):
+    """A `JobQueue` that also answers the GPU dispatcher in one set-based query, whatever the backlog
+    (`SqlJobQueue`). Any other `JobQueue` still works: the dispatcher falls back to `pending()` scans."""
+
+    def claim(
+        self,
+        queue: str,
+        executor_id: str,
+        now: dt.datetime,
+        lease: dt.timedelta,
+        *,
+        drafts_blocked_by: Sequence[str] = (),
+    ) -> Lease | None:
+        """Like `JobQueue.claim`, but a draft is not claimed while a final is queued in any of
+        `drafts_blocked_by`."""
+        ...
+
+    def queued_counts(self, queues: Sequence[str]) -> dict[str, int]: ...
+
+    def final_queued(self, queues: Sequence[str]) -> bool: ...
+
+    def release(self, lease: Lease) -> None:
+        """Hand back a live claim that started no work: the job keeps its place and no attempt is spent."""
+        ...
 
 
 # ------------------------------------------------------------------ steps and plans

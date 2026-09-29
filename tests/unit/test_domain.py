@@ -65,6 +65,13 @@ def test_timeline_must_be_contiguous() -> None:
         script((scene(1, 0, 2.5), scene(2, 4.0, 3)))
 
 
+def test_timeline_tolerance_is_not_defeated_by_float_noise() -> None:
+    assert 1.05 - 1.0 > 0.05  # the raw float difference exceeds the tolerance by 4e-17
+    assert script((scene(1, 0, 1.0), scene(2, 1.05, 1.0))).duration_s == 2.05
+    with pytest.raises(ValidationError, match="contiguous"):
+        script((scene(1, 0, 1.0), scene(2, 1.06, 1.0)))
+
+
 def test_scene_ids_unique() -> None:
     with pytest.raises(ValidationError, match="unique"):
         script((scene(1, 0, 2), scene(1, 2, 2)))
