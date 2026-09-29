@@ -1,10 +1,10 @@
 """Gate decisions in SQL (ADR-001 decisions 8 and 9): where the validation UI, the compliance agent and the
 strategist agent record their verdicts, and where the graph runner reads them (`DecisionSource`).
 
-A decision is bound to one exact artifact: the key of a package for G1, of the final render for G2 and for
-the compliance verdict. Recording a decision on the same (gate, subject) again replaces it, which is how a
+A decision is bound to one exact artifact: the key of a package for G1, of the publication candidate for G2 and
+for the compliance verdict. Recording a decision on the same (gate, subject) again replaces it, which is how a
 human verdict arrives after the agent's: the agent writes `agent_verdict`, the UI later writes the whole
-decision with `human_verdict` set. A new subject (a new render) has no decision: the gate waits again.
+decision with `human_verdict` set. A new subject (a new render, a new title) has no decision: the gate waits again.
 """
 
 from __future__ import annotations
@@ -13,7 +13,7 @@ import datetime as dt
 import json
 from collections.abc import Callable
 
-from sqlalchemy import Column, Engine, MetaData, String, Table, Text, select
+from sqlalchemy import Boolean, Column, Engine, MetaData, String, Table, Text, false, select
 
 from studio.core.db import UtcDateTime, create_tables, dialect_insert
 from studio.domain import GateDecision, GateName, Verdict
@@ -29,6 +29,7 @@ gate_decisions = Table(
     Column("human_verdict", String(16), nullable=False),
     Column("agent_reasons", Text, nullable=False),
     Column("human_note", Text, nullable=False),
+    Column("mock", Boolean, nullable=False, server_default=false()),
     Column("decided_at", UtcDateTime(), nullable=True),
     Column("recorded_at", UtcDateTime(), nullable=False),
 )
@@ -49,7 +50,15 @@ class SqlDecisionStore:
         create_tables(self.engine, _metadata)
 
     def put(self, decision: GateDecision) -> None:
-        """Record `decision`, replacing any earlier decision on the same (gate, subject)."""
+        """Record `decision`, replacing any earlier decision on the same (gate, subject).
+
+        A mock decision never replaces a real one: a dry run cannot erase what a human decided."""
+        if decision.mock:
+            earlier = self.get(decision.gate, decision.subject_key)
+            if earlier is not None and not earlier.mock:
+                raise ValueError(
+                    f"a real {decision.gate.value} decision exists on {decision.subject_key}: a mock decision cannot replace it"
+                )
         values = {
             "gate": decision.gate.value,
             "subject_key": decision.subject_key,
@@ -57,6 +66,7 @@ class SqlDecisionStore:
             "human_verdict": decision.human_verdict.value,
             "agent_reasons": json.dumps(list(decision.agent_reasons), ensure_ascii=False),
             "human_note": decision.human_note,
+            "mock": decision.mock,
             "decided_at": decision.decided_at,
             "recorded_at": self._clock(),
         }
@@ -85,5 +95,6 @@ class SqlDecisionStore:
             human_verdict=Verdict(row["human_verdict"]),
             agent_reasons=tuple(json.loads(row["agent_reasons"])),
             human_note=row["human_note"],
+            mock=bool(row["mock"]),
             decided_at=row["decided_at"],
         )

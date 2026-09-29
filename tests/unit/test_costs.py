@@ -77,6 +77,14 @@ def test_implements_protocol(ledger: SqlCostLedger) -> None:
     assert isinstance(ledger, CostLedger)
 
 
+def test_an_entry_keeps_its_mock_flag_through_the_ledger(ledger: SqlCostLedger) -> None:
+    ledger.set_cap(Cap("video:1", EUR, 10))
+    for flag in (False, True):
+        r = ledger.reserve(["video:1"], EUR, 1, LEASE)
+        ledger.settle(r.id, entry(1).model_copy(update={"mock": flag, "step_key": str(int(flag)) * 64}))
+    assert [e.mock for e in ledger.entries("run-1")] == [False, True]
+
+
 def test_scope_without_cap_is_unlimited(ledger: SqlCostLedger) -> None:
     res = ledger.reserve(["video:run-1"], EUR, 1e12, LEASE)
     assert ledger.reserved("video:run-1", EUR) == 1e12

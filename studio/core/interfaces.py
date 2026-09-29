@@ -226,6 +226,11 @@ class DispatchableQueue(JobQueue, Protocol):
 # ------------------------------------------------------------------ steps and plans
 
 
+# What a step returns: the output's bytes, its artifact kind and media type, and optionally what the step measured
+# itself ({CostKind: quantity}, e.g. the tokens of a Claude call), which replaces the runner's estimate.
+StepOutput = tuple[bytes, str, str] | tuple[bytes, str, str, Mapping[CostKind, float]]
+
+
 @dataclass(frozen=True)
 class StepSpec:
     """One node of the graph. `run` receives resolved input artifacts and returns output bytes + kind."""
@@ -235,7 +240,7 @@ class StepSpec:
     inputs: tuple[str, ...]  # names of upstream steps
     params: Mapping[str, Any]
     resource: ResourceClass
-    run: Callable[[Mapping[str, StoredArtifact], Mapping[str, Any]], tuple[bytes, str, str]]
+    run: Callable[[Mapping[str, StoredArtifact], Mapping[str, Any]], StepOutput]
     seed: int = 0
     estimated_cost: Mapping[CostKind, float] = field(default_factory=dict)
     model_id: str | None = None
@@ -244,6 +249,13 @@ class StepSpec:
     gate: GateName | None = None
     # (gate, subject step): this step may run only if that gate approved that step's exact output.
     requires_approval: tuple[tuple[GateName, str], ...] = ()
+    # The step uses at least one mock adapter. A run that contains such a step is a mock run whatever its caller
+    # declares (`Runner.run` refuses `mock=False`), so mock work can never pass for real work.
+    mock: bool = False
+    # The step releases something to the outside (a plan the publisher will upload). The graph refuses it unless
+    # it requires both the compliance verdict and G2 on one and the same upstream step: nobody can add a
+    # publishing step and forget the gates (ADR-001 decision 8).
+    publishes: bool = False
 
 
 @runtime_checkable

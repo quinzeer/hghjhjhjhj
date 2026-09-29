@@ -61,6 +61,25 @@ def test_put_then_get_round_trips_every_field(store: SqlDecisionStore) -> None:
     assert store.get(GateName.COMPLIANCE, A) == d
 
 
+def test_a_mock_decision_stays_marked_as_mock_and_a_real_one_as_real(store: SqlDecisionStore) -> None:
+    store.put(decision(GateName.G1, A, mock=True))
+    store.put(decision(GateName.G2, A))
+    assert store.get(GateName.G1, A).mock is True  # type: ignore[union-attr]
+    assert store.get(GateName.G2, A).mock is False  # type: ignore[union-attr]
+    store.put(decision(GateName.G1, A))  # the real decision replaces the mock one on the same subject
+    assert store.get(GateName.G1, A).mock is False  # type: ignore[union-attr]
+
+
+def test_a_mock_decision_never_replaces_a_real_one(store: SqlDecisionStore) -> None:
+    store.put(decision(GateName.G2, A, human_verdict=Verdict.REJECT, human_note="a human refused"))
+    with pytest.raises(ValueError, match="a mock decision cannot replace it"):
+        store.put(decision(GateName.G2, A, mock=True))
+    got = store.get(GateName.G2, A)
+    assert got is not None and not got.mock and got.human_note == "a human refused"
+    store.put(decision(GateName.G2, B, mock=True))  # on a subject nobody decided, a mock decision is fine
+    assert store.get(GateName.G2, B).mock is True  # type: ignore[union-attr]
+
+
 def test_a_decision_is_bound_to_its_gate_and_its_exact_subject(store: SqlDecisionStore) -> None:
     store.put(decision(GateName.G2, A))
     assert store.get(GateName.G2, B) is None  # a new render needs a new decision

@@ -45,6 +45,7 @@ from sqlalchemy import (
     RowMapping,
     String,
     Table,
+    false,
     func,
     insert,
     select,
@@ -112,6 +113,7 @@ entries = Table(
     Column("quantity", Float, nullable=False),  # as measured, returned by `entries()`
     Column("quantity_micro", BigInteger, nullable=False),  # as counted by `spent()` and the cap checks
     Column("estimated", Boolean, nullable=False),
+    Column("mock", Boolean, nullable=False, server_default=false()),  # measured on a mock adapter: never real spending
     Column("at", UtcDateTime(), nullable=False),
 )
 
@@ -381,6 +383,7 @@ class SqlCostLedger:
                 quantity=entry.quantity,
                 quantity_micro=to_micro(entry.quantity, ROUND_HALF_EVEN),
                 estimated=entry.estimated,
+                mock=entry.mock,
                 at=entry.at,
             )
             .returning(entries.c.id)
@@ -396,5 +399,6 @@ class SqlCostLedger:
             kind=CostKind(m["kind"]),
             quantity=float(m["quantity"]),
             estimated=bool(m["estimated"]),
+            mock=bool(m["mock"]),
             at=m["at"],
         )
