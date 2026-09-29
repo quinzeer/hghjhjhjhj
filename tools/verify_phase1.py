@@ -14,10 +14,10 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import re
 import subprocess
 import sys
 import tempfile
+import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -56,6 +56,13 @@ def check_lint() -> Check:
     return chk
 
 
+def junit_totals(junit_xml: Path) -> dict[str, int]:
+    """Tests, skipped, failures and errors summed over every suite of a pytest JUnit report."""
+    root = ET.parse(junit_xml).getroot()
+    suites = [root] if root.tag == "testsuite" else list(root.iter("testsuite"))
+    return {key: sum(int(suite.get(key, 0)) for suite in suites) for key in ("tests", "skipped", "failures", "errors")}
+
+
 def check_tests(cov_json: Path) -> Check:
     chk = Check(f"Tests verts, aucun ignoré, couverture ≥ {MIN_COVERAGE:g} % sur le cœur")
     if not os.environ.get("STUDIO_TEST_PG_URL"):
@@ -66,15 +73,25 @@ def check_tests(cov_json: Path) -> Check:
         return chk
     # STUDIO_REQUIRE_MEDIA turns a missing ffmpeg into a failure instead of a skip: a green run carries the media proofs.
     env = {**os.environ, "STUDIO_REQUIRE_MEDIA": "1"}
-    r = run(["uv", "run", "--group", "dev", "pytest", "-q", "--cov=studio", f"--cov-report=json:{cov_json}"], env=env)
-    tail = (r.stdout.strip().splitlines() or ["?"])[-1]
-    chk.details.append(f"pytest : {tail}")
+    junit = cov_json.with_name("junit.xml")
+    cmd = ["uv", "run", "--group", "dev", "pytest", "-q", "--cov=studio", f"--cov-report=json:{cov_json}", f"--junitxml={junit}"]
+    r = run(cmd, env=env)
+    if not junit.is_file():
+        chk.fail("pytest n'a produit aucun rapport JUnit")
+        return chk
+    totals = junit_totals(junit)
+    chk.details.append(
+        f"pytest : {totals['tests']} tests, {totals['skipped']} ignoré(s), "
+        f"{totals['failures']} échec(s), {totals['errors']} erreur(s)"
+    )
+    if totals["skipped"]:
+        chk.fail(f"{totals['skipped']} test(s) ignoré(s) : une preuve ignorée ne prouve rien")
     if r.returncode != 0:
         chk.fail("pytest en échec")
         return chk
-    skipped = re.search(r"(\d+) skipped", tail)
-    if skipped:
-        chk.fail(f"{skipped.group(1)} test(s) ignoré(s) : une preuve ignorée ne prouve rien")
+    if not cov_json.is_file():
+        chk.fail("pytest n'a produit aucun rapport de couverture")
+        return chk
     data = json.loads(cov_json.read_text())
     covered = total = 0
     for path, info in data.get("files", {}).items():
