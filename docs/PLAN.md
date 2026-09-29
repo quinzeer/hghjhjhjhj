@@ -36,23 +36,24 @@ Critère de sortie : `make verify-phase-0` → 0.
 
 ## Phase 1 — Squelette, contrats, mocks
 
-Critère de sortie : `make verify-phase-1` → 0 (contient `make test`, couverture ≥ 80 % sur le cœur, `make e2e-dry` rejoué deux fois sans régénération, contrôles `ffprobe`).
+Critère de sortie : `make verify-phase-1` → 0 (lint, suite complète **sans test ignoré** avec Postgres et ffmpeg, couverture ≥ 80 % sur le cœur, `make e2e-dry` rejoué deux fois sans régénération, contrôles `ffprobe`). Conception : `docs/design/phase1.md`. Décisions : ADR-001 révisé (décisions 12 à 19).
 
-- [ ] Structure du dépôt `studio/` (paquet Python 3.12, uv, ruff, mypy strict sur le cœur)
-- [ ] Modèles de domaine Pydantic v2 : Channel, Series, Idea, Package, Script, Scene, Shot, Asset, Render, Publication, Metric, Experiment, CostEntry
-- [ ] Export JSON Schema de chaque contrat + test de non-régression des schémas
-- [ ] Mapping bidirectionnel du JSON de scènes du skill `scenariste-youtube` (v1.0) ↔ modèles internes, testé sur fixtures, sans perte
-- [ ] Orchestrateur retenu par l'ADR-001 : graphe d'étapes idempotentes, reprise après crash testée
-- [ ] Stockage d'artefacts adressé par hash (entrées + version de code + paramètres) ; relance = zéro recalcul (test)
-- [ ] Registre des coûts (heures GPU, kWh, usage Claude) + plafonds avec arrêt dur (test)
-- [ ] Ordonnanceur de file multi-GPU simulé (4 workers mock, priorités, préemption des brouillons)
-- [ ] Interfaces d'adaptateurs (texte→image, image→vidéo, texte→vidéo, lip-sync, TTS, musique, SFX, upscaling, interpolation, transcription, LLM, critique visuelle) + mocks déterministes nommés `mock`
-- [ ] `ClaudeCodeRunner` (interface + backend `claude -p` + backend mock) et gestionnaire de quota (détection de limite, pause, reprise) testés sur sorties enregistrées
-- [ ] CLI `studio run --channel A --format short --dry-run`
-- [ ] `make e2e-dry` : un Short 1080×1920 et un long 16:9 de démonstration via mocks, manifeste + registre de coûts, validés par `ffprobe`
-- [ ] `make doctor` v2 (Docker, GPU, ffmpeg côté machine d'exécution)
-- [ ] CI GitHub Actions : lint, types, tests, `make verify-phase-0`, `make e2e-dry`
-- [ ] `make verify-phase-1`
+- [x] Structure du dépôt `studio/` (paquet Python 3.12, uv, ruff, mypy strict)
+- [x] Modèles de domaine Pydantic v2 : Channel, Series, Idea, Package, Script, Scene, Shot, Asset, Render, Publication, Metric, Experiment, CostEntry (+ GateDecision, RunManifest)
+- [x] Export JSON Schema de chaque contrat + test de non-régression des schémas (`schemas/`, `tests/unit/test_schemas.py`)
+- [x] Mapping bidirectionnel du JSON de scènes du skill `scenariste-youtube` (v1.0) ↔ modèles internes, testé sur fixtures inventées, sans perte (`studio/scenario/skill_json.py`)
+- [x] Orchestrateur : graphe d'étapes idempotentes, reprise après crash testée (exceptions à tous les points, arrêt brutal SIGKILL d'un processus de bout en bout). Retenu : file tirée maison (ADR-001 décision 12) ; essai DBOS 3.1.0 documenté (`docs/design/dbos-spike.md`)
+- [x] Stockage d'artefacts adressé par hash (entrées + version + paramètres) ; relance = zéro recalcul (`test_a_second_run_executes_nothing_and_writes_the_same_render`)
+- [x] Registre des coûts (heures GPU, appels et secondes Claude) + plafonds avec arrêt dur, réservations atomiques à bail. Le type `kwh` existe dans le registre ; la mesure de puissance vient avec `gpu-smoke` (phase 3)
+- [x] Ordonnanceur de file multi-GPU simulé (4 workers mock, priorités, finaux avant brouillons, restitution des brouillons)
+- [x] Interfaces d'adaptateurs (texte→image, image→vidéo, texte→vidéo, lip-sync, TTS, musique, SFX, upscaling, interpolation, transcription, LLM, critique visuelle) + mocks déterministes nommés `mock`
+- [x] `ClaudeCodeRunner` (interface + backend `claude -p` + backend mock) et gestionnaire de quota (détection de limite, pause, reprise) testés sur sorties enregistrées
+- [x] CLI `studio run --channel A --format short --dry-run` (codes de sortie 0, 1, 2, 3, 75)
+- [x] `make e2e-dry` : un Short 1080×1920 et un long 1920×1080 via mocks, manifeste + registre de coûts, validés par `ffprobe`
+- [x] `make doctor` v2 : `make doctor-execution` (ffmpeg et encodeurs, Docker, 4 cartes, jeton Claude) ; s'exécute pour de bon sur la machine GPU (NEEDS_HUMAN H6, H7)
+- [x] CI GitHub Actions : doctor, lint, `make verify-phase-1` (tests, couverture, `make e2e-dry`), `make verify-phase-0` informatif
+- [x] `make verify-phase-1`
+- [ ] Revue `critic` de la déclaration de fin de phase, puis PR (sur demande de l'humain, NEEDS_HUMAN H12) et `/code-review`
 
 ## Phase 2 — Cerveau éditorial
 
