@@ -1,18 +1,21 @@
 [project]
 name = "studio"
 version = "0.0.0"
-description = "Studio vidéo autonome : construction (phase 0 : outillage de vérification uniquement)"
+description = "Studio vidéo autonome : moteur d'exécution (phase 1 : squelette, contrats, mocks)"
 requires-python = ">=3.12"
 dependencies = [
-    "dbos>=2",
     "jsonschema>=4.23",
     "psycopg[binary]>=3.2",
     "pydantic>=2.8",
     "pyyaml>=6.0.3",
+    "sqlalchemy>=2.0",
 ]
 
 [dependency-groups]
 dev = [
+    # Only the DBOS trial (tests/integration/test_dbos_spike.py) imports it; ADR-001 decision 12 keeps it out of the
+    # runtime. Pinned to the version the trial measured: replay the trial before moving the pin.
+    "dbos>=3.1,<4",
     "mypy>=2.3.1",
     "pytest>=8",
     "pytest-cov>=7.1.0",
