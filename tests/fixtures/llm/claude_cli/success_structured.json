@@ -1,0 +1,71 @@
+{
+  "type": "result",
+  "subtype": "success",
+  "uuid": "0b6a2d9e-4f3c-4b8e-9f61-2d4c8a1e7b10",
+  "session_id": "5f1c9a2e-7d4b-4e6a-8c3f-9b2d1e0a4c77",
+  "duration_ms": 8421,
+  "duration_api_ms": 7900,
+  "permission_denials": [],
+  "result_index": 0,
+  "is_error": false,
+  "api_error_status": null,
+  "num_turns": 3,
+  "result": "Here is the structured answer.",
+  "stop_reason": "end_turn",
+  "ttft_ms": 1210,
+  "total_cost_usd": 0.0391,
+  "usage": {
+    "input_tokens": 1830,
+    "output_tokens": 412,
+    "cache_creation_input_tokens": 2048,
+    "cache_read_input_tokens": 15360,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 2048,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "speed": "standard",
+    "inference_geo": "us",
+    "output_tokens_details": {
+      "thinking_tokens": 96
+    }
+  },
+  "modelUsage": {
+    "claude-sonnet-5": {
+      "inputTokens": 1830,
+      "outputTokens": 412,
+      "thinkingTokens": 96,
+      "cacheReadInputTokens": 15360,
+      "cacheCreationInputTokens": 2048,
+      "webSearchRequests": 0,
+      "costUSD": 0.0342,
+      "contextWindow": 200000,
+      "maxOutputTokens": 64000,
+      "provider": "firstParty",
+      "costBasis": "list",
+      "canonicalModel": "claude-sonnet-5"
+    },
+    "claude-haiku-4-5": {
+      "inputTokens": 950,
+      "outputTokens": 120,
+      "thinkingTokens": 0,
+      "cacheReadInputTokens": 0,
+      "cacheCreationInputTokens": 0,
+      "webSearchRequests": 0,
+      "costUSD": 0.0049,
+      "contextWindow": 200000,
+      "maxOutputTokens": 64000,
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "structured_output": {
+    "title": "Three outlier formats",
+    "score": 8
+  },
+  "terminal_reason": "completed"
+}

@@ -1,0 +1,39 @@
+{
+  "type": "result",
+  "subtype": "error_during_execution",
+  "uuid": "8d2c6e4a-1f9b-4a7d-8e3c-5b0f2a9d6e47",
+  "session_id": "f1a8d3c6-2e9b-4b7f-a4d1-6c3e0b8f5a92",
+  "duration_ms": 588,
+  "duration_api_ms": 7900,
+  "permission_denials": [],
+  "result_index": 0,
+  "is_error": true,
+  "num_turns": 1,
+  "stop_reason": null,
+  "total_cost_usd": 0,
+  "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "speed": "standard",
+    "inference_geo": "us",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "modelUsage": {},
+  "errors": [
+    "Agent terminated early due to an API error: You've hit your weekly limit · resets Mon 12:00am"
+  ],
+  "terminal_reason": "api_error"
+}

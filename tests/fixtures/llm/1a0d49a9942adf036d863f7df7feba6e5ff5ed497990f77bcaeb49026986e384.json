@@ -1,0 +1,5 @@
+{
+  "agent": "mock-demo",
+  "prompt": "Say hello in one sentence.",
+  "output": "Hello from a recorded mock fixture."
+}

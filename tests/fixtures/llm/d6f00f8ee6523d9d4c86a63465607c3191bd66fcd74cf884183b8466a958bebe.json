@@ -1,0 +1,8 @@
+{
+  "agent": "mock-demo",
+  "prompt": "Give the demo package title as JSON.",
+  "output": {
+    "title": "A recorded mock title",
+    "score": 42
+  }
+}

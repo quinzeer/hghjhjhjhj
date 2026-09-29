@@ -1,0 +1,38 @@
+{
+  "type": "result",
+  "subtype": "success",
+  "uuid": "9e4b2d7a-6c1f-4a3e-b8d5-0f2c7a9e4b13",
+  "session_id": "d6c1a8f3-4b9e-4e2d-a7c5-8b3f0d1e6a29",
+  "duration_ms": 734,
+  "duration_api_ms": 7900,
+  "permission_denials": [],
+  "result_index": 0,
+  "is_error": true,
+  "api_error_status": 400,
+  "num_turns": 1,
+  "result": "Prompt is too long",
+  "stop_reason": null,
+  "total_cost_usd": 0,
+  "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "speed": "standard",
+    "inference_geo": "us",
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    }
+  },
+  "modelUsage": {},
+  "terminal_reason": "prompt_too_long"
+}
