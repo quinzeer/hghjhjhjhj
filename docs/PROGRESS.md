@@ -2,6 +2,77 @@
 
 Entrées datées, la plus récente en haut. Chaque affirmation « fait » est suivie de la commande qui le prouve et de sa sortie.
 
+## 2026-09-29 — Session 2 : phase 1 (squelette, contrats, mocks)
+
+### Fait
+- **Contrats et schémas** : 15 contrats Pydantic v2 figés et stricts, un JSON Schema par contrat (`schemas/`), mapping sans perte avec le JSON de scènes du skill (fixtures aux contenus inventés).
+- **Cœur** (`studio/core`) : magasin d'artefacts adressé par contenu (fichiers + index SQL, premier écrit gagne, épinglage), registre des coûts à plafonds et réservations atomiques à bail, file de tâches SQL avec verrou global par clé d'étape et jeton de fencing, répartiteur GPU (affinité de modèle, finaux avant brouillons), planificateur de graphe avec manifeste verrouillé et portes liées au hash, décisions de porte en SQL, gestionnaire de quota Claude.
+- **Adaptateurs et média** : `ClaudeCodeRunner` (`claude -p`, jamais `--bare`, refuse `ANTHROPIC_API_KEY`), LLM mock, mocks de tous les protocoles qui écrivent de vrais fichiers, `studio/media` (ffmpeg déterministe, QA §8, `media_fingerprint()`).
+- **Parcours à blanc** (`studio/pipeline`, `studio/cli.py`) : idée → packaging → G1 → script → une voix et un plan par scène → musique → mixage −14 LUFS → assemblage → QA → conformité → G2 → plan de publication privé, sans réseau. `studio run --channel A --format short --dry-run`.
+- **Essai DBOS 3.1.0** (19 tests, vrais processus, Postgres) puis **ADR-001 révisé** : file tirée maison retenue, DBOS mis de côté (décision 12), décisions 13 à 19, table scénarios de panne → tests (33 tests cités, existence vérifiée).
+- **Outillage** : `make doctor-execution`, porte de phase 1 (aucun test ignoré, Postgres et ffmpeg exigés), CI qui lance la porte, `dbos` déplacé dans le groupe `dev` et `sqlalchemy` déclaré (elle venait de `dbos`).
+- **Volume** : 18 commits, `studio/` 9 175 lignes (35 fichiers), `tests/` 14 442 lignes (26 fichiers de test).
+
+### Défauts trouvés pendant l'intégration et corrigés
+1. Les fichiers écrits par lot étaient exclus par `.git/info/exclude` : ruff les ignorait. Une fois visibles, 8 constats (imports inutilisés, ligne trop longue), corrigés.
+2. La clé d'un plan GPU portait l'id du LLM : changer de LLM relançait tous les plans. Le test « retoucher une scène » l'a révélé ; les paramètres d'un plan ne nomment plus que les adaptateurs qui le fabriquent (`Production.shot_adapter_ids`).
+3. Le pilote demandait G2 à l'humain après un refus de conformité ; la conformité est répondue d'abord et arrête la vidéo.
+4. Le rendu livré était un lien dur vers le magasin : un outil qui l'éditerait sur place corromprait l'artefact. C'est une copie atomique.
+5. Un `manifest.json` d'un autre run plantait avec une trace ; c'est une erreur claire, jamais un écrasement.
+6. `sqlalchemy` n'était qu'une dépendance implicite de `dbos`.
+7. La porte de phase 1 cherchait « N skipped » dans la dernière ligne de pytest, absente avec `-qq` : elle lit maintenant le rapport JUnit (`tests/tools/test_verify_phase1.py`).
+8. Les jetons factices des tests de rédaction faisaient tomber la porte de phase 0 à 12/14 : liste exacte de deux jetons, comparés comme jetons entiers, dans l'arbre et dans l'historique.
+9. Mutation testing du module média par son agent : 56 mutants sur 56 tués ; un mutant (`timeout` ignoré) faisait pendre un test, qui a reçu une échéance propre.
+
+### Preuves
+```
+$ STUDIO_TEST_PG_URL=postgresql+psycopg://postgres@localhost:5432/studio_lead make verify-phase-1
+✓ Lint : ruff + mypy strict
+✓ Tests verts, aucun ignoré, couverture ≥ 80 % sur le cœur
+    · pytest : 1279 tests, 0 ignoré(s), 0 échec(s), 0 erreur(s)
+    · couverture du cœur : 99.1 % (2728/2754 lignes)
+✓ e2e-dry channel-a short : rendu 1080×1920, manifeste, coûts, mock, replay
+    · render.mp4 : 1080×1920 @ 30/1, 23.30 s
+    · replay : 36 étapes réutilisées, 0 exécutée
+✓ e2e-dry channel-a long : rendu 1920×1080, manifeste, coûts, mock, replay
+    · render.mp4 : 1920×1080 @ 30/1, 46.50 s
+    · replay : 60 étapes réutilisées, 0 exécutée
+✓ CI GitHub Actions présente
+
+verify-phase-1 : 5/5 contrôles OK        (7 min 47 s)
+
+$ make e2e-dry            # 1re exécution
+channel   channel-a  format short  run dry-channel-a-short-0  [mock, dry-run]
+steps     36 executed, 0 reused, 0 waiting
+channel   channel-a  format long  run dry-channel-a-long-0  [mock, dry-run]
+steps     54 executed, 6 reused, 0 waiting      # 6 voix identiques à celles du Short : réutilisées
+
+$ make e2e-dry            # rejeu
+steps     0 executed, 36 reused, 0 waiting
+steps     0 executed, 60 reused, 0 waiting
+
+$ ffprobe var/e2e/channel-a/short/render.mp4
+stream|codec_name=h264|codec_type=video|width=1080|height=1920|r_frame_rate=30/1|avg_frame_rate=30/1
+stream|codec_name=aac|codec_type=audio|sample_rate=48000|channels=2
+format|duration=23.300000
+$ ffprobe var/e2e/channel-a/long/render.mp4
+stream|codec_name=h264|codec_type=video|width=1920|height=1080|r_frame_rate=30/1|avg_frame_rate=30/1
+stream|codec_name=aac|codec_type=audio|sample_rate=48000|channels=2
+format|duration=46.500000
+
+$ make verify-phase-0
+verify-phase-0 : 13/14 contrôles OK, 1 en échec        # seul échec : outliers mesurés (NEEDS_HUMAN H0)
+
+$ make doctor-execution   # sur la VM cloud, sans GPU : les trois manques attendus
+  ✗ nvidia-smi absent : pilote NVIDIA non installé
+  ✗ le démon Docker ne répond pas (docker info)
+  ✗ CLAUDE_CODE_OAUTH_TOKEN absent : les agents `claude -p` ne pourraient pas s'authentifier sur l'abonnement
+```
+Preuves ciblées : `tests/integration/test_e2e_dry.py` (rejeu à zéro exécution et même fichier, retouche d'une scène = une voix et aucun plan, refus aux portes G1, conformité et G2, pause puis reprise sur limite d'usage, **arrêt brutal (SIGKILL) au milieu d'une vidéo puis reprise sans refaire les étapes finies ni corrompre un objet du magasin**, aucun appel réseau tenté).
+
+### État
+Phase 1 : critères de sortie remplis en local ; revue `critic` à suivre. Phase 0 : **ouverte** (H0, clé d'API YouTube ; H1, dépôt public).
+
 ## 2026-09-28 — Session 1 (fin) : contre-revue `critic` et corrections
 
 ### Fait
