@@ -290,7 +290,8 @@ def check_e2e(out: Path, channel: str) -> list[Check]:
             if (render.stat().st_ino, render.stat().st_mtime_ns) != stamp:
                 chk.details.append("le rendu livré a été réécrit à l'identique")
             verdict = "" if changed else ", état inchangé (lignes, dates et fichiers du magasin)"
-            chk.details.append(f"replay : {len(report2.get('skipped', []))} étapes réutilisées, 0 exécutée{verdict}")
+            reused, executed = len(report2.get("skipped", [])), len(report2.get("executed", []))
+            chk.details.append(f"replay : {reused} étapes réutilisées, {executed} exécutée(s){verdict}")
         checks.append(chk)
     return checks
 
