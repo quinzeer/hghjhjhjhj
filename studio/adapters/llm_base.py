@@ -15,6 +15,7 @@ from typing import Any, Literal, Protocol, runtime_checkable
 
 from studio.adapters.base import AdapterSpec
 from studio.core.interfaces import StudioError
+from studio.domain import CostKind
 
 
 @dataclass(frozen=True)
@@ -28,13 +29,26 @@ class LLMUsage:
     model: str = ""
 
 
+def usage_costs(usage: LLMUsage) -> dict[CostKind, float]:
+    """The ledger quantities of one call's usage (MISSION §6.4): every token the model read (fresh, cache
+    creation and cache reads) and every token it wrote."""
+    return {
+        CostKind.CLAUDE_INPUT_TOKENS: float(usage.input_tokens + usage.cache_creation_tokens + usage.cache_read_tokens),
+        CostKind.CLAUDE_OUTPUT_TOKENS: float(usage.output_tokens),
+    }
+
+
 class LLMCallError(StudioError):
     """Base of every failed LLM call. `usage` sums every attempt made: a failed call still costs quota,
-    so the cost ledger logs it."""
+    so the cost ledger logs it (the graph runner reads `measured_costs` when a step raises)."""
 
     def __init__(self, message: str, usage: LLMUsage | None = None) -> None:
         super().__init__(message)
         self.usage: LLMUsage = usage if usage is not None else LLMUsage()
+
+    @property
+    def measured_costs(self) -> dict[CostKind, float]:
+        return usage_costs(self.usage)
 
 
 class QuotaExhausted(LLMCallError):

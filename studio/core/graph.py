@@ -6,21 +6,30 @@ inputs, salted in a dry or mock run so that such outputs never serve a real run)
 rule that applies:
 
 d. a step with `requires_approval` is checked first (publication guard, ADR-001 decision 8): `GateNotApproved`
-   unless every listed gate approved the exact current output of its subject. Nothing can bypass it, not even
-   a locked or stored output of the step; a replay that is still approved stays free (a read of decisions);
+   unless every listed gate approved the exact current output of its subject, in the mode of this run. Nothing
+   can bypass it, not even a locked or stored output of the step; a replay that is still approved stays free
+   (a read of decisions);
+c. gate step: it never reuses anything. Every run reads the decision about the exact output of its subject; an
+   approval in the mode of this run becomes the step's output, a small canonical JSON with no date or note
+   (so the keys downstream of a gate do not depend on when it was answered). No decision, a pending one, a
+   rejection, a revoked approval or a mock decision in a real run leaves the gate waiting, drops its lock and
+   blocks everything downstream;
 a. the run manifest locked an output for this step under the key computed with the version it was locked
-   with: reuse it, even when the step is not deterministic (LLM call, diffusion sample) and even when the graph
-   now declares a new version (ADR-001: a new version does not invalidate a video in progress unless `upgrade`
-   names the step), so a replay never re-pays a GPU hour, a Claude call or a human gate;
+   with: reuse it if the store confirms it (the store binds that step key to that very output), even when the
+   step is not deterministic (LLM call, diffusion sample) and even when the graph now declares a new version
+   (ADR-001: a new version does not invalidate a video in progress unless `upgrade` names the step), so a
+   replay never re-pays a GPU hour or a Claude call. A lock the store contradicts is refused: a manifest is
+   trusted for what it says about this run, never for what the store holds;
 b. the store already binds an output to this step key: reuse it;
-c. gate step: the approved decision about the exact output of its subject becomes the step's output (canonical
-   JSON). No decision, a pending one or a rejection leaves the gate waiting and blocks everything downstream;
 e. otherwise the step runs under budget reservations: reserve -> run -> settle with the measured cost -> check
    the output -> store -> commit (first write wins). While it runs, a heartbeat renews its reservations (a
-   step slower than estimated keeps its budget). An exception raised by the step still charges what it
-   measurably burnt (GPU seconds, the Claude call) and releases what it cannot measure; once the step has
-   returned, its cost stays in the ledger whatever fails next, and no output is stored unless its cost was
-   recorded.
+   step slower than estimated keeps its budget). What the step measured itself (Claude tokens) replaces the
+   estimate. An exception raised by the step still charges what it measurably burnt (GPU seconds, the Claude
+   call, the tokens the exception reports) and releases what it cannot measure; once the step has returned,
+   its cost stays in the ledger whatever fails next, and no output is stored unless its cost was recorded.
+
+The mode of a run (`mock`) is the caller's declaration or'ed with the steps' own: a graph that holds a step
+flagged `mock` cannot run as a real run. Every entry the run writes to the ledger carries it.
 
 Every resolved output is locked in the returned manifest and pinned with `owner=run_id`. Graph steps that are
 not resolved this time (waiting gate, blocked downstream) lose their previous locks, and artifacts no longer
@@ -98,6 +107,10 @@ class StepOutputError(ValueError):
     media type). The check runs after the step's cost was settled: the work was done and is paid."""
 
 
+class ManifestMismatch(StudioError):
+    """The manifest locks an output that the store contradicts: it was edited, or it belongs to another store."""
+
+
 class CostNotSettled(StudioError):
     """A step ran but the ledger did not record (part of) its measured cost. Its output was not stored, so no
     run can reuse an output whose cost is missing. The unsettled reservations stay held until settled or
@@ -154,6 +167,21 @@ class Graph:
                         f"step {step.name!r} requires {gate} on {subject!r}, which is not upstream of it: "
                         "the approved output could not be known when the step runs"
                     )
+            if step.publishes:
+                self._check_publishing_step(step)
+
+    @staticmethod
+    def _check_publishing_step(step: StepSpec) -> None:
+        """A publishing step needs the compliance verdict and G2 on one and the same upstream step."""
+        subjects: dict[str, set[str]] = {}
+        for gate, subject in step.requires_approval:
+            subjects.setdefault(GateName(gate).value, set()).add(subject)
+        both = subjects.get(GateName.COMPLIANCE.value, set()) & subjects.get(GateName.G2.value, set())
+        if not both:
+            raise GraphError(
+                f"step {step.name!r} publishes: it must require the {GateName.COMPLIANCE.value} verdict and "
+                f"{GateName.G2.value} on the same upstream step (requires_approval has {sorted(subjects)})"
+            )
 
     def _check_step(self, step: StepSpec) -> None:
         if len(set(step.inputs)) != len(step.inputs):
@@ -331,12 +359,19 @@ def run_step_key(step: StepSpec, version: str, inputs: Mapping[str, str], *, dry
     return sha256_hex(canonical_json({"step_key": key, "dry_run": dry_run, "mock": mock}))
 
 
-def decision_refusal(decision: GateDecision | None, gate: GateName, subject_key: str) -> str | None:
-    """None when `decision` approves `gate` on exactly `subject_key`, else why it does not."""
+def decision_refusal(decision: GateDecision | None, gate: GateName, subject_key: str, *, mock_run: bool) -> str | None:
+    """None when `decision` approves `gate` on exactly `subject_key` in a run of this mode, else why it does not.
+
+    A decision written by a mock reviewer applies to mock runs only, and a real reviewer's to real runs only:
+    the decision store is keyed by the artifact's hash, and deterministic mock work can reproduce the bytes of
+    another run."""
     if decision is None:
         return f"no {gate.value} decision on {subject_key}"
     if decision.gate is not gate or decision.subject_key != subject_key:
         return f"the {decision.gate.value} decision found is about {decision.subject_key}, not {gate.value} on {subject_key}"
+    if decision.mock != mock_run:
+        written, run = ("mock", "real") if decision.mock else ("real", "mock")
+        return f"the {gate.value} decision was written by a {written} reviewer: it does not apply to a {run} run"
     if decision.approved:
         return None
     verdicts = f"agent {decision.agent_verdict.value}, human {decision.human_verdict.value}"
@@ -354,8 +389,11 @@ def _reservation_plan(step: StepSpec) -> dict[CostKind, float]:
     return dict(sorted(plan.items(), key=lambda item: item[0].value))
 
 
-def _measured(step: StepSpec, kind: CostKind, elapsed_s: float) -> float | None:
-    """The quantity the runner measures itself for this kind, or None when only the estimate is known."""
+def _measured(step: StepSpec, kind: CostKind, elapsed_s: float, reported: Mapping[CostKind, float]) -> float | None:
+    """The quantity known for this kind (reported by the step or its exception, else measured by the runner), or
+    None when only the estimate is known."""
+    if kind in reported:
+        return reported[kind]
     resource = ResourceClass(step.resource)
     if resource is ResourceClass.GPU and kind is CostKind.GPU_SECONDS:
         return elapsed_s
@@ -366,17 +404,47 @@ def _measured(step: StepSpec, kind: CostKind, elapsed_s: float) -> float | None:
     return None
 
 
+def _valid_costs(value: object) -> dict[CostKind, float]:
+    """The well-formed entries of a `{kind: quantity}` mapping (unknown kinds and bad quantities are skipped)."""
+    costs: dict[CostKind, float] = {}
+    if isinstance(value, Mapping):
+        for raw_kind, quantity in value.items():
+            try:
+                kind = CostKind(raw_kind)
+            except ValueError:
+                continue
+            if isinstance(quantity, int | float) and not isinstance(quantity, bool) and math.isfinite(quantity) and quantity >= 0:
+                costs[kind] = float(quantity)
+    return costs
+
+
+def _reported_by_step(output: object) -> dict[CostKind, float]:
+    """What a step measured itself: the fourth element of its result, when it is a well-formed mapping."""
+    return _valid_costs(output[3]) if isinstance(output, tuple) and len(output) == 4 else {}
+
+
+def _reported_by_exception(exc: BaseException) -> dict[CostKind, float]:
+    """What a failing call reports it consumed (`measured_costs`, e.g. the tokens of a refused Claude call)."""
+    return _valid_costs(getattr(exc, "measured_costs", None))
+
+
 def _check_output(step: StepSpec, output: object) -> tuple[bytes, str, str]:
-    """The step's `(data, kind, media_type)`, checked against the store's rules before anything is written."""
-    if not isinstance(output, tuple) or len(output) != 3:
-        raise StepOutputError(f"step {step.name!r} must return (data, kind, media_type), got {type(output).__name__}")
-    data, kind, media_type = output
+    """The step's `(data, kind, media_type)`, checked against the store's rules before anything is written.
+
+    A step may add a fourth element, `{CostKind: quantity}`, for what it measured itself (Claude tokens)."""
+    if not isinstance(output, tuple) or len(output) not in (3, 4):
+        raise StepOutputError(f"step {step.name!r} must return (data, kind, media_type[, measured]), got {type(output).__name__}")
+    data, kind, media_type = output[:3]
     if not isinstance(data, bytes):
         raise StepOutputError(f"step {step.name!r} returned {type(data).__name__} data, expected bytes")
     if not isinstance(kind, str) or kind not in KINDS:
         raise StepOutputError(f"step {step.name!r} returned unknown artifact kind {kind!r}; expected one of {sorted(KINDS)}")
     if not isinstance(media_type, str) or "/" not in media_type:
         raise StepOutputError(f"step {step.name!r} returned an invalid media type {media_type!r}")
+    if len(output) == 4:
+        measured = output[3]
+        if not isinstance(measured, Mapping) or len(_valid_costs(measured)) != len(measured):
+            raise StepOutputError(f"step {step.name!r} returned measured costs that are not {{CostKind: finite quantity >= 0}}")
     return data, kind, media_type
 
 
@@ -469,6 +537,11 @@ class Runner:
         unknown = sorted(set(upgrade) - set(graph.names))
         if unknown:
             raise ValueError(f"cannot upgrade unknown steps {unknown}")
+        mock_steps = [step.name for step in graph.steps if step.mock]
+        if mock_steps and not mock:
+            raise ValueError(f"steps {mock_steps} use mock adapters: a graph that holds them runs as a mock run (mock=True)")
+        # Reservations whose lease ran out belong to a worker that died mid-step: free their budget before reserving.
+        self.ledger.reap_expired(self.clock())
         base = self._base_manifest(run_id, manifest, channel_id, format, dry_run, mock)
         state = _RunState(
             run_id=run_id,
@@ -497,8 +570,13 @@ class Runner:
             return
         inputs = {name: result.outputs[name] for name in step.inputs}
         if step.requires_approval:
-            self._check_approvals(step, result.outputs)
+            self._check_approvals(step, result.outputs, state)
         key = run_step_key(step, step.version, inputs, dry_run=state.dry_run, mock=state.mock)
+        if step.gate is not None:
+            result.step_keys[step.name] = key
+            state.versions[step.name] = step.version
+            self._resolve_gate(step, GateName(step.gate), key, inputs, state)
+            return
         reused = self._reuse(step, key, inputs, state)
         if reused is not None:
             key, output, version = reused
@@ -509,14 +587,7 @@ class Runner:
             return
         result.step_keys[step.name] = key
         state.versions[step.name] = step.version
-        if step.gate is not None:
-            recorded = self._record_gate(step, GateName(step.gate), key, inputs, state)
-            if recorded is None:
-                result.waiting.append(step.name)
-                return
-            output = recorded
-        else:
-            output = self._execute(step, key, inputs, state)
+        output = self._execute(step, key, inputs, state)
         result.executed.append(step.name)
         result.outputs[step.name] = output
 
@@ -532,7 +603,18 @@ class Runner:
                 key if version == step.version else run_step_key(step, version, inputs, dry_run=state.dry_run, mock=state.mock)
             )
             if lock_key == locked_key:
+                bound_to_lock = self.store.step_output(locked_key)
+                if bound_to_lock is not None and bound_to_lock != locked:
+                    raise ManifestMismatch(
+                        f"the manifest of run {state.run_id!r} locks step {step.name!r} to {locked}, but the store binds "
+                        f"its step key to {bound_to_lock}: the manifest was edited or belongs to another store"
+                    )
                 if self._hold(locked, state):
+                    if bound_to_lock is None:  # the store lost its link but kept the artifact: the manifest restores it
+                        if self.store.commit_step_output(locked_key, locked) != locked:
+                            raise ManifestMismatch(
+                                f"step {step.name!r} was bound to another output while its lock was being restored"
+                            )
                     if version != step.version:
                         state.result.kept_versions[step.name] = version
                         log.info(
@@ -564,26 +646,32 @@ class Runner:
         state.pinned.add(artifact_key)
         return True
 
-    def _record_gate(self, step: StepSpec, gate: GateName, key: str, inputs: Mapping[str, str], state: _RunState) -> str | None:
+    def _resolve_gate(self, step: StepSpec, gate: GateName, key: str, inputs: Mapping[str, str], state: _RunState) -> None:
+        """Read the decision about the exact output of the gate's subject, every run.
+
+        An approval in this run's mode becomes the gate's output; anything else leaves the gate waiting, whatever
+        an earlier run locked: a revoked approval stops the video at once."""
+        result = state.result
         (subject_key,) = inputs.values()
         decision = self.decisions.get(gate, subject_key)
-        refusal = decision_refusal(decision, gate, subject_key)
-        if decision is None or refusal is not None:
-            reason = refusal or f"no {gate.value} decision on {subject_key}"
-            state.result.reasons[step.name] = reason
-            log.info("gate %s waiting: %s", step.name, reason, extra=self._log_extra(step, key, state.run_id))
-            return None
-        stored = self.store.put_bytes(
-            decision.canonical_json().encode("utf-8"), kind=DECISION_KIND, media_type=DECISION_MEDIA_TYPE
-        )
+        refusal = decision_refusal(decision, gate, subject_key, mock_run=state.mock)
+        if refusal is not None:
+            result.reasons[step.name] = refusal
+            result.waiting.append(step.name)
+            log.info("gate %s waiting: %s", step.name, refusal, extra=self._log_extra(step, key, state.run_id))
+            return
+        token = canonical_json({"gate": gate.value, "subject_key": subject_key, "approved": True}).encode("utf-8")
+        stored = self.store.put_bytes(token, kind=DECISION_KIND, media_type=DECISION_MEDIA_TYPE)
+        already = self.store.step_output(key) == stored.key
         bound = self._commit(key, stored, state)
-        return self._adopt(step, key, stored, bound, (), state)
+        result.outputs[step.name] = self._adopt(step, key, stored, bound, (), state)
+        (result.skipped if already else result.executed).append(step.name)
 
-    def _check_approvals(self, step: StepSpec, outputs: Mapping[str, str]) -> None:
+    def _check_approvals(self, step: StepSpec, outputs: Mapping[str, str], state: _RunState) -> None:
         for gate_value, subject in step.requires_approval:
             gate = GateName(gate_value)
             subject_key = outputs[subject]  # the subject is upstream (Graph) and the step is not blocked
-            refusal = decision_refusal(self.decisions.get(gate, subject_key), gate, subject_key)
+            refusal = decision_refusal(self.decisions.get(gate, subject_key), gate, subject_key, mock_run=state.mock)
             if refusal is not None:
                 raise GateNotApproved(f"{step.name} needs {gate.value} on {subject!r}: {refusal}")
 
@@ -622,7 +710,7 @@ class Runner:
             heartbeat.join()
         elapsed_s = max(0.0, (self.clock() - started).total_seconds())
         # From here on the work is done: its cost is recorded before anything else can fail.
-        costs = self._settle(step, key, reservations, elapsed_s, state)
+        costs = self._settle(step, key, reservations, elapsed_s, _reported_by_step(output), state)
         data, kind_name, media_type = _check_output(step, output)
         stored = self.store.put_bytes(data, kind=kind_name, media_type=media_type)
         bound = self._commit(key, stored, state)
@@ -656,7 +744,13 @@ class Runner:
         return max(self.lease, dt.timedelta(seconds=self.lease_factor * seconds))
 
     def _settle(
-        self, step: StepSpec, key: str, reservations: Sequence[Reservation], elapsed_s: float, state: _RunState
+        self,
+        step: StepSpec,
+        key: str,
+        reservations: Sequence[Reservation],
+        elapsed_s: float,
+        reported: Mapping[CostKind, float],
+        state: _RunState,
     ) -> tuple[CostEntry, ...]:
         """Settle every reservation with the measured cost (the estimate, flagged, when it cannot be measured).
 
@@ -666,13 +760,14 @@ class Runner:
         pending: list[tuple[str, CostEntry]] = []
         first_error: Exception | None = None
         for reservation in reservations:
-            measured = _measured(step, reservation.kind, elapsed_s)
+            measured = _measured(step, reservation.kind, elapsed_s, reported)
             entry = CostEntry(
                 run_id=state.run_id,
                 step_key=key,
                 kind=reservation.kind,
                 quantity=reservation.amount if measured is None else measured,
                 estimated=measured is None,
+                mock=state.mock,
                 at=at,
             )
             try:
@@ -709,12 +804,15 @@ class Runner:
         try:
             at = self.clock()
             elapsed_s = max(0.0, (at - started).total_seconds())
+            reported = _reported_by_exception(exc)
             for reservation in reservations:
-                measured = _measured(step, reservation.kind, elapsed_s)
+                measured = _measured(step, reservation.kind, elapsed_s, reported)
                 if measured is None:
                     self._release([reservation], step, key, state.run_id)
                     continue
-                entry = CostEntry(run_id=state.run_id, step_key=key, kind=reservation.kind, quantity=measured, at=at)
+                entry = CostEntry(
+                    run_id=state.run_id, step_key=key, kind=reservation.kind, quantity=measured, mock=state.mock, at=at
+                )
                 try:
                     self.ledger.settle(reservation.id, entry)
                 except Exception:

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import contextlib
 import datetime as dt
+import json
 import logging
 import os
 import threading
@@ -32,6 +33,7 @@ from studio.core.graph import (
     CycleError,
     Graph,
     GraphError,
+    ManifestMismatch,
     Runner,
     RunResult,
     StepOutputError,
@@ -154,6 +156,8 @@ class Env:
         estimated: Mapping[CostKind, float] | None = None,
         gate: GateName | None = None,
         requires: tuple[tuple[GateName, str], ...] = (),
+        mock: bool = False,
+        publishes: bool = False,
     ) -> StepSpec:
         if estimated is None:  # a GPU step must declare its GPU time (Graph refuses it otherwise)
             estimated = {GPU_S: GPU_ESTIMATE} if resource is GPU and gate is None else {}
@@ -167,6 +171,8 @@ class Env:
             estimated_cost=estimated,
             gate=gate,
             requires_approval=requires,
+            mock=mock,
+            publishes=publishes,
         )
 
     def gate(self, name: str, subject: str, gate: GateName) -> StepSpec:
@@ -182,6 +188,7 @@ class Env:
 def decision(
     gate: GateName, subject_key: str, agent: Verdict = Verdict.APPROVE, human: Verdict = Verdict.APPROVE, **kw: Any
 ) -> GateDecision:
+    kw.setdefault("mock", True)  # the runs of these tests are mock runs (Runner.run defaults): so are their decisions
     return GateDecision(gate=gate, subject_key=subject_key, agent_verdict=agent, human_verdict=human, **kw)
 
 
@@ -442,8 +449,10 @@ def test_non_deterministic_step_is_not_rerun_on_replay_thanks_to_the_manifest(en
     assert replay.executed == []
     assert replay.outputs == first.outputs
     assert env.calls["shot"] == 1 and env.calls["grade"] == 1
+    assert env.store.step_output(replay.step_keys["shot"]) == first.outputs["shot"]  # the manifest restored the link
 
     # control: the same situation without the manifest re-samples the shot, which cascades downstream
+    env.store.forget_step_outputs()
     fresh, _ = env.run(graph, run_id="run-2")
     assert fresh.executed == ["shot", "grade"]
     assert fresh.outputs["shot"] != first.outputs["shot"]
@@ -646,7 +655,9 @@ def test_approved_gate_records_its_decision_and_unblocks_downstream(env: Env) ->
 
     assert second.executed == ["g1", "script", "voice"]
     assert second.skipped == ["package", "side"]
-    assert env.store.data(second.outputs["g1"]) == approval.canonical_json().encode()
+    token = env.store.data(second.outputs["g1"])
+    assert json.loads(token) == {"approved": True, "gate": "g1", "subject_key": first.outputs["package"]}
+    assert b"go" not in token and b"decided_at" not in token  # no note, no date: the keys downstream stay reproducible
     assert env.store.get(second.outputs["g1"]).media_type == "application/json"
     assert manifest.locked["g1"] == second.outputs["g1"]
 
@@ -710,7 +721,7 @@ def approving_env(*decisions: GateDecision) -> tuple[Env, DictDecisionSource]:
 
 def test_publication_runs_with_compliance_and_g2_on_the_render_hash() -> None:
     key = render_key(1)
-    env, _ = approving_env(decision(GateName.COMPLIANCE, key, human=Verdict.PENDING), decision(GateName.G2, key))
+    env, _ = approving_env(decision(GateName.COMPLIANCE, key), decision(GateName.G2, key))
 
     result, manifest = env.run(publishing(env, 1))
 
@@ -813,14 +824,26 @@ def test_withdrawn_verdict_stops_the_replay_of_an_approved_publication() -> None
 
 def test_decision_refusal_checks_gate_subject_and_verdict() -> None:
     key = "a" * 64
-    assert decision_refusal(decision(GateName.G2, key), GateName.G2, key) is None
-    assert decision_refusal(decision(GateName.G1, key), GateName.G2, key) is not None
-    assert decision_refusal(decision(GateName.G2, "b" * 64), GateName.G2, key) is not None
-    assert decision_refusal(None, GateName.G2, key) == f"no g2 decision on {key}"
+    assert decision_refusal(decision(GateName.G2, key), GateName.G2, key, mock_run=True) is None
+    assert decision_refusal(decision(GateName.G1, key), GateName.G2, key, mock_run=True) is not None
+    assert decision_refusal(decision(GateName.G2, "b" * 64), GateName.G2, key, mock_run=True) is not None
+    assert decision_refusal(None, GateName.G2, key, mock_run=True) == f"no g2 decision on {key}"
     reason = decision_refusal(
-        decision(GateName.COMPLIANCE, key, agent=Verdict.REJECT, agent_reasons=("claim",)), GateName.COMPLIANCE, key
+        decision(GateName.COMPLIANCE, key, agent=Verdict.REJECT, agent_reasons=("claim",)),
+        GateName.COMPLIANCE,
+        key,
+        mock_run=True,
     )
     assert reason == "compliance rejected (agent reject, human approve): claim"
+
+
+def test_a_decision_applies_only_to_a_run_of_its_own_mode() -> None:
+    key = "a" * 64
+    mock_decision, real_decision = decision(GateName.G2, key), decision(GateName.G2, key, mock=False)
+    assert decision_refusal(mock_decision, GateName.G2, key, mock_run=True) is None
+    assert decision_refusal(real_decision, GateName.G2, key, mock_run=False) is None
+    assert "written by a mock reviewer" in (decision_refusal(mock_decision, GateName.G2, key, mock_run=False) or "")
+    assert "written by a real reviewer" in (decision_refusal(real_decision, GateName.G2, key, mock_run=True) or "")
 
 
 def test_full_demo_flow_waits_at_each_gate_then_publishes() -> None:
@@ -847,7 +870,7 @@ def test_full_demo_flow_waits_at_each_gate_then_publishes() -> None:
     decisions.put(decision(GateName.G1, r1.outputs["package"]))
     r2, m = env.run(graph, manifest=m)
     assert (r2.executed, r2.waiting, r2.blocked) == (["g1", "script", "assemble"], ["compliance", "g2"], ["publish_plan"])
-    decisions.put(decision(GateName.COMPLIANCE, r2.outputs["assemble"], human=Verdict.PENDING))
+    decisions.put(decision(GateName.COMPLIANCE, r2.outputs["assemble"]))
     decisions.put(decision(GateName.G2, r2.outputs["assemble"]))
     r3, m = env.run(graph, manifest=m)
     assert r3.executed == ["compliance", "g2", "publish_plan"]
@@ -1607,3 +1630,186 @@ def test_renew_every_must_be_positive() -> None:
     env = Env()
     with pytest.raises(ValueError, match="renew_every"):
         Runner(env.store, env.ledger, env.decisions, env.clock, "cpu", renew_every=dt.timedelta(0))
+
+
+# ------------------------------------------------------------------ revue critic de la phase 1
+
+
+def gated_publication(env: Env) -> Graph:
+    return Graph(
+        [
+            env.step("render", resource=GPU),
+            env.gate("compliance", "render", GateName.COMPLIANCE),
+            env.gate("g2", "render", GateName.G2),
+            env.step(
+                "publish",
+                ("render", "compliance", "g2"),
+                requires=((GateName.COMPLIANCE, "render"), (GateName.G2, "render")),
+                publishes=True,
+            ),
+        ]
+    )
+
+
+def approve_both(env: Env, render: str) -> None:
+    assert isinstance(env.decisions, DictDecisionSource)
+    env.decisions.put(decision(GateName.COMPLIANCE, render))
+    env.decisions.put(decision(GateName.G2, render))
+
+
+def test_reservations_left_by_a_dead_worker_are_freed_when_a_run_starts() -> None:
+    env = Env()
+    env.ledger.set_cap(Cap(SCOPES[0], GPU_S, 1000.0))
+    dead = env.ledger.reserve(SCOPES, GPU_S, 900.0, dt.timedelta(minutes=1))  # a step that was killed mid-way
+    graph = Graph([env.step("shot", resource=GPU, estimated={GPU_S: 500.0})])
+    with pytest.raises(BudgetExceeded):
+        env.run(graph)  # its lease has not run out: the budget is still held
+    env.clock.advance(120)
+    result, _ = env.run(graph)  # the lease ran out: the run reaps it before reserving
+    assert result.executed == ["shot"]
+    assert env.ledger.reserved(SCOPES[0], GPU_S) == 0 and dead.id
+
+
+def test_a_gate_reads_its_decision_on_every_run_and_a_revoked_approval_stops_the_video() -> None:
+    env = Env()
+    graph = gated_publication(env)
+    first, _ = env.run(graph)
+    approve_both(env, first.outputs["render"])
+    second, manifest = env.run(graph, manifest=None)
+    assert second.executed == ["compliance", "g2", "publish"] and "g2" in manifest.locked
+
+    assert isinstance(env.decisions, DictDecisionSource)
+    env.decisions.put(decision(GateName.G2, first.outputs["render"], human=Verdict.REJECT, human_note="second thoughts"))
+    replay, after = env.run(graph, manifest=manifest)
+    assert replay.waiting == ["g2"] and replay.blocked == ["publish"] and "publish" not in replay.outputs
+    assert "second thoughts" in replay.reasons["g2"]
+    assert "g2" not in after.locked and "publish" not in after.locked  # a revoked gate loses its lock, and the plan with it
+
+
+def test_a_replay_of_an_approved_gate_reuses_it_and_costs_nothing() -> None:
+    env = Env()
+    graph = gated_publication(env)
+    first, _ = env.run(graph)
+    approve_both(env, first.outputs["render"])
+    _, manifest = env.run(graph)
+    replay, _ = env.run(graph, manifest=manifest)
+    assert replay.executed == [] and set(replay.skipped) == {"render", "compliance", "g2", "publish"}
+
+
+def test_the_output_of_a_gate_does_not_depend_on_when_it_was_answered() -> None:
+    def approved_at(hour: int) -> str:
+        env = Env()
+        graph = gated_publication(env)
+        first, _ = env.run(graph)
+        assert isinstance(env.decisions, DictDecisionSource)
+        when = dt.datetime(2026, 9, 29, hour, tzinfo=dt.UTC)
+        env.decisions.put(decision(GateName.COMPLIANCE, first.outputs["render"], decided_at=when, human_note=f"at {hour}h"))
+        env.decisions.put(decision(GateName.G2, first.outputs["render"], decided_at=when))
+        second, _ = env.run(graph)
+        return second.step_keys["publish"]
+
+    assert approved_at(9) == approved_at(17)  # a reproducible run has reproducible keys downstream of its gates
+
+
+def test_a_manifest_edited_to_lock_another_output_is_refused() -> None:
+    env = Env()
+    graph = Graph([env.step("shot", resource=GPU, run=env.rand("shot")), env.step("grade", ("shot",))])
+    first, manifest = env.run(graph)
+    other = env.store.put_bytes(b"another video's render", kind="video", media_type="video/mp4").key
+    assert other != first.outputs["shot"]
+    forged = manifest.model_copy(update={"locked": {**manifest.locked, "shot": other}})
+    with pytest.raises(ManifestMismatch, match="locks step 'shot'"):
+        env.run(graph, manifest=forged)
+
+
+def test_a_graph_that_holds_a_mock_step_cannot_run_as_a_real_run() -> None:
+    env = Env()
+    graph = Graph([env.step("render", resource=GPU, mock=True), env.step("grade", ("render",))])
+    with pytest.raises(ValueError, match=r"\['render'\] use mock adapters"):
+        env.run(graph, dry_run=False, mock=False)
+    result, manifest = env.run(graph, dry_run=False, mock=True)  # declared for what it is: a mock run
+    assert manifest.mock and all(e.mock for e in result.costs)
+
+
+def test_every_cost_entry_carries_the_mode_of_its_run() -> None:
+    env = Env()
+    graph = Graph([env.step("shot", resource=GPU, estimated={GPU_S: 2.0})])
+    mock_result, _ = env.run(graph)
+    real_result, _ = env.run(graph, run_id="run-real", dry_run=False, mock=False)
+    assert mock_result.costs and all(e.mock for e in mock_result.costs)
+    assert real_result.costs and not any(e.mock for e in real_result.costs)
+    assert {e.run_id: e.mock for e in env.ledger.entries()} == {RUN: True, "run-real": False}
+
+
+def llm_step(env: Env, *, reported: object = None, raises: BaseException | None = None) -> StepSpec:
+    def run(inputs: Mapping[str, StoredArtifact], params: Mapping[str, Any]) -> Any:
+        env.calls.hit("ask")
+        if raises is not None:
+            raise raises
+        return (b"answer", "text", "text/plain") if reported is None else (b"answer", "text", "text/plain", reported)
+
+    tokens = {CostKind.CLAUDE_INPUT_TOKENS: 30000.0, CostKind.CLAUDE_OUTPUT_TOKENS: 8000.0}
+    return env.step("ask", resource=LLM, run=run, estimated=tokens)
+
+
+def test_a_step_reports_the_tokens_it_measured_and_they_replace_the_estimate() -> None:
+    env = Env()
+    reported = {CostKind.CLAUDE_INPUT_TOKENS: 1234.0, CostKind.CLAUDE_OUTPUT_TOKENS: 56.0}
+    result, _ = env.run(Graph([llm_step(env, reported=reported)]))
+    by_kind = {e.kind: e for e in result.costs}
+    assert by_kind[CostKind.CLAUDE_INPUT_TOKENS].quantity == 1234.0 and not by_kind[CostKind.CLAUDE_INPUT_TOKENS].estimated
+    assert by_kind[CostKind.CLAUDE_OUTPUT_TOKENS].quantity == 56.0
+    assert by_kind[CostKind.CLAUDE_CALLS].quantity == 1.0 and CostKind.CLAUDE_SECONDS not in by_kind
+
+
+def test_tokens_a_step_did_not_report_stay_flagged_as_estimated() -> None:
+    env = Env()
+    result, _ = env.run(Graph([llm_step(env)]))
+    tokens = [e for e in result.costs if e.kind is CostKind.CLAUDE_INPUT_TOKENS]
+    assert tokens and tokens[0].estimated and tokens[0].quantity == 30000.0
+
+
+def test_malformed_measured_costs_are_refused_after_the_work_was_paid() -> None:
+    env = Env()
+    with pytest.raises(StepOutputError, match="measured costs"):
+        env.run(Graph([llm_step(env, reported={"claude_input_tokens": -5})]))
+    assert env.ledger.entries()  # the call was made: its cost stays in the ledger
+
+
+class Refused(Exception):
+    """A failed Claude call that knows what it consumed."""
+
+    measured_costs = {CostKind.CLAUDE_INPUT_TOKENS: 700.0, CostKind.CLAUDE_OUTPUT_TOKENS: 0.0}
+
+
+def test_a_failed_call_charges_the_tokens_its_exception_reports() -> None:
+    env = Env()
+    with pytest.raises(Refused):
+        env.run(Graph([llm_step(env, raises=Refused())]))
+    spent = {e.kind: e.quantity for e in env.ledger.entries()}
+    assert spent[CostKind.CLAUDE_INPUT_TOKENS] == 700.0 and spent[CostKind.CLAUDE_OUTPUT_TOKENS] == 0.0
+    assert spent[CostKind.CLAUDE_CALLS] == 1.0
+
+
+@pytest.mark.parametrize(
+    "requires",
+    [
+        (),
+        ((GateName.COMPLIANCE, "render"),),
+        ((GateName.G2, "render"),),
+        ((GateName.COMPLIANCE, "render"), (GateName.G2, "other")),  # two different subjects
+    ],
+)
+def test_a_publishing_step_must_require_compliance_and_g2_on_one_subject(requires: tuple[tuple[GateName, str], ...]) -> None:
+    env = Env()
+    steps = [env.step("render", resource=GPU), env.step("other", ("render",))]
+    if requires:
+        steps += [env.gate("compliance", "render", GateName.COMPLIANCE), env.gate("g2", "render", GateName.G2)]
+    inputs = ("render", "other") + (("compliance", "g2") if requires else ())
+    steps.append(env.step("publish", inputs, requires=requires, publishes=True))
+    with pytest.raises(GraphError, match="publishes: it must require the compliance verdict and g2 on the same upstream step"):
+        Graph(steps)
+
+
+def test_a_publishing_step_with_both_approvals_on_the_same_subject_is_accepted() -> None:
+    Graph(gated_publication(Env()).steps)
