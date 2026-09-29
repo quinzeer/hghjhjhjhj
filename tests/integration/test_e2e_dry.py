@@ -32,8 +32,9 @@ from studio.core.db import SchemaMismatch, make_engine
 from studio.core.decisions import SqlDecisionStore
 from studio.core.graph import ManifestMismatch
 from studio.core.interfaces import BudgetExceeded, Cap, StudioError
-from studio.domain import CostKind, GateDecision, GateName, RunManifest, SceneRole, Verdict, VideoFormat
+from studio.domain import CostKind, GateDecision, GateName, RunManifest, SceneRole, Verdict, VideoFormat, canonical_json
 from studio.media import qa
+from studio.pipeline import steps as steps_module
 from studio.pipeline.driver import DryRunConfig, GateRejected, GateWaiting, RunPaused, StateBusy, run_dry
 from studio.pipeline.mock_agents import MockStudioLLM, build_idea, build_package, build_script_doc
 from studio.scenario.skill_json import from_skill_json
@@ -392,6 +393,44 @@ def test_a_script_turned_unpublishable_after_the_approvals_needs_a_new_verdict_a
     assert new is not None and new.rejected and new.mock
 
 
+def test_an_output_cached_under_another_contract_is_recomputed_at_the_price_of_claude_calls_and_no_gpu(
+    small_run: Run, tmp_path: Path
+) -> None:
+    """Critic R1: the candidate cached by the previous version was served again, with its approvals. A contract is a
+    parameter of the step that writes under it, so a changed contract recomputes that step and the manifest's lock does
+    not hold it back; the render, which no contract touches, is not recomputed."""
+    where = clone(small_run, tmp_path)  # its manifest locks every output, the candidate included
+    with pytest.MonkeyPatch.context() as mp:
+        mp.setattr(steps_module, "contract_fingerprint", lambda *schemas: "f" * 64)  # the contracts are other ones
+        again = run_dry(where.config)
+    assert {"idea", "package", "script", "qa", "candidate"} <= set(again["executed"])
+    assert not [s for s in again["executed"] if s.startswith(("shot_", "voice_", "music", "mix", "assemble"))]
+    assert again["costs"]["gpu_seconds"] == small_run.report["costs"]["gpu_seconds"]  # no GPU second was paid again
+    assert again["costs"]["claude_calls"] == small_run.report["costs"]["claude_calls"] + 3  # three agents asked again
+    assert again["render_key"] == small_run.report["render_key"] and again["waiting"] == []
+
+
+def test_a_candidate_of_an_older_contract_that_reaches_the_gates_is_reported_in_words_and_publishes_nothing(
+    small_run: Run, tmp_path: Path
+) -> None:
+    """Critic R1, second line of defence: had a stale candidate been served, the run stops in words, not with a trace."""
+    where = clone(small_run, tmp_path)
+    store = where.store()
+    current = json.loads(store.get(where.report["candidate_key"]).path.read_text(encoding="utf-8"))
+    del current["script_key"], current["qa_key"]  # the candidate as the previous version wrote it
+    stale = store.put_bytes(canonical_json(current).encode(), kind="json", media_type="application/json").key
+    manifest = where.manifest()
+    with sqlite3.connect(where.database) as conn:
+        conn.execute("update step_outputs set artifact_key = ? where step_key = ?", (stale, manifest["step_keys"]["candidate"]))
+    manifest["locked"]["candidate"] = stale
+    (where.folder / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+
+    with pytest.raises(StudioError, match=r"does not match the PublicationCandidate contract.*script_key"):
+        run_dry(where.config)
+    assert not (where.folder / "report.json").exists()
+    assert where.decisions().get(GateName.G2, stale) is None  # nobody was asked, nothing was approved
+
+
 def test_a_candidate_edited_in_place_is_recomputed_and_never_replayed_as_it_stands(small_run: Run, tmp_path: Path) -> None:
     """Critic I-3: a small object is re-hashed on every read; one that no longer matches its key is dropped."""
     where = clone(small_run, tmp_path)
@@ -449,6 +488,19 @@ def test_a_render_rotted_in_place_is_dropped_by_the_read_and_recomputed_never_de
     assert healed["render_key"] == key and "assemble" in healed["executed"] and healed["waiting"] == []
     assert hashlib.sha256((where.folder / "render.mp4").read_bytes()).hexdigest() == key  # the delivered bytes are the right ones
     assert hashlib.sha256(stored.read_bytes()).hexdigest() == key  # and so are the stored ones
+
+
+def test_the_token_of_a_gate_altered_in_place_is_rewritten_by_the_replay(small_run: Run, tmp_path: Path) -> None:
+    """Critic R5: nothing reads the token a gate outputs, so only the put of the replay can put the right bytes back."""
+    where = clone(small_run, tmp_path)
+    key = where.manifest()["locked"]["compliance"]
+    path = where.store().get(key).path
+    raw = path.read_bytes()
+    path.write_bytes(raw.replace(b'"approved":true', b'"approved":fals'))  # same size, another meaning
+    assert hashlib.sha256(path.read_bytes()).hexdigest() != key
+    again = run_dry(where.config)
+    assert again["waiting"] == [] and again["render_key"] == small_run.report["render_key"]
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == key  # the replay wrote the token again
 
 
 def test_a_manifest_edited_to_lock_another_render_is_refused(small_run: Run, tmp_path: Path) -> None:

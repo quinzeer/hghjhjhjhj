@@ -19,23 +19,29 @@ from studio.domain import (
     AdapterStatus,
     CostKind,
     GateName,
+    Idea,
+    Package,
     Platform,
     Publication,
     PublicationCandidate,
+    Render,
     ResourceClass,
     SceneRole,
     Script,
     ShotTechnique,
+    StudioModel,
     VideoFormat,
     canonical_json,
 )
 from studio.pipeline import steps as steps_module
 from studio.pipeline.mock_agents import MockStudioLLM, build_idea, build_package, build_script_doc
 from studio.pipeline.steps import (
+    CANDIDATE_VERSION,
     FORMATS,
     MAX_SHOT_ATTEMPTS,
     Production,
     ShotRejected,
+    contract_fingerprint,
     front_steps,
     line_step_name,
     production_steps,
@@ -152,7 +158,11 @@ def test_publication_needs_the_compliance_verdict_and_g2_on_the_exact_candidate(
     assert s["compliance"].gate is GateName.COMPLIANCE and s["g2"].gate is GateName.G2
     assert s["compliance"].inputs == ("candidate",) == s["g2"].inputs  # both judge what will be published, not the render alone
     assert s["candidate"].inputs == ("script", "assemble", "qa")
-    assert s["candidate"].params == {"run_id": p.run_id, "channel_id": p.channel.id}  # a candidate belongs to one video
+    assert s["candidate"].params == {  # a candidate belongs to one video, and is written under one contract
+        "run_id": p.run_id,
+        "channel_id": p.channel.id,
+        "contract": contract_fingerprint(PublicationCandidate.model_json_schema()),
+    }
 
 
 class RealLookingAdapter:
@@ -177,6 +187,37 @@ def test_a_shot_is_a_mock_as_soon_as_its_maker_or_its_critic_is() -> None:
     assert not real_critic.shot_uses_mock(ShotTechnique.GEN_VIDEO) and not real_critic.shot_uses_mock(ShotTechnique.IMAGE_25D)
     assert real_critic.shot_uses_mock(ShotTechnique.BLENDER)  # the procedural renderer is still a stand-in
     assert real_critic.is_mock  # ... and so are the voice, the music and the writers
+
+
+@pytest.mark.media
+def test_a_step_whose_output_is_a_contract_carries_the_fingerprint_of_that_contract(media_tools: None) -> None:
+    """Critic R1: an output cached under an older contract must not be served again, so the contract is a parameter."""
+    p = production()
+    s = by_name(front_steps(p) + production_steps(p, script_of()))
+    expected = {
+        "idea": (Idea.model_json_schema(),),
+        "package": (Package.model_json_schema(),),
+        "qa": (Render.model_json_schema(),),
+        "candidate": (PublicationCandidate.model_json_schema(),),
+    }
+    for name, schemas in expected.items():
+        assert s[name].params["contract"] == contract_fingerprint(*schemas), name
+    assert len(s["script"].params["contract"]) == 64
+    assert s["candidate"].version == s["publish_plan"].version == CANDIDATE_VERSION == "2"
+
+
+def test_the_contract_fingerprint_follows_the_schemas_it_is_given() -> None:
+    class Before(StudioModel):
+        x: int
+
+    class After(StudioModel):
+        x: int
+        y: int = 0
+
+    before, after = Before.model_json_schema(), After.model_json_schema()
+    assert contract_fingerprint(before) == contract_fingerprint(dict(before)) and len(contract_fingerprint(before)) == 64
+    assert contract_fingerprint(before) != contract_fingerprint(after)  # a field added: another contract, another key
+    assert contract_fingerprint(before, after) != contract_fingerprint(after, before)
 
 
 @pytest.mark.media

@@ -69,6 +69,7 @@ from studio.pipeline.mock_agents import MockProceduralRenderer, MockStudioLLM, c
 from studio.scenario.skill_json import from_skill_json
 
 STEP_VERSION = "1"
+CANDIDATE_VERSION = "2"  # 2: the candidate names the script and the QA report the judges read (critic B3)
 DRAFT_DIVISOR = 4  # drafts render at a quarter of the final definition (MISSION §6.5)
 MAX_SHOT_ATTEMPTS = 2  # bounded regeneration after a blocking critique
 LLM_SECONDS_ESTIMATE = 120.0
@@ -266,9 +267,20 @@ def _model_out_with_usage(model: StudioModel, result: LLMResult) -> tuple[bytes,
     return data, kind, media_type, usage_costs(result.usage)
 
 
-def _agent_params(p: Production, agent: str) -> dict[str, Any]:
-    """What besides its inputs an agent step's output depends on: the agent, the backend and the brief."""
-    return {"agent": agent, "backend": p.llm.spec.id, "brief": _brief(p)}
+def contract_fingerprint(*schemas: Mapping[str, Any]) -> str:
+    """SHA-256 of the JSON Schemas a step's output is written under.
+
+    It is a parameter of the step, like `media_fingerprint()` for a render: a step whose output contract changes gets
+    another key, so an output cached under the old contract is not served again, and an approval given to one candidate
+    does not open the gates of another. The manifest keeps an in-flight video across a change of a step's *version*,
+    never across a change of its parameters (critic R1: a candidate cached by the previous version was served again,
+    with its approvals)."""
+    return bytes_key(canonical_json(list(schemas)).encode("utf-8"))
+
+
+def _agent_params(p: Production, agent: str, *schemas: Mapping[str, Any]) -> dict[str, Any]:
+    """What besides its inputs an agent step's output depends on: the agent, the backend, the brief and the contracts."""
+    return {"agent": agent, "backend": p.llm.spec.id, "brief": _brief(p), "contract": contract_fingerprint(*schemas)}
 
 
 def line_step_name(index: int) -> str:
@@ -333,7 +345,7 @@ def front_steps(p: Production) -> list[StepSpec]:
             "idea",
             STEP_VERSION,
             (),
-            _agent_params(p, "strategist"),
+            _agent_params(p, "strategist", Idea.model_json_schema()),
             ResourceClass.LLM,
             idea_run,
             estimated_cost=llm_cost,
@@ -343,7 +355,7 @@ def front_steps(p: Production) -> list[StepSpec]:
             "package",
             STEP_VERSION,
             ("idea",),
-            _agent_params(p, "packaging_director"),
+            _agent_params(p, "packaging_director", Package.model_json_schema()),
             ResourceClass.LLM,
             package_run,
             estimated_cost=llm_cost,
@@ -354,7 +366,7 @@ def front_steps(p: Production) -> list[StepSpec]:
             "script",
             STEP_VERSION,
             ("idea", "package", "g1"),
-            _agent_params(p, "head_writer"),
+            _agent_params(p, "head_writer", _SCRIPT_SCHEMA, Script.model_json_schema()),
             ResourceClass.LLM,
             script_run,
             estimated_cost=llm_cost,
@@ -617,12 +629,23 @@ def production_steps(p: Production, script: Script) -> list[StepSpec]:
             ResourceClass.CPU,
             assemble_run,
         ),
-        StepSpec("qa", STEP_VERSION, ("assemble", "timeline"), {"media": media}, ResourceClass.CPU, qa_run),
+        StepSpec(
+            "qa",
+            STEP_VERSION,
+            ("assemble", "timeline"),
+            {"media": media, "contract": contract_fingerprint(Render.model_json_schema())},
+            ResourceClass.CPU,
+            qa_run,
+        ),
         StepSpec(
             "candidate",
-            STEP_VERSION,
+            CANDIDATE_VERSION,
             ("script", "assemble", "qa"),
-            {"run_id": p.run_id, "channel_id": p.channel.id},
+            {
+                "run_id": p.run_id,
+                "channel_id": p.channel.id,
+                "contract": contract_fingerprint(PublicationCandidate.model_json_schema()),
+            },
             ResourceClass.CPU,
             candidate_run,
             candidate=True,
@@ -632,7 +655,7 @@ def production_steps(p: Production, script: Script) -> list[StepSpec]:
         StepSpec("g2", STEP_VERSION, ("candidate",), {}, ResourceClass.HUMAN, _never, gate=GateName.G2),
         StepSpec(
             "publish_plan",
-            STEP_VERSION,
+            CANDIDATE_VERSION,
             ("candidate", "script", "assemble", "qa", "compliance", "g2"),
             {},
             ResourceClass.CPU,

@@ -289,6 +289,27 @@ def test_a_small_object_that_rotted_in_place_reads_as_missing_and_put_repairs_it
     assert store.put_bytes(data, kind="text", media_type="text/plain") == good and good.path.read_bytes() == data
 
 
+def test_putting_the_right_bytes_again_repairs_a_small_object_corrupted_in_place(store: LocalArtifactStore) -> None:
+    """Critic R5: a file of the right size and the wrong content is not 'present', even if nobody read it meanwhile."""
+    data = b"gate token"
+    good = store.put_bytes(data, kind="json", media_type="application/json")
+    good.path.write_bytes(b"gate tokeX")  # same size, other bytes, and no read in between
+    again = store.put_bytes(data, kind="json", media_type="application/json")
+    assert again == good and good.path.read_bytes() == data
+    assert store.get(good.key).path.read_bytes() == data
+
+
+def test_a_put_does_not_re_hash_a_big_object_it_already_holds(tmp_path: Path, engine: Engine) -> None:
+    """The cost of the check is bounded by the same limit as a read: a big object is verified by `verify`, not by a put."""
+    store = LocalArtifactStore(tmp_path / "s", engine, verify_reads_up_to=4)
+    store.create_schema()
+    big = store.put_bytes(b"0123456789", kind="text", media_type="text/plain")  # bigger than the limit
+    big.path.write_bytes(b"XXXXXXXXXX")
+    store.put_bytes(b"0123456789", kind="text", media_type="text/plain")
+    assert big.path.read_bytes() == b"XXXXXXXXXX"  # left alone
+    assert not store.verify(big.key)  # ... and caught where it matters
+
+
 def test_a_big_object_is_not_re_hashed_on_every_read_but_verify_still_catches_it(tmp_path: Path, engine: Engine) -> None:
     small_limit = LocalArtifactStore(tmp_path / "s", engine, verify_reads_up_to=4)
     small_limit.create_schema()

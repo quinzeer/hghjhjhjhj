@@ -26,6 +26,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Protocol
 
+from pydantic import ValidationError
+
 from studio.adapters.llm_base import LLMRunner, QuotaExhausted
 from studio.core.artifacts import LocalArtifactStore
 from studio.core.costs import SqlCostLedger
@@ -336,6 +338,17 @@ def _load_manifest(path: Path, run_id: str) -> RunManifest | None:
     return manifest
 
 
+def _contract_message(exc: ValidationError, state: Path) -> str:
+    """A document that does not fit the contract it is read under, in words (never the raw trace, never its content)."""
+    first = exc.errors(include_input=False, include_url=False)[0]
+    where = ".".join(str(part) for part in first["loc"]) or "(root)"
+    return (
+        f"a document does not match the {exc.title} contract of this version of the studio "
+        f"({exc.error_count()} error(s); first: {where}: {first['msg']}). A state written by another version of the "
+        f"studio can cause this: the dry-run state under {state} can be removed, or use another --out folder"
+    )
+
+
 def run_dry(config: DryRunConfig, *, clock: Callable[[], dt.datetime] | None = None) -> dict[str, Any]:
     """Run one video through mock adapters and return its report (also written to `report.json`)."""
     clock = clock or (lambda: dt.datetime.now(dt.UTC))
@@ -343,7 +356,10 @@ def run_dry(config: DryRunConfig, *, clock: Callable[[], dt.datetime] | None = N
     state = out_dir / "state"
     folder = out_dir / config.channel.id / config.format.value
     with _owning(state):
-        return _run_owned(config, out_dir, state, folder, clock)
+        try:
+            return _run_owned(config, out_dir, state, folder, clock)
+        except ValidationError as exc:
+            raise StudioError(_contract_message(exc, state)) from exc
 
 
 def _run_owned(

@@ -224,7 +224,9 @@ class LocalArtifactStore:
 
     def _store(self, key: str, size: int, kind: str, media_type: str, fill: Callable[[BinaryIO], None]) -> StoredArtifact:
         path = self.path_for(key)
-        if not _present(path, size):
+        # A file of the right size that hashes to something else (rotted or edited in place) is not "present": a small
+        # object is checked here, so that putting the right bytes again repairs it (big objects: `verify`).
+        if not _present(path, size) or (size <= self._verify_reads_up_to and not self._file_intact(path, key)):
             _write_atomic(path, fill)
         with self.engine.begin() as conn:
             stmt = dialect_insert(conn, artifacts).values(
@@ -360,18 +362,24 @@ class LocalArtifactStore:
             return False
 
     def _intact(self, stored: StoredArtifact) -> bool:
+        return self._file_intact(stored.path, stored.key)
+
+    @staticmethod
+    def _file_intact(path: Path, key: str) -> bool:
+        """True when the file hashes to `key`; a file that does not is removed (unless a good copy replaced it meanwhile),
+        so that it reads as missing. The store hashes through the handle it opened, to know which inode it judged."""
         try:
-            with stored.path.open("rb") as fh:
+            with path.open("rb") as fh:
                 digest = hashlib.file_digest(fh, "sha256").hexdigest()
                 inode = os.fstat(fh.fileno()).st_ino
         except FileNotFoundError:
             return False
-        if digest == stored.key:
+        if digest == key:
             return True
-        log.warning("artifact %s is corrupt on disk (content hashes to %s): file removed", stored.key, digest)
+        log.warning("artifact %s is corrupt on disk (content hashes to %s): file removed", key, digest)
         with contextlib.suppress(FileNotFoundError):
-            if stored.path.stat().st_ino == inode:  # not a good copy written in the meantime
-                stored.path.unlink()
+            if path.stat().st_ino == inode:  # not a good copy written in the meantime
+                path.unlink()
         return False
 
     def step_output(self, step_key: str) -> str | None:
