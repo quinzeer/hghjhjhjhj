@@ -21,7 +21,7 @@
     }
   },
   "additionalProperties": false,
-  "description": "A gate validates one exact artifact (ADR-001 decision 8): a new hash needs a new decision.",
+  "description": "A gate validates one exact artifact (ADR-001 decision 8): a new hash needs a new decision.\n\n`mock` marks a decision written by a mock reviewer in a dry run. It applies to mock runs only, and a real\nrun never accepts one (see `studio.core.graph.decision_refusal`).",
   "properties": {
     "agent_reasons": {
       "default": [],
@@ -58,6 +58,11 @@
     "human_verdict": {
       "$ref": "#/$defs/Verdict",
       "default": "pending"
+    },
+    "mock": {
+      "default": false,
+      "title": "Mock",
+      "type": "boolean"
     },
     "subject_key": {
       "pattern": "^[0-9a-f]{64}$",

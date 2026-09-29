@@ -11,10 +11,16 @@ from studio.core.hashing import bytes_key, step_key
 from studio.domain import (
     AIDisclosure,
     ControlBlock,
+    CostEntry,
+    CostKind,
     GateDecision,
     GateName,
     IdeaScore,
     Package,
+    Platform,
+    Privacy,
+    Publication,
+    PublicationCandidate,
     Scene,
     SceneLoops,
     SceneRole,
@@ -118,7 +124,10 @@ def test_package_rules() -> None:
         (GateName.G2, Verdict.APPROVE, Verdict.APPROVE, True),
         (GateName.G2, Verdict.APPROVE, Verdict.PENDING, False),
         (GateName.G2, Verdict.REJECT, Verdict.APPROVE, False),
-        (GateName.COMPLIANCE, Verdict.APPROVE, Verdict.PENDING, True),
+        # MISSION §11: the compliance gate records the agent's decision AND the human's, and is never automated
+        (GateName.COMPLIANCE, Verdict.APPROVE, Verdict.APPROVE, True),
+        (GateName.COMPLIANCE, Verdict.APPROVE, Verdict.PENDING, False),  # the agent alone does not approve
+        (GateName.COMPLIANCE, Verdict.PENDING, Verdict.APPROVE, False),  # nor does the human without the agent
         (GateName.COMPLIANCE, Verdict.REJECT, Verdict.APPROVE, False),  # a human cannot lift a compliance block
         (GateName.COMPLIANCE, Verdict.APPROVE, Verdict.REJECT, False),
     ],
@@ -126,6 +135,43 @@ def test_package_rules() -> None:
 def test_gate_semantics(gate: GateName, agent: Verdict, human: Verdict, approved: bool) -> None:
     d = GateDecision(gate=gate, subject_key=H, agent_verdict=agent, human_verdict=human, decided_at=dt.datetime(2026, 9, 28))
     assert d.approved is approved
+
+
+def test_a_decision_is_real_unless_a_mock_reviewer_wrote_it() -> None:
+    real = GateDecision(gate=GateName.G1, subject_key=H, agent_verdict=Verdict.APPROVE, human_verdict=Verdict.APPROVE)
+    assert real.mock is False
+    assert real.model_copy(update={"mock": True}).content_hash() != real.content_hash()
+
+
+def test_a_cost_entry_is_real_unless_it_measures_a_mock() -> None:
+    kwargs: dict[str, object] = dict(run_id="r", step_key=H, kind=CostKind.GPU_SECONDS, quantity=3.0, at=dt.datetime(2026, 9, 29))
+    assert CostEntry(**kwargs).mock is False  # type: ignore[arg-type]
+    assert CostEntry(**kwargs, mock=True).mock is True  # type: ignore[arg-type]
+
+
+def test_a_publication_candidate_changes_hash_with_anything_the_platform_will_show() -> None:
+    def candidate(**changes: object) -> PublicationCandidate:
+        publication = Publication(
+            platform=Platform.YOUTUBE, render_key=H, title="A title", description="text", contains_synthetic_media=True
+        ).model_copy(update={k: v for k, v in changes.items() if k in Publication.model_fields})
+        return PublicationCandidate(
+            run_id=str(changes.get("run_id", "run-1")),
+            channel_id=str(changes.get("channel_id", "channel-a")),
+            publication=publication,
+        )
+
+    base = candidate().content_hash()
+    assert candidate().content_hash() == base
+    for change in (
+        {"title": "Another title"},
+        {"description": "other text"},
+        {"contains_synthetic_media": False},
+        {"render_key": "b" * 64},
+        {"privacy": Privacy.PUBLIC},
+        {"run_id": "run-2"},
+        {"channel_id": "channel-b"},
+    ):
+        assert candidate(**change).content_hash() != base, change
 
 
 def test_content_hash_is_stable_and_sensitive() -> None:

@@ -259,6 +259,19 @@ class Publication(StudioModel):
     external_id: str | None = None
 
 
+class PublicationCandidate(StudioModel):
+    """What the publication gates judge: this exact publication of this exact video (ADR-001 decision 8).
+
+    The compliance verdict and G2 are bound to the hash of this object. It carries the render's key, every
+    field the platform will show (title, description, privacy, disclosure flags, localisations), the channel
+    and the run: a changed title, a switched-off disclosure, another render or another video is another hash,
+    hence a new decision."""
+
+    run_id: str = Field(min_length=1)
+    channel_id: Slug
+    publication: Publication
+
+
 class Metric(StudioModel):
     publication_external_id: str = Field(min_length=1)
     name: str = Field(pattern=r"^[a-z][a-z0-9_]*$")
@@ -279,11 +292,16 @@ class Experiment(StudioModel):
 
 
 class CostEntry(StudioModel):
+    """One line of the cost ledger. `estimated` says the quantity was not measured; `mock` says a mock adapter
+    produced the work, so the quantity measures a stand-in (CPU seconds for a GPU step, a scripted answer for a
+    Claude call) and must never be added to real spending."""
+
     run_id: str = Field(min_length=1)
     step_key: Sha256
     kind: CostKind
     quantity: float = Field(ge=0)
     estimated: bool = False
+    mock: bool = False
     at: dt.datetime
 
 
@@ -291,7 +309,10 @@ class CostEntry(StudioModel):
 
 
 class GateDecision(StudioModel):
-    """A gate validates one exact artifact (ADR-001 decision 8): a new hash needs a new decision."""
+    """A gate validates one exact artifact (ADR-001 decision 8): a new hash needs a new decision.
+
+    `mock` marks a decision written by a mock reviewer in a dry run. It applies to mock runs only, and a real
+    run never accepts one (see `studio.core.graph.decision_refusal`)."""
 
     gate: GateName
     subject_key: Sha256
@@ -300,12 +321,14 @@ class GateDecision(StudioModel):
     agent_reasons: tuple[str, ...] = ()
     human_note: str = ""
     decided_at: dt.datetime | None = None
+    mock: bool = False
 
     @property
     def approved(self) -> bool:
         if self.gate is GateName.COMPLIANCE:
-            # the compliance verdict is the agent's, and a human cannot override a block (MISSION §7, §11)
-            return self.agent_verdict is Verdict.APPROVE and self.human_verdict is not Verdict.REJECT
+            # MISSION §11: every gate records the agent's decision AND the human's, and the compliance gate is
+            # never automated. It needs both to approve, and either one blocks; a human cannot lift the agent's block.
+            return self.agent_verdict is Verdict.APPROVE and self.human_verdict is Verdict.APPROVE
         return self.agent_verdict is not Verdict.REJECT and self.human_verdict is Verdict.APPROVE
 
 

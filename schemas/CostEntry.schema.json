@@ -16,6 +16,7 @@
     }
   },
   "additionalProperties": false,
+  "description": "One line of the cost ledger. `estimated` says the quantity was not measured; `mock` says a mock adapter\nproduced the work, so the quantity measures a stand-in (CPU seconds for a GPU step, a scripted answer for a\nClaude call) and must never be added to real spending.",
   "properties": {
     "at": {
       "format": "date-time",
@@ -29,6 +30,11 @@
     },
     "kind": {
       "$ref": "#/$defs/CostKind"
+    },
+    "mock": {
+      "default": false,
+      "title": "Mock",
+      "type": "boolean"
     },
     "quantity": {
       "minimum": 0,
