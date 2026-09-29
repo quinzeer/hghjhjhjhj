@@ -63,6 +63,7 @@ log = logging.getLogger(__name__)
 KINDS = frozenset({"image", "video", "audio", "subtitle", "json", "text"})
 _KEY_RE = re.compile(r"^[0-9a-f]{64}$")
 _CHUNK = 1 << 20
+VERIFY_READS_UP_TO = 4 << 20  # bytes: objects up to 4 MiB are re-hashed on every read
 _BATCH = 500
 _COMMIT_ATTEMPTS = 5
 
@@ -167,11 +168,22 @@ class LocalArtifactStore:
     kind and media type it was first stored with. `clock` (aware UTC) stamps `created_at`, the time of the
     latest put, from which retention counts."""
 
-    def __init__(self, root: Path, engine: Engine, *, clock: Callable[[], dt.datetime] = _utcnow) -> None:
+    def __init__(
+        self,
+        root: Path,
+        engine: Engine,
+        *,
+        clock: Callable[[], dt.datetime] = _utcnow,
+        verify_reads_up_to: int = VERIFY_READS_UP_TO,
+    ) -> None:
+        """`verify_reads_up_to`: a read of an object this small (bytes) re-hashes it, so a small artifact (a script, a
+        decision, a publication candidate) that rotted on disk reads as missing and is recomputed; bigger objects
+        (renders) are verified where it matters (`verify`, delivery, publication). 0 turns the check off."""
         self.root = Path(root)
         self.cas = self.root / "cas"
         self.engine = engine
         self._clock = clock
+        self._verify_reads_up_to = verify_reads_up_to
 
     def create_schema(self) -> None:
         """Create the directory and the index tables if they do not exist (idempotent, concurrency-safe)."""
@@ -314,6 +326,13 @@ class LocalArtifactStore:
     # ------------------------------------------------------------------ reads
 
     def get(self, key: str) -> StoredArtifact:
+        stored = self._get_indexed(key)
+        if stored.size_bytes <= self._verify_reads_up_to and not self._intact(stored):
+            raise ArtifactMissing(f"{key}: its content no longer matches its key (file removed: it will be recomputed)")
+        return stored
+
+    def _get_indexed(self, key: str) -> StoredArtifact:
+        """The indexed artifact whose file is on disk with the indexed size (its bytes are not read)."""
         if not _KEY_RE.fullmatch(key):
             raise ArtifactMissing(f"{key!r}: not an artifact key")
         with self.engine.connect() as conn:
@@ -333,18 +352,23 @@ class LocalArtifactStore:
         return True
 
     def verify(self, key: str) -> bool:
-        """Re-hash the stored file: True when it matches its key. A corrupt file is deleted, so that it reads
-        as missing and the next put of the right bytes rewrites it; False then, and when it is missing."""
+        """Re-hash the stored file, whatever its size: True when it matches its key. A corrupt file is deleted, so
+        that it reads as missing and the next put of the right bytes rewrites it; False then, and when it is missing."""
         try:
-            stored = self.get(key)
+            return self._intact(self._get_indexed(key))
+        except (ArtifactMissing, FileNotFoundError):
+            return False
+
+    def _intact(self, stored: StoredArtifact) -> bool:
+        try:
             with stored.path.open("rb") as fh:
                 digest = hashlib.file_digest(fh, "sha256").hexdigest()
                 inode = os.fstat(fh.fileno()).st_ino
-        except (ArtifactMissing, FileNotFoundError):
+        except FileNotFoundError:
             return False
-        if digest == key:
+        if digest == stored.key:
             return True
-        log.warning("artifact %s is corrupt on disk (content hashes to %s): file removed", key, digest)
+        log.warning("artifact %s is corrupt on disk (content hashes to %s): file removed", stored.key, digest)
         with contextlib.suppress(FileNotFoundError):
             if stored.path.stat().st_ino == inode:  # not a good copy written in the meantime
                 stored.path.unlink()

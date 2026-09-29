@@ -39,6 +39,8 @@ from studio.scenario.skill_json import from_skill_json
 
 NOON = dt.datetime(2026, 9, 29, 12, 0, tzinfo=dt.UTC)
 RENDER = "c" * 64
+SCRIPT_KEY = "a" * 64
+QA_KEY = "b" * 64
 
 
 def brief(channel: str = "channel-a", fmt: VideoFormat = VideoFormat.SHORT) -> dict[str, Any]:
@@ -190,7 +192,13 @@ def candidate_for(script: Script, render_key: str = RENDER, **changes: object) -
         contains_synthetic_media=script.disclosure.required,
     )
     fields.update(changes)
-    return PublicationCandidate(run_id="run-1", channel_id="channel-a", publication=Publication(**fields))  # type: ignore[arg-type]
+    return PublicationCandidate(
+        run_id="run-1",
+        channel_id="channel-a",
+        script_key=SCRIPT_KEY,
+        qa_key=QA_KEY,
+        publication=Publication(**fields),  # type: ignore[arg-type]
+    )
 
 
 def qa_report(render_key: str = RENDER, defects: list[str] | None = None) -> dict[str, Any]:

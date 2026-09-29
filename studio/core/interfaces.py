@@ -256,6 +256,9 @@ class StepSpec:
     # it requires both the compliance verdict and G2 on one and the same upstream step: nobody can add a
     # publishing step and forget the gates (ADR-001 decision 8).
     publishes: bool = False
+    # The step's output is a publication candidate: everything the publication gates judge (a `PublicationCandidate`).
+    # A publishing step must take its two approvals on such a step, never on a bare render.
+    candidate: bool = False
 
 
 @runtime_checkable

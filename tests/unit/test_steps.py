@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 import hashlib
 import re
 from pathlib import Path
@@ -15,6 +16,7 @@ from studio.adapters.mock import MockVisionCritic
 from studio.core.graph import Graph
 from studio.core.interfaces import StepSpec, StoredArtifact, StudioError
 from studio.domain import (
+    AdapterStatus,
     CostKind,
     GateName,
     Platform,
@@ -23,6 +25,7 @@ from studio.domain import (
     ResourceClass,
     SceneRole,
     Script,
+    ShotTechnique,
     VideoFormat,
     canonical_json,
 )
@@ -144,11 +147,36 @@ def test_publication_needs_the_compliance_verdict_and_g2_on_the_exact_candidate(
     publish = s["publish_plan"]
     assert publish.requires_approval == ((GateName.COMPLIANCE, "candidate"), (GateName.G2, "candidate"))
     assert publish.publishes  # the graph itself refuses a publishing step without both approvals on one subject
-    assert {"candidate", "compliance", "g2", "assemble", "qa"} <= set(publish.inputs)
+    assert {"candidate", "compliance", "g2", "script", "assemble", "qa"} <= set(publish.inputs)
+    assert s["candidate"].candidate and not publish.candidate  # the approvals bear on the step that carries what they read
     assert s["compliance"].gate is GateName.COMPLIANCE and s["g2"].gate is GateName.G2
     assert s["compliance"].inputs == ("candidate",) == s["g2"].inputs  # both judge what will be published, not the render alone
     assert s["candidate"].inputs == ("script", "assemble", "qa")
     assert s["candidate"].params == {"run_id": p.run_id, "channel_id": p.channel.id}  # a candidate belongs to one video
+
+
+class RealLookingAdapter:
+    """Any adapter that declares itself real (no `mock` in its id, a measured status)."""
+
+    def __init__(self, inner: Any) -> None:
+        self.inner = inner
+        self.spec = dataclasses.replace(inner.spec, id=inner.spec.id.replace("mock-", "wan-"), status=AdapterStatus.RETAINED)
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self.inner, name)
+
+
+def test_a_shot_is_a_mock_as_soon_as_its_maker_or_its_critic_is() -> None:
+    """Critic N9: real image and video makers judged by a mock critic still make a plan that no real run may contain."""
+    p = production(roles=SHORT_ROLES)
+    real = dataclasses.replace(p, t2i=RealLookingAdapter(p.t2i), i2v=RealLookingAdapter(p.i2v), t2v=RealLookingAdapter(p.t2v))
+    assert not real.t2i.spec.is_mock and real.critic.spec.is_mock
+    for technique in (ShotTechnique.GEN_VIDEO, ShotTechnique.IMAGE_25D):
+        assert real.shot_uses_mock(technique)  # the critic is a mock
+    real_critic = dataclasses.replace(real, critic=RealLookingAdapter(p.critic))
+    assert not real_critic.shot_uses_mock(ShotTechnique.GEN_VIDEO) and not real_critic.shot_uses_mock(ShotTechnique.IMAGE_25D)
+    assert real_critic.shot_uses_mock(ShotTechnique.BLENDER)  # the procedural renderer is still a stand-in
+    assert real_critic.is_mock  # ... and so are the voice, the music and the writers
 
 
 @pytest.mark.media
@@ -266,8 +294,15 @@ class Publishing:
         assert kind == "json"
         return artifact(self.tmp_path, "candidate.json", data)
 
-    def publish(self, candidate: StoredArtifact | None = None) -> tuple[bytes, str, str]:
-        inputs = {"candidate": candidate or self.candidate(), "assemble": self.render, "qa": self.qa}
+    def publish(
+        self, candidate: StoredArtifact | None = None, *, script: StoredArtifact | None = None, qa: StoredArtifact | None = None
+    ) -> tuple[bytes, str, str]:
+        inputs = {
+            "candidate": candidate or self.candidate(),
+            "script": script or self.script_artifact,
+            "assemble": self.render,
+            "qa": qa or self.qa,
+        }
         return self.publish_step.run(inputs, {})[:3]  # type: ignore[return-value]
 
 
@@ -283,6 +318,7 @@ def test_the_candidate_holds_everything_the_platform_will_show_bound_to_the_rend
     assert publication.contains_synthetic_media is fixture.script.disclosure.required
     assert publication.privacy.value == "private" and publication.platform is Platform.YOUTUBE
     assert publication.description.startswith(fixture.script.promise)
+    assert (candidate.script_key, candidate.qa_key) == (fixture.script_artifact.key, fixture.qa.key)  # what the judges read
 
 
 @pytest.mark.media
@@ -318,6 +354,33 @@ def test_the_publication_plan_refuses_a_candidate_that_names_another_render(medi
 
 
 @pytest.mark.media
+def test_the_publication_plan_refuses_a_script_or_a_qa_report_other_than_the_ones_the_judges_read(
+    media_tools: None, tmp_path: Path
+) -> None:
+    fixture = Publishing(tmp_path)
+    candidate = fixture.candidate()
+    blocked = fixture.script.model_copy(
+        update={"control": fixture.script.control.model_copy(update={"publishable": False, "blocking_reasons": ("defamation",)})}
+    )
+    with pytest.raises(StudioError, match="judged on another script or QA report"):
+        fixture.publish(candidate, script=artifact(tmp_path, "blocked-script.json", blocked.canonical_json().encode()))
+    with pytest.raises(StudioError, match="judged on another script or QA report"):
+        fixture.publish(candidate, qa=artifact(tmp_path, "other-qa.json", b'{"defects": []}'))
+
+
+@pytest.mark.media
+def test_the_publication_plan_refuses_a_candidate_edited_after_the_approval(media_tools: None, tmp_path: Path) -> None:
+    """Critic I-3: the release is byte for byte what the gates approved; a candidate edited in place is not released."""
+    fixture = Publishing(tmp_path)
+    candidate = fixture.candidate()
+    raw = candidate.path.read_bytes()
+    at = raw.index(b'"title":"') + len(b'"title":"')
+    candidate.path.write_bytes(raw[:at] + bytes([raw[at] ^ 0x01]) + raw[at + 1 :])  # first letter of the title, same size
+    with pytest.raises(StudioError, match="changed on disk after it was approved"):
+        fixture.publish(candidate)
+
+
+@pytest.mark.media
 def test_the_publication_plan_refuses_a_render_rotted_since_it_was_approved(media_tools: None, tmp_path: Path) -> None:
     fixture = Publishing(tmp_path)
     candidate = fixture.candidate()
@@ -338,6 +401,6 @@ def test_verify_artifact_hashes_the_stored_bytes(tmp_path: Path) -> None:
 def test_publication_dataclass_is_still_the_contract_the_candidate_wraps() -> None:
     fields = set(PublicationCandidate.model_fields)
     assert (
-        fields == {"run_id", "channel_id", "publication"}
+        fields == {"run_id", "channel_id", "publication", "script_key", "qa_key"}
         and PublicationCandidate.model_fields["publication"].annotation is Publication
     )

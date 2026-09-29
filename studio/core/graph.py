@@ -170,9 +170,8 @@ class Graph:
             if step.publishes:
                 self._check_publishing_step(step)
 
-    @staticmethod
-    def _check_publishing_step(step: StepSpec) -> None:
-        """A publishing step needs the compliance verdict and G2 on one and the same upstream step."""
+    def _check_publishing_step(self, step: StepSpec) -> None:
+        """A publishing step needs the compliance verdict and G2 on one and the same upstream candidate step."""
         subjects: dict[str, set[str]] = {}
         for gate, subject in step.requires_approval:
             subjects.setdefault(GateName(gate).value, set()).add(subject)
@@ -181,6 +180,11 @@ class Graph:
             raise GraphError(
                 f"step {step.name!r} publishes: it must require the {GateName.COMPLIANCE.value} verdict and "
                 f"{GateName.G2.value} on the same upstream step (requires_approval has {sorted(subjects)})"
+            )
+        if not any(self._by_name[subject].candidate for subject in both):
+            raise GraphError(
+                f"step {step.name!r} publishes: the subject of its approvals ({sorted(both)}) must be a candidate step "
+                "(candidate=True), the output that carries everything the judges read, not a bare render"
             )
 
     def _check_step(self, step: StepSpec) -> None:

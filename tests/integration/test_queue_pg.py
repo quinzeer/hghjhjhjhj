@@ -18,7 +18,7 @@ from typing import Any
 import pytest
 from sqlalchemy import Engine, delete, select, text
 
-from studio.core.db import make_engine
+from studio.core.db import SchemaMismatch, make_engine
 from studio.core.interfaces import Job, Lease, StepClaimed
 from studio.core.queue import JobStatus, SqlJobQueue, step_claims
 from studio.core.scheduler import DRAFT_OFFSET, GpuDispatcher, gpu_queue
@@ -87,6 +87,21 @@ def q(engine: Engine) -> Iterator[SqlJobQueue]:
     yield queue
     with engine.begin() as conn:
         conn.execute(delete(step_claims))
+
+
+def test_a_table_of_another_version_in_the_translated_schema_is_refused_in_words(admin: Engine, schema: str) -> None:
+    """The column check looks where the tables live (the connection's schema translation), not in the default schema."""
+    old_schema = f"{schema}_old"
+    with admin.begin() as conn:
+        conn.execute(text(f'CREATE SCHEMA "{old_schema}"'))
+        conn.execute(text(f'CREATE TABLE "{old_schema}".step_claims (step_key text PRIMARY KEY)'))
+    try:
+        old = admin.execution_options(schema_translate_map={None: old_schema})
+        with pytest.raises(SchemaMismatch, match="'step_claims' lacks the column"):
+            SqlJobQueue(old).create_schema()
+    finally:
+        with admin.begin() as conn:
+            conn.execute(text(f'DROP SCHEMA "{old_schema}" CASCADE'))
 
 
 def run_threads(n: int, target: Callable[[int], None]) -> list[BaseException]:

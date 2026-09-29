@@ -278,7 +278,30 @@ def test_truncated_file_reads_missing_and_put_repairs(store: LocalArtifactStore)
     assert store.get(stored.key).path.read_bytes() == data
 
 
-def test_verify_removes_a_corrupt_file_so_that_put_repairs_it(store: LocalArtifactStore) -> None:
+def test_a_small_object_that_rotted_in_place_reads_as_missing_and_put_repairs_it(store: LocalArtifactStore) -> None:
+    data = b"abcdefghij"
+    good = store.put_bytes(data, kind="text", media_type="text/plain")
+    assert store.get(good.key) == good
+    good.path.write_bytes(b"XXXXXXXXXX")  # same size: only a re-hash can tell, and every read of a small object re-hashes
+    with pytest.raises(ArtifactMissing, match="no longer matches its key"):
+        store.get(good.key)
+    assert not good.path.exists() and not store.has(good.key)  # the rotten file was removed: nothing serves it again
+    assert store.put_bytes(data, kind="text", media_type="text/plain") == good and good.path.read_bytes() == data
+
+
+def test_a_big_object_is_not_re_hashed_on_every_read_but_verify_still_catches_it(tmp_path: Path, engine: Engine) -> None:
+    small_limit = LocalArtifactStore(tmp_path / "s", engine, verify_reads_up_to=4)
+    small_limit.create_schema()
+    stored = small_limit.put_bytes(b"0123456789", kind="text", media_type="text/plain")  # bigger than the limit
+    stored.path.write_bytes(b"XXXXXXXXXX")
+    assert small_limit.has(stored.key)  # a read of a big object trusts the index and the size
+    assert not small_limit.verify(stored.key)  # verify re-hashes whatever the size
+    assert not small_limit.has(stored.key)
+
+
+def test_verify_removes_a_corrupt_file_so_that_put_repairs_it(tmp_path: Path, engine: Engine) -> None:
+    store = LocalArtifactStore(tmp_path / "trusting", engine, verify_reads_up_to=0)  # reads never re-hash
+    store.create_schema()
     good = store.put_bytes(b"abcdefghij", kind="text", media_type="text/plain")
     assert store.verify(good.key)
     good.path.write_bytes(b"XXXXXXXXXX")  # same size: only a re-hash can tell

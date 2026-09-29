@@ -16,7 +16,6 @@ from __future__ import annotations
 import contextlib
 import datetime as dt
 import fcntl
-import hashlib
 import json
 import os
 import shutil
@@ -33,6 +32,7 @@ from studio.core.costs import SqlCostLedger
 from studio.core.db import make_engine
 from studio.core.decisions import SqlDecisionStore
 from studio.core.graph import Graph, Runner, RunResult, partial_run
+from studio.core.hashing import file_key
 from studio.core.interfaces import Cap, StepSpec, StudioError
 from studio.core.quota import QuotaManager
 from studio.domain import (
@@ -70,6 +70,14 @@ class GateRejected(StudioError):
 
     def __init__(self, gate: str, step: str, reason: str) -> None:
         super().__init__(f"{gate} rejected at step {step!r}: {reason}")
+        self.gate, self.step, self.reason = gate, step, reason
+
+
+class GateWaiting(StudioError):
+    """A gate holds no verdict yet (the human's half of a decision, typically): the run stops there and refuses nothing."""
+
+    def __init__(self, gate: str, step: str, reason: str) -> None:
+        super().__init__(f"{gate} is waiting at step {step!r}: {reason}")
         self.gate, self.step, self.reason = gate, step, reason
 
 
@@ -142,28 +150,27 @@ def _write_json(path: Path, data: Any) -> None:
     os.replace(tmp, path)
 
 
-def _file_sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1 << 20), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
-
-
-def _copy_out(src: Path, dst: Path, expected_key: str) -> None:
-    """Deliver a stored file next to the reports, after checking that it still hashes to its key.
+def _deliver(store: LocalArtifactStore, key: str, dst: Path) -> None:
+    """Put a stored file next to the reports, once the store has re-hashed it and the copy has too.
 
     A copy, never a hard link: the store's files are shared by hash, and a tool that edits `dst` in place would
-    corrupt the artifact for every run that uses it. The stored object is hashed on every delivery (a content
-    address is only worth what a read of it verifies); the copy is skipped when `dst` already holds these bytes."""
-    if (actual := _file_sha256(src)) != expected_key:
-        raise StudioError(f"stored artifact {expected_key} is corrupt: its bytes hash to {actual}; nothing was delivered")
+    corrupt the artifact for every run that uses it. `store.verify` hashes the stored bytes on every delivery (a
+    content address is only worth what a read of it verifies) and removes a corrupt object, so that the next run
+    recomputes it instead of failing on it again; the copy is hashed before it takes its place; `dst` is left alone
+    when it already holds these bytes."""
+    if not store.verify(key):
+        raise StudioError(
+            f"stored artifact {key} is corrupt or missing (a corrupt file was removed from the store): "
+            "nothing was delivered; run again to recompute it"
+        )
     dst.parent.mkdir(parents=True, exist_ok=True)
-    if dst.is_file() and _file_sha256(dst) == expected_key:
+    if dst.is_file() and file_key(dst) == key:
         return
     tmp = dst.with_name(f".{dst.name}.{uuid.uuid4().hex[:8]}.tmp")
     try:
-        shutil.copy2(src, tmp)
+        shutil.copy2(store.get(key).path, tmp)
+        if (actual := file_key(tmp)) != key:
+            raise StudioError(f"the copy of {key} hashes to {actual}: nothing was delivered")
         os.replace(tmp, dst)
     finally:
         tmp.unlink(missing_ok=True)
@@ -194,7 +201,11 @@ def _clear_leftovers(state: Path, folder: Path) -> None:
 
 
 class _Autopilot:
-    """The mock reviewers that answer the gates of a dry run."""
+    """The mock reviewers that answer the gates of a dry run.
+
+    Nobody looked at anything: every decision it returns says `mock`, whatever the reviewer or the officer it
+    delegates to declares. A decision merged from two halves is a mock as soon as one of them is (a real
+    officer's verdict next to a stand-in human's answer is not a real approval)."""
 
     def __init__(
         self,
@@ -207,18 +218,25 @@ class _Autopilot:
         self.reviewer: Reviewer = reviewer or MockReviewer()
         self.officer: ComplianceReviewer = officer or MockComplianceOfficer()
 
-    def decide(self, gate: GateName, subject_key: str, outputs: Mapping[str, str]) -> GateDecision:
+    def decide(self, gate: GateName, subject_key: str) -> GateDecision:
         now = self.clock()
         if gate is not GateName.COMPLIANCE:
-            return self.reviewer.decide(gate, subject_key, now)
-        script = Script.model_validate_json(self._read(outputs["script"]))
-        qa_report = json.loads(self._read(outputs["qa"]))
+            return self._as_mock(self.reviewer.decide(gate, subject_key, now))
+        # The officer reads what the candidate names: the script and the QA report whose keys are part of the subject
+        # it judges, never whatever the run happens to hold under those step names.
         candidate = PublicationCandidate.model_validate_json(self._read(subject_key))
+        script = Script.model_validate_json(self._read(candidate.script_key))
+        qa_report = json.loads(self._read(candidate.qa_key))
         agent = self.officer.review(script, qa_report, candidate, subject_key, now)
         if agent.agent_verdict is Verdict.REJECT:
-            return agent  # a blocked candidate is never put to the human
+            return self._as_mock(agent)  # a blocked candidate is never put to the human
         human = self.reviewer.decide(gate, subject_key, now)  # the compliance gate records the agent's AND the human's
-        return agent.model_copy(update={"human_verdict": human.human_verdict, "human_note": human.human_note})
+        merged = agent.model_copy(update={"human_verdict": human.human_verdict, "human_note": human.human_note})
+        return self._as_mock(merged)
+
+    @staticmethod
+    def _as_mock(decision: GateDecision) -> GateDecision:
+        return decision if decision.mock else decision.model_copy(update={"mock": True})
 
     def _read(self, key: str) -> str:
         return self.store.get(key).path.read_text(encoding="utf-8")
@@ -229,6 +247,13 @@ def _why(decision: GateDecision) -> str:
     if decision.human_verdict is Verdict.REJECT:
         return decision.human_note or "refused by the human, no note"
     return "; ".join(decision.agent_reasons) or decision.human_note or "no reason recorded"
+
+
+def _waiting_for(decision: GateDecision) -> str:
+    """Whose verdict a decision that neither approves nor rejects is missing."""
+    halves = (("the agent", decision.agent_verdict), ("the human", decision.human_verdict))
+    missing = [who for who, verdict in halves if verdict is Verdict.PENDING]
+    return f"no verdict from {' and '.join(missing) or 'anyone'} yet"
 
 
 def _drive(
@@ -273,16 +298,18 @@ def _drive(
                 raise StudioError(f"step {name!r} waits but is not a gate")
             subject = result.outputs[step.inputs[0]]
             existing = decisions.get(gate, subject)
-            if existing is not None and not existing.approved:  # a recorded refusal
+            if existing is not None and existing.rejected:  # a recorded refusal
                 raise GateRejected(gate.value, name, result.reasons.get(name, _why(existing)))
-            if existing is not None and existing.mock == production.is_mock:
-                continue  # approved since the runner looked (another process, a human): the next round takes it
-            if existing is not None:
+            if existing is not None and existing.mock != production.is_mock:  # the runner has said why in `reasons`
                 raise StudioError(result.reasons.get(name, f"the {gate.value} decision on {subject} does not apply to this run"))
-            decision = autopilot.decide(gate, subject, result.outputs)
+            if existing is not None and existing.approved:
+                continue  # approved since the runner looked (another process, a human): the next round takes it
+            decision = autopilot.decide(gate, subject)  # no decision yet, or a mock one still missing a verdict
             decisions.put(decision)
-            if not decision.approved:
+            if decision.rejected:
                 raise GateRejected(gate.value, name, _why(decision))
+            if not decision.approved:
+                raise GateWaiting(gate.value, name, _waiting_for(decision))
     raise StudioError(f"gates still waiting after {MAX_ROUNDS} rounds")
 
 
@@ -331,8 +358,12 @@ def _run_owned(
     decisions = SqlDecisionStore(engine)
     for backend in (store, ledger, decisions):
         backend.create_schema()
-    # This process owns the state folder: every reservation still active belongs to a predecessor that died.
-    ledger.reap_expired(FAR_FUTURE)
+    if config.database_url is None:
+        # The database is this folder's own and this process owns the folder: every reservation still active belongs
+        # to a predecessor that died, whatever date its lease runs to.
+        ledger.reap_expired(FAR_FUTURE)
+    # A shared database has live writers this process knows nothing about: their reservations are theirs until
+    # their lease runs out, and only expired leases are freed (`Runner.run` does it, at its start of every round).
 
     run_id = config.effective_run_id
     now = clock()
@@ -382,7 +413,7 @@ def _write_outputs(
     run_id = config.effective_run_id
     render_key = result.outputs["assemble"]
     render_path = folder / "render.mp4"
-    _copy_out(store.get(render_key).path, render_path, render_key)
+    _deliver(store, render_key, render_path)
     package = Package.model_validate_json(read("package"))
     idea = Idea.model_validate_json(read("idea"))
     # The skill's scene document, marked as a mock at its root (the format keeps unknown root fields as they are).

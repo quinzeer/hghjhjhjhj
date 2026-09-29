@@ -18,7 +18,6 @@ protocols of `studio.adapters.base`.
 from __future__ import annotations
 
 import contextlib
-import hashlib
 import json
 import os
 import shutil
@@ -45,6 +44,7 @@ from studio.adapters.mock import (
     MockTextToVideo,
     MockVisionCritic,
 )
+from studio.core.hashing import bytes_key, file_key
 from studio.core.interfaces import StepSpec, StoredArtifact, StudioError
 from studio.domain import (
     Channel,
@@ -210,12 +210,9 @@ def _workdir(p: Production) -> Iterator[Path]:
 
 def verify_artifact(artifact: StoredArtifact) -> None:
     """Raise unless the stored bytes still hash to their key (a store object can rot or be edited in place)."""
-    digest = hashlib.sha256()
-    with artifact.path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1 << 20), b""):
-            digest.update(chunk)
-    if digest.hexdigest() != artifact.key:
-        raise StudioError(f"stored artifact {artifact.key} is corrupt: its bytes hash to {digest.hexdigest()}")
+    actual = file_key(artifact.path)
+    if actual != artifact.key:
+        raise StudioError(f"stored artifact {artifact.key} is corrupt: its bytes hash to {actual}")
 
 
 def _stage(artifact: StoredArtifact, workdir: Path, name: str) -> Path:
@@ -562,6 +559,8 @@ def production_steps(p: Production, script: Script) -> list[StepSpec]:
         candidate = PublicationCandidate(
             run_id=params["run_id"],
             channel_id=params["channel_id"],
+            script_key=inputs["script"].key,  # the judges read the script and the QA report: their keys are part of the subject
+            qa_key=inputs["qa"].key,
             publication=Publication(
                 platform=Platform.YOUTUBE,
                 render_key=inputs["assemble"].key,
@@ -579,11 +578,16 @@ def production_steps(p: Production, script: Script) -> list[StepSpec]:
         render = inputs["assemble"]
         if candidate.publication.render_key != render.key:
             raise StudioError("the approved candidate names another render than the one assembled")
+        if (candidate.script_key, candidate.qa_key) != (inputs["script"].key, inputs["qa"].key):
+            raise StudioError("the approved candidate was judged on another script or QA report than the ones in hand")
         verify_artifact(render)  # the bytes about to be published are the bytes that were judged
         defects = _load(inputs["qa"])["defects"]
         if defects:  # MISSION §8: every published video passes the technical checks
             raise StudioError(f"the render has technical defects and cannot be published: {defects}")
-        return inputs["candidate"].path.read_bytes(), "json", "application/json"
+        released = inputs["candidate"].path.read_bytes()
+        if bytes_key(released) != inputs["candidate"].key:  # byte for byte what the gates approved, or nothing
+            raise StudioError(f"the approved candidate {inputs['candidate'].key} changed on disk after it was approved")
+        return released, "json", "application/json"
 
     steps += [
         StepSpec(
@@ -621,6 +625,7 @@ def production_steps(p: Production, script: Script) -> list[StepSpec]:
             {"run_id": p.run_id, "channel_id": p.channel.id},
             ResourceClass.CPU,
             candidate_run,
+            candidate=True,
         ),
         # Both gates judge the candidate: a changed title, description or disclosure is another hash, so another decision.
         StepSpec("compliance", STEP_VERSION, ("candidate",), {}, ResourceClass.HUMAN, _never, gate=GateName.COMPLIANCE),
@@ -628,7 +633,7 @@ def production_steps(p: Production, script: Script) -> list[StepSpec]:
         StepSpec(
             "publish_plan",
             STEP_VERSION,
-            ("candidate", "assemble", "qa", "compliance", "g2"),
+            ("candidate", "script", "assemble", "qa", "compliance", "g2"),
             {},
             ResourceClass.CPU,
             publish_run,

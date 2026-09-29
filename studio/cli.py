@@ -3,8 +3,8 @@
     studio run --channel channel-a --format short --dry-run --out var/e2e
 
 Phase 1 offers the dry run only: every adapter is a mock, nothing leaves the machine, and the report says `mock`.
-Exit codes: 0 done, 1 failure, 2 usage error, 3 a gate holds a rejection, 75 paused until the Claude usage limit
-resets (EX_TEMPFAIL: run the same command again after the printed time).
+Exit codes: 0 done, 1 failure, 2 usage error, 3 a gate holds a rejection, 4 a gate waits for a verdict nobody has
+given, 75 paused until the Claude usage limit resets (EX_TEMPFAIL: run the same command again after the printed time).
 """
 
 from __future__ import annotations
@@ -18,11 +18,12 @@ import yaml
 
 from studio.core.interfaces import StudioError
 from studio.domain import Channel, VideoFormat
-from studio.pipeline.driver import DryRunConfig, GateRejected, RunPaused, run_dry
+from studio.pipeline.driver import DryRunConfig, GateRejected, GateWaiting, RunPaused, run_dry
 
 CHANNELS_DIR = Path(__file__).resolve().parent / "config" / "channels"
 EXIT_FAILURE = 1
 EXIT_GATE_REJECTED = 3
+EXIT_GATE_WAITING = 4
 EXIT_PAUSED = 75
 
 
@@ -92,6 +93,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     except GateRejected as exc:
         print(f"studio: {exc}", file=sys.stderr)
         return EXIT_GATE_REJECTED
+    except GateWaiting as exc:
+        print(f"studio: {exc}", file=sys.stderr)
+        return EXIT_GATE_WAITING
     except RunPaused as exc:
         print(f"studio: {exc}", file=sys.stderr)
         return EXIT_PAUSED

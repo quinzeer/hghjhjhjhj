@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import sqlite3
 from pathlib import Path
 from typing import Any
 
@@ -11,7 +12,7 @@ import pytest
 from studio import cli
 from studio.cli import CHANNELS_DIR, UsageError, load_channels, main, resolve_channel
 from studio.core.interfaces import StudioError
-from studio.pipeline.driver import DryRunConfig, GateRejected, RunPaused
+from studio.pipeline.driver import DryRunConfig, GateRejected, GateWaiting, RunPaused
 
 NOON = dt.datetime(2026, 9, 29, 12, 0, tzinfo=dt.UTC)
 
@@ -150,6 +151,7 @@ def test_a_successful_run_prints_where_the_render_and_the_report_are(
     ("error", "code", "text"),
     [
         (GateRejected("compliance", "compliance", "loops left open"), 3, "compliance rejected at step 'compliance'"),
+        (GateWaiting("compliance", "compliance", "no verdict from the human yet"), 4, "compliance is waiting at step"),
         (RunPaused(NOON, "usage limit"), 75, "paused until 2026-09-29T12:00:00+00:00"),
         (StudioError("disk full"), 1, "disk full"),
     ],
@@ -163,3 +165,16 @@ def test_failures_have_their_own_exit_code(
     monkeypatch.setattr(cli, "run_dry", fail)
     assert main(["run", "--channel", "a", "--format", "long", "--dry-run", "--out", str(tmp_path)]) == code
     assert text in capsys.readouterr().err
+
+
+def test_a_state_folder_written_by_another_version_is_reported_in_words_with_exit_code_1(
+    capsys: pytest.CaptureFixture[str], tmp_path: Path
+) -> None:
+    """Critic m-3: `var/e2e` of an older checkout ended in a raw `no such column` trace."""
+    database = tmp_path / "state" / "studio.db"
+    database.parent.mkdir(parents=True)
+    with sqlite3.connect(database) as conn:
+        conn.execute("create table gate_decisions (gate varchar(16), subject_key varchar(64), primary key (gate, subject_key))")
+    assert main(["run", "--channel", "a", "--format", "short", "--dry-run", "--out", str(tmp_path)]) == 1
+    err = capsys.readouterr().err
+    assert "another version of the studio" in err and "gate_decisions" in err and "Traceback" not in err

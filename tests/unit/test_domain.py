@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 import datetime as dt
+from pathlib import Path
 
 import pytest
 from pydantic import ValidationError
 
-from studio.core.hashing import bytes_key, step_key
+from studio.core.hashing import bytes_key, file_key, step_key
 from studio.domain import (
     AIDisclosure,
     ControlBlock,
@@ -157,6 +158,8 @@ def test_a_publication_candidate_changes_hash_with_anything_the_platform_will_sh
         return PublicationCandidate(
             run_id=str(changes.get("run_id", "run-1")),
             channel_id=str(changes.get("channel_id", "channel-a")),
+            script_key=str(changes.get("script_key", "c" * 64)),
+            qa_key=str(changes.get("qa_key", "d" * 64)),
             publication=publication,
         )
 
@@ -170,6 +173,8 @@ def test_a_publication_candidate_changes_hash_with_anything_the_platform_will_sh
         {"privacy": Privacy.PUBLIC},
         {"run_id": "run-2"},
         {"channel_id": "channel-b"},
+        {"script_key": "e" * 64},  # the judges read the script: another script, another subject
+        {"qa_key": "f" * 64},  # and the QA report
     ):
         assert candidate(**change).content_hash() != base, change
 
@@ -192,3 +197,9 @@ def test_step_key_properties() -> None:
     with pytest.raises(ValueError):
         step_key("", "1", {}, {})
     assert bytes_key(b"x") == bytes_key(b"x") != bytes_key(b"y")
+
+
+def test_file_key_is_the_key_of_the_bytes(tmp_path: Path) -> None:
+    path = tmp_path / "blob.bin"
+    path.write_bytes(b"x" * 3_000_000)  # more than one read chunk
+    assert file_key(path) == bytes_key(b"x" * 3_000_000)

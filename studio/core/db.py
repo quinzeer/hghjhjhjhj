@@ -10,10 +10,12 @@ from __future__ import annotations
 import datetime as dt
 from typing import Any
 
-from sqlalchemy import Connection, DateTime, Engine, MetaData, Table, create_engine, event, func, select
+from sqlalchemy import Connection, DateTime, Engine, MetaData, Table, create_engine, event, func, inspect, select
 from sqlalchemy.dialects import postgresql, sqlite
 from sqlalchemy.engine import Dialect
 from sqlalchemy.types import TypeDecorator
+
+from studio.core.interfaces import StudioError
 
 # Postgres advisory lock (any fixed int64) taken by every `create_tables` of the studio's SQL tables.
 SCHEMA_LOCK_KEY = 0x5354_5544_494F_0001
@@ -76,13 +78,39 @@ def dialect_insert(conn: Connection, table: Table) -> postgresql.Insert | sqlite
     raise NotImplementedError(f"unsupported SQL dialect: {name}")
 
 
+class SchemaMismatch(StudioError):
+    """The database holds tables written by another version of the studio."""
+
+
 def create_tables(engine: Engine, metadata: MetaData) -> None:
     """Create the missing tables of `metadata`; idempotent, and safe when several workers start at once.
 
     `create_all` checks for a table and creates it in separate statements, so on Postgres two concurrent
     calls can both decide to create it and one fails: a transaction-scoped advisory lock serialises them.
-    On SQLite the `BEGIN IMMEDIATE` transaction already does."""
+    On SQLite the `BEGIN IMMEDIATE` transaction already does.
+
+    A table that exists is never altered (there is no migration yet): its columns must be the declared ones,
+    or the call raises `SchemaMismatch` in words, instead of the first insert failing on a missing column."""
     with engine.begin() as conn:
         if conn.dialect.name == "postgresql":
             conn.execute(select(func.pg_advisory_xact_lock(SCHEMA_LOCK_KEY)))
         metadata.create_all(conn)
+        _check_columns(conn, metadata)
+
+
+def _check_columns(conn: Connection, metadata: MetaData) -> None:
+    inspector = inspect(conn)
+    translate = conn.get_execution_options().get("schema_translate_map") or {}  # reflection does not apply it by itself
+    problems: list[str] = []
+    for table in metadata.sorted_tables:
+        found = {column["name"] for column in inspector.get_columns(table.name, schema=translate.get(table.schema))}
+        declared = {column.name for column in table.columns}
+        if declared - found:
+            problems.append(f"table {table.name!r} lacks the column(s) {sorted(declared - found)}")
+        if found - declared:
+            problems.append(f"table {table.name!r} has the unknown column(s) {sorted(found - declared)}")
+    if problems:
+        raise SchemaMismatch(
+            "the database was written by another version of the studio: " + "; ".join(problems) + ". "
+            "The state folder of a dry run (`<out>/state`) can be removed; there is no migration yet."
+        )

@@ -264,12 +264,15 @@ class PublicationCandidate(StudioModel):
 
     The compliance verdict and G2 are bound to the hash of this object. It carries the render's key, every
     field the platform will show (title, description, privacy, disclosure flags, localisations), the channel
-    and the run: a changed title, a switched-off disclosure, another render or another video is another hash,
-    hence a new decision."""
+    and the run, and the keys of the artifacts the judges read to decide (the script and the QA report): a
+    changed title, a switched-off disclosure, a script whose control block now blocks it, another render or
+    another video is another hash, hence a new decision."""
 
     run_id: str = Field(min_length=1)
     channel_id: Slug
     publication: Publication
+    script_key: Sha256
+    qa_key: Sha256
 
 
 class Metric(StudioModel):
@@ -330,6 +333,11 @@ class GateDecision(StudioModel):
             # never automated. It needs both to approve, and either one blocks; a human cannot lift the agent's block.
             return self.agent_verdict is Verdict.APPROVE and self.human_verdict is Verdict.APPROVE
         return self.agent_verdict is not Verdict.REJECT and self.human_verdict is Verdict.APPROVE
+
+    @property
+    def rejected(self) -> bool:
+        """One half refused. A decision that neither approves nor rejects is still waiting for an answer."""
+        return Verdict.REJECT in (self.agent_verdict, self.human_verdict)
 
 
 class RunManifest(StudioModel):

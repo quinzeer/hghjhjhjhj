@@ -8,7 +8,9 @@ key = sha256(canonical_json({step, version, inputs, params, seed}))
 
 from __future__ import annotations
 
+import hashlib
 from collections.abc import Mapping
+from pathlib import Path
 from typing import Any
 
 from studio.domain.base import canonical_json, sha256_hex
@@ -30,3 +32,9 @@ def step_key(
 def bytes_key(data: bytes) -> str:
     """Artifact key: SHA-256 of the content itself."""
     return sha256_hex(data)
+
+
+def file_key(path: Path) -> str:
+    """Artifact key of a file's content, read in chunks: what a stored object must still hash to."""
+    with Path(path).open("rb") as handle:
+        return hashlib.file_digest(handle, "sha256").hexdigest()

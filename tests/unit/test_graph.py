@@ -158,6 +158,7 @@ class Env:
         requires: tuple[tuple[GateName, str], ...] = (),
         mock: bool = False,
         publishes: bool = False,
+        candidate: bool = False,
     ) -> StepSpec:
         if estimated is None:  # a GPU step must declare its GPU time (Graph refuses it otherwise)
             estimated = {GPU_S: GPU_ESTIMATE} if resource is GPU and gate is None else {}
@@ -173,6 +174,7 @@ class Env:
             requires_approval=requires,
             mock=mock,
             publishes=publishes,
+            candidate=candidate,
         )
 
     def gate(self, name: str, subject: str, gate: GateName) -> StepSpec:
@@ -1064,6 +1066,21 @@ def test_a_failed_attempt_counts_against_the_cap_of_the_retry(env: Env) -> None:
         env.run(graph)
 
 
+def test_the_cost_of_a_failed_attempt_carries_the_mode_of_its_run(env: Env) -> None:
+    """A stand-in's burnt seconds are never counted as real spending, and a real run's always are (critic N6)."""
+
+    def crash(inputs: Mapping[str, StoredArtifact], params: Mapping[str, Any]) -> tuple[bytes, str, str]:
+        env.clock.advance(3.0)
+        raise RuntimeError("out of memory")
+
+    graph = Graph([env.step("shot", resource=GPU, run=crash, estimated={GPU_S: 10.0})])
+    with pytest.raises(RuntimeError):
+        env.run(graph)  # a mock run, the default of this fixture
+    with pytest.raises(RuntimeError):
+        env.run(graph, run_id="run-real", dry_run=False, mock=False)
+    assert {(e.run_id, e.quantity): e.mock for e in env.ledger.entries()} == {(RUN, 3.0): True, ("run-real", 3.0): False}
+
+
 def test_failure_of_a_step_the_runner_does_not_measure_releases_everything(env: Env) -> None:
     def crash(inputs: Mapping[str, StoredArtifact], params: Mapping[str, Any]) -> tuple[bytes, str, str]:
         env.clock.advance(5.0)
@@ -1639,22 +1656,23 @@ def gated_publication(env: Env) -> Graph:
     return Graph(
         [
             env.step("render", resource=GPU),
-            env.gate("compliance", "render", GateName.COMPLIANCE),
-            env.gate("g2", "render", GateName.G2),
+            env.step("candidate", ("render",), candidate=True),
+            env.gate("compliance", "candidate", GateName.COMPLIANCE),
+            env.gate("g2", "candidate", GateName.G2),
             env.step(
                 "publish",
-                ("render", "compliance", "g2"),
-                requires=((GateName.COMPLIANCE, "render"), (GateName.G2, "render")),
+                ("candidate", "render", "compliance", "g2"),
+                requires=((GateName.COMPLIANCE, "candidate"), (GateName.G2, "candidate")),
                 publishes=True,
             ),
         ]
     )
 
 
-def approve_both(env: Env, render: str) -> None:
+def approve_both(env: Env, candidate: str) -> None:
     assert isinstance(env.decisions, DictDecisionSource)
-    env.decisions.put(decision(GateName.COMPLIANCE, render))
-    env.decisions.put(decision(GateName.G2, render))
+    env.decisions.put(decision(GateName.COMPLIANCE, candidate))
+    env.decisions.put(decision(GateName.G2, candidate))
 
 
 def test_reservations_left_by_a_dead_worker_are_freed_when_a_run_starts() -> None:
@@ -1674,12 +1692,12 @@ def test_a_gate_reads_its_decision_on_every_run_and_a_revoked_approval_stops_the
     env = Env()
     graph = gated_publication(env)
     first, _ = env.run(graph)
-    approve_both(env, first.outputs["render"])
+    approve_both(env, first.outputs["candidate"])
     second, manifest = env.run(graph, manifest=None)
     assert second.executed == ["compliance", "g2", "publish"] and "g2" in manifest.locked
 
     assert isinstance(env.decisions, DictDecisionSource)
-    env.decisions.put(decision(GateName.G2, first.outputs["render"], human=Verdict.REJECT, human_note="second thoughts"))
+    env.decisions.put(decision(GateName.G2, first.outputs["candidate"], human=Verdict.REJECT, human_note="second thoughts"))
     replay, after = env.run(graph, manifest=manifest)
     assert replay.waiting == ["g2"] and replay.blocked == ["publish"] and "publish" not in replay.outputs
     assert "second thoughts" in replay.reasons["g2"]
@@ -1690,10 +1708,10 @@ def test_a_replay_of_an_approved_gate_reuses_it_and_costs_nothing() -> None:
     env = Env()
     graph = gated_publication(env)
     first, _ = env.run(graph)
-    approve_both(env, first.outputs["render"])
+    approve_both(env, first.outputs["candidate"])
     _, manifest = env.run(graph)
     replay, _ = env.run(graph, manifest=manifest)
-    assert replay.executed == [] and set(replay.skipped) == {"render", "compliance", "g2", "publish"}
+    assert replay.executed == [] and set(replay.skipped) == {"render", "candidate", "compliance", "g2", "publish"}
 
 
 def test_the_output_of_a_gate_does_not_depend_on_when_it_was_answered() -> None:
@@ -1703,8 +1721,8 @@ def test_the_output_of_a_gate_does_not_depend_on_when_it_was_answered() -> None:
         first, _ = env.run(graph)
         assert isinstance(env.decisions, DictDecisionSource)
         when = dt.datetime(2026, 9, 29, hour, tzinfo=dt.UTC)
-        env.decisions.put(decision(GateName.COMPLIANCE, first.outputs["render"], decided_at=when, human_note=f"at {hour}h"))
-        env.decisions.put(decision(GateName.G2, first.outputs["render"], decided_at=when))
+        env.decisions.put(decision(GateName.COMPLIANCE, first.outputs["candidate"], decided_at=when, human_note=f"at {hour}h"))
+        env.decisions.put(decision(GateName.G2, first.outputs["candidate"], decided_at=when))
         second, _ = env.run(graph)
         return second.step_keys["publish"]
 
@@ -1795,17 +1813,17 @@ def test_a_failed_call_charges_the_tokens_its_exception_reports() -> None:
     "requires",
     [
         (),
-        ((GateName.COMPLIANCE, "render"),),
-        ((GateName.G2, "render"),),
-        ((GateName.COMPLIANCE, "render"), (GateName.G2, "other")),  # two different subjects
+        ((GateName.COMPLIANCE, "candidate"),),
+        ((GateName.G2, "candidate"),),
+        ((GateName.COMPLIANCE, "candidate"), (GateName.G2, "other")),  # two different subjects
     ],
 )
 def test_a_publishing_step_must_require_compliance_and_g2_on_one_subject(requires: tuple[tuple[GateName, str], ...]) -> None:
     env = Env()
-    steps = [env.step("render", resource=GPU), env.step("other", ("render",))]
+    steps = [env.step("render", resource=GPU), env.step("candidate", ("render",), candidate=True), env.step("other", ("render",))]
     if requires:
-        steps += [env.gate("compliance", "render", GateName.COMPLIANCE), env.gate("g2", "render", GateName.G2)]
-    inputs = ("render", "other") + (("compliance", "g2") if requires else ())
+        steps += [env.gate("compliance", "candidate", GateName.COMPLIANCE), env.gate("g2", "candidate", GateName.G2)]
+    inputs = ("candidate", "other") + (("compliance", "g2") if requires else ())
     steps.append(env.step("publish", inputs, requires=requires, publishes=True))
     with pytest.raises(GraphError, match="publishes: it must require the compliance verdict and g2 on the same upstream step"):
         Graph(steps)
@@ -1813,3 +1831,22 @@ def test_a_publishing_step_must_require_compliance_and_g2_on_one_subject(require
 
 def test_a_publishing_step_with_both_approvals_on_the_same_subject_is_accepted() -> None:
     Graph(gated_publication(Env()).steps)
+
+
+def test_the_approvals_of_a_publishing_step_must_bear_on_a_candidate_not_on_a_bare_render() -> None:
+    """Critic I-4: the two approvals on `render` alone leave the title, the disclosure and the script they judged
+    out of the subject; the graph refuses that shape."""
+    env = Env()
+    steps = [
+        env.step("render", resource=GPU),
+        env.gate("compliance", "render", GateName.COMPLIANCE),
+        env.gate("g2", "render", GateName.G2),
+        env.step(
+            "publish",
+            ("render", "compliance", "g2"),
+            requires=((GateName.COMPLIANCE, "render"), (GateName.G2, "render")),
+            publishes=True,
+        ),
+    ]
+    with pytest.raises(GraphError, match="must be a candidate step"):
+        Graph(steps)

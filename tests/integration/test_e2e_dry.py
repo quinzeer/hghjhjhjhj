@@ -23,17 +23,18 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from pipeline_fakes import EditedNarrationLLM, NoDisclosureLLM, QuotaAtAgentLLM, RejectingReviewer, channel
+from pipeline_fakes import BlockedScriptLLM, EditedNarrationLLM, NoDisclosureLLM, QuotaAtAgentLLM, RejectingReviewer, channel
 
 from studio.adapters.llm_base import LLMRunner
 from studio.core.artifacts import LocalArtifactStore
-from studio.core.db import make_engine
+from studio.core.costs import SqlCostLedger
+from studio.core.db import SchemaMismatch, make_engine
 from studio.core.decisions import SqlDecisionStore
 from studio.core.graph import ManifestMismatch
-from studio.core.interfaces import StudioError
-from studio.domain import GateDecision, GateName, RunManifest, SceneRole, Verdict, VideoFormat
+from studio.core.interfaces import BudgetExceeded, Cap, StudioError
+from studio.domain import CostKind, GateDecision, GateName, RunManifest, SceneRole, Verdict, VideoFormat
 from studio.media import qa
-from studio.pipeline.driver import DryRunConfig, GateRejected, RunPaused, StateBusy, run_dry
+from studio.pipeline.driver import DryRunConfig, GateRejected, GateWaiting, RunPaused, StateBusy, run_dry
 from studio.pipeline.mock_agents import MockStudioLLM, build_idea, build_package, build_script_doc
 from studio.scenario.skill_json import from_skill_json
 
@@ -115,6 +116,30 @@ def short_run(media_tools: None, tmp_path_factory: pytest.TempPathFactory) -> Ru
 def small_run(media_tools: None, tmp_path_factory: pytest.TempPathFactory) -> Run:
     config = config_for(tmp_path_factory.mktemp("e2e-small"), llm=small_llm())
     return Run(config, run_dry(config))
+
+
+@pytest.fixture(scope="module")
+def long_run(media_tools: None, tmp_path_factory: pytest.TempPathFactory) -> Run:
+    config = config_for(tmp_path_factory.mktemp("e2e-long"), llm=small_llm(LONG_ROLES), fmt=VideoFormat.LONG)
+    return Run(config, run_dry(config))
+
+
+def state_fingerprint(run: Run) -> dict[str, Any]:
+    """Everything a replay must leave alone: every row of the ledger, the decisions and the step bindings, and the
+    name, size, inode and modification time of every stored file (the date of an artifact's last put is not counted)."""
+    stored = sorted(
+        (f.name, st.st_size, st.st_ino, st.st_mtime_ns)
+        for f in (run.config.out_dir / "state" / "cas").rglob("*")
+        if f.is_file()
+        for st in [f.stat()]
+    )
+    return {
+        "entries": run.query("select * from entries order by id"),
+        "decisions": run.query("select * from gate_decisions order by gate, subject_key"),
+        "bindings": run.query("select * from step_outputs order by step_key"),
+        "reservations": run.query("select id, status from reservations order by id"),
+        "files": stored,
+    }
 
 
 def ffmpeg_loudness(path: Path) -> tuple[float, float]:
@@ -245,22 +270,20 @@ def test_each_gate_holds_a_mock_decision_on_the_exact_artifact_it_judged(short_r
 
 
 def test_a_second_run_executes_nothing_and_writes_the_same_render(short_run: Run) -> None:
-    before = (short_run.folder / "render.mp4").read_bytes()
+    before, render = state_fingerprint(short_run), (short_run.folder / "render.mp4").read_bytes()
     again = run_dry(short_run.config)
     assert again["executed"] == [] and len(again["skipped"]) == short_run.report["step_count"] and again["waiting"] == []
     assert again["render_key"] == short_run.report["render_key"]
-    assert (short_run.folder / "render.mp4").read_bytes() == before
+    assert (short_run.folder / "render.mp4").read_bytes() == render
     assert again["costs"] == short_run.report["costs"]  # nothing ran, nothing was charged
+    assert state_fingerprint(short_run) == before  # and nothing was recomputed behind the report's back either
 
 
 # ------------------------------------------------------------------ the long format
 
 
-def test_the_long_format_renders_1920x1080_lasting_as_long_as_its_script_at_the_platform_loudness(
-    media_tools: None, tmp_path: Path
-) -> None:
-    config = config_for(tmp_path, llm=small_llm(LONG_ROLES), fmt=VideoFormat.LONG)
-    report = run_dry(config)
+def test_the_long_format_renders_1920x1080_lasting_as_long_as_its_script_at_the_platform_loudness(long_run: Run) -> None:
+    report = long_run.report
     render = Path(report["render_path"])
     info = qa.probe(render)
     expected, scenes = script_duration_from_the_source_of_the_mock(VideoFormat.LONG, LONG_ROLES)
@@ -269,6 +292,29 @@ def test_the_long_format_renders_1920x1080_lasting_as_long_as_its_script_at_the_
     lufs, true_peak = ffmpeg_loudness(render)
     assert lufs == pytest.approx(-14.0, abs=1.0) and true_peak <= -1.0
     assert report["qa_defects"] == [] and report["mock"] is True
+
+
+def test_a_second_run_of_the_long_format_executes_nothing_and_leaves_the_state_untouched(long_run: Run) -> None:
+    """Critic I-5: the replay is proved for the long format as well, by the state it leaves and not by its report."""
+    before = state_fingerprint(long_run)
+    again = run_dry(long_run.config)
+    assert again["executed"] == [] and len(again["skipped"]) == long_run.report["step_count"] and again["waiting"] == []
+    assert again["render_key"] == long_run.report["render_key"] and again["costs"] == long_run.report["costs"]
+    assert state_fingerprint(long_run) == before
+
+
+def test_a_replay_after_the_state_was_wiped_is_recomputed_and_the_fingerprint_shows_it(long_run: Run, tmp_path: Path) -> None:
+    """The counterpart of the two tests above: had the studio recomputed everything and still reported nothing executed,
+    the rows would be the same and the files and dates would not (critic I-5, cheat T1)."""
+    where = clone(long_run, tmp_path)
+    before = state_fingerprint(where)
+    shutil.rmtree(where.config.out_dir / "state")
+    (where.folder / "manifest.json").unlink()
+    (where.folder / "render.mp4").unlink()
+    again = run_dry(where.config)
+    assert again["skipped"] == [] and again["render_key"] == long_run.report["render_key"]  # the same video, made again
+    after = state_fingerprint(where)
+    assert after["files"] != before["files"] and after["entries"] != before["entries"]
 
 
 # ------------------------------------------------------------------ local edits recompute locally, keys are reproducible
@@ -325,6 +371,42 @@ def test_a_title_or_a_disclosure_changed_after_the_approvals_needs_new_approvals
     assert previous is not None and previous.approved  # the approvals of the first candidate stay what they were
 
 
+def test_a_script_turned_unpublishable_after_the_approvals_needs_a_new_verdict_and_is_refused(
+    small_run: Run, tmp_path: Path
+) -> None:
+    """Critic B3: the same render, the same title and the same disclosure, but the script's control block now
+    says "not publishable". The verdict judges the script and the QA report too, so the old approvals do not apply."""
+    where = clone(small_run, tmp_path)
+    (where.folder / "manifest.json").unlink()  # a new revision of the video
+    with pytest.raises(GateRejected) as raised:
+        run_dry(config_for(where.config.out_dir, llm=BlockedScriptLLM(small_llm())))
+    assert raised.value.gate == "compliance" and "control block says it is not publishable" in raised.value.reason
+    locked = where.manifest()["locked"]
+    assert locked["assemble"] == small_run.manifest()["locked"]["assemble"]  # the render is byte for byte the approved one
+    assert locked["candidate"] != small_run.report["candidate_key"]  # ... yet the subject of the gates is another
+    assert "g2" not in locked and "publish_plan" not in locked  # the human was not asked, nothing was released
+    assert not (where.folder / "report.json").exists()
+    old = where.decisions().get(GateName.COMPLIANCE, small_run.report["candidate_key"])
+    assert old is not None and old.approved  # what was approved stays what it was
+    new = where.decisions().get(GateName.COMPLIANCE, locked["candidate"])
+    assert new is not None and new.rejected and new.mock
+
+
+def test_a_candidate_edited_in_place_is_recomputed_and_never_replayed_as_it_stands(small_run: Run, tmp_path: Path) -> None:
+    """Critic I-3: a small object is re-hashed on every read; one that no longer matches its key is dropped."""
+    where = clone(small_run, tmp_path)
+    key = where.report["candidate_key"]
+    path = where.store().get(key).path
+    raw = path.read_bytes()
+    at = raw.index(b'"title":"') + len(b'"title":"')
+    path.write_bytes(raw[:at] + bytes([raw[at] ^ 0x01]) + raw[at + 1 :])  # the title's first letter: same size, still JSON
+    again = run_dry(where.config)
+    assert "candidate" in again["executed"]  # recomputed, not replayed as it stood
+    assert again["candidate_key"] == key and again["publication"]["title"] == small_run.report["publication"]["title"]
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == key  # the store holds the right bytes again
+    assert again["render_key"] == small_run.report["render_key"] and again["waiting"] == []
+
+
 # ------------------------------------------------------------------ integrity of what was approved (critic I6)
 
 
@@ -349,7 +431,9 @@ def test_a_revoked_approval_stops_the_replay_with_a_rejection_and_leaves_no_repo
     assert not (where.folder / "report.json").exists()  # the report of the earlier success is not left to mislead
 
 
-def test_a_stored_render_rotted_in_place_is_never_delivered(small_run: Run, tmp_path: Path) -> None:
+def test_a_render_rotted_in_place_is_dropped_by_the_read_and_recomputed_never_delivered_as_it_stands(
+    small_run: Run, tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
     where = clone(small_run, tmp_path)
     key = where.report["render_key"]
     stored = where.store().get(key).path
@@ -358,9 +442,13 @@ def test_a_stored_render_rotted_in_place_is_never_delivered(small_run: Run, tmp_
         data[i] ^= 0xFF  # same size, other bytes
     stored.write_bytes(bytes(data))
     (where.folder / "render.mp4").unlink()
-    with pytest.raises(StudioError, match="is corrupt: its bytes hash to"):
-        run_dry(where.config)
-    assert not (where.folder / "render.mp4").exists() and not (where.folder / "report.json").exists()
+
+    with caplog.at_level("WARNING", logger="studio.core.artifacts"):
+        healed = run_dry(where.config)  # the reuse of the locked render re-hashes it: it is dropped, and made again
+    assert "is corrupt on disk" in caplog.text
+    assert healed["render_key"] == key and "assemble" in healed["executed"] and healed["waiting"] == []
+    assert hashlib.sha256((where.folder / "render.mp4").read_bytes()).hexdigest() == key  # the delivered bytes are the right ones
+    assert hashlib.sha256(stored.read_bytes()).hexdigest() == key  # and so are the stored ones
 
 
 def test_a_manifest_edited_to_lock_another_render_is_refused(small_run: Run, tmp_path: Path) -> None:
@@ -454,11 +542,14 @@ def test_repeated_kills_during_gpu_steps_leave_no_reservation_and_the_video_stil
     leftover = tmp_path / "state" / "tmp" / "studio-step-dead"  # what a step killed mid-work leaves in its scratch folder
     leftover.mkdir(parents=True)
     (leftover / "half.mp4").write_bytes(b"\x00" * 64)
+    half_written = tmp_path / "channel-a" / "short" / ".manifest.json.deadbeef.tmp"  # a JSON file killed during its write
+    half_written.parent.mkdir(parents=True, exist_ok=True)
+    half_written.write_text('{"run_id": ', encoding="utf-8")
 
     report = run_dry(config_for(tmp_path, llm=small_llm()))  # the next process owns the folder: it frees them
     assert report["waiting"] == [] and report["qa_defects"] == []
     assert scalar(database, active) == 0
-    assert not leftover.exists()  # ... and it removes the scratch files of the dead
+    assert not leftover.exists() and not half_written.exists()  # ... and it removes the scratch files of the dead
 
 
 # ------------------------------------------------------------------ one process at a time (critic I7)
@@ -478,6 +569,75 @@ def test_a_second_run_on_a_folder_another_process_owns_is_refused_not_run_in_par
         child.communicate()
     # once its owner is gone, the folder is free again (the kernel released the lock with the process)
     assert run_dry(config_for(tmp_path, llm=small_llm()))["waiting"] == []
+
+
+# ------------------------------------------------------------------ a shared database (critic I-1)
+
+
+def test_a_run_on_a_shared_database_leaves_the_live_reservations_of_its_neighbours(media_tools: None, tmp_path: Path) -> None:
+    url = f"sqlite:///{tmp_path / 'shared.db'}"
+    ledger = SqlCostLedger(make_engine(url))
+    ledger.create_schema()
+    ledger.set_cap(Cap("worker:neighbour", CostKind.GPU_SECONDS, 3000.0))
+    neighbour = ledger.reserve(["worker:neighbour"], CostKind.GPU_SECONDS, 2500.0, dt.timedelta(hours=2))
+
+    with pytest.raises(GateRejected):  # stops at G1: what matters here is what the start of the run does to the ledger
+        run_dry(config_for(tmp_path / "mine", reviewer=RejectingReviewer(GateName.G1), database_url=url))
+
+    assert ledger.status(neighbour.id) == "active" and ledger.reserved("worker:neighbour", CostKind.GPU_SECONDS) == 2500.0
+    with pytest.raises(BudgetExceeded):  # the cap still counts it
+        ledger.reserve(["worker:neighbour"], CostKind.GPU_SECONDS, 2500.0, dt.timedelta(hours=2))
+
+
+def test_a_run_frees_the_expired_leases_of_a_shared_database(media_tools: None, tmp_path: Path) -> None:
+    url = f"sqlite:///{tmp_path / 'shared.db'}"
+    ledger = SqlCostLedger(make_engine(url))
+    ledger.create_schema()
+    ledger.set_cap(Cap("worker:gone", CostKind.GPU_SECONDS, 3000.0))
+    gone = ledger.reserve(["worker:gone"], CostKind.GPU_SECONDS, 2500.0, dt.timedelta(seconds=1))
+    time.sleep(1.2)
+    with pytest.raises(GateRejected):
+        run_dry(config_for(tmp_path / "mine", reviewer=RejectingReviewer(GateName.G1), database_url=url))
+    assert ledger.status(gone.id) == "reaped"
+
+
+# ------------------------------------------------------------------ waiting is not refusing (critic m-1)
+
+
+def test_a_gate_left_pending_stops_the_run_as_waiting_and_the_answer_that_follows_replaces_it(
+    media_tools: None, tmp_path: Path
+) -> None:
+    class Undecided:  # the human has not answered yet
+        def decide(self, gate: GateName, subject_key: str, now: dt.datetime) -> GateDecision:
+            return GateDecision(
+                gate=gate, subject_key=subject_key, agent_verdict=Verdict.APPROVE, human_verdict=Verdict.PENDING, mock=True
+            )
+
+    with pytest.raises(GateWaiting) as waiting:
+        run_dry(config_for(tmp_path, reviewer=Undecided()))
+    assert waiting.value.gate == "g1" and "no verdict from the human yet" in waiting.value.reason
+    assert not isinstance(waiting.value, GateRejected)
+
+    with pytest.raises(GateRejected) as refused:  # a later run: the human answers, and the answer replaces the pending one
+        run_dry(config_for(tmp_path, reviewer=RejectingReviewer(GateName.G1)))
+    assert refused.value.gate == "g1" and "refused" in refused.value.reason
+
+
+# ------------------------------------------------------------------ a state written by another version (critic m-3)
+
+
+def test_a_state_folder_of_an_older_version_is_refused_in_words_not_with_a_sql_trace(tmp_path: Path) -> None:
+    database = tmp_path / "state" / "studio.db"
+    database.parent.mkdir(parents=True)
+    with sqlite3.connect(database) as conn:  # the decisions table as the first phase-1 draft wrote it: no `mock` column
+        conn.execute(
+            "create table gate_decisions (gate varchar(16), subject_key varchar(64), agent_verdict varchar(16), "
+            "human_verdict varchar(16), agent_reasons text, human_note text, decided_at datetime, recorded_at datetime, "
+            "primary key (gate, subject_key))"
+        )
+    with pytest.raises(SchemaMismatch, match=r"another version of the studio.*gate_decisions.*lacks the column\(s\) \['mock'\]"):
+        run_dry(config_for(tmp_path))
+    assert not (tmp_path / "channel-a" / "short" / "report.json").exists()
 
 
 # ------------------------------------------------------------------ gates, quota and manifests
@@ -515,6 +675,30 @@ def test_the_compliance_officer_blocks_a_script_with_an_open_loop_and_no_human_i
     assert not (folder / "report.json").exists()
 
 
+def test_a_refusal_the_agent_recorded_is_not_overwritten_by_a_later_more_lenient_officer(
+    media_tools: None, tmp_path: Path
+) -> None:
+    """The driver answers for a mock; it never turns a recorded refusal into an approval by asking again."""
+    llm = MockStudioLLM(roles=(SceneRole.HOOK, SceneRole.CONTENT))  # opens Q1 and never closes it
+    with pytest.raises(GateRejected):
+        run_dry(config_for(tmp_path, llm=llm))
+    candidate = json.loads((tmp_path / "channel-a" / "short" / "manifest.json").read_text(encoding="utf-8"))["locked"][
+        "candidate"
+    ]
+
+    class Lenient:  # an officer that would approve anything
+        def review(self, script: Any, qa_report: Any, candidate: Any, candidate_key: str, now: dt.datetime) -> GateDecision:
+            return GateDecision(
+                gate=GateName.COMPLIANCE, subject_key=candidate_key, agent_verdict=Verdict.APPROVE, decided_at=now, mock=True
+            )
+
+    with pytest.raises(GateRejected) as again:
+        run_dry(config_for(tmp_path, llm=llm, officer=Lenient()))
+    assert again.value.gate == "compliance" and "never closed" in again.value.reason  # the recorded words, not a new answer
+    stored = SqlDecisionStore(make_engine(f"sqlite:///{tmp_path / 'state' / 'studio.db'}")).get(GateName.COMPLIANCE, candidate)
+    assert stored is not None and stored.agent_verdict is Verdict.REJECT and not stored.approved
+
+
 def test_a_human_rejection_at_g2_also_stops_publication(small_run: Run, tmp_path: Path) -> None:
     where = clone(small_run, tmp_path)
     (where.folder / "manifest.json").unlink()
@@ -536,6 +720,27 @@ def test_a_human_rejection_of_the_compliance_half_blocks_even_when_the_agent_app
         )
     assert raised.value.gate == "compliance" and "refused" in raised.value.reason  # the agent approved, the human did not
     assert "publish_plan" not in where.manifest()["locked"]
+
+
+def test_a_real_decision_does_not_open_a_gate_of_a_mock_run_and_the_driver_says_so_at_once(
+    media_tools: None, tmp_path: Path
+) -> None:
+    """Critic N12: an approval written for a real run is not the answer of a mock run; the driver does not loop on it."""
+    with pytest.raises(GateRejected):
+        run_dry(config_for(tmp_path, reviewer=RejectingReviewer(GateName.G1)))
+    folder = tmp_path / "channel-a" / "short"
+    package = json.loads((folder / "manifest.json").read_text(encoding="utf-8"))["locked"]["package"]
+    decisions = SqlDecisionStore(make_engine(f"sqlite:///{tmp_path / 'state' / 'studio.db'}"))
+    decisions.put(
+        GateDecision(
+            gate=GateName.G1, subject_key=package, agent_verdict=Verdict.APPROVE, human_verdict=Verdict.APPROVE, mock=False
+        )
+    )  # replaces the mock refusal: a real reviewer approved this package
+
+    with pytest.raises(StudioError, match="written by a real reviewer: it does not apply to a mock run"):
+        run_dry(config_for(tmp_path))
+    stored = decisions.get(GateName.G1, package)
+    assert stored is not None and not stored.mock and stored.approved  # nothing was overwritten by the mock run
 
 
 def test_the_usage_limit_pauses_the_run_and_a_later_run_resumes_it(media_tools: None, tmp_path: Path) -> None:

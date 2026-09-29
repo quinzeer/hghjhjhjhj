@@ -87,6 +87,23 @@ class NoDisclosureLLM(WrappedLLM):
         return result
 
 
+class BlockedScriptLLM(WrappedLLM):
+    """The head writer's second draft leaves the render, the title and the disclosure as they were and turns the
+    control block to "not publishable" (a claim the fact-checker found false): the publication looks the same."""
+
+    def __init__(self, inner: LLMRunner | None = None) -> None:
+        super().__init__("blocked-script", inner)
+
+    def run(self, **kwargs: Any) -> LLMResult:
+        result = self.inner.run(**kwargs)
+        if kwargs["agent"] == "head_writer":
+            control = result.output["controle"]
+            control["publiable"] = False
+            control["raisons_blocage"] = ["defamation risk found by the fact-checker"]
+            control["faits_a_verifier"] = ["claim 3 is false"]
+        return result
+
+
 class QuotaAtAgentLLM(WrappedLLM):
     """Hits the subscription's usage limit when `agent` is called (a reset time in the future, or unknown)."""
 
