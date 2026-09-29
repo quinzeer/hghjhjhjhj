@@ -43,27 +43,38 @@
 
 ## Contrat de `make e2e-dry`
 
-Commande : `uv run studio run --channel <id> --format <short|long> --dry-run --out <dossier>`, lancée par `make e2e-dry` pour `channel-a` en `short` puis en `long` dans `var/e2e/`.
+Commande : `uv run studio run --channel <id|lettre> --format <short|long> --dry-run --out <dossier> [--seed N] [--run-id ID]`, lancée par `make e2e-dry` pour `channel-a` en `short` puis en `long` dans `var/e2e/`. Sans `--dry-run` la commande refuse (code 2) : la phase 1 ne contient que des mocks.
 
-Graphe de démonstration (tout adaptateur est un mock) :
+Codes de sortie : 0 terminé · 1 échec · 2 usage · 3 une porte tient un refus (`GateRejected`) · 75 pause jusqu'à la réinitialisation du quota Claude (`RunPaused`, `EX_TEMPFAIL` : relancer la même commande après l'heure affichée).
 
-| Étape | Ressource | Rôle |
-|---|---|---|
-| `idea` | llm | idée (MockLLMRunner, schéma `Idea`) |
-| `package` | llm | titres et miniatures (schéma `Package`) |
-| `g1` | human | porte G1 sur le package (décision mock) |
-| `script` | cpu | script issu d'une fixture au format du skill, via `studio/scenario/skill_json.py` |
-| `voice` | gpu | voix off (MockTextToSpeech, une piste par scène, concaténées) |
-| `shots` | gpu | un plan par scène selon sa technique (mocks image / vidéo), au format cible |
-| `music` | gpu | lit musical (mock) |
-| `mix` | cpu | voix + musique sous la voix, loudnorm deux passes vers −14 LUFS / −1 dBTP |
-| `assemble` | cpu | concaténation des plans, mise au format, multiplexage audio |
-| `qa` | cpu | `studio/media/qa.check_render` : aucun défaut attendu |
-| `compliance` | human | verdict conformité sur le hash du rendu (décision mock, jamais contournable) |
-| `g2` | human | porte G2 sur le hash du rendu (décision mock) |
-| `publish_plan` | cpu | objet `Publication` privé (`contains_synthetic_media` = divulgation du script) ; `requires_approval` = conformité + G2 sur le rendu ; **aucun appel réseau** |
+Graphe de démonstration (tout adaptateur est un mock). Il se construit en deux temps, parce que sa forme dépend du script (une voix et un plan par scène) : `front_steps` (`idea` → `package` → `g1` → `script`) puis `production_steps(script)`. Les deux temps utilisent les mêmes noms, versions et paramètres : la seconde passe réutilise les sorties de la première.
+
+| Étape | Ressource | Entrées | Rôle |
+|---|---|---|---|
+| `idea` | llm | — | idée (agent `strategist`, sortie validée contre le schéma `Idea`) |
+| `package` | llm | `idea` | titres, miniatures, première image (agent `packaging_director`, schéma `Package`) |
+| `g1` | human | `package` | porte G1 sur le hash du package |
+| `script` | llm | `idea`, `package`, `g1` | scènes au format du skill (agent `head_writer`), converties par `studio/scenario/skill_json.py` |
+| `timeline` | cpu | `script` | durées de scène et durée totale |
+| `line_SNN` | cpu | `script` | ce que la voix lit : texte, ton, durée de la scène |
+| `visual_SNN` | cpu | `script` | ce que le plan montre : prompt visuel, durée de la scène |
+| `voice_SNN` | gpu | `line_SNN` | voix off de la scène (`MockTextToSpeech`) |
+| `shot_SNN` | gpu ou cpu | `visual_SNN` | brouillon au quart de la définition → critique visuelle mock → final ; 2 tentatives au plus ; technique par scène (Blender, 2.5D, vidéo générée, motion) |
+| `music` | gpu | `timeline` | lit musical (mock) |
+| `mix` | cpu | `timeline`, `voice_*`, `music` | voix calées sur leur scène, lit −18 dB sous la voix, loudnorm deux passes vers −14 LUFS / −1 dBTP |
+| `assemble` | cpu | `mix`, `shot_*` | concaténation à 30 i/s constants, multiplexage de la piste audio |
+| `qa` | cpu | `assemble`, `timeline` | `studio/media/qa.check_render` (résolution, cadence, durée, pistes, loudness, true peak) : aucun défaut attendu |
+| `compliance` | human | `assemble` | verdict conformité sur le hash du rendu ; `MockComplianceOfficer` applique des contrôles réels (script publiable, boucles fermées, raison de la divulgation, défauts QA) ; un refus s'impose à toute approbation humaine ; répondu **avant** G2 : un rendu bloqué n'est jamais présenté à l'humain |
+| `g2` | human | `assemble` | porte G2 sur le hash du rendu |
+| `publish_plan` | cpu | `script`, `assemble`, `qa`, `compliance`, `g2` | objet `Publication` privé (`contains_synthetic_media` = divulgation du script) ; `requires_approval` = conformité + G2 sur le rendu ; **aucun appel réseau** |
+
+Lignes de cache. `line_SNN` et `visual_SNN` extraient du script ce dont la voix et le plan dépendent, sans l'heure de début de la scène. Une clé d'étape suit le contenu de ses entrées (coupure précoce) : retoucher les mots d'une scène à longueur égale relance le script, les extractions, **une** voix, le mixage, l'assemblage, la QA et les portes ; aucun plan, aucune musique, aucune autre voix. Le test `test_editing_the_words_of_one_scene_recomputes_one_voice_and_no_shot` le prouve. Les paramètres d'un plan nomment les seuls adaptateurs qui le fabriquent et le jugent (`Production.shot_adapter_ids`) : changer de LLM ne relance pas un plan.
+
+Les mocks se choisissent un sujet selon le concept de la chaîne (ADR-005) : A parle de reconstruction d'ouvrages, B d'échelles de temps. Le texte est inventé, sans prétention factuelle.
 
 Sorties dans `<dossier>/<channel>/<format>/` :
-- `report.json` : `run_id`, `channel_id`, `format`, `dry_run`, `mock` (true), `adapters` (ids, tous contenant `mock`), `executed`, `skipped`, `waiting`, `render_key`, `render_path`, `qa_defects`, `publication`, `duration_expected_s` ;
-- `manifest.json` (`RunManifest`), `costs.json` (entrées du registre), `render.mp4`.
-Une seconde exécution sur le même dossier donne `executed == []` et le même `render_key`.
+- `report.json` : `run_id`, `channel_id`, `format`, `dry_run`, `mock` (true), `adapters` (ids, tous contenant `mock`), `idea_id`, `executed`, `skipped`, `waiting`, `rounds`, `render_key`, `render_path`, `duration_expected_s`, `scene_count`, `qa_defects`, `publication`, `costs`, `step_count`, `manifest_mock` ;
+- `manifest.json` (`RunManifest`, réécrit après chaque tour, y compris quand un tour échoue : les sorties résolues restent verrouillées), `costs.json` (entrées du registre), `script.scenes.json` (le script re-sérialisé au format du skill), `render.mp4`.
+- L'état (index SQLite, registre des coûts, décisions, fichiers adressés par contenu) vit dans `<dossier>/state/`.
+
+Une seconde exécution sur le même dossier donne `executed == []`, le même `render_key` et le même fichier. Un `manifest.json` d'un autre `run_id` est refusé (`StudioError`), jamais écrasé.

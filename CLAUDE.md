@@ -15,7 +15,10 @@ Ce dépôt construit le logiciel d'un studio vidéo automatisé (YouTube long + 
 | `make doctor` | santé de l'environnement ; échoue si `ANTHROPIC_API_KEY` est définie |
 | `make verify-phase-0` | porte de sortie de la phase 0 (`tools/verify_phase0.py`, stdlib, Python ≥ 3.11) |
 | `python3 tools/verify_phase0.py --note docs/research/X.md` | contrôle d'une seule note |
-| `make test` / `make lint` / `make fmt` | pytest / ruff (via `uv run --group dev`) |
+| `make test` / `make lint` / `make fmt` | pytest / ruff + mypy strict (via `uv run --group dev`) |
+| `make verify-phase-1` | porte de la phase 1 (`tools/verify_phase1.py`) : lint, suite complète **sans test ignoré** (exige `STUDIO_TEST_PG_URL` et ffmpeg), couverture ≥ 80 % du cœur, `make e2e-dry` lancé deux fois |
+| `make e2e-dry` | parcours à blanc par les mocks : un Short et un long dans `var/e2e/` (`uv run studio run --channel a --format short --dry-run --out DIR` ; sortie 0 ok, 1 échec, 2 usage, 3 porte refusée, 75 quota Claude à attendre) |
+| `make doctor-execution` | santé de la machine GPU (ffmpeg, Docker, 4 cartes, jeton Claude) |
 | `make check` | doctor + lint + test : à passer avant toute PR |
 | `make verify-phase-0-online` | idem + re-mesure des outliers par l'API : obligatoire avant de clore la phase 0 |
 | `python3 tools/outliers.py channel @handle … --save docs/research/outliers/<date>.json` | outliers via l'API YouTube Data ; `--save` garde les mesures brutes que la porte recalcule |
@@ -34,9 +37,15 @@ docs/research/         notes sourcées (_TEMPLATE.md = format imposé ; _work/ =
 .claude/agents/        9 sous-agents de construction (MISSION §10)
 tools/                 vérificateurs et outillage (stdlib)
 tests/                 pytest
+studio/                paquet Python 3.12 (phase 1) : domain/ (contrats Pydantic v2 figés), core/ (hachage, magasin d'artefacts, coûts,
+                       file SQL, répartiteur GPU, graphe, quota, décisions), adapters/ (interfaces, mocks, ClaudeCodeRunner),
+                       media/ (ffmpeg, QA), scenario/ (JSON de scènes du skill), pipeline/ (étapes et pilote du parcours à blanc),
+                       schemas/ (export), cli.py, config/channels/*.yaml
+schemas/               JSON Schema exportés des contrats (test de non-régression)
+tests/                 unit/, integration/ (Postgres, ffmpeg, essai DBOS), tools/, fixtures/, pipeline_fakes.py
 nginx/ prod/ www/      AUTRE PROJET (CRM) — ne pas toucher (NEEDS_HUMAN H11)
 ```
-Arrivent en phase 1 : `studio/` (paquet Python), `knowledge/`, `evals/`, `studio/.claude/agents|skills/` (agents runtime).
+Arrivent en phase 2 : `knowledge/`, `evals/`, `studio/.claude/agents|skills/` (agents runtime).
 
 ## Règles non négociables (résumé de MISSION §3, §5, §12)
 - **Preuve ou rien** : une tâche est faite quand une commande reproductible le prouve ; sortie collée dans PROGRESS.
@@ -84,6 +93,12 @@ Fin de session : résumé ≤ 15 lignes (état de la phase, prochaines tâches, 
 - `critic` relit toute déclaration de fin de phase.
 
 ## Pièges connus
+- **Un test ignoré ne prouve rien.** Les tests `media` (ffmpeg) et `postgres` (`STUDIO_TEST_PG_URL`) s'ignorent sans leur dépendance ;
+  `STUDIO_REQUIRE_MEDIA=1` (CI, `make verify-phase-1`) transforme l'absence de ffmpeg en échec, et la porte exige l'URL Postgres.
+- **Clés d'étape** : les exécutions `dry_run` et les mocks salent leurs clés (une sortie mock ne sert jamais une exécution réelle).
+  Les paramètres d'une étape ne nomment que ce qui peut changer sa sortie : un plan GPU ne porte pas l'id du LLM
+  (`Production.shot_adapter_ids`), sinon changer de LLM relancerait des heures de GPU.
+- **File de tâches** : ADR-001 décision 12 : `SqlJobQueue` (tirée, avec fencing), pas DBOS. `dbos` n'est qu'une dépendance de test (essai rejouable).
 - **Dépôt public** (2026-09-28) : ne jamais y copier de contenu privé de l'utilisateur (skill `scenariste-youtube`,
   voix, bibles) tant que H1 n'est pas réglé.
 - VM cloud : 4 vCPU, 16 Go RAM, pas de GPU, commandes ≤ 10 min. Tout ce qui exige un GPU = mock ici,

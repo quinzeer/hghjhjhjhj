@@ -43,12 +43,12 @@ Trié par urgence. Chaque entrée : quoi faire, pourquoi, comment vérifier que 
 
 ### H6 — Préparer la machine GPU
 - Installer Ubuntu 24.04 (ou confirmer un autre OS), pilote NVIDIA, Docker + NVIDIA Container Toolkit.
-- **Vérification** : `docker run --rm --gpus all nvidia/cuda:12.4.1-base-ubuntu22.04 nvidia-smi` liste les 4 cartes.
+- **Vérification** : `make doctor-execution` sort en 0 (ffmpeg avec libx264 et aac, démon Docker, 4 cartes vues par `nvidia-smi -L`, jeton Claude présent), et `docker run --rm --gpus all nvidia/cuda:12.4.1-base-ubuntu22.04 nvidia-smi` liste les 4 cartes.
 - Choisir comment `make gpu-smoke` sera lancé : par toi, ou via Remote Control depuis une session Claude Code.
 
 ### H7 — Jeton Claude Code pour le studio
 - Sur la machine d'exécution : `claude setup-token`, puis placer la valeur dans `.env` (`CLAUDE_CODE_OAUTH_TOKEN=`), jamais dans le dépôt.
-- **Vérification** : `make doctor` affiche « CLAUDE_CODE_OAUTH_TOKEN: présent » et aucune erreur.
+- **Vérification** : `make doctor-execution` ne signale plus « CLAUDE_CODE_OAUTH_TOKEN absent ».
 
 ## 🟡 À lancer tôt (délais externes de plusieurs semaines)
 
