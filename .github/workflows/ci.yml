@@ -21,6 +21,7 @@ jobs:
           --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 12
     env:
       STUDIO_TEST_PG_URL: postgresql+psycopg://postgres@localhost:5432/postgres
+      STUDIO_REQUIRE_MEDIA: "1"  # a missing ffmpeg fails the media tests instead of skipping them
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
@@ -32,8 +33,8 @@ jobs:
         run: make doctor
       - name: Lint (ruff + mypy strict)
         run: make lint
-      - name: Tests
-        run: make test
+      - name: Phase 1 gate (lint, tests without a skipped one, core coverage, e2e dry run twice)
+        run: make verify-phase-1
       - name: Phase 0 gate (informative until the YouTube API key exists, NEEDS_HUMAN H0)
         run: make verify-phase-0
         continue-on-error: true

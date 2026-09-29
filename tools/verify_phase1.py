@@ -13,6 +13,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -37,8 +39,8 @@ class Check:
         self.details.append(msg)
 
 
-def run(cmd: list[str], cwd: Path = ROOT) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
+def run(cmd: list[str], cwd: Path = ROOT, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, env=env)
 
 
 def check_lint() -> Check:
@@ -55,13 +57,24 @@ def check_lint() -> Check:
 
 
 def check_tests(cov_json: Path) -> Check:
-    chk = Check(f"Tests verts et couverture ≥ {MIN_COVERAGE:g} % sur le cœur")
-    r = run(["uv", "run", "--group", "dev", "pytest", "-q", "--cov=studio", f"--cov-report=json:{cov_json}"])
+    chk = Check(f"Tests verts, aucun ignoré, couverture ≥ {MIN_COVERAGE:g} % sur le cœur")
+    if not os.environ.get("STUDIO_TEST_PG_URL"):
+        chk.fail(
+            "STUDIO_TEST_PG_URL absent : les preuves Postgres (SKIP LOCKED, verrous, essai DBOS) ne tourneraient pas. "
+            "Exemple : STUDIO_TEST_PG_URL=postgresql+psycopg://postgres@localhost:5432/studio_it"
+        )
+        return chk
+    # STUDIO_REQUIRE_MEDIA turns a missing ffmpeg into a failure instead of a skip: a green run carries the media proofs.
+    env = {**os.environ, "STUDIO_REQUIRE_MEDIA": "1"}
+    r = run(["uv", "run", "--group", "dev", "pytest", "-q", "--cov=studio", f"--cov-report=json:{cov_json}"], env=env)
     tail = (r.stdout.strip().splitlines() or ["?"])[-1]
     chk.details.append(f"pytest : {tail}")
     if r.returncode != 0:
         chk.fail("pytest en échec")
         return chk
+    skipped = re.search(r"(\d+) skipped", tail)
+    if skipped:
+        chk.fail(f"{skipped.group(1)} test(s) ignoré(s) : une preuve ignorée ne prouve rien")
     data = json.loads(cov_json.read_text())
     covered = total = 0
     for path, info in data.get("files", {}).items():
