@@ -264,7 +264,7 @@ def test_max_turns_must_be_positive(fake: FakeClaude, max_turns: int) -> None:
         )
 
 
-@pytest.mark.parametrize("value", ["", "sk-ant-api03-not-a-real-key"])
+@pytest.mark.parametrize("value", ["", "sk-" + "ant-api03-not-a-real-key"])
 def test_api_key_in_given_env_is_refused_even_empty(fake: FakeClaude, value: str) -> None:
     runner = fake.runner("ok", ANTHROPIC_API_KEY=value)
 

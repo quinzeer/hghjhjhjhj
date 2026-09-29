@@ -116,7 +116,8 @@ SECRET_PATTERNS = (
 
 # Placeholder tokens that tests feed to the redaction code of the Claude runner. They have the shape of a key on purpose
 # (the code under test must recognise the shape) and are listed one by one: a real key never equals one of them, and a
-# lookalike that is not in this set, or that continues past its end, still fails the gate.
+# lookalike that is not in this set, or that continues past its end, still fails the gate. The tests now build them at run
+# time, so no file of the tree holds them; the set stays because the history of the branch does and cannot be rewritten.
 KNOWN_FAKE_SECRETS = frozenset({"sk-ant-api03-FAKEfake0123456789", "sk-ant-api03-not-a-real-key"})
 _TOKEN_CHARS = r"A-Za-z0-9_\-"
 _KNOWN_FAKES = re.compile(

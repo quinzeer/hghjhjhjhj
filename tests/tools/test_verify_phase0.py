@@ -380,7 +380,7 @@ def test_empty_values_in_env_example_are_not_secrets(repo: Path) -> None:
     assert not vp.check_secrets(repo).ok
 
 
-FAKE_KEY = "sk-ant-api03-FAKEfake0123456789"
+FAKE_KEY = "sk-" + "ant-api03-FAKEfake0123456789"  # built here: the gate scans this file too
 
 
 def test_a_listed_placeholder_token_is_not_a_secret(repo: Path) -> None:

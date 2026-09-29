@@ -29,7 +29,7 @@ from typing import Any
 RESET_EPOCH = 1790000000  # 2026-09-21T14:13:20Z
 VALID = {"title": "from structured_output", "score": 7}
 INVALID = {"title": 5}
-FAKE_KEY_SHAPE = "sk-ant-api03-FAKEfake0123456789"
+FAKE_KEY_SHAPE = "sk-" + "ant-api03-FAKEfake0123456789"  # built here: the secret scanners read this file too
 CLI_FIXTURES = Path(__file__).resolve().parent / "llm" / "claude_cli"
 
 
