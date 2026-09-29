@@ -410,6 +410,23 @@ def test_a_replay_that_says_it_executed_nothing_but_changed_the_state_fails_the_
 
 
 @pytest.mark.media
+def test_a_replay_whose_report_announces_executed_steps_fails_and_the_line_says_how_many(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, media_tools: None
+) -> None:
+    def announce_two_steps(out: Path) -> None:
+        for report_path in out.glob("channel-a/*/report.json"):
+            report = json.loads(report_path.read_text())
+            report.update(executed=["idea", "package"], skipped=[])
+            report_path.write_text(json.dumps(report))
+
+    checks = run_e2e(monkeypatch, tmp_path, FakeCli(tmp_path, replay=announce_two_steps))
+    assert not any(c.ok for c in checks)
+    details = [d for c in checks for d in c.details]
+    assert any("étapes réexécutées ['idea', 'package']" in d for d in details)
+    assert any("2 exécutée(s)" in d for d in details) and not any("0 exécutée(s)" in d for d in details)
+
+
+@pytest.mark.media
 def test_a_replay_that_wipes_the_state_and_recomputes_it_to_the_same_rows_fails_for_each_format(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, media_tools: None
 ) -> None:

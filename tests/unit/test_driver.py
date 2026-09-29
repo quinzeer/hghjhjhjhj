@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from pydantic import ValidationError
 
 from studio.core.artifacts import LocalArtifactStore
 from studio.core.db import make_engine
@@ -25,7 +26,7 @@ from studio.domain import (
     VideoFormat,
     canonical_json,
 )
-from studio.pipeline.driver import _Autopilot, _clear_leftovers, _deliver, _waiting_for, _why
+from studio.pipeline.driver import _Autopilot, _clear_leftovers, _contract_message, _deliver, _waiting_for, _why
 from studio.pipeline.mock_agents import MockComplianceOfficer, build_idea, build_package, build_script_doc
 from studio.scenario.skill_json import from_skill_json
 
@@ -266,3 +267,20 @@ def test_a_new_run_removes_the_scratch_files_and_half_written_json_of_a_killed_p
 
     assert not (state / "tmp").exists()
     assert sorted(f.name for f in folder.iterdir()) == ["manifest.json", "notes.tmp", "render.mp4"]
+
+
+# ------------------------------------------------------------------ a document that does not fit its contract (critic R1, Q6)
+
+
+def test_a_contract_error_says_where_and_why_and_never_quotes_the_document(tmp_path: Path) -> None:
+    marker = "SECRET-CONTENT-OF-A-PRIVATE-DOCUMENT"
+    with pytest.raises(ValidationError) as raised:
+        PublicationCandidate.model_validate(
+            {"run_id": "r", "channel_id": "channel-a", "publication": {}, "script_key": marker, "qa_key": marker}
+        )
+    assert marker in str(raised.value)  # the raw error does quote it: that is what the message must not do
+    state = tmp_path / "state"
+    message = _contract_message(raised.value, state)
+    assert marker not in message
+    assert "PublicationCandidate contract" in message and "error(s)" in message and str(state) in message
+    assert "first: " in message and "another version" in message  # where it broke, why, and what can be done

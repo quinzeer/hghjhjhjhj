@@ -6,7 +6,11 @@ import re
 from pathlib import Path
 
 TESTS = Path(__file__).resolve().parents[1]
-FORBIDDEN = re.compile(r"\b(drop\s+table|drop\s+database|truncate\s+table|drop_all)\b", re.IGNORECASE)
+FORBIDDEN = re.compile(
+    r"\b(drop\s+(table|database|owned)|drop\s+schema\s+(if\s+exists\s+)?\"?public\"?|truncate|delete\s+from|drop_all)\b"
+    r"|\.drop\(\s*\w*(engine|conn)",
+    re.IGNORECASE,
+)
 
 
 def test_no_test_wipes_a_table_or_a_database_it_does_not_own() -> None:
@@ -22,6 +26,27 @@ def test_no_test_wipes_a_table_or_a_database_it_does_not_own() -> None:
 
 
 def test_the_guard_recognises_what_it_forbids() -> None:
-    assert FORBIDDEN.search('conn.execute(text("DROP TABLE IF EXISTS gate_decisions"))')
-    assert FORBIDDEN.search("metadata.drop_all(engine)")
-    assert not FORBIDDEN.search("conn.execute(text(f'DROP SCHEMA \"{name}\" CASCADE'))")
+    forbidden = [
+        'conn.execute(text("DROP TABLE IF EXISTS gate_decisions"))',
+        'conn.execute(text("TRUNCATE gate_decisions"))',
+        'conn.execute(text("DELETE FROM gate_decisions"))',
+        'conn.execute(text("DROP SCHEMA public CASCADE"))',
+        "conn.execute(text('drop schema if exists \"public\" cascade'))",
+        'conn.execute(text("DROP OWNED BY postgres"))',
+        'conn.execute(text("DROP DATABASE studio_it"))',
+        "gate_decisions.drop(engine)",
+        "metadata.drop_all(engine)",
+    ]
+    for line in forbidden:
+        assert FORBIDDEN.search(line), line
+
+
+def test_the_guard_leaves_the_schemas_a_test_owns_alone() -> None:
+    allowed = [
+        "conn.execute(text(f'DROP SCHEMA \"{name}\" CASCADE'))",
+        "conn.execute(text(f'DROP SCHEMA IF EXISTS \"{schema}\" CASCADE'))",
+        "conn.execute(delete(step_claims))",
+        "path.write_bytes(data[:4])  # a copy tool truncated the file",
+    ]
+    for line in allowed:
+        assert not FORBIDDEN.search(line), line

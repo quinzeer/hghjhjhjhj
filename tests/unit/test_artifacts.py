@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import hashlib
 import os
 import signal
 import subprocess
@@ -11,6 +12,7 @@ import threading
 from collections.abc import Callable, Iterator
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from typing import Any
 
 import pytest
 from sqlalchemy import Engine, func, select
@@ -366,6 +368,27 @@ def test_a_big_object_is_not_re_hashed_on_every_read_but_verify_still_catches_it
     assert small_limit.has(stored.key)  # a read of a big object trusts the index and the size
     assert not small_limit.verify(stored.key)  # verify re-hashes whatever the size
     assert not small_limit.has(stored.key)
+
+
+def test_a_good_copy_that_lands_while_a_corrupt_one_is_being_judged_is_not_removed(
+    store: LocalArtifactStore, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    data = b"abcdefghij"
+    good = store.put_bytes(data, kind="text", media_type="text/plain")
+    good.path.write_bytes(b"XXXXXXXXXX")  # rotten, same size
+    real_digest = hashlib.file_digest
+
+    def digest_then_replace(fh: Any, algorithm: str) -> Any:
+        result = real_digest(fh, algorithm)  # what is judged is the rotten file ...
+        landing = good.path.with_name("landing.tmp")
+        landing.write_bytes(data)
+        os.replace(landing, good.path)  # ... and a good copy lands under its name (another inode) before the removal
+        return result
+
+    monkeypatch.setattr(hashlib, "file_digest", digest_then_replace)
+    assert store.verify(good.key) is False  # the file that was hashed was corrupt
+    monkeypatch.setattr(hashlib, "file_digest", real_digest)
+    assert good.path.read_bytes() == data and store.has(good.key)  # the good copy that replaced it was left alone
 
 
 def test_verify_removes_a_corrupt_file_so_that_put_repairs_it(tmp_path: Path, engine: Engine) -> None:
