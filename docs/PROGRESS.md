@@ -11,7 +11,7 @@ Entrées datées, la plus récente en haut. Chaque affirmation « fait » est su
 - **Parcours à blanc** (`studio/pipeline`, `studio/cli.py`) : idée → packaging → G1 → script → une voix et un plan par scène → musique → mixage −14 LUFS → assemblage → QA → **candidat de publication** → conformité (agent et humain) → G2 → plan de publication privé, sans réseau. `studio run --channel A --format short --dry-run`.
 - **Essai DBOS 3.1.0** (19 tests, vrais processus, Postgres) puis **ADR-001 révisé** : file tirée maison retenue, DBOS mis de côté (décision 12), décisions 13 à 20, table pannes → tests (95 tests cités, existence vérifiée par script).
 - **Outillage** : `make doctor-execution`, porte de phase 1 qui mesure elle-même, CI qui la lance, `dbos` dans le groupe `dev`, `sqlalchemy` déclaré.
-- **Volume** : `studio/` ≈ 9 700 lignes, `tests/` ≈ 16 300 lignes, 1 396 tests.
+- **Volume** : `studio/` ≈ 9 700 lignes, `tests/` ≈ 16 500 lignes, 1 407 tests.
 
 ### Revue `critic` du 2026-09-29 : refusée, corrigée
 La 1re revue (HEAD `ef03588`, 3 h, 181 appels d'outils) a reproduit la porte (5/5) puis **refusé** la phase : 2 bloquants, 10 importants, 7 mineurs. Elle avait raison sur les deux bloquants.
@@ -82,30 +82,33 @@ Non vérifiés par la revue : le verrou sur NFS, deux `--out` qui se recouvrent 
 6. Les jetons factices des tests faisaient tomber la porte de phase 0 à 12/14 : liste exacte de deux jetons dans l'outil, et plus aucun jeton dans l'arbre.
 7. Mutation testing du module média par son agent : 56 mutants sur 56 tués. Mutation testing de ces corrections : **19 mutants sur 19 tués**, chacun par le test prévu.
 
+8. La porte lancée sur le premier jeu de corrections des réserves de la 3e revue a échoué sur un test (4/5) : un test de course entre une purge et un `put` supposait l'ancien chemin du `put`, avant que celui-ci contrôle l'intégrité d'un petit objet. Le test vise désormais les deux tailles d'objet et les deux fenêtres de la course ; le commit de code avait été poussé avant la fin de la porte, la CI de ce commit était donc rouge jusqu'au commit suivant (`b9fedf1`).
+9. Le contrôle de colonnes des tables ignorait la traduction de schéma d'une connexion (`schema_translate_map`), que les tests Postgres de la file utilisent : les tests d'intégration l'ont révélé, il la respecte.
+
 ### Preuves
 ```
 $ STUDIO_TEST_PG_URL=postgresql+psycopg://postgres@localhost:5432/studio_lead make verify-phase-1
 ✓ Lint : ruff + mypy strict
 ✓ Tests verts, aucun ignoré, couverture ≥ 80 % sur le cœur
-    · pytest : 1396 tests, 0 ignoré(s), 0 échec(s), 0 erreur(s)
-    · couverture du cœur : 99.0 % (2928/2958 lignes)
+    · pytest : 1407 tests, 0 ignoré(s), 0 échec(s), 0 erreur(s)
+    · couverture du cœur : 99.1 % (2944/2972 lignes)
 ✓ e2e-dry channel-a short : rendu 1080×1920, manifeste, coûts, mock, replay
     · render.mp4 : 1080×1920 @ 30/1, 23.30 s, -14.0 LUFS, -11.4 dBTP
-    · replay : 37 étapes réutilisées, 0 exécutée, état inchangé (lignes, dates et fichiers du magasin)
+    · replay : 37 étapes réutilisées, 0 exécutée(s), état inchangé (lignes, dates et fichiers du magasin)
 ✓ e2e-dry channel-a long : rendu 1920×1080, manifeste, coûts, mock, replay
     · render.mp4 : 1920×1080 @ 30/1, 46.50 s, -14.0 LUFS, -10.8 dBTP
-    · replay : 61 étapes réutilisées, 0 exécutée, état inchangé (lignes, dates et fichiers du magasin)
+    · replay : 61 étapes réutilisées, 0 exécutée(s), état inchangé (lignes, dates et fichiers du magasin)
 ✓ CI GitHub Actions présente
 
-verify-phase-1 : 5/5 contrôles OK        (10 min 32 s, HEAD f854b8e)
+verify-phase-1 : 5/5 contrôles OK        (11 min 2 s, HEAD b9fedf1)
 
 $ make verify-phase-0
 verify-phase-0 : 13/14 contrôles OK, 1 en échec        # seul échec : outliers mesurés (NEEDS_HUMAN H0)
 ```
-Les durées, loudness et crêtes ci-dessus sont mesurées par la porte elle-même (somme des scènes du script, ffmpeg EBU R128), pas lues dans le rapport ; « état inchangé » veut dire : chaque ligne de chaque table (sauf la date du dernier `put` d'un artefact) et le nom, la taille, l'inode et la date de chaque fichier du magasin sont identiques avant et après le rejeu. Preuves ciblées : `tests/integration/test_e2e_dry.py` (41 tests : rejeu à zéro exécution du Short et du long, retouche d'une scène = une voix et aucun plan, refus aux portes, divulgation ou script modifiés après approbation, révocation, corruption d'un rendu et d'un candidat, manifeste échangé, base partagée, deux processus, arrêts brutaux répétés, pause puis reprise sur limite d'usage, aucun appel réseau tenté).
+Les durées, loudness et crêtes ci-dessus sont mesurées par la porte elle-même (somme des scènes du script, ffmpeg EBU R128), pas lues dans le rapport ; « état inchangé » veut dire : chaque ligne de chaque table (sauf la date du dernier `put` d'un artefact) et le nom, la taille, l'inode et la date de chaque fichier du magasin sont identiques avant et après le rejeu. Preuves ciblées : `tests/integration/test_e2e_dry.py` (44 tests : rejeu à zéro exécution du Short et du long, retouche d'une scène = une voix et aucun plan, refus aux portes, divulgation, script ou contrat modifiés après approbation, révocation, corruption d'un rendu, d'un candidat et d'un jeton de porte, manifeste échangé, base partagée, deux processus, arrêts brutaux répétés, pause puis reprise sur limite d'usage, aucun appel réseau tenté).
 
 ### État
-Phase 1 : critères de sortie remplis en local (porte 5/5 sur `f854b8e`), 1re et 2e revues `critic` refusées puis corrigées ; **3e revue restreinte à passer**. Phase 0 : **ouverte** (H0, clé d'API YouTube ; H1, dépôt public).
+Phase 1 : critères de sortie remplis (porte 5/5 sur `b9fedf1`, 1 407 tests), 1re et 2e revues `critic` refusées puis corrigées, 3e revue **acceptée avec réserves datées** (R1, R6, R7 corrigées ou inscrites avant la PR, R2 à R5 datées dans `docs/PLAN.md`) ; confirmation restreinte du `critic` sur R1, R5, R6, R7 demandée. Phase 0 : **ouverte** (H0, clé d'API YouTube ; H1, dépôt public).
 
 ## 2026-09-28 — Session 1 (fin) : contre-revue `critic` et corrections
 
