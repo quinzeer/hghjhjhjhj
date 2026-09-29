@@ -144,8 +144,10 @@ def make_render(
     seconds: float = 3.0,
     audio_db: float | None = 7.8,
     audio_seconds: float | None = None,
+    spike: bool = False,
 ) -> None:
-    """A small H.264 + AAC file: ffmpeg sine boosted by 7.8 dB measures about -14 LUFS."""
+    """A small H.264 + AAC file: ffmpeg sine boosted by 7.8 dB measures about -14 LUFS. With `spike`, the same loudness
+    plus a click of half a millisecond at nearly full scale: the true peak goes above the ceiling, the loudness does not."""
     cmd = [
         "ffmpeg",
         "-hide_banner",
@@ -157,7 +159,10 @@ def make_render(
         "-i",
         f"color=c=blue:s={width}x{height}:r=30:d={seconds}",
     ]
-    if audio_db is not None:
+    if audio_db is not None and spike:
+        click = "aevalsrc='0.3066*sin(2*PI*440*t)+if(between(t,1,1.0005),0.9,0)':s=48000:d=" + str(seconds)
+        cmd += ["-f", "lavfi", "-i", click, "-c:a", "aac"]
+    elif audio_db is not None:
         length = audio_seconds if audio_seconds is not None else seconds
         cmd += [
             "-f",
@@ -244,6 +249,15 @@ def test_a_render_at_the_wrong_loudness_fails(folder: Path) -> None:
 
 
 @pytest.mark.media
+def test_a_render_at_the_right_loudness_whose_true_peak_is_above_the_ceiling_fails(folder: Path) -> None:
+    """Critic N14: the two limits are independent; a click can break the ceiling of -1 dBTP at -14 LUFS."""
+    chk = judge(folder, write_outputs(folder, render={"spike": True}))
+    assert not chk.ok
+    assert any("crête vraie" in d and "au-dessus de -1" in d for d in chk.details)
+    assert not any("LUFS hors de" in d for d in chk.details)  # the loudness is on target: the peak alone is refused
+
+
+@pytest.mark.media
 def test_a_render_without_audio_or_with_a_short_audio_track_fails(folder: Path) -> None:
     silent = judge(folder, write_outputs(folder, render={"audio_db": None}))
     assert not silent.ok and any("pistes : vidéo=1 audio=0" in d for d in silent.details)
@@ -262,22 +276,57 @@ def test_the_scene_total_is_the_sum_of_the_scene_durations() -> None:
     assert gate.scenes_total({}) == (0.0, 0)
 
 
-def test_the_state_snapshot_sees_anything_a_replay_would_add(tmp_path: Path) -> None:
+def make_state(state: Path) -> Path:
+    """A state folder shaped like the studio's: an index (SQLite) and a content-addressed folder."""
     import sqlite3
 
-    state = tmp_path / "state"
     (state / "cas" / "ab").mkdir(parents=True)
     with sqlite3.connect(state / "studio.db") as conn:
-        for table in ("artifacts", "step_outputs", "entries", "gate_decisions"):
-            conn.execute(f"create table {table} (x)")
+        conn.execute("create table artifacts (key text, created_at text)")
+        conn.execute("create table entries (x, at text)")
+        conn.execute("insert into artifacts values ('k', '2026-09-29 10:00')")
+        conn.execute("insert into entries values (1, '2026-09-29 10:00')")
+    (state / "cas" / "ab" / ("c" * 64)).write_bytes(b"an object")
+    return state
+
+
+def test_the_state_snapshot_sees_anything_a_replay_would_add_or_rewrite(tmp_path: Path) -> None:
+    import sqlite3
+
+    state = make_state(tmp_path / "state")
     before = gate.state_snapshot(state)
-    assert gate.state_snapshot(state) == before
+    assert gate.state_snapshot(state) == before and gate.changed_parts(before, before) == []
+
     with sqlite3.connect(state / "studio.db") as conn:
-        conn.execute("insert into entries values (1)")
-    assert gate.state_snapshot(state) != before
+        conn.execute("update artifacts set created_at = '2026-09-29 11:00'")  # what a replay's re-put does: not a change
+    assert gate.state_snapshot(state) == before
+
+    with sqlite3.connect(state / "studio.db") as conn:
+        conn.execute("insert into entries values (2, '2026-09-29 11:00')")  # a step that ran and was charged
+    after = gate.state_snapshot(state)
+    assert gate.changed_parts(before, after) == ["table entries"]
+
+    with sqlite3.connect(state / "studio.db") as conn:
+        conn.execute("update entries set at = '2026-09-29 12:00' where x = 1")  # same rows, another date
+    assert gate.changed_parts(after, gate.state_snapshot(state)) == ["table entries"]
+
+
+def test_the_state_snapshot_sees_a_stored_file_written_again_even_with_the_same_bytes(tmp_path: Path) -> None:
+    state = make_state(tmp_path / "state")
     before = gate.state_snapshot(state)
-    (state / "cas" / "ab" / ("c" * 64)).write_bytes(b"new object")
-    assert gate.state_snapshot(state) != before
+    (state / "cas" / "ab" / ("d" * 64)).write_bytes(b"new object")
+    assert gate.changed_parts(before, gate.state_snapshot(state)) == ["fichiers du magasin"]
+    before = gate.state_snapshot(state)
+    same = state / "cas" / "ab" / ("c" * 64)
+    same.unlink()
+    same.write_bytes(b"an object")  # recomputed to the very same bytes: another inode, another modification time
+    assert gate.changed_parts(before, gate.state_snapshot(state)) == ["fichiers du magasin"]
+
+
+def test_a_part_that_vanished_or_appeared_counts_as_changed(tmp_path: Path) -> None:
+    assert gate.changed_parts({"table a": "1"}, {}) == ["table a"]
+    assert gate.changed_parts({}, {"table b": "2"}) == ["table b"]
+    assert gate.state_snapshot(tmp_path / "nothing").keys() == {"fichiers du magasin"}
 
 
 class FakeCli:
@@ -289,8 +338,6 @@ class FakeCli:
         self.base, self.replay, self.outputs, self.calls = base, replay, outputs or {}, 0
 
     def __call__(self, cmd: list[str], cwd: Path = ROOT, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
-        import sqlite3
-
         if cmd[0] != "uv":  # ffprobe and ffmpeg run for real: the gate measures the files the fake CLI wrote
             return subprocess.run(cmd, capture_output=True, text=True)
         out = Path(cmd[cmd.index("--out") + 1])
@@ -303,10 +350,8 @@ class FakeCli:
                 folder, render={"width": width, "height": height}, render_path=str(folder / "render.mp4"), **self.outputs
             )
             state = out / "state"
-            (state / "cas").mkdir(parents=True, exist_ok=True)
-            with sqlite3.connect(state / "studio.db") as conn:
-                for table in ("artifacts", "step_outputs", "entries", "gate_decisions"):
-                    conn.execute(f"create table if not exists {table} (x)")
+            if not state.exists():  # the second format of a gate run finds the state of the first
+                make_state(state)
             report = json.loads((folder / "report.json").read_text())
             report["executed"] = ["idea"]
             (folder / "report.json").write_text(json.dumps(report))
@@ -330,7 +375,21 @@ def test_the_e2e_check_passes_a_faithful_run_and_proves_the_replay_by_the_state_
 ) -> None:
     checks = run_e2e(monkeypatch, tmp_path, FakeCli(tmp_path))
     assert len(checks) == 2 and all(c.ok for c in checks), [c.details for c in checks]
-    assert any("état inchangé" in d for d in checks[0].details)
+    assert all(any("état inchangé" in d for d in c.details) for c in checks)  # for each format, not for the first only
+
+
+@pytest.mark.media
+def test_a_replay_that_only_bumps_the_date_of_the_last_put_of_an_artifact_passes(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, media_tools: None
+) -> None:
+    import sqlite3
+
+    def re_put(out: Path) -> None:
+        with sqlite3.connect(out / "state" / "studio.db") as conn:
+            conn.execute("update artifacts set created_at = '2026-09-30 00:00'")
+
+    checks = run_e2e(monkeypatch, tmp_path, FakeCli(tmp_path, replay=re_put))
+    assert all(c.ok for c in checks), [c.details for c in checks]
 
 
 @pytest.mark.media
@@ -341,11 +400,30 @@ def test_a_replay_that_says_it_executed_nothing_but_changed_the_state_fails_the_
 
     def touch_the_ledger(out: Path) -> None:
         with sqlite3.connect(out / "state" / "studio.db") as conn:
-            conn.execute("insert into entries values (1)")
+            conn.execute("insert into entries values (1, 'now')")
 
     checks = run_e2e(monkeypatch, tmp_path, FakeCli(tmp_path, replay=touch_the_ledger))
     assert not any(c.ok for c in checks)
-    assert any("l'état (artefacts, étapes, coûts, décisions, fichiers) a changé" in d for c in checks for d in c.details)
+    details = [d for c in checks for d in c.details]
+    assert any("l'état a changé (table entries)" in d for d in details)
+    assert not any("état inchangé" in d for d in details)  # the gate never says so after saying the opposite
+
+
+@pytest.mark.media
+def test_a_replay_that_wipes_the_state_and_recomputes_it_to_the_same_rows_fails_for_each_format(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, media_tools: None
+) -> None:
+    """Critic I-5, cheat T1: everything recomputed, `executed: []` reported, the same rows and the same file names."""
+    import shutil
+
+    def wipe_and_recompute(out: Path) -> None:
+        shutil.rmtree(out / "state")
+        make_state(out / "state")  # the same rows and the same names, written again: other inodes, other dates
+
+    checks = run_e2e(monkeypatch, tmp_path, FakeCli(tmp_path, replay=wipe_and_recompute))
+    assert len(checks) == 2 and not any(c.ok for c in checks)  # the long format is judged on its own, not by ricochet
+    assert all(any("fichiers du magasin" in d for d in c.details) for c in checks)
+    assert not any("état inchangé" in d for c in checks for d in c.details)
 
 
 @pytest.mark.media

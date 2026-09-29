@@ -8,8 +8,8 @@
    what the run reports about itself: ffprobe (resolution, constant frame rate, tracks), the length of the render
    against the sum of the script's scenes, the loudness and true peak (ffmpeg, EBU R128), the sha256 of the delivered
    render against its key, the lengths of the audio and video tracks;
-4. a second run executes nothing: the state folder (artifacts, step bindings, ledger entries, decisions, stored files)
-   is unchanged, whatever the report says;
+4. a second run executes nothing: the state folder is unchanged, whatever the report says: every row of every table
+   (but the date of the last put of an artifact) and the name, size, inode and modification time of every stored file;
 5. every JSON the run writes (report, manifest, costs, scenes) and every cost entry says "mock".
 """
 
@@ -146,17 +146,36 @@ def file_sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def state_snapshot(state: Path) -> dict[str, object]:
-    """What a run may add to the state folder: artifacts, step bindings, ledger entries, decisions, stored files."""
-    counts: dict[str, object] = {}
+# Columns a replay legitimately rewrites: `artifacts.created_at` moves at every put, and a replay puts the token of each
+# gate again. Every other column of every table, and every stored file, stays byte for byte and date for date.
+VOLATILE_COLUMNS = frozenset({("artifacts", "created_at")})
+
+
+def state_snapshot(state: Path) -> dict[str, str]:
+    """One digest per table of the index (every row, every column but the volatile ones) and one for the stored files
+    (name, size, inode, modification time). A run that wipes the state and recomputes it to the same rows still leaves
+    other timestamps and other inodes, so counting rows or hashing names would not see it."""
+    snapshot: dict[str, str] = {}
     db = state / "studio.db"
     if db.is_file():
         with sqlite3.connect(db, timeout=10) as conn:
-            for table in ("artifacts", "step_outputs", "entries", "gate_decisions"):
-                counts[table] = conn.execute(f"select count(*) from {table}").fetchone()[0]  # noqa: S608 (fixed names)
-    objects = sorted(f.name for f in (state / "cas").rglob("*") if f.is_file()) if (state / "cas").is_dir() else []
-    counts["cas_files"] = hashlib.sha256("\n".join(objects).encode()).hexdigest()
-    return counts
+            tables = [
+                r[0] for r in conn.execute("select name from sqlite_master where type = 'table' and name not like 'sqlite_%'")
+            ]
+            for table in sorted(tables):
+                columns = [r[1] for r in conn.execute(f'pragma table_info("{table}")') if (table, r[1]) not in VOLATILE_COLUMNS]
+                selected = ", ".join(f'"{c}"' for c in columns) or "1"
+                rows = conn.execute(f'select {selected} from "{table}" order by {selected}').fetchall()  # noqa: S608 (names from the schema)
+                snapshot[f"table {table}"] = hashlib.sha256(repr(rows).encode()).hexdigest()
+    cas = state / "cas"
+    stored = sorted((f.name, s.st_size, s.st_ino, s.st_mtime_ns) for f in cas.rglob("*") if f.is_file() for s in [f.stat()])
+    snapshot["fichiers du magasin"] = hashlib.sha256(repr(stored if cas.is_dir() else []).encode()).hexdigest()
+    return snapshot
+
+
+def changed_parts(before: dict[str, str], after: dict[str, str]) -> list[str]:
+    """Which parts of the state differ between two snapshots (a part that appeared or vanished counts)."""
+    return sorted(part for part in before.keys() | after.keys() if before.get(part) != after.get(part))
 
 
 def scenes_total(doc: dict) -> tuple[float, int]:
@@ -265,11 +284,13 @@ def check_e2e(out: Path, channel: str) -> list[Check]:
                 chk.fail(f"2e exécution : étapes réexécutées {report2['executed']}")
             if report2.get("render_key") != report.get("render_key"):
                 chk.fail("2e exécution : rendu différent")
-            if state_snapshot(out / "state") != before:  # independent of what the report says it did
-                chk.fail("2e exécution : l'état (artefacts, étapes, coûts, décisions, fichiers) a changé")
+            changed = changed_parts(before, state_snapshot(out / "state"))  # independent of what the report says it did
+            if changed:
+                chk.fail(f"2e exécution : l'état a changé ({', '.join(changed)}) : ce n'est pas un simple rejeu")
             if (render.stat().st_ino, render.stat().st_mtime_ns) != stamp:
                 chk.details.append("le rendu livré a été réécrit à l'identique")
-            chk.details.append(f"replay : {len(report2.get('skipped', []))} étapes réutilisées, 0 exécutée, état inchangé")
+            verdict = "" if changed else ", état inchangé (lignes, dates et fichiers du magasin)"
+            chk.details.append(f"replay : {len(report2.get('skipped', []))} étapes réutilisées, 0 exécutée{verdict}")
         checks.append(chk)
     return checks
 
