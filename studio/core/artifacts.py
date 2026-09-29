@@ -40,7 +40,6 @@ from sqlalchemy import (
     Column,
     ColumnElement,
     Connection,
-    DateTime,
     Engine,
     ForeignKey,
     MetaData,
@@ -53,10 +52,7 @@ from sqlalchemy import (
     select,
     update,
 )
-from sqlalchemy.dialects import postgresql, sqlite
-from sqlalchemy.engine import Dialect
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.types import TypeDecorator
 
 from studio.core.db import UtcDateTime, create_tables, dialect_insert
 from studio.core.hashing import bytes_key
@@ -69,6 +65,8 @@ _KEY_RE = re.compile(r"^[0-9a-f]{64}$")
 _CHUNK = 1 << 20
 _BATCH = 500
 _COMMIT_ATTEMPTS = 5
+
+
 def _utcnow() -> dt.datetime:
     return dt.datetime.now(dt.UTC)
 

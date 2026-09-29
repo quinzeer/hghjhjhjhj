@@ -19,8 +19,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from studio.core.artifacts import KINDS
-from studio.core.hashing import bytes_key
 from studio.core.costs import ReservationError
+from studio.core.hashing import bytes_key
 from studio.core.interfaces import ArtifactMissing, BudgetExceeded, Cap, Reservation, StoredArtifact
 from studio.domain import CostEntry, CostKind, GateDecision, GateName
 

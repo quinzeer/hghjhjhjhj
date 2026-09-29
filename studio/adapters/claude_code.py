@@ -48,7 +48,6 @@ from jsonschema.protocols import Validator
 
 from studio.adapters.base import AdapterSpec
 from studio.adapters.llm_base import ForbiddenAuth, LLMCallError, LLMOutputInvalid, LLMResult, LLMUsage, QuotaExhausted
-from studio.core.interfaces import StudioError
 from studio.domain import AdapterKind, AdapterStatus, LicenseClass
 
 CLAUDE_CODE_SPEC = AdapterSpec(

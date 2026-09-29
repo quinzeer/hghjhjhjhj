@@ -290,8 +290,8 @@ class RunResult(PlanResult):
     A gate recorded this time counts as executed. `blocked` lists the steps downstream of a waiting gate (no
     key can be computed for them); `reasons` says why each waiting gate waits. A step that raised is charged
     what it measurably burnt (its entries are in `costs` and in the manifest); `unbilled` holds only what the
-    ledger failed to record, for the orchestrator to settle later. `kept_versions` maps a step to the version its locked output was kept under while the
-    graph declares another one."""
+    ledger failed to record, for the orchestrator to settle later. `kept_versions` maps a step to the version its
+    locked output was kept under while the graph declares another one."""
 
     blocked: list[str] = field(default_factory=list)
     reasons: dict[str, str] = field(default_factory=dict)
@@ -718,7 +718,9 @@ class Runner:
                 try:
                     self.ledger.settle(reservation.id, entry)
                 except Exception:
-                    log.exception("could not charge the failed attempt of %s", step.name, extra=self._log_extra(step, key, state.run_id))
+                    log.exception(
+                        "could not charge the failed attempt of %s", step.name, extra=self._log_extra(step, key, state.run_id)
+                    )
                     state.result.unbilled.append(entry)
                     continue
                 state.result.costs.append(entry)
