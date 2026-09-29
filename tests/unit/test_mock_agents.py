@@ -13,6 +13,9 @@ from studio.domain import (
     GateName,
     Idea,
     Package,
+    Platform,
+    Publication,
+    PublicationCandidate,
     SceneRole,
     Script,
     ShotTechnique,
@@ -178,22 +181,46 @@ def test_the_mock_llm_checks_its_output_against_the_requested_schema() -> None:
 # ------------------------------------------------------------------ reviewers
 
 
-def test_the_mock_reviewer_approves_the_exact_subject_and_says_nobody_looked() -> None:
+def candidate_for(script: Script, render_key: str = RENDER, **changes: object) -> PublicationCandidate:
+    fields: dict[str, object] = dict(
+        platform=Platform.YOUTUBE,
+        render_key=render_key,
+        title=script.titles[0],
+        description=script.promise,
+        contains_synthetic_media=script.disclosure.required,
+    )
+    fields.update(changes)
+    return PublicationCandidate(run_id="run-1", channel_id="channel-a", publication=Publication(**fields))  # type: ignore[arg-type]
+
+
+def qa_report(render_key: str = RENDER, defects: list[str] | None = None) -> dict[str, Any]:
+    return {"render": {"video_key": render_key}, "defects": defects or []}
+
+
+CANDIDATE_KEY = "d" * 64
+
+
+def review(script: Script, report: dict[str, Any] | None = None, candidate: PublicationCandidate | None = None) -> Any:
+    return MockComplianceOfficer().review(script, report or qa_report(), candidate or candidate_for(script), CANDIDATE_KEY, NOON)
+
+
+def test_the_mock_reviewer_approves_the_exact_subject_says_nobody_looked_and_says_mock() -> None:
     d = MockReviewer().decide(GateName.G2, RENDER, NOON)
-    assert d.approved and d.subject_key == RENDER and d.gate is GateName.G2
+    assert d.approved and d.subject_key == RENDER and d.gate is GateName.G2 and d.mock is True
     assert "mock" in d.human_note and "no human" in d.human_note
 
 
-def test_the_mock_officer_approves_a_clean_script() -> None:
+def test_the_mock_officer_approves_a_clean_candidate_but_the_decision_still_waits_for_the_human() -> None:
     _, _, script = pipeline_docs("channel-a", VideoFormat.SHORT)
-    d = MockComplianceOfficer().review(script, {"defects": []}, RENDER, NOON)
-    assert d.approved and d.gate is GateName.COMPLIANCE and d.subject_key == RENDER
-    assert all(r.startswith("mock-compliance-officer") for r in d.agent_reasons)
+    d = review(script)
+    assert d.agent_verdict is Verdict.APPROVE and d.gate is GateName.COMPLIANCE and d.subject_key == CANDIDATE_KEY
+    assert d.mock is True and all(r.startswith("mock-compliance-officer") for r in d.agent_reasons)
+    assert not d.approved and d.human_verdict is Verdict.PENDING  # the compliance gate is never the agent alone (MISSION §11)
 
 
 def test_the_mock_officer_rejects_open_loops_and_qa_defects_and_a_blocked_script() -> None:
     _, _, open_loops = pipeline_docs("channel-a", VideoFormat.SHORT, (SceneRole.HOOK, SceneRole.CONTENT))
-    d = MockComplianceOfficer().review(open_loops, {"defects": ["loudness -20 LUFS"]}, RENDER, NOON)
+    d = review(open_loops, qa_report(defects=["loudness -20 LUFS"]))
     assert not d.approved and d.agent_verdict is Verdict.REJECT
     text = " ".join(d.agent_reasons)
     assert "never closed" in text and "loudness" in text
@@ -202,16 +229,43 @@ def test_the_mock_officer_rejects_open_loops_and_qa_defects_and_a_blocked_script
     blocked = script.model_copy(
         update={"control": script.control.model_copy(update={"publishable": False, "blocking_reasons": ("fact unchecked",)})}
     )
-    assert not MockComplianceOfficer().review(blocked, {"defects": []}, RENDER, NOON).approved
+    assert review(blocked).agent_verdict is Verdict.REJECT
 
     silent = script.model_copy(update={"disclosure": script.disclosure.model_copy(update={"reason": "  "})})
-    assert "no reason given" in " ".join(MockComplianceOfficer().review(silent, {"defects": []}, RENDER, NOON).agent_reasons)
+    assert "no reason given" in " ".join(review(silent).agent_reasons)
+
+
+def test_the_mock_officer_rejects_a_candidate_that_differs_from_what_the_script_and_the_qa_report_say() -> None:
+    _, _, script = pipeline_docs("channel-a", VideoFormat.SHORT)
+    flipped = review(script, candidate=candidate_for(script, contains_synthetic_media=not script.disclosure.required))
+    assert flipped.agent_verdict is Verdict.REJECT and "synthetic-media flag disagrees" in " ".join(flipped.agent_reasons)
+    retitled = review(script, candidate=candidate_for(script, title="A title the writer never chose"))
+    assert retitled.agent_verdict is Verdict.REJECT and "not one of the script's titles" in " ".join(retitled.agent_reasons)
+    swapped = review(script, candidate=candidate_for(script, render_key="e" * 64))
+    assert swapped.agent_verdict is Verdict.REJECT
+    assert "other than the one the QA report describes" in " ".join(swapped.agent_reasons)
 
 
 def test_a_human_approval_cannot_lift_the_mock_officers_rejection() -> None:
     _, _, script = pipeline_docs("channel-a", VideoFormat.SHORT, (SceneRole.HOOK, SceneRole.CONTENT))
-    rejected = MockComplianceOfficer().review(script, {"defects": []}, RENDER, NOON)
+    rejected = review(script)
     assert not rejected.model_copy(update={"human_verdict": Verdict.APPROVE}).approved
+
+
+def test_the_compliance_decision_needs_the_agent_and_the_human() -> None:
+    _, _, script = pipeline_docs("channel-a", VideoFormat.SHORT)
+    agent = review(script)
+    assert agent.model_copy(update={"human_verdict": Verdict.APPROVE}).approved
+    assert not agent.model_copy(update={"human_verdict": Verdict.REJECT}).approved
+
+
+def test_the_mock_llm_reports_a_scripted_usage_that_grows_with_the_prompt() -> None:
+    llm = MockStudioLLM()
+    short = run_llm(llm, "strategist", brief())
+    long_brief = {**brief(), "notes": "word " * 400}
+    long = run_llm(llm, "strategist", long_brief)
+    assert short.usage.input_tokens > 0 and short.usage.output_tokens > 0 and short.usage.num_turns == 1
+    assert long.usage.input_tokens > short.usage.input_tokens
 
 
 # ------------------------------------------------------------------ procedural renderer

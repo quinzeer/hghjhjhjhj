@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import re
 from pathlib import Path
 from typing import Any
@@ -13,7 +14,18 @@ from studio.adapters.base import CritiqueResult
 from studio.adapters.mock import MockVisionCritic
 from studio.core.graph import Graph
 from studio.core.interfaces import StepSpec, StoredArtifact, StudioError
-from studio.domain import CostKind, GateName, ResourceClass, SceneRole, Script, VideoFormat, canonical_json
+from studio.domain import (
+    CostKind,
+    GateName,
+    Platform,
+    Publication,
+    PublicationCandidate,
+    ResourceClass,
+    SceneRole,
+    Script,
+    VideoFormat,
+    canonical_json,
+)
 from studio.pipeline import steps as steps_module
 from studio.pipeline.mock_agents import MockStudioLLM, build_idea, build_package, build_script_doc
 from studio.pipeline.steps import (
@@ -103,7 +115,7 @@ def test_the_production_stage_has_two_cache_lines_a_voice_and_a_shot_per_scene(m
     p, script = production(), script_of()
     steps = front_steps(p) + production_steps(p, script)
     n = len(script.scenes)
-    assert len(steps) == 4 + 1 + 4 * n + 7
+    assert len(steps) == 4 + 1 + 4 * n + 8  # timeline, 4 per scene, music, mix, assemble, qa, candidate, 2 gates, plan
     graph = Graph(steps)  # unique names, known inputs, no cycle, a GPU estimate on every GPU step
     s = by_name(steps)
     for i in range(n):
@@ -126,14 +138,29 @@ def test_the_long_format_has_more_steps_than_the_short(media_tools: None) -> Non
 
 
 @pytest.mark.media
-def test_publication_needs_the_compliance_verdict_and_g2_on_the_exact_render(media_tools: None) -> None:
+def test_publication_needs_the_compliance_verdict_and_g2_on_the_exact_candidate(media_tools: None) -> None:
     p = production()
     s = by_name(front_steps(p) + production_steps(p, script_of()))
     publish = s["publish_plan"]
-    assert publish.requires_approval == ((GateName.COMPLIANCE, "assemble"), (GateName.G2, "assemble"))
-    assert {"compliance", "g2", "assemble", "qa"} <= set(publish.inputs)
+    assert publish.requires_approval == ((GateName.COMPLIANCE, "candidate"), (GateName.G2, "candidate"))
+    assert publish.publishes  # the graph itself refuses a publishing step without both approvals on one subject
+    assert {"candidate", "compliance", "g2", "assemble", "qa"} <= set(publish.inputs)
     assert s["compliance"].gate is GateName.COMPLIANCE and s["g2"].gate is GateName.G2
-    assert s["compliance"].inputs == ("assemble",) == s["g2"].inputs  # both judge the render itself
+    assert s["compliance"].inputs == ("candidate",) == s["g2"].inputs  # both judge what will be published, not the render alone
+    assert s["candidate"].inputs == ("script", "assemble", "qa")
+    assert s["candidate"].params == {"run_id": p.run_id, "channel_id": p.channel.id}  # a candidate belongs to one video
+
+
+@pytest.mark.media
+def test_the_steps_that_use_a_mock_adapter_are_flagged_so_a_real_run_cannot_contain_them(media_tools: None) -> None:
+    p = production(roles=SHORT_ROLES)
+    steps = front_steps(p) + production_steps(p, script_of(roles=SHORT_ROLES))
+    flagged = {s.name for s in steps if s.mock}
+    assert {"idea", "package", "script", "music"} <= flagged
+    assert {n for n in flagged if n.startswith("voice_") or n.startswith("shot_")} == {
+        s.name for s in steps if s.name.startswith(("voice_", "shot_"))
+    }
+    assert p.is_mock
 
 
 @pytest.mark.media
@@ -204,3 +231,113 @@ def test_a_shot_the_critic_keeps_blocking_fails_after_a_bounded_number_of_attemp
     with pytest.raises(ShotRejected, match="warped hands"):
         step.run(inputs, step.params)
     assert critic.calls == MAX_SHOT_ATTEMPTS == steps_module.MAX_SHOT_ATTEMPTS
+
+
+# ------------------------------------------------------------------ the publication steps (critic B1, I5, I6)
+
+
+def artifact(tmp_path: Path, name: str, data: bytes, *, key: str | None = None) -> StoredArtifact:
+    path = tmp_path / name
+    path.write_bytes(data)
+    return StoredArtifact(
+        key=key or hashlib.sha256(data).hexdigest(), kind="json", media_type="application/json", size_bytes=len(data), path=path
+    )
+
+
+class Publishing:
+    """The candidate and publish_plan steps of a production, with inputs shaped like the runner's."""
+
+    def __init__(self, tmp_path: Path, *, defects: list[str] | None = None, rotted: bool = False) -> None:
+        self.p = production(roles=SHORT_ROLES)
+        self.script = script_of(roles=SHORT_ROLES)
+        steps = by_name(front_steps(self.p) + production_steps(self.p, self.script))
+        self.candidate_step, self.publish_step = steps["candidate"], steps["publish_plan"]
+        good = b"render bytes"
+        self.render = artifact(tmp_path, "render.mp4", b"rotted bytes" if rotted else good, key=hashlib.sha256(good).hexdigest())
+        self.script_artifact = artifact(tmp_path, "script.json", self.script.canonical_json().encode())
+        report = {"render": {"video_key": self.render.key}, "defects": defects or []}
+        self.qa = artifact(tmp_path, "qa.json", canonical_json(report).encode())
+        self.tmp_path = tmp_path
+
+    def candidate(self) -> StoredArtifact:
+        data, kind, _ = self.candidate_step.run(
+            {"script": self.script_artifact, "assemble": self.render, "qa": self.qa}, self.candidate_step.params
+        )[:3]
+        assert kind == "json"
+        return artifact(self.tmp_path, "candidate.json", data)
+
+    def publish(self, candidate: StoredArtifact | None = None) -> tuple[bytes, str, str]:
+        inputs = {"candidate": candidate or self.candidate(), "assemble": self.render, "qa": self.qa}
+        return self.publish_step.run(inputs, {})[:3]  # type: ignore[return-value]
+
+
+@pytest.mark.media
+def test_the_candidate_holds_everything_the_platform_will_show_bound_to_the_render_the_channel_and_the_run(
+    media_tools: None, tmp_path: Path
+) -> None:
+    fixture = Publishing(tmp_path)
+    candidate = PublicationCandidate.model_validate_json(fixture.candidate().path.read_bytes())
+    assert candidate.run_id == fixture.p.run_id and candidate.channel_id == "channel-a"
+    publication = candidate.publication
+    assert publication.render_key == fixture.render.key and publication.title == fixture.script.titles[0]
+    assert publication.contains_synthetic_media is fixture.script.disclosure.required
+    assert publication.privacy.value == "private" and publication.platform is Platform.YOUTUBE
+    assert publication.description.startswith(fixture.script.promise)
+
+
+@pytest.mark.media
+def test_a_candidate_is_not_made_from_a_render_whose_bytes_no_longer_match_their_key(media_tools: None, tmp_path: Path) -> None:
+    with pytest.raises(StudioError, match="is corrupt"):
+        Publishing(tmp_path, rotted=True).candidate()
+
+
+@pytest.mark.media
+def test_the_publication_plan_releases_the_approved_candidate_byte_for_byte(media_tools: None, tmp_path: Path) -> None:
+    fixture = Publishing(tmp_path)
+    candidate = fixture.candidate()
+    data, kind, media_type = fixture.publish(candidate)
+    assert data == candidate.path.read_bytes() and kind == "json" and media_type == "application/json"
+
+
+@pytest.mark.media
+def test_the_publication_plan_refuses_a_render_with_technical_defects_whoever_approved_it(
+    media_tools: None, tmp_path: Path
+) -> None:
+    fixture = Publishing(tmp_path, defects=["true peak -0.2 dBTP is above -1.0"])
+    with pytest.raises(StudioError, match="technical defects and cannot be published.*true peak"):
+        fixture.publish()
+
+
+@pytest.mark.media
+def test_the_publication_plan_refuses_a_candidate_that_names_another_render(media_tools: None, tmp_path: Path) -> None:
+    fixture = Publishing(tmp_path)
+    other = PublicationCandidate.model_validate_json(fixture.candidate().path.read_bytes())
+    swapped = other.model_copy(update={"publication": other.publication.model_copy(update={"render_key": "e" * 64})})
+    with pytest.raises(StudioError, match="names another render"):
+        fixture.publish(artifact(tmp_path, "swapped.json", swapped.canonical_json().encode()))
+
+
+@pytest.mark.media
+def test_the_publication_plan_refuses_a_render_rotted_since_it_was_approved(media_tools: None, tmp_path: Path) -> None:
+    fixture = Publishing(tmp_path)
+    candidate = fixture.candidate()
+    fixture.render.path.write_bytes(b"rotted bytes")  # the store's object decays after the approvals
+    with pytest.raises(StudioError, match="is corrupt"):
+        fixture.publish(candidate)
+
+
+def test_verify_artifact_hashes_the_stored_bytes(tmp_path: Path) -> None:
+    from studio.pipeline.steps import verify_artifact
+
+    good = artifact(tmp_path, "good.bin", b"abc")
+    verify_artifact(good)
+    with pytest.raises(StudioError, match="is corrupt"):
+        verify_artifact(artifact(tmp_path, "bad.bin", b"abd", key=good.key))
+
+
+def test_publication_dataclass_is_still_the_contract_the_candidate_wraps() -> None:
+    fields = set(PublicationCandidate.model_fields)
+    assert (
+        fields == {"run_id", "channel_id", "publication"}
+        and PublicationCandidate.model_fields["publication"].annotation is Publication
+    )

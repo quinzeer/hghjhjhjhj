@@ -73,6 +73,20 @@ class EditedNarrationLLM(WrappedLLM):
         return result
 
 
+class NoDisclosureLLM(WrappedLLM):
+    """The head writer's second draft switches the AI disclosure off: the render is byte for byte the approved
+    one, the publication is another."""
+
+    def __init__(self, inner: LLMRunner | None = None) -> None:
+        super().__init__("no-disclosure", inner)
+
+    def run(self, **kwargs: Any) -> LLMResult:
+        result = self.inner.run(**kwargs)
+        if kwargs["agent"] == "head_writer":
+            result.output["divulgation_ia"]["requise"] = False
+        return result
+
+
 class QuotaAtAgentLLM(WrappedLLM):
     """Hits the subscription's usage limit when `agent` is called (a reset time in the future, or unknown)."""
 
@@ -102,4 +116,5 @@ class RejectingReviewer:
             human_verdict=verdict,
             human_note="mock reviewer: refused" if verdict is Verdict.REJECT else "mock reviewer: ok",
             decided_at=now,
+            mock=True,
         )

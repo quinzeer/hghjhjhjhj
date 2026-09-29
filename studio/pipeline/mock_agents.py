@@ -24,6 +24,7 @@ from studio.domain import (
     AdapterKind,
     GateDecision,
     GateName,
+    PublicationCandidate,
     Scene,
     SceneRole,
     Script,
@@ -304,9 +305,14 @@ class MockStudioLLM:
                 raise LLMOutputInvalid(f"{self.spec.id}: template output does not match the schema: {exc.message}") from exc
         key = sha256_hex(agent + prompt)
         self.calls.append({"agent": agent, "model": model, "key": key})
+        # Scripted usage, about four characters per token: a stand-in that lets the ledger's token accounting run
+        # (its entries carry `mock`); a real backend reports the figures of Claude Code's JSON output.
+        usage = LLMUsage(
+            input_tokens=len(prompt) // 4, output_tokens=len(json.dumps(output)) // 4, num_turns=1, model=self.spec.id
+        )
         return LLMResult(
             output=output,
-            usage=LLMUsage(model=self.spec.id),
+            usage=usage,
             session_id=f"{self.spec.id}-{key[:24]}",
             raw={"mock": True, "adapter": self.spec.id},
         )
@@ -356,26 +362,43 @@ class MockReviewer:
             agent_reasons=(f"{MOCK_REVIEWER_ID}: dry run",),
             human_note=f"{MOCK_REVIEWER_ID}: no human looked at this (dry run)",
             decided_at=now,
+            mock=True,
         )
 
 
 class MockComplianceOfficer:
-    """Applies a few real, deterministic checks to the script and the QA report of the render it judges.
+    """Applies deterministic checks to what it judges: the script, the QA report and the publication candidate.
 
     It is a mock because the real `compliance_officer` applies the 11-point gate, the platform rules and the
-    AI Act (phase 2); the mock's job is to show that a verdict is computed from the artifacts and bound to the
-    exact render, and that a failing check blocks publication."""
+    AI Act (phase 2); the mock's job is to show that a verdict is computed from the artifacts, bound to the exact
+    candidate (render, title, description, disclosure, channel, run), and that a failing check blocks publication.
+    The verdict is the agent's half of the decision: the human's half comes from the reviewer, and only after the
+    agent approved."""
 
     id = MOCK_OFFICER_ID
 
-    def review(self, script: Script, qa_report: Mapping[str, Any], render_key: str, now: dt.datetime) -> GateDecision:
+    def review(
+        self,
+        script: Script,
+        qa_report: Mapping[str, Any],
+        candidate: PublicationCandidate,
+        candidate_key: str,
+        now: dt.datetime,
+    ) -> GateDecision:
         problems: list[str] = []
+        publication = candidate.publication
         if not script.control.publishable:
             problems.append("the script's own control block says it is not publishable")
         if script.open_loops():
             problems.append(f"loops opened and never closed: {sorted(script.open_loops())}")
         if not script.disclosure.reason.strip():
             problems.append("no reason given for the AI disclosure decision")
+        if publication.contains_synthetic_media != script.disclosure.required:
+            problems.append("the candidate's synthetic-media flag disagrees with the script's disclosure decision")
+        if publication.title not in script.titles:
+            problems.append("the candidate's title is not one of the script's titles")
+        if publication.render_key != qa_report.get("render", {}).get("video_key"):
+            problems.append("the candidate names a render other than the one the QA report describes")
         defects = list(qa_report.get("defects", []))
         if defects:
             problems.append(f"technical QA defects: {defects}")
@@ -383,8 +406,9 @@ class MockComplianceOfficer:
         reasons = tuple(f"{MOCK_OFFICER_ID}: {p}" for p in problems) or (f"{MOCK_OFFICER_ID}: every mock check passed",)
         return GateDecision(
             gate=GateName.COMPLIANCE,
-            subject_key=render_key,
+            subject_key=candidate_key,
             agent_verdict=verdict,
             agent_reasons=reasons,
             decided_at=now,
+            mock=True,
         )
