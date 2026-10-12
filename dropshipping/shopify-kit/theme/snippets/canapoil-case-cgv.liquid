@@ -1,0 +1,40 @@
+{%- comment -%}
+  Canapoil — case d'acceptation des CGV, non pré-cochée, avant le passage au paiement
+  (article 1127-1 du Code civil ; checklist 03 §6.2, exigence C2).
+  Sur l'offre Basic, la page de paiement Shopify ne peut pas recevoir de case personnalisée :
+  la case se place donc dans le panier (page panier ET tiroir), juste avant le bouton de paiement.
+  Installation : Modifier le code > snippets > Ajouter « canapoil-case-cgv », coller ce fichier,
+  puis insérer {% render 'canapoil-case-cgv' %} dans la section du panier, au-dessus du bouton
+  « Procéder au paiement » (fichiers du thème Horizon contenant name="checkout").
+  Désactiver les boutons de paiement accéléré du panier (ils contourneraient la case).
+  À tester dans l'aperçu du thème avant publication.
+{%- endcomment -%}
+<div class="canapoil-cgv">
+  <label>
+    <input type="checkbox" class="canapoil-cgv__case">
+    J'ai lu et j'accepte les <a href="{{ shop.terms_of_service.url }}" target="_blank" rel="noopener">conditions générales de vente (nouvel onglet)</a>,
+    dont la <a href="{{ shop.refund_policy.url }}" target="_blank" rel="noopener">politique de retours (nouvel onglet)</a>.
+  </label>
+  <p class="canapoil-cgv__erreur" role="alert" hidden>Cochez la case pour accepter les conditions générales de vente.</p>
+</div>
+<style>
+  .canapoil-cgv { margin: 0 0 12px; font-size: .9rem; line-height: 1.45; }
+  .canapoil-cgv input { width: 20px; height: 20px; margin-right: 6px; vertical-align: -4px; accent-color: #B4492A; }
+  .canapoil-cgv__erreur { color: #B42318; margin: 6px 0 0; }
+</style>
+<script>
+  (function () {
+    if (window.__canapoilCgv) return;
+    window.__canapoilCgv = true;
+    document.addEventListener("click", function (ev) {
+      var bouton = ev.target.closest('[name="checkout"], a[href^="/checkout"]');
+      if (!bouton) return;
+      var cases = Array.prototype.filter.call(document.querySelectorAll(".canapoil-cgv__case"), function (c) { return c.offsetParent !== null; });
+      if (!cases.length || cases.some(function (c) { return c.checked; })) return;
+      ev.preventDefault();
+      ev.stopPropagation();
+      document.querySelectorAll(".canapoil-cgv__erreur").forEach(function (e) { e.hidden = false; });
+      cases[0].focus();
+    }, true);
+  })();
+</script>

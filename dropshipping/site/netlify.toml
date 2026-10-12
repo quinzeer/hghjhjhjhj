@@ -1,0 +1,79 @@
+# Netlify : déploiement sans étape de build.
+# Base directory = site (si le dépôt contient tout le dossier dropshipping), publish = "."
+[build]
+  publish = "."
+  functions = "netlify/functions"
+  command = ""
+
+[functions]
+  node_bundler = "esbuild"
+
+# Les fonctions sont appelées par le site sur /api/... (mêmes URL que sur Cloudflare Pages).
+[[redirects]]
+  from = "/api/create-checkout"
+  to = "/.netlify/functions/create-checkout"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/retractation"
+  to = "/.netlify/functions/retractation"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/stripe-webhook"
+  to = "/.netlify/functions/stripe-webhook"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/inscription"
+  to = "/.netlify/functions/inscription"
+  status = 200
+  force = true
+
+# Fichiers de travail présents dans le dossier publié : jamais servis.
+[[redirects]]
+  from = "/outils/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/netlify/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/functions/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/README.md"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/netlify.toml"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/_routes.json"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/images/README.md"
+  to = "/404.html"
+  status = 404
+  force = true
+
+# Les en-têtes de sécurité et de cache sont dans le fichier _headers (commun à Netlify et Cloudflare Pages).

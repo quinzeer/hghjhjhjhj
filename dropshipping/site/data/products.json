@@ -1,0 +1,551 @@
+{
+  "version": "1.0",
+  "source": "strategie/brand.json",
+  "genere_le": "2026-10-12",
+  "devise": "EUR",
+  "prix": "TTC, en euros",
+  "marque": {
+    "nom": "Canapoil",
+    "slogan": "Les câlins sur le canapé, les poils à la poubelle.",
+    "site": "https://canapoil.fr"
+  },
+  "livraison": {
+    "transporteur": "Mondial Relay (point relais)",
+    "zone": "France métropolitaine (Belgique et Luxembourg au palier 1)",
+    "pays_autorises": [
+      "FR"
+    ],
+    "frais_ttc": 3.9,
+    "seuil_gratuite_ttc": 35.0,
+    "delai_min_jours_ouvres": 3,
+    "delai_max_jours_ouvres": 6,
+    "expedition_jours_ouvres": 1,
+    "texte": "Expédié sous 1 jour ouvré depuis la France, livré en 3 à 6 jours ouvrés en point relais."
+  },
+  "retours": {
+    "delai_jours": 30,
+    "delai_legal_jours": 14,
+    "extension_commerciale_jours": 16
+  },
+  "quantite_max_par_ligne": 10,
+  "produits": [
+    {
+      "id": "rouleau-anti-poils",
+      "type": "produit",
+      "sku": "CNP-ROU-01",
+      "nom": "Le Rouleau anti-poils réutilisable",
+      "nom_court": "Le rouleau",
+      "slug": "rouleau-anti-poils-reutilisable",
+      "url": "/produits/rouleau-anti-poils-reutilisable/",
+      "role": "heros",
+      "statut": "lancement",
+      "prix_ttc": 24.9,
+      "description_courte": "Quelques allers-retours sur le canapé et les poils de chat ou de chien finissent dans le réservoir. Sans feuille adhésive, sans recharge, sans pile.",
+      "description_longue": "La bande textile du rouleau attrape les poils quand vous le faites aller et venir sur le tissu, puis les dépose dans un réservoir fermé. Pour le vider, il suffit d'ouvrir le clapet au-dessus de la poubelle. Il donne ses meilleurs résultats sur les canapés en tissu ou en velours, les plaids, les couettes, les arbres à chat et les sièges auto en tissu. Il est moins efficace sur le cuir, la soie, les tissus très lisses et les tapis à poils longs : pour les tapis et la voiture, la raclette anti-poils prend le relais. Nos vidéos montrent le résultat tissu par tissu, y compris là où il marche moins bien. Expédié depuis la France sous 1 jour ouvré.",
+      "benefices": [
+        "Ramasse les poils de chat et de chien sur les tissus d'ameublement, les plaids, les lits et les sièges auto",
+        "Réutilisable : aucune feuille adhésive à racheter",
+        "Se vide en un geste au-dessus de la poubelle",
+        "Fonctionne sans pile ni électricité",
+        "Expédié depuis la France, livré en 3 à 6 jours ouvrés"
+      ],
+      "caracteristiques": {
+        "matieres": "Corps en plastique ABS ; bande de nettoyage en fibres textiles (à confirmer sur l'échantillon retenu)",
+        "dimensions": "≈ 27 × 9 × 7 cm (à mesurer sur l'échantillon retenu)",
+        "poids": "≈ 280 g",
+        "alimentation": "Aucune",
+        "surfaces_conseillees": [
+          "canapés en tissu et en velours",
+          "plaids et couvertures",
+          "lits et couettes",
+          "arbres à chat",
+          "sièges auto en tissu"
+        ],
+        "surfaces_deconseillees": [
+          "cuir et simili-cuir",
+          "soie et tissus délicats",
+          "tapis à poils longs"
+        ],
+        "entretien": "Vider le réservoir après chaque usage ; essuyer la bande avec un chiffon sec",
+        "origine": "Fabriqué en Chine, contrôlé et expédié depuis la France"
+      },
+      "contenu_du_colis": [
+        "1 rouleau anti-poils avec réservoir",
+        "1 notice d'utilisation en français"
+      ],
+      "poids_g": 280,
+      "delai_livraison_jours": {
+        "min": 3,
+        "max": 6,
+        "unite": "jours ouvrés",
+        "base": "stock en France, point relais"
+      },
+      "images": [
+        {
+          "src": "/images/produits/rouleau-anti-poils-reutilisable/01-principale.svg",
+          "alt": "Le rouleau anti-poils réutilisable Canapoil, coque terracotta et poignée en arc",
+          "illustration": true
+        },
+        {
+          "src": "/images/produits/rouleau-anti-poils-reutilisable/02-usage.svg",
+          "alt": "Le rouleau passé en allers-retours sur l'assise d'un canapé en tissu, une bande propre apparaît, le chat regarde",
+          "illustration": true
+        },
+        {
+          "src": "/images/produits/rouleau-anti-poils-reutilisable/03-reservoir.svg",
+          "alt": "Le réservoir du rouleau s'ouvre au-dessus de la poubelle : les poils tombent en boule",
+          "illustration": true
+        },
+        {
+          "src": "/images/produits/rouleau-anti-poils-reutilisable/04-colis.svg",
+          "alt": "Contenu du colis : un rouleau anti-poils avec réservoir et une notice en français",
+          "illustration": true
+        },
+        {
+          "src": "/images/produits/rouleau-anti-poils-reutilisable/05-dimensions.svg",
+          "alt": "Dimensions approximatives du rouleau : environ 27 par 9 par 7 centimètres, 280 grammes",
+          "illustration": true
+        }
+      ],
+      "image_partage": "/images/og/rouleau-anti-poils-reutilisable.png",
+      "image_produit_png": "/images/produits/rouleau-anti-poils-reutilisable/principale.png",
+      "gpsr": {
+        "fabricant": "{{FABRICANT_ROULEAU}} : nom, adresse postale et e-mail du fabricant, à reporter depuis le dossier fournisseur avant publication",
+        "responsable_ue": "{{RAISON_SOCIALE}}, {{ADRESSE}}, {{EMAIL}} (importateur établi dans l'UE)",
+        "identification": "Réf. CNP-ROU-01, lot AAMM indiqué sur l'étiquette",
+        "avertissements": [
+          "Ne pas utiliser directement sur l'animal ni sur la peau.",
+          "Tester d'abord sur une zone cachée pour les tissus fragiles.",
+          "Ne pas laisser à la portée des enfants ni des animaux : risque de mâchonnement et d'ingestion de petites pièces.",
+          "Ne pas exposer à une source de chaleur."
+        ],
+        "avertissements_statut": "À valider sur l'échantillon et la notice du fabricant",
+        "instructions": "1. Posez le rouleau sur le tissu. 2. Faites des allers-retours courts en appuyant légèrement. 3. Ouvrez le réservoir au-dessus de la poubelle pour retirer les poils. 4. Essuyez la bande avec un chiffon sec et rangez le rouleau à l'abri de la chaleur."
+      },
+      "faq": [
+        {
+          "q": "Est-ce que ça marche sur mon canapé ?",
+          "r": "Sur le tissu, le velours, la microfibre et les plaids, oui : nos vidéos montrent le résultat sur chacun. Sur le cuir, la soie et les tissus très lisses, il est peu efficace. En cas de doute, envoyez-nous une photo de votre tissu avant de commander."
+        },
+        {
+          "q": "Faut-il racheter des recharges ?",
+          "r": "Non. Le rouleau se vide et se réutilise ; il ne contient ni adhésif ni pile."
+        },
+        {
+          "q": "Peut-on l'utiliser directement sur mon chat ou mon chien ?",
+          "r": "Non, il est conçu pour les textiles. Pour brosser l'animal, utilisez le gant de toilettage en silicone."
+        },
+        {
+          "q": "Et pour les tapis et la voiture ?",
+          "r": "Sur les sièges auto en tissu, il fonctionne. Sur les tapis et la moquette, la raclette anti-poils donne de meilleurs résultats : elle est incluse dans le Grand kit."
+        },
+        {
+          "q": "Sous quel délai vais-je le recevoir ?",
+          "r": "Il est expédié depuis la France sous 1 jour ouvré et livré en point relais en 3 à 6 jours ouvrés."
+        },
+        {
+          "q": "Et s'il ne convient pas à mon tissu ?",
+          "r": "Vous avez 30 jours après réception pour changer d'avis : 14 jours prévus par la loi, plus 16 jours que nous ajoutons. Le remboursement intervient sous 14 jours au plus."
+        }
+      ]
+    },
+    {
+      "id": "gant-toilettage",
+      "type": "produit",
+      "sku": "CNP-GAN-01",
+      "nom": "Le Gant de toilettage en silicone",
+      "nom_court": "Le gant",
+      "slug": "gant-toilettage-silicone",
+      "url": "/produits/gant-toilettage-silicone/",
+      "role": "complementaire",
+      "statut": "lancement",
+      "prix_ttc": 9.9,
+      "description_courte": "Brossez votre chat ou votre chien avec la main : une partie des poils morts reste sur le gant, et le canapé en reçoit moins.",
+      "description_longue": "Les picots souples en silicone retiennent une partie des poils morts pendant le brossage. Quelques minutes par semaine, surtout pendant la mue, suffisent pour en récupérer une bonne quantité avant qu'ils ne se déposent sur les tissus de la maison. Le gant s'utilise à sec ou au moment du bain, se rince à l'eau claire et sèche vite. Taille unique, sangle réglable.",
+      "benefices": [
+        "Récupère une partie des poils morts au brossage",
+        "Picots souples en silicone, sans pointes métalliques",
+        "S'utilise à sec ou pendant le bain",
+        "Se rince à l'eau claire",
+        "Taille unique, sangle réglable"
+      ],
+      "caracteristiques": {
+        "matieres": "Silicone souple (à confirmer sur l'échantillon retenu)",
+        "taille": "Unique, sangle réglable",
+        "poids": "≈ 70 g",
+        "entretien": "Rinçage à l'eau claire, séchage à l'air libre",
+        "origine": "Fabriqué en Chine, contrôlé et expédié depuis la France"
+      },
+      "contenu_du_colis": [
+        "1 gant de toilettage",
+        "1 notice d'utilisation en français"
+      ],
+      "poids_g": 70,
+      "delai_livraison_jours": {
+        "min": 3,
+        "max": 6,
+        "unite": "jours ouvrés",
+        "base": "stock en France, point relais"
+      },
+      "images": [
+        {
+          "src": "/images/produits/gant-toilettage-silicone/01-principale.svg",
+          "alt": "Le gant de toilettage en silicone vert sauge, picots souples et sangle terracotta",
+          "illustration": true
+        },
+        {
+          "src": "/images/produits/gant-toilettage-silicone/02-usage.svg",
+          "alt": "Le gant caresse le dos d'un chat roux dans le sens du poil",
+          "illustration": true
+        }
+      ],
+      "image_partage": "/images/og/gant-toilettage-silicone.png",
+      "image_produit_png": "/images/produits/gant-toilettage-silicone/principale.png",
+      "gpsr": {
+        "fabricant": "{{FABRICANT_GANT}} : nom, adresse postale et e-mail du fabricant, à reporter depuis le dossier fournisseur avant publication",
+        "responsable_ue": "{{RAISON_SOCIALE}}, {{ADRESSE}}, {{EMAIL}} (importateur établi dans l'UE)",
+        "identification": "Réf. CNP-GAN-01, lot AAMM indiqué sur l'étiquette",
+        "avertissements": [
+          "Usage externe sur l'animal uniquement.",
+          "Ne pas utiliser sur une peau blessée ou irritée.",
+          "Arrêter le brossage si l'animal montre de l'inconfort.",
+          "Ne pas laisser l'animal mâchonner le gant."
+        ],
+        "avertissements_statut": "À valider sur l'échantillon et la notice du fabricant",
+        "instructions": "Enfilez le gant, serrez la sangle, puis caressez l'animal dans le sens du poil. Retirez les poils accumulés à la main. Rincez à l'eau claire et laissez sécher."
+      },
+      "faq": [
+        {
+          "q": "Convient-il aux chats comme aux chiens ?",
+          "r": "Oui, pour les poils courts et mi-longs. Sur les poils très longs ou emmêlés, un peigne reste nécessaire."
+        },
+        {
+          "q": "Mon animal n'aime pas la brosse, est-ce différent ?",
+          "r": "Le geste ressemble à une caresse, ce qui rassure beaucoup d'animaux. Commencez par des séances courtes et arrêtez si votre animal montre de l'inconfort."
+        },
+        {
+          "q": "Comment le nettoyer ?",
+          "r": "Retirez les poils à la main, rincez à l'eau claire et laissez sécher à l'air libre."
+        }
+      ]
+    },
+    {
+      "id": "raclette-anti-poils",
+      "type": "produit",
+      "sku": "CNP-RAC-01",
+      "nom": "La Raclette anti-poils tapis et voiture",
+      "nom_court": "La raclette",
+      "slug": "raclette-anti-poils-tapis-voiture",
+      "url": "/produits/raclette-anti-poils-tapis-voiture/",
+      "role": "complementaire",
+      "statut": "lancement",
+      "prix_ttc": 12.9,
+      "description_courte": "Sa lame en caoutchouc décolle les poils incrustés dans les tapis, la moquette et les sièges auto, là où un rouleau glisse.",
+      "description_longue": "Tirez la raclette vers vous par petites zones : les poils incrustés se regroupent en boule et se ramassent à la main ou à l'aspirateur. Elle complète le rouleau sur les tapis ras, la moquette du coffre et les sièges en tissu de la voiture. Elle se lave à l'eau savonneuse et ne demande ni recharge ni pile.",
+      "benefices": [
+        "Décolle les poils incrustés dans les tapis ras et la moquette",
+        "Pratique dans la voiture : sièges en tissu et coffre",
+        "Regroupe les poils en boule, faciles à ramasser",
+        "Lavable à l'eau savonneuse",
+        "Sans recharge ni pile"
+      ],
+      "caracteristiques": {
+        "matieres": "Caoutchouc ou TPR (à confirmer sur l'échantillon retenu, avec mention du latex le cas échéant)",
+        "dimensions": "≈ 20 × 7 cm (à mesurer sur l'échantillon retenu)",
+        "poids": "≈ 150 g",
+        "entretien": "Lavage à l'eau savonneuse, séchage à l'air libre",
+        "origine": "Fabriqué en Chine, contrôlé et expédié depuis la France"
+      },
+      "contenu_du_colis": [
+        "1 raclette anti-poils",
+        "1 notice d'utilisation en français"
+      ],
+      "poids_g": 150,
+      "delai_livraison_jours": {
+        "min": 3,
+        "max": 6,
+        "unite": "jours ouvrés",
+        "base": "stock en France, point relais"
+      },
+      "images": [
+        {
+          "src": "/images/produits/raclette-anti-poils-tapis-voiture/01-principale.svg",
+          "alt": "La raclette anti-poils : manche terracotta et lame en caoutchouc dentelée",
+          "illustration": true
+        },
+        {
+          "src": "/images/produits/raclette-anti-poils-tapis-voiture/02-usage.svg",
+          "alt": "La raclette tirée sur un tapis ras regroupe les poils incrustés en boule",
+          "illustration": true
+        }
+      ],
+      "image_partage": "/images/og/raclette-anti-poils-tapis-voiture.png",
+      "image_produit_png": "/images/produits/raclette-anti-poils-tapis-voiture/principale.png",
+      "gpsr": {
+        "fabricant": "{{FABRICANT_RACLETTE}} : nom, adresse postale et e-mail du fabricant, à reporter depuis le dossier fournisseur avant publication",
+        "responsable_ue": "{{RAISON_SOCIALE}}, {{ADRESSE}}, {{EMAIL}} (importateur établi dans l'UE)",
+        "identification": "Réf. CNP-RAC-01, lot AAMM indiqué sur l'étiquette",
+        "avertissements": [
+          "Tester d'abord sur une zone cachée.",
+          "Ne pas utiliser sur le cuir, le daim, la soie ou les tissus délicats.",
+          "Si la lame contient du latex : déconseillé en cas d'allergie au latex (mention à confirmer selon la matière).",
+          "Ne pas laisser à la portée des enfants ni des animaux."
+        ],
+        "avertissements_statut": "À valider sur l'échantillon et la notice du fabricant",
+        "instructions": "Tenez la raclette inclinée et tirez-la vers vous par petites zones. Ramassez la boule de poils à la main ou à l'aspirateur. Lavez la lame à l'eau savonneuse si besoin."
+      },
+      "faq": [
+        {
+          "q": "Quelle différence avec le rouleau ?",
+          "r": "Le rouleau est fait pour les tissus d'ameublement et les plaids. La raclette décolle les poils incrustés dans les tapis ras, la moquette et la voiture. Les deux sont réunis dans le Grand kit."
+        },
+        {
+          "q": "Abîme-t-elle les tapis ?",
+          "r": "Elle convient aux tapis ras et à la moquette. Testez-la d'abord sur une zone cachée ; évitez les tapis à poils longs et les tissus délicats."
+        },
+        {
+          "q": "Contient-elle du latex ?",
+          "r": "La matière exacte est indiquée sur la fiche et sur l'étiquette dès réception du stock contrôlé."
+        }
+      ]
+    },
+    {
+      "id": "tapis-fenetre-thermique",
+      "type": "produit",
+      "sku": "CNP-TAP-01",
+      "nom": "Le Tapis de fenêtre thermique",
+      "nom_court": "Le tapis de fenêtre",
+      "slug": "tapis-fenetre-thermique-chat",
+      "url": "/produits/tapis-fenetre-thermique-chat/",
+      "role": "complementaire",
+      "statut": "saisonnier",
+      "prix_ttc": 24.9,
+      "description_courte": "Un couchage moelleux pour le rebord de fenêtre. Sa couche réfléchissante renvoie au chat la chaleur de son propre corps. Sans fil, sans pile, sans prise.",
+      "description_longue": "Votre chat adore la fenêtre, surtout l'hiver. Ce tapis transforme le rebord en couchage : dessus doux en sherpa, couche réfléchissante intérieure qui renvoie la chaleur corporelle de l'animal, dessous antidérapant. Le format allongé est pensé pour les rebords intérieurs. Il fonctionne sans aucun branchement et se lave à 30 °C. Produit de saison, vendu d'octobre à février.",
+      "benefices": [
+        "Rend le rebord de fenêtre plus confortable",
+        "Couche réfléchissante : renvoie la chaleur du corps de l'animal",
+        "Aucun fil, aucune pile, aucune prise",
+        "Dessous antidérapant",
+        "Lavable à 30 °C"
+      ],
+      "caracteristiques": {
+        "matieres": "Dessus sherpa en polyester, couche réfléchissante intérieure, dessous antidérapant (composition exacte à reporter depuis l'échantillon retenu)",
+        "dimensions": "≈ 90 × 28 cm (à confirmer sur l'échantillon retenu)",
+        "poids": "≈ 400 g",
+        "alimentation": "Aucune",
+        "entretien": "Lavage en machine à 30 °C, séchage à l'air libre, pas de repassage",
+        "origine": "Fabriqué en Chine, contrôlé et expédié depuis la France"
+      },
+      "contenu_du_colis": [
+        "1 tapis de fenêtre thermique",
+        "1 notice d'utilisation en français"
+      ],
+      "poids_g": 400,
+      "delai_livraison_jours": {
+        "min": 3,
+        "max": 6,
+        "unite": "jours ouvrés",
+        "base": "stock en France, point relais"
+      },
+      "images": [
+        {
+          "src": "/images/produits/tapis-fenetre-thermique-chat/01-principale.svg",
+          "alt": "Le tapis de fenêtre thermique posé sur un rebord, un chat roux couché dessus, la neige tombe dehors",
+          "illustration": true
+        },
+        {
+          "src": "/images/produits/tapis-fenetre-thermique-chat/02-couches.svg",
+          "alt": "Coupe du tapis : dessus en sherpa, couche réfléchissante intérieure, dessous antidérapant",
+          "illustration": true
+        }
+      ],
+      "image_partage": "/images/og/tapis-fenetre-thermique-chat.png",
+      "image_produit_png": "/images/produits/tapis-fenetre-thermique-chat/principale.png",
+      "gpsr": {
+        "fabricant": "{{FABRICANT_TAPIS}} : nom, adresse postale et e-mail du fabricant, à reporter depuis le dossier fournisseur avant publication",
+        "responsable_ue": "{{RAISON_SOCIALE}}, {{ADRESSE}}, {{EMAIL}} (importateur établi dans l'UE)",
+        "identification": "Réf. CNP-TAP-01, lot AAMM indiqué sur l'étiquette",
+        "avertissements": [
+          "Ne pas placer sur ou contre un radiateur, un poêle ou toute autre source de chaleur.",
+          "Vérifier régulièrement l'état du tissu ; retirer le tapis si l'animal le mâchonne.",
+          "Ne pas laisser à la portée des jeunes enfants.",
+          "Laver à 30 °C, sécher à l'air libre, ne pas repasser."
+        ],
+        "avertissements_statut": "À valider sur l'échantillon et la notice du fabricant",
+        "instructions": "Posez le tapis sur un rebord sec et stable, face sherpa vers le haut. Lavez-le à 30 °C quand il est sale et laissez-le sécher à plat."
+      },
+      "faq": [
+        {
+          "q": "Est-ce qu'il chauffe tout seul ?",
+          "r": "Il fonctionne sans élément chauffant : sa couche réfléchissante renvoie vers le chat la chaleur de son propre corps, ce qui rend le couchage plus chaud au toucher qu'un simple coussin."
+        },
+        {
+          "q": "Mon rebord est étroit, va-t-il tenir ?",
+          "r": "Mesurez la profondeur du rebord : le tapis fait environ 28 cm de large. Le dessous antidérapant limite les glissements sur une surface plane."
+        },
+        {
+          "q": "Peut-on le laver ?",
+          "r": "Oui, en machine à 30 °C, puis séchage à l'air libre."
+        },
+        {
+          "q": "Pourquoi n'est-il vendu qu'en hiver ?",
+          "r": "C'est un produit de saison : nous le proposons d'octobre à février, quand les chats recherchent la chaleur près des fenêtres."
+        }
+      ],
+      "saison": {
+        "debut_mois": 10,
+        "fin_mois": 2,
+        "libelle": "d'octobre à février"
+      }
+    }
+  ],
+  "kits": [
+    {
+      "id": "grand-kit",
+      "type": "kit",
+      "sku": "CNP-KIT-GK",
+      "nom": "Grand kit",
+      "slug": "grand-kit",
+      "url": "/kits/grand-kit/",
+      "statut": "lancement",
+      "prix_ttc": 39.9,
+      "prix_separes_ttc": 47.7,
+      "economie_ttc": 7.8,
+      "livraison_offerte": true,
+      "mise_en_avant": true,
+      "description": "Canapé, tapis, voiture et brossage : les trois outils pour toute la maison. Livraison offerte.",
+      "composition": [
+        {
+          "id": "rouleau-anti-poils",
+          "quantite": 1
+        },
+        {
+          "id": "raclette-anti-poils",
+          "quantite": 1
+        },
+        {
+          "id": "gant-toilettage",
+          "quantite": 1
+        }
+      ],
+      "poids_g": 500,
+      "images": [
+        {
+          "src": "/images/kits/grand-kit/01-principale.svg",
+          "alt": "Grand kit Canapoil : rouleau + raclette + gant",
+          "illustration": true
+        }
+      ],
+      "image_partage": "/images/og/grand-kit.png",
+      "image_produit_png": "/images/kits/grand-kit/principale.png"
+    },
+    {
+      "id": "kit-anti-poils",
+      "type": "kit",
+      "sku": "CNP-KIT-AP",
+      "nom": "Kit anti-poils",
+      "slug": "kit-anti-poils",
+      "url": "/kits/kit-anti-poils/",
+      "statut": "lancement",
+      "prix_ttc": 29.9,
+      "prix_separes_ttc": 34.8,
+      "economie_ttc": 4.9,
+      "livraison_offerte": false,
+      "mise_en_avant": false,
+      "description": "Le rouleau pour le canapé, le gant pour brosser l'animal.",
+      "composition": [
+        {
+          "id": "rouleau-anti-poils",
+          "quantite": 1
+        },
+        {
+          "id": "gant-toilettage",
+          "quantite": 1
+        }
+      ],
+      "poids_g": 350,
+      "images": [
+        {
+          "src": "/images/kits/kit-anti-poils/01-principale.svg",
+          "alt": "Kit anti-poils Canapoil : rouleau + gant",
+          "illustration": true
+        }
+      ],
+      "image_partage": "/images/og/kit-anti-poils.png",
+      "image_produit_png": "/images/kits/kit-anti-poils/principale.png"
+    },
+    {
+      "id": "duo-rouleaux",
+      "type": "kit",
+      "sku": "CNP-DUO-ROU",
+      "nom": "Duo maison + voiture",
+      "slug": "duo-maison-voiture",
+      "url": "/kits/duo-maison-voiture/",
+      "statut": "lancement",
+      "prix_ttc": 39.9,
+      "prix_separes_ttc": 49.8,
+      "economie_ttc": 9.9,
+      "livraison_offerte": true,
+      "mise_en_avant": false,
+      "description": "Un rouleau pour le salon, un pour la voiture ou la chambre. Livraison offerte.",
+      "composition": [
+        {
+          "id": "rouleau-anti-poils",
+          "quantite": 2
+        }
+      ],
+      "poids_g": 560,
+      "images": [
+        {
+          "src": "/images/kits/duo-maison-voiture/01-principale.svg",
+          "alt": "Duo maison + voiture Canapoil : rouleau + rouleau",
+          "illustration": true
+        }
+      ],
+      "image_partage": "/images/og/duo-maison-voiture.png",
+      "image_produit_png": "/images/kits/duo-maison-voiture/principale.png"
+    },
+    {
+      "id": "kit-chat-hiver",
+      "type": "kit",
+      "sku": "CNP-KIT-HIV",
+      "nom": "Kit chat d'hiver",
+      "slug": "kit-chat-hiver",
+      "url": "/kits/kit-chat-hiver/",
+      "statut": "saisonnier",
+      "prix_ttc": 44.9,
+      "prix_separes_ttc": 49.8,
+      "economie_ttc": 4.9,
+      "livraison_offerte": true,
+      "mise_en_avant": false,
+      "description": "Le rouleau pour le canapé et un couchage chaud pour la fenêtre. Livraison offerte.",
+      "composition": [
+        {
+          "id": "rouleau-anti-poils",
+          "quantite": 1
+        },
+        {
+          "id": "tapis-fenetre-thermique",
+          "quantite": 1
+        }
+      ],
+      "poids_g": 680,
+      "images": [
+        {
+          "src": "/images/kits/kit-chat-hiver/01-principale.svg",
+          "alt": "Kit chat d'hiver Canapoil : rouleau + tapis de fenêtre",
+          "illustration": true
+        }
+      ],
+      "image_partage": "/images/og/kit-chat-hiver.png",
+      "image_produit_png": "/images/kits/kit-chat-hiver/principale.png",
+      "disponible_jusqu_au": "2027-02-28",
+      "saison": {
+        "debut_mois": 10,
+        "fin_mois": 2,
+        "libelle": "d'octobre à février"
+      }
+    }
+  ]
+}

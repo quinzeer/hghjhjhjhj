@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
+<channel>
+  <title>Canapoil</title>
+  <link>https://canapoil.fr/</link>
+  <description>Catalogue Canapoil, généré depuis strategie/brand.json le 2026-10-12</description>
+  <item>
+    <g:id>CNP-ROU-01</g:id>
+    <g:title>Le Rouleau anti-poils réutilisable</g:title>
+    <g:description>La bande textile du rouleau attrape les poils quand vous le faites aller et venir sur le tissu, puis les dépose dans un réservoir fermé. Pour le vider, il suffit d'ouvrir le clapet au-dessus de la poubelle. Il donne ses meilleurs résultats sur les canapés en tissu ou en velours, les plaids, les couettes, les arbres à chat et les sièges auto en tissu. Il est moins efficace sur le cuir, la soie, les tissus très lisses et les tapis à poils longs : pour les tapis et la voiture, la raclette anti-poils prend le relais. Nos vidéos montrent le résultat tissu par tissu, y compris là où il marche moins bien. Expédié depuis la France sous 1 jour ouvré.</g:description>
+    <g:link>https://canapoil.fr/produits/rouleau-anti-poils-reutilisable/</g:link>
+    <g:image_link>https://canapoil.fr/images/produits/rouleau-anti-poils-reutilisable/principale.png</g:image_link>
+    <g:availability>in_stock</g:availability>
+    <g:price>24.90 EUR</g:price>
+    <g:brand>Canapoil</g:brand>
+    <g:condition>new</g:condition>
+    <g:identifier_exists>no</g:identifier_exists>
+    <g:google_product_category>3080</g:google_product_category>
+    <g:shipping_weight>280 g</g:shipping_weight>
+    <g:shipping><g:country>FR</g:country><g:service>Point relais</g:service><g:price>3.90 EUR</g:price><g:min_handling_time>0</g:min_handling_time><g:max_handling_time>1</g:max_handling_time><g:min_transit_time>2</g:min_transit_time><g:max_transit_time>5</g:max_transit_time></g:shipping>
+  </item>
+  <item>
+    <g:id>CNP-GAN-01</g:id>
+    <g:title>Le Gant de toilettage en silicone</g:title>
+    <g:description>Les picots souples en silicone retiennent une partie des poils morts pendant le brossage. Quelques minutes par semaine, surtout pendant la mue, suffisent pour en récupérer une bonne quantité avant qu'ils ne se déposent sur les tissus de la maison. Le gant s'utilise à sec ou au moment du bain, se rince à l'eau claire et sèche vite. Taille unique, sangle réglable.</g:description>
+    <g:link>https://canapoil.fr/produits/gant-toilettage-silicone/</g:link>
+    <g:image_link>https://canapoil.fr/images/produits/gant-toilettage-silicone/principale.png</g:image_link>
+    <g:availability>in_stock</g:availability>
+    <g:price>9.90 EUR</g:price>
+    <g:brand>Canapoil</g:brand>
+    <g:condition>new</g:condition>
+    <g:identifier_exists>no</g:identifier_exists>
+    <g:google_product_category>6385</g:google_product_category>
+    <g:shipping_weight>70 g</g:shipping_weight>
+    <g:shipping><g:country>FR</g:country><g:service>Point relais</g:service><g:price>3.90 EUR</g:price><g:min_handling_time>0</g:min_handling_time><g:max_handling_time>1</g:max_handling_time><g:min_transit_time>2</g:min_transit_time><g:max_transit_time>5</g:max_transit_time></g:shipping>
+  </item>
+  <item>
+    <g:id>CNP-RAC-01</g:id>
+    <g:title>La Raclette anti-poils tapis et voiture</g:title>
+    <g:description>Tirez la raclette vers vous par petites zones : les poils incrustés se regroupent en boule et se ramassent à la main ou à l'aspirateur. Elle complète le rouleau sur les tapis ras, la moquette du coffre et les sièges en tissu de la voiture. Elle se lave à l'eau savonneuse et ne demande ni recharge ni pile.</g:description>
+    <g:link>https://canapoil.fr/produits/raclette-anti-poils-tapis-voiture/</g:link>
+    <g:image_link>https://canapoil.fr/images/produits/raclette-anti-poils-tapis-voiture/principale.png</g:image_link>
+    <g:availability>in_stock</g:availability>
+    <g:price>12.90 EUR</g:price>
+    <g:brand>Canapoil</g:brand>
+    <g:condition>new</g:condition>
+    <g:identifier_exists>no</g:identifier_exists>
+    <g:google_product_category>2610</g:google_product_category>
+    <g:shipping_weight>150 g</g:shipping_weight>
+    <g:shipping><g:country>FR</g:country><g:service>Point relais</g:service><g:price>3.90 EUR</g:price><g:min_handling_time>0</g:min_handling_time><g:max_handling_time>1</g:max_handling_time><g:min_transit_time>2</g:min_transit_time><g:max_transit_time>5</g:max_transit_time></g:shipping>
+  </item>
+  <item>
+    <g:id>CNP-TAP-01</g:id>
+    <g:title>Le Tapis de fenêtre thermique</g:title>
+    <g:description>Votre chat adore la fenêtre, surtout l'hiver. Ce tapis transforme le rebord en couchage : dessus doux en sherpa, couche réfléchissante intérieure qui renvoie la chaleur corporelle de l'animal, dessous antidérapant. Le format allongé est pensé pour les rebords intérieurs. Il fonctionne sans aucun branchement et se lave à 30 °C. Produit de saison, vendu d'octobre à février.</g:description>
+    <g:link>https://canapoil.fr/produits/tapis-fenetre-thermique-chat/</g:link>
+    <g:image_link>https://canapoil.fr/images/produits/tapis-fenetre-thermique-chat/principale.png</g:image_link>
+    <g:availability>in_stock</g:availability>
+    <g:price>24.90 EUR</g:price>
+    <g:brand>Canapoil</g:brand>
+    <g:condition>new</g:condition>
+    <g:identifier_exists>no</g:identifier_exists>
+    <g:google_product_category>4433</g:google_product_category>
+    <g:shipping_weight>400 g</g:shipping_weight>
+    <g:shipping><g:country>FR</g:country><g:service>Point relais</g:service><g:price>3.90 EUR</g:price><g:min_handling_time>0</g:min_handling_time><g:max_handling_time>1</g:max_handling_time><g:min_transit_time>2</g:min_transit_time><g:max_transit_time>5</g:max_transit_time></g:shipping>
+  </item>
+  <item>
+    <g:id>CNP-KIT-GK</g:id>
+    <g:title>Grand kit</g:title>
+    <g:description>Canapé, tapis, voiture et brossage : les trois outils pour toute la maison. Livraison offerte. Contenu : Le Rouleau anti-poils réutilisable, La Raclette anti-poils tapis et voiture, Le Gant de toilettage en silicone.</g:description>
+    <g:link>https://canapoil.fr/kits/grand-kit/</g:link>
+    <g:image_link>https://canapoil.fr/images/kits/grand-kit/principale.png</g:image_link>
+    <g:availability>in_stock</g:availability>
+    <g:price>39.90 EUR</g:price>
+    <g:brand>Canapoil</g:brand>
+    <g:condition>new</g:condition>
+    <g:identifier_exists>no</g:identifier_exists>
+    <g:google_product_category>3080</g:google_product_category>
+    <g:shipping_weight>500 g</g:shipping_weight>
+    <g:shipping><g:country>FR</g:country><g:service>Point relais</g:service><g:price>0.00 EUR</g:price><g:min_handling_time>0</g:min_handling_time><g:max_handling_time>1</g:max_handling_time><g:min_transit_time>2</g:min_transit_time><g:max_transit_time>5</g:max_transit_time></g:shipping>
+    <g:is_bundle>yes</g:is_bundle>
+  </item>
+  <item>
+    <g:id>CNP-KIT-AP</g:id>
+    <g:title>Kit anti-poils</g:title>
+    <g:description>Le rouleau pour le canapé, le gant pour brosser l'animal. Contenu : Le Rouleau anti-poils réutilisable, Le Gant de toilettage en silicone.</g:description>
+    <g:link>https://canapoil.fr/kits/kit-anti-poils/</g:link>
+    <g:image_link>https://canapoil.fr/images/kits/kit-anti-poils/principale.png</g:image_link>
+    <g:availability>in_stock</g:availability>
+    <g:price>29.90 EUR</g:price>
+    <g:brand>Canapoil</g:brand>
+    <g:condition>new</g:condition>
+    <g:identifier_exists>no</g:identifier_exists>
+    <g:google_product_category>3080</g:google_product_category>
+    <g:shipping_weight>350 g</g:shipping_weight>
+    <g:shipping><g:country>FR</g:country><g:service>Point relais</g:service><g:price>3.90 EUR</g:price><g:min_handling_time>0</g:min_handling_time><g:max_handling_time>1</g:max_handling_time><g:min_transit_time>2</g:min_transit_time><g:max_transit_time>5</g:max_transit_time></g:shipping>
+    <g:is_bundle>yes</g:is_bundle>
+  </item>
+  <item>
+    <g:id>CNP-DUO-ROU</g:id>
+    <g:title>Duo maison + voiture</g:title>
+    <g:description>Un rouleau pour le salon, un pour la voiture ou la chambre. Livraison offerte. Contenu : Le Rouleau anti-poils réutilisable × 2.</g:description>
+    <g:link>https://canapoil.fr/kits/duo-maison-voiture/</g:link>
+    <g:image_link>https://canapoil.fr/images/kits/duo-maison-voiture/principale.png</g:image_link>
+    <g:availability>in_stock</g:availability>
+    <g:price>39.90 EUR</g:price>
+    <g:brand>Canapoil</g:brand>
+    <g:condition>new</g:condition>
+    <g:identifier_exists>no</g:identifier_exists>
+    <g:google_product_category>3080</g:google_product_category>
+    <g:shipping_weight>560 g</g:shipping_weight>
+    <g:shipping><g:country>FR</g:country><g:service>Point relais</g:service><g:price>0.00 EUR</g:price><g:min_handling_time>0</g:min_handling_time><g:max_handling_time>1</g:max_handling_time><g:min_transit_time>2</g:min_transit_time><g:max_transit_time>5</g:max_transit_time></g:shipping>
+    <g:is_bundle>yes</g:is_bundle>
+  </item>
+  <item>
+    <g:id>CNP-KIT-HIV</g:id>
+    <g:title>Kit chat d'hiver</g:title>
+    <g:description>Le rouleau pour le canapé et un couchage chaud pour la fenêtre. Livraison offerte. Contenu : Le Rouleau anti-poils réutilisable, Le Tapis de fenêtre thermique.</g:description>
+    <g:link>https://canapoil.fr/kits/kit-chat-hiver/</g:link>
+    <g:image_link>https://canapoil.fr/images/kits/kit-chat-hiver/principale.png</g:image_link>
+    <g:availability>in_stock</g:availability>
+    <g:price>44.90 EUR</g:price>
+    <g:brand>Canapoil</g:brand>
+    <g:condition>new</g:condition>
+    <g:identifier_exists>no</g:identifier_exists>
+    <g:google_product_category>3080</g:google_product_category>
+    <g:shipping_weight>680 g</g:shipping_weight>
+    <g:shipping><g:country>FR</g:country><g:service>Point relais</g:service><g:price>0.00 EUR</g:price><g:min_handling_time>0</g:min_handling_time><g:max_handling_time>1</g:max_handling_time><g:min_transit_time>2</g:min_transit_time><g:max_transit_time>5</g:max_transit_time></g:shipping>
+    <g:is_bundle>yes</g:is_bundle>
+  </item>
+</channel>
+</rss>

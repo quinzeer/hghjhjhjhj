@@ -1,0 +1,64 @@
+{%- comment -%}
+  Canapoil — fonctionnalité « renoncer au contrat ici » (article L221-21 du Code de la consommation,
+  en vigueur depuis le 19/06/2026). Section à ajouter au thème Horizon :
+  Boutique en ligne > Thèmes > … > Modifier le code > sections > Ajouter une section
+  « canapoil-retractation », coller ce fichier, puis créer le modèle de page « page.retractation »
+  contenant cette section et l'assigner à la page /pages/retractation.
+  L'envoi de l'accusé de réception horodaté passe par la fonction serveur du kit site
+  (Netlify ou Cloudflare, gratuite) : renseigner son URL dans les réglages de la section et
+  ajouter l'adresse de la boutique dans la variable ORIGINES_AUTORISEES de la fonction.
+{%- endcomment -%}
+<div class="page-width canapoil-retractation">
+  <form id="canapoil-retractation-form" novalidate>
+    <p><label for="cr-nom">Nom</label><br><input id="cr-nom" name="nom" autocomplete="family-name" required></p>
+    <p><label for="cr-prenom">Prénom</label><br><input id="cr-prenom" name="prenom" autocomplete="given-name" required></p>
+    <p><label for="cr-commande">Numéro de commande</label><br><input id="cr-commande" name="commande" required></p>
+    <p><label for="cr-email">Adresse e-mail pour recevoir l'accusé de réception</label><br><input id="cr-email" name="email" type="email" autocomplete="email" required></p>
+    <p><label for="cr-produits">Produits concernés (facultatif)</label><br><textarea id="cr-produits" name="produits" maxlength="500"></textarea></p>
+    <p id="cr-erreur" role="alert"></p>
+    <button type="submit" class="button">confirmer la rétractation</button>
+  </form>
+  <div id="cr-accuse" tabindex="-1" hidden></div>
+</div>
+<style>
+  .canapoil-retractation { max-width: 40rem; padding-block: 2rem; }
+  .canapoil-retractation input, .canapoil-retractation textarea { width: 100%; min-height: 44px; padding: .6rem; font: inherit; border: 2px solid #8C7B6E; border-radius: 8px; }
+  .canapoil-retractation label { font-weight: 700; }
+  #cr-erreur { color: #B42318; }
+  #cr-accuse { border: 1px solid #E3D6C6; border-radius: 12px; padding: 1rem 1.25rem; background: #fff; }
+</style>
+<script>
+  (function () {
+    var form = document.getElementById("canapoil-retractation-form");
+    var url = {{ section.settings.endpoint | json }};
+    var secours = {{ section.settings.email_secours | json }};
+    var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+    form.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var v = {}, err = document.getElementById("cr-erreur");
+      ["nom", "prenom", "commande", "email", "produits"].forEach(function (n) { v[n] = form.elements[n].value.trim(); });
+      if (!v.nom || !v.prenom || !v.commande || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email)) { err.textContent = "Renseignez votre nom, prénom, numéro de commande et une adresse e-mail valide."; return; }
+      err.textContent = "";
+      form.querySelector("button").disabled = true;
+      fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(v) })
+        .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.erreur || "Erreur"); return j; }); })
+        .then(function (j) {
+          var quand = new Intl.DateTimeFormat("fr-FR", { dateStyle: "full", timeStyle: "medium", timeZone: "Europe/Paris" }).format(new Date(j.horodatage));
+          var a = document.getElementById("cr-accuse");
+          a.innerHTML = "<h2>Accusé de réception de votre rétractation</h2><p>Envoyé par e-mail à " + esc(v.email) + ".</p><p><strong>Envoyée le</strong> " + esc(quand) + " (heure de Paris)<br><strong>Référence</strong> " + esc(j.reference) + "<br><strong>Nom</strong> " + esc(v.nom) + "<br><strong>Prénom</strong> " + esc(v.prenom) + "<br><strong>Commande</strong> " + esc(v.commande) + "<br><strong>Produits</strong> " + (v.produits ? esc(v.produits) : "Toute la commande") + "</p>";
+          a.hidden = false; form.hidden = true; a.focus();
+        })
+        .catch(function (e) { err.textContent = e.message + " Vous pouvez aussi écrire à " + secours + "."; form.querySelector("button").disabled = false; });
+    });
+  })();
+</script>
+{% schema %}
+{
+  "name": "Rétractation en ligne",
+  "settings": [
+    { "type": "url", "id": "endpoint", "label": "URL de la fonction de rétractation", "info": "Exemple : https://canapoil.netlify.app/api/retractation (fonction du dossier site/)" },
+    { "type": "text", "id": "email_secours", "label": "E-mail du service client (secours)", "default": "{{EMAIL}}" }
+  ],
+  "presets": [{ "name": "Rétractation en ligne" }]
+}
+{% endschema %}

@@ -1,0 +1,1748 @@
+{
+  "date": "2026-10-12T08:42:00.369Z",
+  "base": "http://127.0.0.1:8765",
+  "total": 348,
+  "echecs": 0,
+  "resultats": [
+    {
+      "nom": "[mobile] bandeau cookies affiché à la première visite",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] « Tout refuser » aussi visible que « Tout accepter »",
+      "ok": true,
+      "detail": "{\"refuser\":[165,46],\"accepter\":[165,46]}"
+    },
+    {
+      "nom": "[mobile] boutons du bandeau de même style",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] aucun script de traceur avant consentement",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] refus enregistré, bandeau fermé",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] prix affiché sur la fiche",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] délai avec dates affiché",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] bloc GPSR présent",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] avis : état vide, aucun aggregateRating",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] premier bénéfice visible sans défiler",
+      "ok": true,
+      "detail": "y=624"
+    },
+    {
+      "nom": "[mobile] sélecteur d'offre : prix du Grand kit",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] barre d'achat collante visible après défilement",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] tiroir ouvert après ajout",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] compteur = 1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] barre de progression vers la livraison offerte",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] focus dans le tiroir",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] quantité 2 : total 49,80 € et livraison offerte",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] Échap ferme le tiroir",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] panier conservé après rechargement",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] panier conservé sur une autre page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] page panier : 1 ligne",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] page panier : suggestion Grand kit loyale (écart réel)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] avertissement mode démo affiché",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] case CGV non pré-cochée",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] refus sans acceptation des CGV",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] merci : avertissement « simulation »",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] merci : récapitulatif affiché",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] merci : panier vidé",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] ajout rapide d'un kit : livraison offerte",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] aucune requête vers un domaine tiers",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[mobile] zéro erreur ou avertissement console / HTTP",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] bandeau cookies affiché à la première visite",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] « Tout refuser » aussi visible que « Tout accepter »",
+      "ok": true,
+      "detail": "{\"refuser\":[258,46],\"accepter\":[258,46]}"
+    },
+    {
+      "nom": "[desktop] boutons du bandeau de même style",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] aucun script de traceur avant consentement",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] refus enregistré, bandeau fermé",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] prix affiché sur la fiche",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] délai avec dates affiché",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] bloc GPSR présent",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] avis : état vide, aucun aggregateRating",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] sélecteur d'offre : prix du Grand kit",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] tiroir ouvert après ajout",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] compteur = 1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] barre de progression vers la livraison offerte",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] focus dans le tiroir",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] quantité 2 : total 49,80 € et livraison offerte",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] Échap ferme le tiroir",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] panier conservé après rechargement",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] panier conservé sur une autre page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] page panier : 1 ligne",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] page panier : suggestion Grand kit loyale (écart réel)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] avertissement mode démo affiché",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] case CGV non pré-cochée",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] refus sans acceptation des CGV",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] merci : avertissement « simulation »",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] merci : récapitulatif affiché",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] merci : panier vidé",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] ajout rapide d'un kit : livraison offerte",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] aucune requête vers un domaine tiers",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "[desktop] zéro erreur ou avertissement console / HTTP",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page / : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page / : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page / : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page / : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page / : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page / : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page / : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page / : JSON-LD valide",
+      "ok": true,
+      "detail": "Organization,WebSite"
+    },
+    {
+      "nom": "page / : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page / : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page / : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "Accueil : JSON-LD Organization",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/duo-maison-voiture/ : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page /kits/duo-maison-voiture/ : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page /kits/duo-maison-voiture/ : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/duo-maison-voiture/ : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/duo-maison-voiture/ : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/duo-maison-voiture/ : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page /kits/duo-maison-voiture/ : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/duo-maison-voiture/ : JSON-LD valide",
+      "ok": true,
+      "detail": "Product,BreadcrumbList"
+    },
+    {
+      "nom": "page /kits/duo-maison-voiture/ : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/duo-maison-voiture/ : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/duo-maison-voiture/ : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "page /kits/grand-kit/ : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page /kits/grand-kit/ : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page /kits/grand-kit/ : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/grand-kit/ : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/grand-kit/ : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/grand-kit/ : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page /kits/grand-kit/ : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/grand-kit/ : JSON-LD valide",
+      "ok": true,
+      "detail": "Product,BreadcrumbList"
+    },
+    {
+      "nom": "page /kits/grand-kit/ : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/grand-kit/ : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/grand-kit/ : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "page /kits/kit-anti-poils/ : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page /kits/kit-anti-poils/ : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page /kits/kit-anti-poils/ : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/kit-anti-poils/ : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/kit-anti-poils/ : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/kit-anti-poils/ : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page /kits/kit-anti-poils/ : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/kit-anti-poils/ : JSON-LD valide",
+      "ok": true,
+      "detail": "Product,BreadcrumbList"
+    },
+    {
+      "nom": "page /kits/kit-anti-poils/ : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/kit-anti-poils/ : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/kit-anti-poils/ : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "page /kits/kit-chat-hiver/ : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page /kits/kit-chat-hiver/ : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page /kits/kit-chat-hiver/ : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/kit-chat-hiver/ : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/kit-chat-hiver/ : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/kit-chat-hiver/ : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page /kits/kit-chat-hiver/ : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/kit-chat-hiver/ : JSON-LD valide",
+      "ok": true,
+      "detail": "Product,BreadcrumbList"
+    },
+    {
+      "nom": "page /kits/kit-chat-hiver/ : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/kit-chat-hiver/ : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /kits/kit-chat-hiver/ : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "page /produits/gant-toilettage-silicone/ : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page /produits/gant-toilettage-silicone/ : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page /produits/gant-toilettage-silicone/ : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/gant-toilettage-silicone/ : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/gant-toilettage-silicone/ : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/gant-toilettage-silicone/ : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page /produits/gant-toilettage-silicone/ : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/gant-toilettage-silicone/ : JSON-LD valide",
+      "ok": true,
+      "detail": "Product,BreadcrumbList,FAQPage"
+    },
+    {
+      "nom": "page /produits/gant-toilettage-silicone/ : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/gant-toilettage-silicone/ : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/gant-toilettage-silicone/ : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "page /produits/gant-toilettage-silicone/ : JSON-LD Product",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/raclette-anti-poils-tapis-voiture/ : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page /produits/raclette-anti-poils-tapis-voiture/ : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page /produits/raclette-anti-poils-tapis-voiture/ : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/raclette-anti-poils-tapis-voiture/ : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/raclette-anti-poils-tapis-voiture/ : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/raclette-anti-poils-tapis-voiture/ : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page /produits/raclette-anti-poils-tapis-voiture/ : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/raclette-anti-poils-tapis-voiture/ : JSON-LD valide",
+      "ok": true,
+      "detail": "Product,BreadcrumbList,FAQPage"
+    },
+    {
+      "nom": "page /produits/raclette-anti-poils-tapis-voiture/ : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/raclette-anti-poils-tapis-voiture/ : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/raclette-anti-poils-tapis-voiture/ : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "page /produits/raclette-anti-poils-tapis-voiture/ : JSON-LD Product",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/rouleau-anti-poils-reutilisable/ : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page /produits/rouleau-anti-poils-reutilisable/ : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page /produits/rouleau-anti-poils-reutilisable/ : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/rouleau-anti-poils-reutilisable/ : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/rouleau-anti-poils-reutilisable/ : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/rouleau-anti-poils-reutilisable/ : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page /produits/rouleau-anti-poils-reutilisable/ : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/rouleau-anti-poils-reutilisable/ : JSON-LD valide",
+      "ok": true,
+      "detail": "Product,BreadcrumbList,FAQPage"
+    },
+    {
+      "nom": "page /produits/rouleau-anti-poils-reutilisable/ : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/rouleau-anti-poils-reutilisable/ : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/rouleau-anti-poils-reutilisable/ : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "page /produits/rouleau-anti-poils-reutilisable/ : JSON-LD Product",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/tapis-fenetre-thermique-chat/ : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page /produits/tapis-fenetre-thermique-chat/ : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page /produits/tapis-fenetre-thermique-chat/ : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/tapis-fenetre-thermique-chat/ : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/tapis-fenetre-thermique-chat/ : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/tapis-fenetre-thermique-chat/ : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page /produits/tapis-fenetre-thermique-chat/ : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/tapis-fenetre-thermique-chat/ : JSON-LD valide",
+      "ok": true,
+      "detail": "Product,BreadcrumbList,FAQPage"
+    },
+    {
+      "nom": "page /produits/tapis-fenetre-thermique-chat/ : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/tapis-fenetre-thermique-chat/ : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /produits/tapis-fenetre-thermique-chat/ : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "page /produits/tapis-fenetre-thermique-chat/ : JSON-LD Product",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /boutique/ : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page /boutique/ : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page /boutique/ : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /boutique/ : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /boutique/ : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /boutique/ : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page /boutique/ : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /boutique/ : JSON-LD valide",
+      "ok": true,
+      "detail": "ItemList,BreadcrumbList"
+    },
+    {
+      "nom": "page /boutique/ : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /boutique/ : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /boutique/ : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "page /a-propos/ : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page /a-propos/ : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page /a-propos/ : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /a-propos/ : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /a-propos/ : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /a-propos/ : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page /a-propos/ : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /a-propos/ : JSON-LD valide",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /a-propos/ : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /a-propos/ : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /a-propos/ : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "page /cgv/ : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page /cgv/ : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page /cgv/ : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /cgv/ : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /cgv/ : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /cgv/ : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page /cgv/ : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /cgv/ : JSON-LD valide",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /cgv/ : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /cgv/ : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /cgv/ : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "page /confidentialite/ : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page /confidentialite/ : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page /confidentialite/ : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /confidentialite/ : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /confidentialite/ : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /confidentialite/ : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page /confidentialite/ : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /confidentialite/ : JSON-LD valide",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /confidentialite/ : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /confidentialite/ : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /confidentialite/ : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "page /contact/ : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page /contact/ : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page /contact/ : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /contact/ : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /contact/ : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /contact/ : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page /contact/ : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /contact/ : JSON-LD valide",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /contact/ : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /contact/ : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /contact/ : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "page /cookies/ : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page /cookies/ : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page /cookies/ : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /cookies/ : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /cookies/ : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /cookies/ : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page /cookies/ : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /cookies/ : JSON-LD valide",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /cookies/ : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /cookies/ : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /cookies/ : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "page /faq/ : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page /faq/ : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page /faq/ : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /faq/ : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /faq/ : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /faq/ : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page /faq/ : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /faq/ : JSON-LD valide",
+      "ok": true,
+      "detail": "FAQPage"
+    },
+    {
+      "nom": "page /faq/ : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /faq/ : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /faq/ : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "FAQ : JSON-LD FAQPage",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /livraison/ : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page /livraison/ : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page /livraison/ : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /livraison/ : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /livraison/ : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /livraison/ : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page /livraison/ : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /livraison/ : JSON-LD valide",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /livraison/ : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /livraison/ : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /livraison/ : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "page /mentions-legales/ : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page /mentions-legales/ : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page /mentions-legales/ : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /mentions-legales/ : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /mentions-legales/ : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /mentions-legales/ : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page /mentions-legales/ : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /mentions-legales/ : JSON-LD valide",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /mentions-legales/ : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /mentions-legales/ : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /mentions-legales/ : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "page /retours-retractation/ : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page /retours-retractation/ : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page /retours-retractation/ : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /retours-retractation/ : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /retours-retractation/ : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /retours-retractation/ : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page /retours-retractation/ : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /retours-retractation/ : JSON-LD valide",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /retours-retractation/ : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /retours-retractation/ : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /retours-retractation/ : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "page /panier/ : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page /panier/ : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page /panier/ : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /panier/ : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /panier/ : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /panier/ : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page /panier/ : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /panier/ : JSON-LD valide",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /panier/ : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /panier/ : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /panier/ : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "page /commande/ : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page /commande/ : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page /commande/ : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /commande/ : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /commande/ : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /commande/ : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page /commande/ : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /commande/ : JSON-LD valide",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /commande/ : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /commande/ : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /commande/ : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "page /merci.html : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page /merci.html : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page /merci.html : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /merci.html : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /merci.html : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /merci.html : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page /merci.html : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /merci.html : JSON-LD valide",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /merci.html : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /merci.html : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /merci.html : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "page /retractation/ : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page /retractation/ : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page /retractation/ : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /retractation/ : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /retractation/ : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /retractation/ : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page /retractation/ : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /retractation/ : JSON-LD valide",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /retractation/ : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /retractation/ : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /retractation/ : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "page /404.html : HTTP 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "nom": "page /404.html : un seul h1",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "nom": "page /404.html : lang=\"fr\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /404.html : title et description présents",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /404.html : canonical et Open Graph",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /404.html : images avec attribut alt",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "page /404.html : champs de formulaire étiquetés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /404.html : JSON-LD valide",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /404.html : lien « renoncer au contrat ici » en pied de page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /404.html : médiateur mentionné",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "page /404.html : aucun défilement horizontal à 390 px",
+      "ok": true,
+      "detail": "390"
+    },
+    {
+      "nom": "liens internes et ressources : 46 URL testées, toutes en 200",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "pages : zéro erreur console / HTTP",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "production : pas d'avertissement démo",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "production : corps envoyé sans aucun prix",
+      "ok": true,
+      "detail": "{\"lignes\":[{\"id\":\"grand-kit\",\"qte\":1}],\"point_relais\":\"\",\"cgv_acceptees\":true,\"cgv_version\":\"2026-10-12\",\"phase\":\"vente\"}"
+    },
+    {
+      "nom": "production : panier vidé au retour de Stripe",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "production : zéro erreur console",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "liste d'attente : bouton d'ajout remplacé par l'inscription",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "liste d'attente : confirmation (simulation)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "liste d'attente : zéro erreur console",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "clavier : le premier Tab atteint le lien d'évitement",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "clavier : focus visible (outline)",
+      "ok": true,
+      "detail": "solid"
+    },
+    {
+      "nom": "« Gérer mes cookies » rouvre le choix avec les cases",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "retrait du consentement enregistré",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "rétractation : champs obligatoires signalés",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "rétractation : bouton libellé « confirmer la rétractation »",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "rétractation : accusé de réception horodaté affiché",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "rétractation : zéro erreur console",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "nom": "JavaScript total < 60 Ko (37.2 Ko)",
+      "ok": true,
+      "detail": ""
+    }
+  ]
+}

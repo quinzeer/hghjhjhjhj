@@ -1,0 +1,235 @@
+---
+titre: Conditions générales de vente
+description: Conditions générales de vente de Canapoil : prix TTC, commande, paiement sécurisé, livraison en point relais, 30 jours pour changer d'avis, garanties légales et médiation.
+chapo: Les règles qui s'appliquent à votre commande, écrites pour être lues.
+---
+
+Version en vigueur au 12 octobre 2026
+
+## Article 1 — Champ d'application
+
+1.1. Les présentes conditions générales de vente (les « CGV ») s'appliquent à toute vente de produits conclue sur le site canapoil.fr (le « Site ») entre {{RAISON_SOCIALE}} (le « Vendeur ») et toute personne physique agissant à des fins non professionnelles (le « Client »).
+
+1.2. Le Site est destiné aux Clients résidant en France métropolitaine, Corse comprise. Les livraisons hors de cette zone ne sont pas proposées.
+
+1.3. Le Client déclare avoir pris connaissance des CGV et les accepter avant de passer commande, en cochant la case prévue à cet effet. Les CGV applicables sont celles en vigueur à la date de la commande. Elles sont accessibles à tout moment sur le Site et peuvent être enregistrées et imprimées.
+
+## Article 2 — Identification du Vendeur
+
+- {{RAISON_SOCIALE}}, {{FORME_JURIDIQUE}} au capital de {{CAPITAL}}, exploitant la marque Canapoil
+- Siège social : {{ADRESSE}}
+- SIREN : {{SIREN}} — {{RCS}}
+- TVA intracommunautaire : {{TVA_INTRACOM}}
+- Service client : {{EMAIL}} — {{TELEPHONE}} (appel non surtaxé), {{HORAIRES_SERVICE_CLIENT}}
+- Adresse de retour des produits : {{ADRESSE_RETOUR}}
+
+## Article 3 — Produits
+
+3.1. Les caractéristiques essentielles des produits (dimensions, matières, surfaces conseillées et déconseillées, contenu du colis) sont présentées sur chaque fiche produit. Tant que les photographies du produit réel ne sont pas disponibles, les fiches présentent des illustrations signalées comme telles ; les dimensions et matières indiquées comme « à confirmer » sont mises à jour dès réception du stock contrôlé.
+
+3.2. Chaque fiche produit comporte les informations de sécurité prévues par l'article 19 du règlement (UE) 2023/988 : identité et coordonnées du fabricant, coordonnées de la personne responsable établie dans l'Union européenne, éléments d'identification du produit, avertissements et consignes de sécurité en français.
+
+3.3. Les produits sont fabriqués en Chine, importés par le Vendeur, contrôlés et expédiés depuis la France.
+
+3.4. Les offres sont valables dans la limite des stocks disponibles. En cas d'indisponibilité après la commande, le Client en est informé sans délai et remboursé au plus tard dans les 14 jours suivant le paiement, sauf s'il accepte un produit de remplacement de qualité et de prix équivalents.
+
+3.5. Les kits (par exemple le « Grand kit ») réunissent plusieurs produits vendus aussi à l'unité. L'économie annoncée correspond à la différence entre le prix du kit et la somme des prix unitaires pratiqués au même moment sur le Site.
+
+## Article 4 — Prix
+
+4.1. Les prix sont indiqués en euros, toutes taxes comprises (TTC), hors frais de livraison. Les frais de livraison sont indiqués sur la fiche produit, dans le panier et avant la validation de la commande : 3,90 € TTC en point relais, offerts dès 35 € d'achat et pour les kits signalés « livraison offerte ».
+
+4.2. Le prix total affiché avant le paiement est le seul montant dû par le Client. **Aucun droit de douane, taxe ou frais de dédouanement n'est réclamé au Client à la livraison.**
+
+4.3. Le Vendeur peut modifier ses prix à tout moment. Le prix facturé est celui affiché lors de la validation de la commande.
+
+4.4. Lorsqu'une réduction de prix est annoncée, le prix de référence à partir duquel elle est calculée est le prix le plus bas pratiqué par le Vendeur au cours des 30 jours précédant l'application de la réduction (article L112-1-1 du Code de la consommation).
+
+## Article 5 — Commande
+
+5.1. Le Client sélectionne les produits, vérifie le contenu de son panier, consulte le récapitulatif (produits, prix, frais de livraison, délai de livraison) et peut corriger toute erreur avant de valider.
+
+::: site
+5.2. Sur la page « Commande », le Client coche la case d'acceptation des CGV puis est dirigé vers la page de paiement sécurisée de notre prestataire Stripe, où il renseigne son adresse e-mail, son adresse de livraison en France, son numéro de téléphone (utilisé pour les avis de passage du transporteur) et son moyen de paiement. La commande est validée par un clic sur le bouton « Payer », qui vaut commande avec obligation de paiement. Le contrat est conclu à l'acceptation du paiement.
+:::
+::: shopify
+5.2. La commande est validée par un clic sur le bouton « Payer maintenant », qui vaut commande avec obligation de paiement. Le contrat est conclu à l'acceptation du paiement.
+:::
+
+5.3. Le Vendeur accuse réception de la commande sans délai par e-mail, puis adresse au plus tard lors de la livraison une confirmation sur support durable comprenant les présentes CGV, le formulaire type de rétractation et le lien vers la fonctionnalité de rétractation en ligne.
+
+5.4. Précommandes. Lorsqu'un produit est proposé en précommande, la fiche produit, le panier et l'e-mail de confirmation indiquent la date d'expédition et la date limite de livraison, qui ne peut dépasser 30 jours après la commande. Le paiement est débité à la commande. Si la date limite ne peut être tenue, le Client est prévenu et peut annuler sa commande avec un remboursement intégral sous 14 jours.
+
+5.5. Le Vendeur peut refuser ou annuler une commande pour un motif légitime, notamment un litige de paiement antérieur ou une commande manifestement anormale. Le Client est alors informé et intégralement remboursé.
+
+## Article 6 — Paiement
+
+::: site
+6.1. Le paiement est exigible à la commande. Moyens acceptés : cartes bancaires (CB, Visa, Mastercard) et les autres moyens affichés sur la page de paiement Stripe.
+
+6.2. Les paiements sont traités par Stripe Payments Europe, Limited et sécurisés par authentification forte (3-D Secure). Le Vendeur n'a jamais accès aux données complètes de la carte.
+:::
+::: shopify
+6.1. Le paiement est exigible à la commande. Moyens acceptés : cartes bancaires (CB, Visa, Mastercard), PayPal et les autres moyens affichés lors du paiement.
+
+6.2. Les paiements par carte sont traités par Shopify Payments (Stripe) et sécurisés par authentification forte (3-D Secure). Le Vendeur n'a jamais accès aux données complètes de la carte.
+:::
+
+6.3. Aucun frais supplémentaire n'est appliqué en fonction du moyen de paiement choisi.
+
+## Article 7 — Livraison
+
+7.1. Les produits sont expédiés depuis la France sous 1 jour ouvré et livrés en point relais Mondial Relay en 3 à 6 jours ouvrés à compter de la commande, selon les modalités décrites sur la page [Livraison](lien:livraison).
+
+7.2. La date ou le délai de livraison est indiqué sur la fiche produit et récapitulé avant le paiement. À défaut d'indication, le produit est livré au plus tard 30 jours après la conclusion du contrat (article L216-1 du Code de la consommation).
+
+7.3. En cas de non-respect de la date ou du délai de livraison, le Client peut enjoindre le Vendeur, par e-mail ou par courrier, d'effectuer la livraison dans un délai supplémentaire raisonnable. À défaut de livraison dans ce délai, le Client peut résoudre le contrat par le même moyen. Le Client peut résoudre immédiatement le contrat lorsque le Vendeur refuse de livrer ou lorsque la date de livraison constituait pour lui une condition essentielle (article L216-6). Le Vendeur rembourse alors la totalité des sommes versées au plus tard dans les 14 jours suivant la résolution (article L216-3).
+
+7.4. Les risques de perte ou d'endommagement des produits sont transférés au Client au moment où il, ou un tiers désigné par lui autre que le transporteur, prend physiquement possession des produits (article L216-4).
+
+7.5. En cas de colis perdu, endommagé ou incomplet, le Client prévient le service client à l'adresse {{EMAIL}}, si possible avec des photographies. Le Vendeur procède, au choix du Client, à un nouvel envoi ou au remboursement. L'absence de réserves auprès du transporteur ne prive pas le Client de ses droits.
+
+7.6. Le Vendeur est responsable de plein droit de la bonne exécution du contrat, y compris lorsque la préparation ou le transport sont assurés par des prestataires (article L221-15).
+
+## Article 8 — Droit de rétractation et délai commercial de 30 jours
+
+8.1. Le Client dispose d'un délai légal de **14 jours** pour se rétracter, sans avoir à motiver sa décision ni à supporter d'autres coûts que ceux prévus à l'article 9. Le délai court à compter du jour où le Client, ou un tiers désigné par lui autre que le transporteur, prend physiquement possession du produit. Pour une commande de plusieurs produits livrés séparément, le délai court à compter de la réception du dernier produit.
+
+8.2. **Extension commerciale.** Le Vendeur prolonge ce délai de **16 jours** à titre commercial, soit **30 jours au total** à compter de la réception. Pendant ces 16 jours supplémentaires, les modalités des articles 8.3 et 9 s'appliquent de la même manière.
+
+8.3. Pour exercer ce droit, le Client peut, avant l'expiration du délai :
+
+- utiliser la **fonctionnalité de rétractation en ligne** accessible par le lien **« renoncer au contrat ici »** présent en bas de chaque page du Site et dans l'e-mail de confirmation de commande ([page de rétractation](lien:retractation)). Le Client indique ses nom et prénom, son numéro de commande et l'adresse e-mail à laquelle il souhaite recevoir l'accusé de réception, puis valide par le bouton **« confirmer la rétractation »**. Un accusé de réception reprenant le contenu de sa déclaration ainsi que la date et l'heure de son envoi lui est adressé par e-mail ;
+- ou envoyer le formulaire type de rétractation figurant en annexe, ou toute autre déclaration dénuée d'ambiguïté, à {{EMAIL}} ou par courrier à {{RAISON_SOCIALE}}, {{ADRESSE}}.
+
+8.4. Aucun produit du catalogue n'est personnalisé ni scellé pour des raisons d'hygiène : le droit de rétractation s'applique à tous les produits.
+
+8.5. Les modalités détaillées figurent sur la page [Retours et rétractation](lien:retours).
+
+## Article 9 — Effets de la rétractation et retours
+
+9.1. Le Client renvoie le produit à l'adresse {{ADRESSE_RETOUR}} sans retard excessif et au plus tard 14 jours après la communication de sa décision de se rétracter.
+
+9.2. **Les frais directs de renvoi du produit sont à la charge du Client.** À titre indicatif, le renvoi d'un colis de 500 g en point relais coûte environ 5 à 7 €. Lorsque le coût du renvoi dépasse la valeur du produit, le Vendeur peut proposer un remboursement sans renvoi.
+
+9.3. Le Vendeur rembourse la totalité des sommes versées, frais de livraison initiaux inclus (sur la base du mode de livraison standard le moins coûteux proposé), au plus tard 14 jours après avoir été informé de la décision de rétractation. Le Vendeur peut différer le remboursement jusqu'à la récupération du produit ou jusqu'à ce que le Client fournisse une preuve d'expédition, la date retenue étant celle du premier de ces faits. Le remboursement est effectué par le moyen de paiement utilisé pour la commande, sauf accord exprès du Client pour un autre moyen, sans frais pour lui.
+
+9.4. La responsabilité du Client n'est engagée qu'à l'égard de la dépréciation du produit résultant de manipulations autres que celles nécessaires pour établir sa nature, ses caractéristiques et son bon fonctionnement.
+
+## Article 10 — Garanties légales
+
+### 10.1 Encadré réglementaire (décret n° 2022-946 du 29 juin 2022)
+
+> Le consommateur dispose d'un délai de deux ans à compter de la délivrance du bien pour obtenir la mise en œuvre de la garantie légale de conformité en cas d'apparition d'un défaut de conformité. Durant ce délai, le consommateur n'est tenu d'établir que l'existence du défaut de conformité et non la date d'apparition de celui-ci.
+>
+> Lorsque le contrat de vente du bien prévoit la fourniture d'un contenu numérique ou d'un service numérique de manière continue pendant une durée supérieure à deux ans, la garantie légale est applicable à ce contenu numérique ou ce service numérique tout au long de la période de fourniture prévue. Durant ce délai, le consommateur n'est tenu d'établir que l'existence du défaut de conformité affectant le contenu numérique ou le service numérique et non la date d'apparition de celui-ci.
+>
+> La garantie légale de conformité emporte obligation pour le professionnel, le cas échéant, de fournir toutes les mises à jour nécessaires au maintien de la conformité du bien.
+>
+> La garantie légale de conformité donne au consommateur droit à la réparation ou au remplacement du bien dans un délai de trente jours suivant sa demande, sans frais et sans inconvénient majeur pour lui.
+>
+> Si le bien est réparé dans le cadre de la garantie légale de conformité, le consommateur bénéficie d'une extension de six mois de la garantie initiale.
+>
+> Si le consommateur demande la réparation du bien, mais que le vendeur impose le remplacement, la garantie légale de conformité est renouvelée pour une période de deux ans à compter de la date de remplacement du bien.
+>
+> Le consommateur peut obtenir une réduction du prix d'achat en conservant le bien ou mettre fin au contrat en se faisant rembourser intégralement contre restitution du bien, si :
+>
+> 1° Le professionnel refuse de réparer ou de remplacer le bien ;
+>
+> 2° La réparation ou le remplacement du bien intervient après un délai de trente jours ;
+>
+> 3° La réparation ou le remplacement du bien occasionne un inconvénient majeur pour le consommateur, notamment lorsque le consommateur supporte définitivement les frais de reprise ou d'enlèvement du bien non conforme, ou s'il supporte les frais d'installation du bien réparé ou de remplacement ;
+>
+> 4° La non-conformité du bien persiste en dépit de la tentative de mise en conformité du vendeur restée infructueuse.
+>
+> Le consommateur a également droit à une réduction du prix du bien ou à la résolution du contrat lorsque le défaut de conformité est si grave qu'il justifie que la réduction du prix ou la résolution du contrat soit immédiate. Le consommateur n'est alors pas tenu de demander la réparation ou le remplacement du bien au préalable.
+>
+> Le consommateur n'a pas droit à la résolution de la vente si le défaut de conformité est mineur.
+>
+> Toute période d'immobilisation du bien en vue de sa réparation ou de son remplacement suspend la garantie qui restait à courir jusqu'à la délivrance du bien remis en état.
+>
+> Les droits mentionnés ci-dessus résultent de l'application des articles L. 217-1 à L. 217-32 du code de la consommation.
+>
+> Le vendeur qui fait obstacle de mauvaise foi à la mise en œuvre de la garantie légale de conformité encourt une amende civile d'un montant maximal de 300 000 euros, qui peut être porté jusqu'à 10 % du chiffre d'affaires moyen annuel (article L. 241-5 du code de la consommation).
+>
+> Le consommateur bénéficie également de la garantie légale des vices cachés en application des articles 1641 à 1649 du code civil, pendant une durée de deux ans à compter de la découverte du défaut. Cette garantie donne droit à une réduction de prix si le bien est conservé ou à un remboursement intégral contre restitution du bien.
+
+### 10.2 Mise en œuvre
+
+Le Client adresse sa demande au service client ({{EMAIL}} ou {{TELEPHONE}}) en indiquant son numéro de commande et en décrivant le défaut, si possible avec une photographie ou une vidéo. Le Vendeur prend en charge les frais de renvoi d'un produit non conforme et apporte une réponse sous 5 jours ouvrés. Pour un produit d'une valeur inférieure à 15 €, le remplacement ou le remboursement peut intervenir sans renvoi. Le Client s'adresse au Vendeur, seul responsable à son égard, et n'a pas à contacter le fabricant ni le fournisseur.
+
+### 10.3 Garantie commerciale
+
+Le Vendeur ne propose pas de garantie commerciale en plus des garanties légales.
+
+## Article 11 — Responsabilité
+
+11.1. Le Vendeur est responsable de plein droit envers le Client de la bonne exécution du contrat. Il peut s'exonérer de tout ou partie de sa responsabilité en apportant la preuve que l'inexécution ou la mauvaise exécution est imputable au Client, au fait imprévisible et insurmontable d'un tiers au contrat, ou à un cas de force majeure (article L221-15 du Code de la consommation).
+
+11.2. Le Client utilise les produits conformément à leur notice et aux avertissements de sécurité qui les accompagnent.
+
+## Article 12 — Service client et réclamations
+
+Toute réclamation est adressée au service client : {{EMAIL}}, {{TELEPHONE}} (appel non surtaxé) ou par courrier à {{RAISON_SOCIALE}}, {{ADRESSE}}. Le Vendeur s'engage à répondre dans un délai de 48 heures ouvrées.
+
+## Article 13 — Avis clients
+
+::: site
+Les avis publiés sur le Site proviennent exclusivement de Clients ayant commandé le produit concerné. Ils sont collectés au moyen d'une invitation envoyée par e-mail après la livraison, et font l'objet d'un contrôle manuel destiné à vérifier l'existence de la commande. Les avis sont publiés, positifs comme négatifs, dans un délai de 7 jours, par ordre chronologique par défaut, avec leur date de dépôt et la date de l'expérience. Aucune contrepartie n'est accordée en échange d'un avis. Un avis peut être refusé s'il est injurieux, sans rapport avec le produit, ou s'il contient des données personnelles ; son auteur est alors informé du motif du refus. À la date de la présente version, aucun avis n'a encore été publié.
+:::
+::: shopify
+Les avis publiés sur le Site proviennent exclusivement de Clients ayant commandé le produit concerné. Ils sont collectés par l'application Judge.me au moyen d'une invitation envoyée après la livraison, et font l'objet d'un contrôle automatisé destiné à vérifier l'existence de la commande. Les avis sont publiés, positifs comme négatifs, dans un délai de 7 jours, par ordre chronologique par défaut, avec leur date de dépôt et la date de l'expérience. Aucune contrepartie n'est accordée en échange d'un avis. Un avis peut être refusé s'il est injurieux, sans rapport avec le produit, ou s'il contient des données personnelles ; son auteur est alors informé du motif du refus.
+:::
+
+## Article 14 — Médiation
+
+Conformément aux articles L611-1 et suivants du Code de la consommation, le Client peut recourir gratuitement au médiateur de la consommation suivant, après avoir adressé une réclamation écrite au service client restée sans solution satisfaisante, et au plus tard un an après cette réclamation :
+
+{{MEDIATEUR}}
+
+## Article 15 — Responsabilité élargie du producteur
+
+Identifiant unique du Vendeur (article L541-10-13 du Code de l'environnement) : emballages ménagers : {{IDU_EMBALLAGES}}.
+
+## Article 16 — Données personnelles
+
+Les données personnelles du Client sont traitées conformément à la [Politique de confidentialité](lien:confidentialite) du Site.
+
+## Article 17 — Propriété intellectuelle
+
+Les éléments du Site (textes, illustrations, images, vidéos, marque Canapoil) sont protégés. Toute reproduction sans autorisation écrite est interdite.
+
+## Article 18 — Force majeure
+
+Aucune des parties n'est responsable d'un manquement causé par un événement de force majeure au sens de l'article 1218 du Code civil. Le Client est informé sans délai et conserve la faculté d'annuler sa commande et d'être remboursé si l'exécution est retardée de plus de 15 jours.
+
+## Article 19 — Archivage et preuve
+
+Pour toute commande d'un montant égal ou supérieur à 120 euros, le Vendeur conserve l'écrit constatant le contrat pendant 10 ans à compter de la livraison et en garantit l'accès au Client sur simple demande à {{EMAIL}} (articles L213-1 et D213-1 du Code de la consommation). Les registres informatisés du Vendeur et de ses prestataires de paiement font foi des communications, commandes et paiements intervenus entre les parties, sauf preuve contraire.
+
+## Article 20 — Droit applicable et litiges
+
+Les CGV sont soumises au droit français. En cas de litige, le Client peut saisir, à son choix, la juridiction du lieu où il demeurait au moment de la conclusion du contrat ou de la survenance du fait dommageable, ou toute autre juridiction compétente selon le Code de procédure civile (article R631-3 du Code de la consommation).
+
+---
+
+## Annexe — Formulaire type de rétractation
+
+(Annexe à l'article R221-1 du Code de la consommation. Veuillez compléter et renvoyer le présent formulaire uniquement si vous souhaitez vous rétracter du contrat. Vous pouvez aussi utiliser la fonctionnalité en ligne « [renoncer au contrat ici](lien:retractation) ».)
+
+<div class="formulaire-type">
+
+À l'attention de {{RAISON_SOCIALE}}, {{ADRESSE}}, adresse électronique : {{EMAIL}} :
+
+Je/Nous (*) vous notifie/notifions (*) par la présente ma/notre (*) rétractation du contrat portant sur la vente du bien (*)/pour la prestation de services (*) ci-dessous :
+
+- Commandé le (*) / reçu le (*) : ……………………
+- Numéro de commande (facultatif, facilite le traitement) : ……………………
+- Nom du (des) consommateur(s) : ……………………
+- Adresse du (des) consommateur(s) : ……………………
+- Signature du (des) consommateur(s) (uniquement en cas de notification du présent formulaire sur papier) : ……………………
+- Date : ……………………
+
+(*) Rayez la mention inutile.
+
+</div>

@@ -1,0 +1,711 @@
+{
+  "meta": {
+    "version": "1.0",
+    "date": "2026-10-12",
+    "source": "strategie/04-strategie.md",
+    "consommateurs": [
+      "agent site",
+      "agent finance",
+      "agent marketing",
+      "kit Shopify"
+    ],
+    "devise": "EUR",
+    "convention_prix": "prix_ttc = prix de vente TTC affiché ; couts en HT ; montants en euros",
+    "variables_a_remplacer": [
+      "{{RAISON_SOCIALE}}",
+      "{{ADRESSE}}",
+      "{{EMAIL}}",
+      "{{TELEPHONE}}",
+      "{{ADRESSE_RETOUR}}",
+      "{{ADRESSE_EXPEDITION}}",
+      "{{MEDIATEUR}}",
+      "{{IDU_EMBALLAGES}}",
+      "{{FABRICANT_ROULEAU}}",
+      "{{FABRICANT_GANT}}",
+      "{{FABRICANT_RACLETTE}}",
+      "{{FABRICANT_TAPIS}}"
+    ]
+  },
+  "marque": {
+    "nom": "Canapoil",
+    "slogan": "Les câlins sur le canapé, les poils à la poubelle.",
+    "promesse": "Des outils simples pour partager le canapé avec son chat ou son chien et garder un intérieur présentable. Chaque produit est montré en vidéo, sans trucage, sur de vrais tissus, et expédié depuis la France.",
+    "positionnement": "Spécialiste de la cohabitation canapé-animaux ; prix milieu-haut de marché (rouleau à 24,90 €, Grand kit à 39,90 €) justifié par la preuve vidéo par tissu, les kits pensés par surface et l'expédition depuis la France en 3 à 6 jours ouvrés.",
+    "origine_transparence": "Marque française. Produits fabriqués en Chine, contrôlés et expédiés depuis la France. Aucun drapeau ni mention « made in France ».",
+    "domaine_vise": "canapoil.fr",
+    "statut_juridique_nom": "Aucune marque identique trouvée par recherche web le 12/10/2026 ; canapoil.fr et canapoil.com non enregistrés selon RDAP à cette date ; dépôt INPI (classes 21, 20, 28) et achat des domaines à confirmer",
+    "noms_alternatifs": [
+      "Toutpoil",
+      "Poilette"
+    ],
+    "ton": "Complice et concret, drôle avec bienveillance envers les animaux et leurs maîtres. On montre avant d'affirmer, on dit où le produit marche moins bien, on donne des chiffres réels (délai, poids, dimensions). Vouvoiement sur le site et au service client ; tutoiement possible sur TikTok et Instagram. Jamais de superlatif invérifiable, d'allégation de santé ou environnementale, de fausse urgence.",
+    "persona": {
+      "principal": {
+        "nom": "Camille",
+        "age": 29,
+        "profil": "Locataire en ville, 1 ou 2 chats d'intérieur, canapé en velours ou en tissu",
+        "canal": "TikTok quotidien, achat dans l'application",
+        "declencheur": "Pull noir couvert de poils avant de sortir ; invités à la maison",
+        "objections": [
+          "gadget inefficace",
+          "prix comparé à Amazon"
+        ],
+        "offre_cible": "Rouleau 24,90 € ou Kit anti-poils 29,90 €"
+      },
+      "secondaire": {
+        "nom": "Julien et Sarah",
+        "age": 38,
+        "profil": "Maison, chien à poil mi-long, enfants, voiture familiale",
+        "canal": "Instagram, Facebook, Pinterest, recherche Google",
+        "declencheur": "Poils dans la voiture et sur le tapis du salon",
+        "objections": [
+          "efficacité sur tapis et sièges auto",
+          "délai"
+        ],
+        "offre_cible": "Grand kit 39,90 €"
+      },
+      "saisonnier": {
+        "nom": "Offreur de cadeau",
+        "profil": "Ami ou parent d'un propriétaire d'animal, novembre-décembre",
+        "offre_cible": "Grand kit ou Kit chat d'hiver, date limite de Noël affichée"
+      }
+    },
+    "palette": {
+      "primaire": "#B4492A",
+      "secondaire": "#2F4A3C",
+      "fond": "#FAF5EE",
+      "surface": "#FFFFFF",
+      "texte": "#2B211B",
+      "texte_secondaire": "#6A5B50",
+      "accent": "#E3A93B",
+      "succes": "#2E6B47",
+      "alerte": "#B42318"
+    },
+    "palette_notes": {
+      "contrastes_wcag": {
+        "surface_sur_primaire": 5.35,
+        "primaire_sur_fond": 4.93,
+        "texte_sur_fond": 14.49,
+        "texte_secondaire_sur_fond": 6.0,
+        "surface_sur_secondaire": 9.7,
+        "texte_sur_accent": 7.49,
+        "surface_sur_succes": 6.34,
+        "surface_sur_alerte": 6.57
+      },
+      "regle": "Ne jamais écrire en blanc sur l'accent ; l'accent sert aux pastilles, étoiles d'avis et surlignages."
+    },
+    "polices": {
+      "titres": "Fraunces",
+      "texte": "DM Sans",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap"
+    },
+    "logo_provisoire": "Mot « canapoil » en Fraunces 700, couleur primaire sur fond crème"
+  },
+  "produits": [
+    {
+      "id": "rouleau-anti-poils",
+      "sku": "CNP-ROU-01",
+      "nom": "Le Rouleau anti-poils réutilisable",
+      "slug": "rouleau-anti-poils-reutilisable",
+      "role": "heros",
+      "statut": "lancement",
+      "description_courte": "Quelques allers-retours sur le canapé et les poils de chat ou de chien finissent dans le réservoir. Sans feuille adhésive, sans recharge, sans pile.",
+      "description_longue": "La bande textile du rouleau attrape les poils quand vous le faites aller et venir sur le tissu, puis les dépose dans un réservoir fermé. Pour le vider, il suffit d'ouvrir le clapet au-dessus de la poubelle. Il donne ses meilleurs résultats sur les canapés en tissu ou en velours, les plaids, les couettes, les arbres à chat et les sièges auto en tissu. Il est moins efficace sur le cuir, la soie, les tissus très lisses et les tapis à poils longs : pour les tapis et la voiture, la raclette anti-poils prend le relais. Nos vidéos montrent le résultat tissu par tissu, y compris là où il marche moins bien. Expédié depuis la France sous 1 jour ouvré.",
+      "benefices": [
+        "Ramasse les poils de chat et de chien sur les tissus d'ameublement, les plaids, les lits et les sièges auto",
+        "Réutilisable : aucune feuille adhésive à racheter",
+        "Se vide en un geste au-dessus de la poubelle",
+        "Fonctionne sans pile ni électricité",
+        "Expédié depuis la France, livré en 3 à 6 jours ouvrés"
+      ],
+      "caracteristiques": {
+        "matieres": "Corps en plastique ABS ; bande de nettoyage en fibres textiles (à confirmer sur l'échantillon retenu)",
+        "dimensions": "≈ 27 × 9 × 7 cm (à mesurer sur l'échantillon retenu)",
+        "poids": "≈ 280 g",
+        "alimentation": "Aucune",
+        "surfaces_conseillees": [
+          "canapés en tissu et en velours",
+          "plaids et couvertures",
+          "lits et couettes",
+          "arbres à chat",
+          "sièges auto en tissu"
+        ],
+        "surfaces_deconseillees": [
+          "cuir et simili-cuir",
+          "soie et tissus délicats",
+          "tapis à poils longs"
+        ],
+        "entretien": "Vider le réservoir après chaque usage ; essuyer la bande avec un chiffon sec",
+        "origine": "Fabriqué en Chine, contrôlé et expédié depuis la France"
+      },
+      "contenu_du_colis": [
+        "1 rouleau anti-poils avec réservoir",
+        "1 notice d'utilisation en français"
+      ],
+      "prix_ttc": 24.9,
+      "prix_barre_ttc": null,
+      "cout_produit_ht": 4.5,
+      "cout_produit_detail": "3,50 € fournisseur + 1,00 € de fret entrant par unité (lot de 20) ; estimation, confiance moyenne, prix d'index AliExpress à revérifier",
+      "cout_livraison_ht": 4.5,
+      "cout_emballage_ht": 0.3,
+      "droits_douane_estimes": 0.25,
+      "droits_douane_detail": "≈ 5 € de droit forfaitaire et de redevance UE par colis de stock, répartis sur 20 unités ; estimation, confiance moyenne",
+      "delai_livraison_jours": {
+        "min": 3,
+        "max": 6,
+        "unite": "jours ouvrés",
+        "base": "stock en France, point relais"
+      },
+      "fournisseur": "AliExpress, vendeur à retenir après comparaison de 2 échantillons ; alternative CJ Dropshipping",
+      "url_fournisseur": "https://www.aliexpress.com/item/1005008948630642.html",
+      "url_fournisseur_alternatives": [
+        "https://www.aliexpress.com/item/1005010323493766.html",
+        "https://www.aliexpress.com/w/wholesale-pet-hair-remover-reusable.html"
+      ],
+      "entrepot": "Micro-stock en France ({{ADRESSE_EXPEDITION}}), importé de Chine par lot et étiqueté au nom de {{RAISON_SOCIALE}}",
+      "poids_g": 280,
+      "variantes": [],
+      "gpsr": {
+        "fabricant": "{{FABRICANT_ROULEAU}} : nom, adresse postale et e-mail du fabricant, à reporter depuis le dossier fournisseur avant publication",
+        "responsable_ue": "{{RAISON_SOCIALE}}, {{ADRESSE}}, {{EMAIL}} (importateur établi dans l'UE)",
+        "identification": "Réf. CNP-ROU-01, lot AAMM indiqué sur l'étiquette",
+        "avertissements": [
+          "Ne pas utiliser directement sur l'animal ni sur la peau.",
+          "Tester d'abord sur une zone cachée pour les tissus fragiles.",
+          "Ne pas laisser à la portée des enfants ni des animaux : risque de mâchonnement et d'ingestion de petites pièces.",
+          "Ne pas exposer à une source de chaleur."
+        ],
+        "avertissements_statut": "À valider sur l'échantillon et la notice du fabricant",
+        "instructions": "1. Posez le rouleau sur le tissu. 2. Faites des allers-retours courts en appuyant légèrement. 3. Ouvrez le réservoir au-dessus de la poubelle pour retirer les poils. 4. Essuyez la bande avec un chiffon sec et rangez le rouleau à l'abri de la chaleur."
+      },
+      "faq": [
+        {
+          "q": "Est-ce que ça marche sur mon canapé ?",
+          "r": "Sur le tissu, le velours, la microfibre et les plaids, oui : nos vidéos montrent le résultat sur chacun. Sur le cuir, la soie et les tissus très lisses, il est peu efficace. En cas de doute, envoyez-nous une photo de votre tissu avant de commander."
+        },
+        {
+          "q": "Faut-il racheter des recharges ?",
+          "r": "Non. Le rouleau se vide et se réutilise ; il ne contient ni adhésif ni pile."
+        },
+        {
+          "q": "Peut-on l'utiliser directement sur mon chat ou mon chien ?",
+          "r": "Non, il est conçu pour les textiles. Pour brosser l'animal, utilisez le gant de toilettage en silicone."
+        },
+        {
+          "q": "Et pour les tapis et la voiture ?",
+          "r": "Sur les sièges auto en tissu, il fonctionne. Sur les tapis et la moquette, la raclette anti-poils donne de meilleurs résultats : elle est incluse dans le Grand kit."
+        },
+        {
+          "q": "Sous quel délai vais-je le recevoir ?",
+          "r": "Il est expédié depuis la France sous 1 jour ouvré et livré en point relais en 3 à 6 jours ouvrés."
+        },
+        {
+          "q": "Et s'il ne convient pas à mon tissu ?",
+          "r": "Vous avez 30 jours après réception pour changer d'avis : 14 jours prévus par la loi, plus 16 jours que nous ajoutons. Le remboursement intervient sous 14 jours au plus."
+        }
+      ]
+    },
+    {
+      "id": "gant-toilettage",
+      "sku": "CNP-GAN-01",
+      "nom": "Le Gant de toilettage en silicone",
+      "slug": "gant-toilettage-silicone",
+      "role": "complementaire",
+      "statut": "lancement",
+      "usage_commercial": "Vente additionnelle en un clic, Kit anti-poils, Grand kit, prime des 30 premières précommandes",
+      "description_courte": "Brossez votre chat ou votre chien avec la main : une partie des poils morts reste sur le gant, et le canapé en reçoit moins.",
+      "description_longue": "Les picots souples en silicone retiennent une partie des poils morts pendant le brossage. Quelques minutes par semaine, surtout pendant la mue, suffisent pour en récupérer une bonne quantité avant qu'ils ne se déposent sur les tissus de la maison. Le gant s'utilise à sec ou au moment du bain, se rince à l'eau claire et sèche vite. Taille unique, sangle réglable.",
+      "benefices": [
+        "Récupère une partie des poils morts au brossage",
+        "Picots souples en silicone, sans pointes métalliques",
+        "S'utilise à sec ou pendant le bain",
+        "Se rince à l'eau claire",
+        "Taille unique, sangle réglable"
+      ],
+      "caracteristiques": {
+        "matieres": "Silicone souple (à confirmer sur l'échantillon retenu)",
+        "taille": "Unique, sangle réglable",
+        "poids": "≈ 70 g",
+        "entretien": "Rinçage à l'eau claire, séchage à l'air libre",
+        "origine": "Fabriqué en Chine, contrôlé et expédié depuis la France"
+      },
+      "contenu_du_colis": [
+        "1 gant de toilettage",
+        "1 notice d'utilisation en français"
+      ],
+      "prix_ttc": 9.9,
+      "prix_barre_ttc": null,
+      "cout_produit_ht": 1.3,
+      "cout_produit_detail": "≈ 1,00 € fournisseur + 0,30 € de fret entrant ; estimation, confiance faible",
+      "cout_livraison_ht": 4.5,
+      "cout_emballage_ht": 0.3,
+      "droits_douane_estimes": 0.1,
+      "delai_livraison_jours": {
+        "min": 3,
+        "max": 6,
+        "unite": "jours ouvrés",
+        "base": "stock en France, point relais"
+      },
+      "fournisseur": "AliExpress, référence à sélectionner sur échantillon",
+      "url_fournisseur": "https://www.aliexpress.com/w/wholesale-silicone-pet-grooming-glove.html",
+      "entrepot": "Micro-stock en France ({{ADRESSE_EXPEDITION}}), importé de Chine par lot et étiqueté au nom de {{RAISON_SOCIALE}}",
+      "poids_g": 70,
+      "variantes": [],
+      "gpsr": {
+        "fabricant": "{{FABRICANT_GANT}} : nom, adresse postale et e-mail du fabricant, à reporter depuis le dossier fournisseur avant publication",
+        "responsable_ue": "{{RAISON_SOCIALE}}, {{ADRESSE}}, {{EMAIL}} (importateur établi dans l'UE)",
+        "identification": "Réf. CNP-GAN-01, lot AAMM indiqué sur l'étiquette",
+        "avertissements": [
+          "Usage externe sur l'animal uniquement.",
+          "Ne pas utiliser sur une peau blessée ou irritée.",
+          "Arrêter le brossage si l'animal montre de l'inconfort.",
+          "Ne pas laisser l'animal mâchonner le gant."
+        ],
+        "avertissements_statut": "À valider sur l'échantillon et la notice du fabricant",
+        "instructions": "Enfilez le gant, serrez la sangle, puis caressez l'animal dans le sens du poil. Retirez les poils accumulés à la main. Rincez à l'eau claire et laissez sécher."
+      },
+      "faq": [
+        {
+          "q": "Convient-il aux chats comme aux chiens ?",
+          "r": "Oui, pour les poils courts et mi-longs. Sur les poils très longs ou emmêlés, un peigne reste nécessaire."
+        },
+        {
+          "q": "Mon animal n'aime pas la brosse, est-ce différent ?",
+          "r": "Le geste ressemble à une caresse, ce qui rassure beaucoup d'animaux. Commencez par des séances courtes et arrêtez si votre animal montre de l'inconfort."
+        },
+        {
+          "q": "Comment le nettoyer ?",
+          "r": "Retirez les poils à la main, rincez à l'eau claire et laissez sécher à l'air libre."
+        }
+      ]
+    },
+    {
+      "id": "raclette-anti-poils",
+      "sku": "CNP-RAC-01",
+      "nom": "La Raclette anti-poils tapis et voiture",
+      "slug": "raclette-anti-poils-tapis-voiture",
+      "role": "complementaire",
+      "statut": "lancement",
+      "usage_commercial": "Grand kit ; vente additionnelle par e-mail 7 jours après livraison",
+      "description_courte": "Sa lame en caoutchouc décolle les poils incrustés dans les tapis, la moquette et les sièges auto, là où un rouleau glisse.",
+      "description_longue": "Tirez la raclette vers vous par petites zones : les poils incrustés se regroupent en boule et se ramassent à la main ou à l'aspirateur. Elle complète le rouleau sur les tapis ras, la moquette du coffre et les sièges en tissu de la voiture. Elle se lave à l'eau savonneuse et ne demande ni recharge ni pile.",
+      "benefices": [
+        "Décolle les poils incrustés dans les tapis ras et la moquette",
+        "Pratique dans la voiture : sièges en tissu et coffre",
+        "Regroupe les poils en boule, faciles à ramasser",
+        "Lavable à l'eau savonneuse",
+        "Sans recharge ni pile"
+      ],
+      "caracteristiques": {
+        "matieres": "Caoutchouc ou TPR (à confirmer sur l'échantillon retenu, avec mention du latex le cas échéant)",
+        "dimensions": "≈ 20 × 7 cm (à mesurer sur l'échantillon retenu)",
+        "poids": "≈ 150 g",
+        "entretien": "Lavage à l'eau savonneuse, séchage à l'air libre",
+        "origine": "Fabriqué en Chine, contrôlé et expédié depuis la France"
+      },
+      "contenu_du_colis": [
+        "1 raclette anti-poils",
+        "1 notice d'utilisation en français"
+      ],
+      "prix_ttc": 12.9,
+      "prix_barre_ttc": null,
+      "cout_produit_ht": 1.9,
+      "cout_produit_detail": "≈ 1,50 € fournisseur + 0,40 € de fret entrant ; estimation, confiance faible",
+      "cout_livraison_ht": 4.5,
+      "cout_emballage_ht": 0.3,
+      "droits_douane_estimes": 0.15,
+      "delai_livraison_jours": {
+        "min": 3,
+        "max": 6,
+        "unite": "jours ouvrés",
+        "base": "stock en France, point relais"
+      },
+      "fournisseur": "AliExpress, référence à sélectionner sur échantillon",
+      "url_fournisseur": "https://www.aliexpress.com/w/wholesale-pet-hair-rubber-scraper.html",
+      "entrepot": "Micro-stock en France ({{ADRESSE_EXPEDITION}}), importé de Chine par lot et étiqueté au nom de {{RAISON_SOCIALE}}",
+      "poids_g": 150,
+      "variantes": [],
+      "gpsr": {
+        "fabricant": "{{FABRICANT_RACLETTE}} : nom, adresse postale et e-mail du fabricant, à reporter depuis le dossier fournisseur avant publication",
+        "responsable_ue": "{{RAISON_SOCIALE}}, {{ADRESSE}}, {{EMAIL}} (importateur établi dans l'UE)",
+        "identification": "Réf. CNP-RAC-01, lot AAMM indiqué sur l'étiquette",
+        "avertissements": [
+          "Tester d'abord sur une zone cachée.",
+          "Ne pas utiliser sur le cuir, le daim, la soie ou les tissus délicats.",
+          "Si la lame contient du latex : déconseillé en cas d'allergie au latex (mention à confirmer selon la matière).",
+          "Ne pas laisser à la portée des enfants ni des animaux."
+        ],
+        "avertissements_statut": "À valider sur l'échantillon et la notice du fabricant",
+        "instructions": "Tenez la raclette inclinée et tirez-la vers vous par petites zones. Ramassez la boule de poils à la main ou à l'aspirateur. Lavez la lame à l'eau savonneuse si besoin."
+      },
+      "faq": [
+        {
+          "q": "Quelle différence avec le rouleau ?",
+          "r": "Le rouleau est fait pour les tissus d'ameublement et les plaids. La raclette décolle les poils incrustés dans les tapis ras, la moquette et la voiture. Les deux sont réunis dans le Grand kit."
+        },
+        {
+          "q": "Abîme-t-elle les tapis ?",
+          "r": "Elle convient aux tapis ras et à la moquette. Testez-la d'abord sur une zone cachée ; évitez les tapis à poils longs et les tissus délicats."
+        },
+        {
+          "q": "Contient-elle du latex ?",
+          "r": "La matière exacte est indiquée sur la fiche et sur l'étiquette dès réception du stock contrôlé."
+        }
+      ]
+    },
+    {
+      "id": "tapis-fenetre-thermique",
+      "sku": "CNP-TAP-01",
+      "nom": "Le Tapis de fenêtre thermique",
+      "slug": "tapis-fenetre-thermique-chat",
+      "role": "complementaire",
+      "statut": "saisonnier",
+      "saison": {
+        "debut": "octobre",
+        "fin": "février",
+        "condition_lancement": "stock reçu avant le 15/12/2026, sinon report à octobre 2027"
+      },
+      "usage_commercial": "Kit chat d'hiver ; vente croisée pour les acheteurs propriétaires de chats",
+      "description_courte": "Un couchage moelleux pour le rebord de fenêtre. Sa couche réfléchissante renvoie au chat la chaleur de son propre corps. Sans fil, sans pile, sans prise.",
+      "description_longue": "Votre chat adore la fenêtre, surtout l'hiver. Ce tapis transforme le rebord en couchage : dessus doux en sherpa, couche réfléchissante intérieure qui renvoie la chaleur corporelle de l'animal, dessous antidérapant. Le format allongé est pensé pour les rebords intérieurs. Il fonctionne sans aucun branchement et se lave à 30 °C. Produit de saison, vendu d'octobre à février.",
+      "benefices": [
+        "Rend le rebord de fenêtre plus confortable",
+        "Couche réfléchissante : renvoie la chaleur du corps de l'animal",
+        "Aucun fil, aucune pile, aucune prise",
+        "Dessous antidérapant",
+        "Lavable à 30 °C"
+      ],
+      "caracteristiques": {
+        "matieres": "Dessus sherpa en polyester, couche réfléchissante intérieure, dessous antidérapant (composition exacte à reporter depuis l'échantillon retenu)",
+        "dimensions": "≈ 90 × 28 cm (à confirmer sur l'échantillon retenu)",
+        "poids": "≈ 400 g",
+        "alimentation": "Aucune",
+        "entretien": "Lavage en machine à 30 °C, séchage à l'air libre, pas de repassage",
+        "origine": "Fabriqué en Chine, contrôlé et expédié depuis la France"
+      },
+      "contenu_du_colis": [
+        "1 tapis de fenêtre thermique",
+        "1 notice d'utilisation en français"
+      ],
+      "prix_ttc": 24.9,
+      "prix_barre_ttc": null,
+      "cout_produit_ht": 5.0,
+      "cout_produit_detail": "≈ 3,80 € fournisseur hors promotion + 1,20 € de fret entrant ; estimation, confiance faible (prix d'appel AliExpress à 1 $ non retenu)",
+      "cout_livraison_ht": 4.5,
+      "cout_emballage_ht": 0.3,
+      "droits_douane_estimes": 0.35,
+      "delai_livraison_jours": {
+        "min": 3,
+        "max": 6,
+        "unite": "jours ouvrés",
+        "base": "stock en France, point relais"
+      },
+      "fournisseur": "AliExpress, référence à sélectionner sur échantillon",
+      "url_fournisseur": "https://www.aliexpress.com/item/1005011691079831.html",
+      "url_fournisseur_alternatives": [
+        "https://www.aliexpress.com/item/1005012462046397.html"
+      ],
+      "entrepot": "Micro-stock en France ({{ADRESSE_EXPEDITION}}), importé de Chine par lot et étiqueté au nom de {{RAISON_SOCIALE}}",
+      "poids_g": 400,
+      "variantes": [],
+      "gpsr": {
+        "fabricant": "{{FABRICANT_TAPIS}} : nom, adresse postale et e-mail du fabricant, à reporter depuis le dossier fournisseur avant publication",
+        "responsable_ue": "{{RAISON_SOCIALE}}, {{ADRESSE}}, {{EMAIL}} (importateur établi dans l'UE)",
+        "identification": "Réf. CNP-TAP-01, lot AAMM indiqué sur l'étiquette",
+        "avertissements": [
+          "Ne pas placer sur ou contre un radiateur, un poêle ou toute autre source de chaleur.",
+          "Vérifier régulièrement l'état du tissu ; retirer le tapis si l'animal le mâchonne.",
+          "Ne pas laisser à la portée des jeunes enfants.",
+          "Laver à 30 °C, sécher à l'air libre, ne pas repasser."
+        ],
+        "avertissements_statut": "À valider sur l'échantillon et la notice du fabricant",
+        "instructions": "Posez le tapis sur un rebord sec et stable, face sherpa vers le haut. Lavez-le à 30 °C quand il est sale et laissez-le sécher à plat."
+      },
+      "faq": [
+        {
+          "q": "Est-ce qu'il chauffe tout seul ?",
+          "r": "Il fonctionne sans élément chauffant : sa couche réfléchissante renvoie vers le chat la chaleur de son propre corps, ce qui rend le couchage plus chaud au toucher qu'un simple coussin."
+        },
+        {
+          "q": "Mon rebord est étroit, va-t-il tenir ?",
+          "r": "Mesurez la profondeur du rebord : le tapis fait environ 28 cm de large. Le dessous antidérapant limite les glissements sur une surface plane."
+        },
+        {
+          "q": "Peut-on le laver ?",
+          "r": "Oui, en machine à 30 °C, puis séchage à l'air libre."
+        },
+        {
+          "q": "Pourquoi n'est-il vendu qu'en hiver ?",
+          "r": "C'est un produit de saison : nous le proposons d'octobre à février, quand les chats recherchent la chaleur près des fenêtres."
+        }
+      ]
+    }
+  ],
+  "bundles": [
+    {
+      "id": "kit-anti-poils",
+      "sku": "CNP-KIT-AP",
+      "nom": "Kit anti-poils",
+      "produits": [
+        "rouleau-anti-poils",
+        "gant-toilettage"
+      ],
+      "prix_ttc": 29.9,
+      "prix_separes_ttc": 34.8,
+      "economie_affichee_ttc": 4.9,
+      "livraison_offerte": false,
+      "statut": "lancement",
+      "description": "Le rouleau pour le canapé, le gant pour brosser l'animal.",
+      "mise_en_avant": false
+    },
+    {
+      "id": "grand-kit",
+      "sku": "CNP-KIT-GK",
+      "nom": "Grand kit",
+      "produits": [
+        "rouleau-anti-poils",
+        "raclette-anti-poils",
+        "gant-toilettage"
+      ],
+      "prix_ttc": 39.9,
+      "prix_separes_ttc": 47.7,
+      "economie_affichee_ttc": 7.8,
+      "livraison_offerte": true,
+      "statut": "lancement",
+      "description": "Canapé, tapis, voiture et brossage : les trois outils pour toute la maison. Livraison offerte.",
+      "mise_en_avant": true
+    },
+    {
+      "id": "duo-rouleaux",
+      "sku": "CNP-DUO-ROU",
+      "nom": "Duo maison + voiture",
+      "produits": [
+        "rouleau-anti-poils",
+        "rouleau-anti-poils"
+      ],
+      "prix_ttc": 39.9,
+      "prix_separes_ttc": 49.8,
+      "economie_affichee_ttc": 9.9,
+      "livraison_offerte": true,
+      "statut": "lancement",
+      "description": "Un rouleau pour le salon, un pour la voiture ou la chambre. Livraison offerte.",
+      "mise_en_avant": false
+    },
+    {
+      "id": "kit-chat-hiver",
+      "sku": "CNP-KIT-HIV",
+      "nom": "Kit chat d'hiver",
+      "produits": [
+        "rouleau-anti-poils",
+        "tapis-fenetre-thermique"
+      ],
+      "prix_ttc": 44.9,
+      "prix_separes_ttc": 49.8,
+      "economie_affichee_ttc": 4.9,
+      "livraison_offerte": true,
+      "statut": "saisonnier",
+      "disponible_jusqu_au": "2027-02-28",
+      "description": "Le rouleau pour le canapé et un couchage chaud pour la fenêtre. Livraison offerte.",
+      "mise_en_avant": false
+    }
+  ],
+  "ventes_additionnelles": [
+    {
+      "declencheur": "fiche rouleau et page de paiement",
+      "produit": "gant-toilettage",
+      "prix_ttc": 9.9,
+      "mecanique": "case non pré-cochée ou article optionnel Stripe (optional_items)"
+    },
+    {
+      "declencheur": "sélecteur d'offre sur la fiche rouleau",
+      "produit": "grand-kit",
+      "mecanique": "Grand kit présenté en premier, mention « livraison offerte »"
+    },
+    {
+      "declencheur": "e-mail 7 jours après livraison",
+      "produit": "raclette-anti-poils",
+      "prix_ttc": 12.9,
+      "mecanique": "prix normal, aucune remise fictive"
+    },
+    {
+      "declencheur": "acheteurs propriétaires de chats, octobre à février",
+      "produit": "kit-chat-hiver",
+      "mecanique": "vente croisée sur la fiche et e-mail de bienvenue"
+    }
+  ],
+  "livraison": {
+    "transporteur": "Mondial Relay (point relais)",
+    "transporteur_domicile": "Colissimo, à partir du palier 1",
+    "zone": "France métropolitaine (Belgique et Luxembourg au palier 1)",
+    "pays_expedition": "France",
+    "delai_annonce": "Expédié sous 1 jour ouvré depuis la France, livré en 3 à 6 jours ouvrés en point relais.",
+    "delai_jours": {
+      "min": 3,
+      "max": 6,
+      "unite": "jours ouvrés"
+    },
+    "regle_recalcul": "Après 30 livraisons : 90e centile des délais constatés + 2 jours ouvrés, affiché sous forme de dates « livré entre le … et le … ». Jamais la mention « délais indicatifs ».",
+    "seuil_gratuite_ttc": 35.0,
+    "frais_ttc": 3.9,
+    "precommande": {
+      "actif_au_lancement": true,
+      "duree_jours": 7,
+      "mention": "Précommande : expédition à partir du JJ/MM, livraison au plus tard le JJ/MM.",
+      "limite_legale_jours": 30,
+      "prime": "Gant de toilettage offert aux 30 premières précommandes"
+    },
+    "noel_2026": "Date limite de commande pour une livraison avant le 24/12 affichée dès le 1/12 (estimation : 17/12, à confirmer selon le transporteur)",
+    "frais_a_la_livraison": "Aucun : prix tout compris, droits et taxes déjà acquittés"
+  },
+  "retours": {
+    "delai_jours": 30,
+    "delai_legal_jours": 14,
+    "extension_commerciale_jours": 16,
+    "frais": "À la charge du client en cas de changement d'avis (≈ 5-7 € en point relais) ; offerts si le produit est défectueux ou erroné ; remboursement sans renvoi quand le retour coûte plus cher que le produit",
+    "adresse_retour": "{{ADRESSE_RETOUR}}",
+    "remboursement_delai_max_jours": 14,
+    "produit_defectueux": "Remplacement ou remboursement sur photo ou vidéo ; sans renvoi si la valeur est inférieure à 15 €",
+    "garantie_legale": "Garantie légale de conformité de 2 ans et garantie des vices cachés, présentées comme une information et jamais comme un avantage propre à l'offre",
+    "fonction_retractation": {
+      "libelle_lien": "renoncer au contrat ici",
+      "libelle_bouton": "confirmer la rétractation",
+      "champs": [
+        "nom",
+        "prénom",
+        "numéro de commande",
+        "e-mail de réception de l'accusé"
+      ],
+      "accuse_reception": "E-mail automatique reprenant la déclaration, avec date et heure",
+      "emplacements": [
+        "pied de page de toutes les pages",
+        "e-mail de confirmation de commande",
+        "page retours"
+      ]
+    }
+  },
+  "regles_commerciales": {
+    "prix_barre_autorise": false,
+    "prix_barre_regle": "Aucun prix barré pendant les 30 premiers jours de vente ; ensuite uniquement avec le prix le plus bas réellement pratiqué sur les 30 jours précédents",
+    "economie_kits": "Affichée en texte (« 7,80 € de moins que les produits achetés séparément »), jamais en prix barré",
+    "compte_a_rebours": "Interdit sauf date de fin réelle et respectée",
+    "stock_affiche": "Uniquement issu du stock réel",
+    "avis": "Avis vérifiés de clients uniquement, avis négatifs publiés, tri chronologique par défaut, aucun import",
+    "allegations_interdites": [
+      "santé ou bien-être médical de l'animal",
+      "allergies",
+      "biodégradable ou écologique",
+      "100 % des poils",
+      "made in France"
+    ],
+    "contenus": "Vidéos tournées avec le produit réel ; aucune vidéo de fournisseur ou de tiers sans licence écrite ; mention « Collaboration commerciale » sur toute vidéo de créateur",
+    "remises_lancement": "Aucune remise ; prime de lancement (gant offert) à la place"
+  },
+  "stack": {
+    "lancement": {
+      "site": "Site statique sur Cloudflare Pages (offre gratuite)",
+      "paiement": "Stripe, page de paiement hébergée par Stripe (liens de paiement) ; aucune saisie de carte sur le site (article 2.2.1 h du contrat Cloudflare)",
+      "email": "Brevo gratuit",
+      "marketplace": "TikTok Shop",
+      "google": "Merchant Center, fiches gratuites (flux XML)",
+      "mesure": "Cloudflare Web Analytics, sans cookie",
+      "pilotage": "Google Sheets"
+    },
+    "croissance": {
+      "site": "Shopify Basic puis Grow au-delà d'≈ 34 500 € de CA mensuel",
+      "paiement": "Shopify Payments + PayPal",
+      "email": "Shopify Messaging",
+      "avis": "Judge.me",
+      "logistique": "3PL France"
+    },
+    "conditions_bascule_shopify": [
+      "≥ 5 commandes par jour sur le site pendant 14 jours",
+      "démarrage de la publicité payante",
+      "connexion d'un 3PL",
+      "plus de 6 références à synchroniser entre le site et TikTok Shop"
+    ]
+  },
+  "canaux": {
+    "principal": "TikTok Shop (contenu propre + créateurs affiliés)",
+    "secondaires": [
+      "site Canapoil",
+      "Instagram Reels",
+      "YouTube Shorts",
+      "Pinterest",
+      "Google fiches gratuites",
+      "e-mail"
+    ],
+    "repartition_commandes_hypothese": {
+      "tiktok_shop_affilies": 0.58,
+      "tiktok_shop_contenu_propre": 0.22,
+      "site": 0.2
+    }
+  },
+  "hypotheses_cles": {
+    "taux_conversion": 0.015,
+    "taux_conversion_note": "Site, trafic social mobile, valeur centrale de 02 §2.2 ; estimation, confiance faible",
+    "taux_conversion_tiktok_shop_clic_commande": 0.035,
+    "panier_moyen_ttc": 34.8,
+    "panier_moyen_ttc_note": "Site, frais de port inclus : 35 % rouleau seul, 20 % Kit anti-poils, 30 % Grand kit, 15 % Duo ; estimation, confiance faible",
+    "panier_moyen_ttc_tous_canaux": 28.1,
+    "taux_retour": 0.05,
+    "commission_createurs": 0.15,
+    "commission_createurs_ouverte": 0.12,
+    "commission_createurs_ciblee": 0.2,
+    "commission_tiktok_shop": 0.09,
+    "commission_tiktok_shop_60_premiers_jours": 0.04,
+    "frais_paiement_stripe": {
+      "pourcentage": 0.015,
+      "fixe_eur": 0.25,
+      "note": "carte standard EEE ; carte premium EEE 2,8 % + 0,25 €"
+    },
+    "port_ht": {
+      "jusqu_a_500g": 4.5,
+      "de_500g_a_1kg": 5.5,
+      "de_1_a_2kg": 7.0,
+      "note": "hypothèse prudente ; tarif public Mondial Relay 4,15 € TTC jusqu'à 500 g depuis le 15/06/2026"
+    },
+    "provision_retours_sav": "5 % du CA HT",
+    "regime_tva_hypothese": "société assujettie à la TVA (voir 04-strategie.md §4.1 pour la franchise et la micro-entreprise)",
+    "marge_moyenne_par_commande_ht": 7.55,
+    "frais_fixes_mensuels_palier_1": 170,
+    "commandes_par_mois_palier_1": 155,
+    "micro_stock_initial": {
+      "rouleau-anti-poils": 20,
+      "gant-toilettage": 10,
+      "raclette-anti-poils": 6,
+      "tapis-fenetre-thermique": 8,
+      "cout_estime_ht": 165
+    },
+    "budget_cash_avant_porte_1": 45,
+    "budget_cash_porte_1_hors_stock": 174
+  },
+  "lancement": {
+    "porte_1": {
+      "date": "2026-11-15",
+      "criteres": "Sur 14 jours : ≥ 1 vidéo > 50 000 vues avec ≥ 1 % de clics, ou ≥ 150 inscrits sur la liste d'attente ; et ≥ 20 commentaires d'intention d'achat"
+    },
+    "porte_2": {
+      "criteres": "≥ 3 commandes par jour pendant 7 jours après l'arrivée du stock"
+    },
+    "mode_site_avant_porte_1": "Liste d'attente (aucune vente) : « Lancement en novembre : recevez un e-mail le jour de l'ouverture »",
+    "challenger": "Tapis de fouille lavable : devient le héros s'il fait au moins 50 % de mieux au critère de la porte 1"
+  },
+  "seo": {
+    "mots_cles_principaux": [
+      "rouleau anti poils",
+      "anti poils chat canapé",
+      "brosse anti poils animaux réutilisable",
+      "enlever poils chat canapé",
+      "poils de chien voiture"
+    ],
+    "titre_accueil": "Canapoil — Rouleau anti-poils réutilisable pour chat et chien",
+    "meta_description_accueil": "Rouleau anti-poils réutilisable, gant de toilettage et raclette pour tapis et voiture. Testés en vidéo sur de vrais tissus, expédiés depuis la France en 3 à 6 jours ouvrés."
+  },
+  "contact": {
+    "email": "{{EMAIL}}",
+    "telephone": "{{TELEPHONE}}",
+    "mediateur": "{{MEDIATEUR}}",
+    "idu_emballages": "{{IDU_EMBALLAGES}}",
+    "descripteur_bancaire": "CANAPOIL"
+  }
+}

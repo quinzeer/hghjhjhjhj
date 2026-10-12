@@ -1,0 +1,14 @@
+# Canapoil
+User-agent: *
+Allow: /
+Disallow: /panier/
+Disallow: /commande/
+Disallow: /merci.html
+Disallow: /retractation/
+Disallow: /documents/
+Disallow: /api/
+Disallow: /outils/
+Disallow: /netlify/
+Disallow: /functions/
+
+Sitemap: https://canapoil.fr/sitemap.xml
