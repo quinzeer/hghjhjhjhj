@@ -24,7 +24,8 @@ Nous n'avons pas désigné de délégué à la protection des données, cette d�
 | Livraison | Adresse, numéro de suivi, statut de livraison | Vous et le transporteur |
 | Navigation | Adresse IP et journaux techniques de l'hébergeur ; données de traceurs selon vos choix | Votre navigateur |
 | Avis | Note, commentaire, prénom ou pseudonyme | Vous |
-| Prospection | Adresse e-mail, préférences, date d'inscription et de confirmation | Vous (inscription à la liste d'attente ou aux e-mails) |
+| Prospection | Adresse e-mail, produit qui vous intéresse, texte et date de votre consentement, date de confirmation, source de la visite (paramètres UTM) | Vous (inscription à la liste d'attente ou aux e-mails) |
+| Sécurité des formulaires | Adresse IP (compteur anti-abus conservé 1 heure), résultat de la vérification anti-robot Cloudflare Turnstile | Votre navigateur |
 
 Les champs obligatoires sont signalés ; sans eux, nous ne pouvons pas traiter votre commande ou votre demande.
 
@@ -43,6 +44,8 @@ Les champs obligatoires sont signalés ; sans eux, nous ne pouvons pas traiter v
 | Avis clients | Intérêt légitime | Durée de publication de l'avis, 3 ans maximum |
 | Mesure d'audience et publicité ciblée (traceurs) | Consentement | Traceurs : 13 mois maximum ; choix de cookies : 6 mois (voir la [Politique cookies](lien:cookies)) |
 | Sécurité du Site | Intérêt légitime | 12 mois (journaux techniques) |
+| Protection des formulaires contre les envois automatisés (vérification anti-robot, limite de 3 envois par heure et par adresse IP, vérification de la commande avant l'envoi d'un accusé de rétractation) | Intérêt légitime | Compteur : 1 heure ; vérification Turnstile : non conservée par Canapoil |
+| Mesure d'audience sans cookie (Cloudflare Web Analytics : pages vues, référent, pays, sans identifiant personnel ni chaîne de requête) | Intérêt légitime, sous réserve de la validation de l'exemption de consentement | Données agrégées |
 
 ## 4. Destinataires
 
@@ -55,6 +58,7 @@ Vos données sont accessibles aux seules personnes habilitées de {{RAISON_SOCIA
 | Stripe Payments Europe, Limited | Page de paiement, traitement des paiements par carte, lutte contre la fraude | Irlande ; transferts vers les États-Unis encadrés (Data Privacy Framework et clauses contractuelles types) |
 | Brevo (Sendinblue SAS) | Envoi des e-mails transactionnels (accusés de rétractation, suivi) et des e-mails d'information | France |
 | Mondial Relay | Transport et remise en point relais (nom, adresse, téléphone, e-mail) | France |
+| Cloudflare, Inc. | Vérification anti-robot des formulaires (Turnstile) et mesure d'audience sans cookie | États-Unis (Data Privacy Framework et clauses contractuelles types) |
 | Médiateur de la consommation, expert-comptable, conseils, autorités | Selon leurs missions légales | France |
 :::
 ::: shopify

@@ -1,13 +1,16 @@
 /* Canapoil — script unique du site (aucune dépendance).
    Panier en localStorage, tiroir accessible, sélecteur d'offres, barre d'achat
    collante, dates de livraison en jours ouvrés, consentement aux traceurs,
-   commande (démo ou Stripe), rétractation en ligne et inscriptions. */
+   commande (démo ou Stripe), rétractation en ligne et inscriptions.
+   La phase de vente (liste d'attente, précommande, vente), les dates de précommande
+   et l'état de stock de chaque article viennent de brand.json, via la page générée
+   (data-phase) et /data/products.json : config.js ne fixe plus que le mode. */
 (() => {
   "use strict";
 
   const CFG = window.CANAPOIL_CONFIG || {};
   const DEMO = CFG.mode !== "production";
-  const PHASE = CFG.phase || "vente";
+  const PHASE = document.body.dataset.phase || "liste_attente";
   const API = Object.assign({ checkout: "/api/create-checkout", retractation: "/api/retractation", inscription: "/api/inscription" }, CFG.api);
   const $ = (s, c) => (c || document).querySelector(s);
   const $$ = (s, c) => Array.from((c || document).querySelectorAll(s));
@@ -22,7 +25,7 @@
   const CLE_CONSENT = "canapoil_consentement_v1";
   const CLE_CMD = "canapoil_derniere_commande";
   const JOUR = 864e5;
-  const CGV_VERSION = "2026-10-12";
+  const CLE_UTM = "canapoil_utm";
 
   const store = {
     get(k, s) { try { const v = (s ? sessionStorage : localStorage).getItem(k); return v ? JSON.parse(v) : null; } catch (e) { return null; } },
@@ -63,8 +66,8 @@
   const FDATE_LONG = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "long", year: "numeric" });
   function fourchette() {
     if (!CAT) return null;
-    const L = CAT.livraison, c = CFG.livraison || {};
-    const min = c.delai_min || L.delai_min_jours_ouvres, max = c.delai_max || L.delai_max_jours_ouvres;
+    const L = CAT.livraison;
+    const min = L.delai_min_jours_ouvres, max = L.delai_max_jours_ouvres;
     const auj = new Date();
     return { min, max, du: plusJoursOuvres(auj, min), au: plusJoursOuvres(auj, max) };
   }
@@ -78,11 +81,19 @@
     const m = d.getMonth() + 1, s = it.saison;
     return s.debut_mois <= s.fin_mois ? m >= s.debut_mois && m <= s.fin_mois : m >= s.debut_mois || m <= s.fin_mois;
   }
+  const vendable = (it) => !!it && (it.etat === "disponible" || it.etat === "precommande");
   function disponible(it) {
-    if (!it || PHASE === "liste_attente") return false;
+    if (!it || PHASE === "liste_attente" || !vendable(it)) return false;
     if (!enSaison(it)) return false;
     if (it.type === "kit") return it.composition.every((c) => enSaison(IDX[c.id] || {}));
     return true;
+  }
+  const qmaxItem = (it) => Math.max(0, Math.min(QMAX, it && Number.isInteger(it.stock_max_commande) ? it.stock_max_commande : QMAX));
+  const libelleAchat = (it) => (!disponible(it) ? (it && it.etat === "epuise" ? "Indisponible" : "Hors saison") : it.etat === "precommande" ? "Précommander" : "Ajouter au panier");
+  function datesPrecommande(lignes) {
+    let d = null;
+    lignes.forEach((l) => { const it = IDX[l.id]; if (it && it.etat === "precommande" && it.precommande && (!d || it.precommande.livraison_au_plus_tard_le > d.livraison_au_plus_tard_le)) d = it.precommande; });
+    return d;
   }
 
   /* ------------------------------------------------------------ panier */
@@ -91,7 +102,7 @@
     if (!p || !Array.isArray(p.lignes) || Date.now() - (p.maj || 0) > 30 * JOUR) return [];
     return p.lignes
       .filter((l) => l && (!CAT || IDX[l.id]) && Number.isInteger(l.qte) && l.qte > 0)
-      .map((l) => ({ id: l.id, qte: Math.min(l.qte, QMAX) }));
+      .map((l) => ({ id: l.id, qte: Math.min(l.qte, CAT ? Math.max(1, qmaxItem(IDX[l.id])) : QMAX) }));
   }
   function ecrirePanier(lignes) {
     store.set(CLE_PANIER, { lignes, maj: Date.now() });
@@ -101,15 +112,15 @@
     const it = IDX[id];
     if (!disponible(it)) return false;
     const lignes = lirePanier();
-    const l = lignes.find((x) => x.id === id);
-    if (l) l.qte = Math.min(QMAX, l.qte + qte); else lignes.push({ id, qte: Math.min(QMAX, qte) });
+    const l = lignes.find((x) => x.id === id), max = qmaxItem(it);
+    if (l) l.qte = Math.min(max, l.qte + qte); else lignes.push({ id, qte: Math.min(max, qte) });
     ecrirePanier(lignes);
     return true;
   }
   function modifier(id, qte) {
     let lignes = lirePanier();
     if (qte <= 0) lignes = lignes.filter((x) => x.id !== id);
-    else lignes.forEach((x) => { if (x.id === id) x.qte = Math.min(QMAX, qte); });
+    else lignes.forEach((x) => { if (x.id === id) x.qte = Math.min(qmaxItem(IDX[id]), qte); });
     ecrirePanier(lignes);
   }
   function remplacer(ids, kitId) {
@@ -150,7 +161,7 @@
     }).join("");
   }
   function htmlRecap(t) {
-    const tva = CFG.tva === "franchise" ? "TVA non applicable, art. 293 B du CGI." : `Prix TTC, dont TVA 20 % : ${euros(Math.round(t.total - t.total / 1.2))}.`;
+    const tva = CAT && CAT.tva === "franchise" ? "TVA non applicable, art. 293 B du CGI." : `Prix TTC, dont TVA 20 % : ${euros(Math.round(t.total - t.total / 1.2))}.`;
     return `<div class="recap__ligne"><span>Sous-total</span><span>${euros(t.sous)}</span></div>
       <div class="recap__ligne"><span>Livraison point relais</span><span>${t.nb === 0 ? "—" : t.offerte ? "Offerte" : euros(t.livraison)}</span></div>
       <div class="recap__ligne recap__ligne--total"><span>Total TTC</span><span>${euros(t.total)}</span></div>
@@ -193,6 +204,13 @@
     $$(".js-recap").forEach((el) => { el.innerHTML = htmlRecap(t); });
     $$(".js-progression").forEach((el) => majProgression(el, t));
     $$(".js-suggestion").forEach((el) => { el.innerHTML = suggestion(lignes, t); });
+    const dp = datesPrecommande(lignes);
+    $$(".js-delai-precommande").forEach((el) => {
+      el.hidden = !dp;
+      const cible = $("span", el) || el;
+      if (dp) cible.innerHTML = `<strong>Précommande</strong> : votre commande est expédiée depuis la France à partir du ${FDATE_LONG.format(dateIso(dp.expedition_a_partir_du))} et livrée en point relais au plus tard le ${FDATE_LONG.format(dateIso(dp.livraison_au_plus_tard_le))}.`;
+    });
+    $$(".js-delai-standard").forEach((el) => { if (PHASE === "vente") el.hidden = !!dp; });
     const bloque = !t.nb || lignes.some((l) => !disponible(IDX[l.id]));
     $$(".js-vers-commande").forEach((a) => {
       a.setAttribute("aria-disabled", bloque ? "true" : "false");
@@ -285,7 +303,8 @@
     const offre = () => { const r = $('input[name="offre"]:checked', bloc) || $('input[name="offre"]', bloc); return r ? r.value : bloc.dataset.produit; };
     const qte = () => Math.min(QMAX, Math.max(1, parseInt(qteInput && qteInput.value, 10) || 1));
 
-    if (PHASE === "liste_attente") {
+    const itemPage = IDX[bloc.dataset.produit];
+    if (PHASE === "liste_attente" || (itemPage && (itemPage.etat === "epuise" || itemPage.etat === "attente"))) {
       const tpl = $("#tpl-attente");
       if (tpl) { bloc.innerHTML = ""; bloc.appendChild(tpl.content.cloneNode(true)); initInscriptions(bloc); }
       if (barre) barre.remove();
@@ -299,7 +318,7 @@
       const ok = disponible(it), total = euros(cents(it.prix_ttc) * qte());
       $(".js-prix-bouton", bloc).textContent = total;
       $$(".js-prix-offre").forEach((el) => { el.textContent = euros(cents(it.prix_ttc)); });
-      $(".js-libelle-ajout", bloc).textContent = ok ? (PHASE === "precommande" ? "Précommander" : "Ajouter au panier") : "Hors saison";
+      $(".js-libelle-ajout", bloc).textContent = libelleAchat(it);
       bouton.disabled = !ok;
       if (upsell) {
         const v = offre();
@@ -311,7 +330,7 @@
         $(".js-barre-prix", barre).textContent = total;
         const b = $(".js-barre-ajouter", barre);
         b.disabled = !ok;
-        b.textContent = ok ? (PHASE === "precommande" ? "Précommander" : "Ajouter au panier") : "Hors saison";
+        b.textContent = libelleAchat(it);
       }
       $$(".offre", bloc).forEach((o) => { const x = IDX[o.dataset.offre]; o.dataset.indisponible = x && !disponible(x) ? "true" : "false"; });
     }
@@ -329,7 +348,7 @@
     }
     bloc.addEventListener("change", (ev) => { if (ev.target.name === "offre" || ev.target === qteInput) maj(); });
     $$(".js-quantite button", bloc).forEach((b) => b.addEventListener("click", () => {
-      qteInput.value = Math.min(QMAX, Math.max(1, qte() + parseInt(b.dataset.pas, 10)));
+      qteInput.value = Math.min(Math.max(1, qmaxItem(IDX[offre()])), Math.max(1, qte() + parseInt(b.dataset.pas, 10)));
       maj();
     }));
     if (qteInput) qteInput.addEventListener("input", maj);
@@ -376,22 +395,14 @@
     if (!f) return;
     const txt = `, soit entre le ${FDATE.format(f.du)} et le ${FDATE.format(f.au)} pour une commande passée aujourd'hui`;
     $$(".js-dates-livraison").forEach((el) => { el.textContent = PHASE === "vente" ? txt : ""; });
-    if (PHASE === "precommande" && CFG.precommande) {
-      const p = CFG.precommande, d1 = dateIso(p.expedition_a_partir_du), d2 = dateIso(p.livraison_au_plus_tard_le);
-      $$(".js-precommande-texte").forEach((el) => {
-        el.hidden = false;
-        el.closest(".encart").classList.add("encart--precommande");
-        $("span", el).innerHTML = `<strong>Précommande</strong> : expédition à partir du ${FDATE_LONG.format(d1)}, livraison au plus tard le ${FDATE_LONG.format(d2)}.${p.prime ? " " + esc(p.prime) + "." : ""}`;
-      });
-    }
   }
 
   function initCartes() {
     $$(".js-ajout-rapide").forEach((b) => {
       const it = IDX[b.dataset.ajouter];
-      if (PHASE === "liste_attente") { b.hidden = true; return; }
-      if (!disponible(it)) { b.disabled = true; b.textContent = "Hors saison"; return; }
-      if (PHASE === "precommande") b.textContent = "Précommander";
+      if (PHASE === "liste_attente" || !it || it.etat === "attente") { b.hidden = true; return; }
+      if (!disponible(it)) { b.disabled = true; b.textContent = libelleAchat(it); return; }
+      if (it.etat === "precommande") b.textContent = "Précommander";
       b.addEventListener("click", () => { if (ajouter(it.id, 1)) apresAjout(); });
     });
   }
@@ -441,7 +452,7 @@
       const t = totaux(lignes);
       const relais = $("#point-relais", form).value.trim().slice(0, 80);
       const recap = {
-        lignes, totaux: t, point_relais: relais, date: new Date().toISOString(), demo: DEMO, phase: PHASE,
+        lignes, totaux: t, point_relais: relais, date: new Date().toISOString(), demo: DEMO,
       };
       bouton.disabled = true;
       bouton.textContent = DEMO ? "Simulation en cours…" : "Redirection vers Stripe…";
@@ -452,7 +463,7 @@
         return;
       }
       try {
-        const rep = await posterJSON(API.checkout, { lignes, point_relais: relais, cgv_acceptees: true, cgv_version: CGV_VERSION, phase: PHASE });
+        const rep = await posterJSON(API.checkout, { lignes, point_relais: relais, cgv_acceptees: true, cgv_version: CAT.cgv_version, utm: lireUtm() });
         if (!rep.url) throw new Error("Réponse inattendue du serveur de paiement.");
         store.set(CLE_CMD, recap, true);
         window.location.href = rep.url;
@@ -482,10 +493,56 @@
     if (cmd && CAT) {
       const lignes = cmd.lignes.filter((l) => IDX[l.id]);
       $(".js-merci-recap").hidden = false;
-      $(".js-merci-numero").textContent = cmd.numero ? `Commande ${cmd.numero} (simulation)` : "Récapitulatif transmis à la page de paiement.";
+      const sid = p.get("session_id") || "";
+      $(".js-merci-numero").textContent = cmd.numero ? `Commande ${cmd.numero} (simulation)` : (sid ? `Commande ${sid.slice(-10).toUpperCase()} : ce numéro figure dans l'e-mail de confirmation et vous sera demandé pour une rétractation.` : "Récapitulatif transmis à la page de paiement.");
       $(".js-merci-lignes").innerHTML = htmlLignes(lignes, true);
       $(".js-merci-totaux").innerHTML = htmlRecap(totaux(lignes)) + (cmd.point_relais ? `<p class="recap__note">Point relais demandé : ${esc(cmd.point_relais)}</p>` : "");
     }
+  }
+
+  /* ------------------------------------------------------------ attribution (UTM) */
+  // Les paramètres utm_* de l'adresse d'arrivée sont gardés pendant la visite (sessionStorage)
+  // puis transmis à la commande (métadonnées Stripe) et à l'inscription (attributs Brevo).
+  const UTM_CLES = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
+  function capterUtm() {
+    const q = new URLSearchParams(window.location.search), u = {};
+    UTM_CLES.forEach((k) => { const v = (q.get(k) || "").toLowerCase().replace(/[^a-z0-9_.-]/g, "").slice(0, 50); if (v) u[k] = v; });
+    if (Object.keys(u).length) store.set(CLE_UTM, u, true);
+  }
+  const lireUtm = () => store.get(CLE_UTM, true) || {};
+
+  /* ------------------------------------------------------------ anti-robot (Cloudflare Turnstile) */
+  // Chargé uniquement en production et si une clé de site est configurée : aucun appel tiers en démonstration.
+  const TS_CLE = (CFG.turnstile && CFG.turnstile.cle_site) || "";
+  const TS_ACTIF = !DEMO && !!TS_CLE;
+  let tsPromesse = null;
+  function chargerTurnstile() {
+    if (!TS_ACTIF) return Promise.resolve(null);
+    if (!tsPromesse) {
+      tsPromesse = new Promise((ok, ko) => {
+        const sc = document.createElement("script");
+        sc.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+        sc.async = true;
+        sc.onload = () => ok(window.turnstile);
+        sc.onerror = () => ko(new Error("Vérification anti-robot indisponible. Rechargez la page."));
+        document.head.appendChild(sc);
+      });
+    }
+    return tsPromesse;
+  }
+  function preparerTurnstile(form) {
+    const zone = $(".js-turnstile", form);
+    if (!TS_ACTIF || !zone) return;
+    chargerTurnstile().then((ts) => { if (ts && !zone.dataset.widget) zone.dataset.widget = ts.render(zone, { sitekey: TS_CLE, language: "fr" }); }).catch(() => {});
+  }
+  function jetonTurnstile(form) {
+    const zone = $(".js-turnstile", form);
+    if (!TS_ACTIF || !zone || !window.turnstile || !zone.dataset.widget) return "";
+    return window.turnstile.getResponse(zone.dataset.widget) || "";
+  }
+  function reinitTurnstile(form) {
+    const zone = $(".js-turnstile", form);
+    if (TS_ACTIF && zone && window.turnstile && zone.dataset.widget) window.turnstile.reset(zone.dataset.widget);
   }
 
   /* ------------------------------------------------------------ formulaires */
@@ -495,19 +552,27 @@
     $$(".js-form-inscription", racine).forEach((form) => {
       if (form.dataset.pret) return;
       form.dataset.pret = "1";
+      preparerTurnstile(form);
+      const caseC = $('input[name="consentement"]', form);
+      if (caseC) caseC.addEventListener("change", () => { if (caseC.checked) { $(".js-erreur", form).textContent = ""; caseC.removeAttribute("aria-invalid"); } });
       form.addEventListener("submit", async (ev) => {
         ev.preventDefault();
         const champ = $('input[type="email"]', form), err = $(".js-erreur", form), email = champ.value.trim();
+        const consent = $('input[name="consentement"]', form), produit = $('input[name="produit"]', form);
         err.textContent = "";
         champ.removeAttribute("aria-invalid");
         if (!EMAIL_RE.test(email)) { err.textContent = "Saisissez une adresse e-mail valide, par exemple nom@exemple.fr."; champ.setAttribute("aria-invalid", "true"); champ.focus(); return; }
+        if (consent && !consent.checked) { err.textContent = "Cochez la case pour accepter de recevoir nos e-mails : sans votre accord, nous ne pouvons pas vous inscrire."; consent.setAttribute("aria-invalid", "true"); consent.focus(); return; }
+        if (consent) consent.removeAttribute("aria-invalid");
+        const jeton = jetonTurnstile(form);
+        if (TS_ACTIF && !jeton) { err.textContent = "Patientez pendant la vérification anti-robot, puis réessayez."; return; }
         const b = $('button[type="submit"]', form);
         b.disabled = true;
         try {
-          if (!DEMO) await posterJSON(API.inscription, { email, source: form.dataset.source || "site" });
+          if (!DEMO) await posterJSON(API.inscription, { email, source: form.dataset.source || "site", produit: produit ? produit.value : "", consentement: true, utm: lireUtm(), turnstile: jeton });
           form.innerHTML = `<p class="message message--succes" role="status" tabindex="-1">${DEMO ? "Simulation : en production, un e-mail de confirmation serait envoyé à " + esc(email) + "." : "Merci ! Confirmez votre inscription grâce à l'e-mail envoyé à " + esc(email) + "."}</p>`;
           $(".message", form).focus();
-        } catch (e) { err.textContent = e.message; b.disabled = false; }
+        } catch (e) { err.textContent = e.message; b.disabled = false; reinitTurnstile(form); }
       });
     });
   }
@@ -517,6 +582,7 @@
     if (!form) return;
     $$(".js-avertissement-demo").forEach((el) => { el.hidden = !DEMO; });
     const zone = $(".js-accuse"), erreurG = $(".js-erreur-retractation", form);
+    preparerTurnstile(form);
     form.addEventListener("submit", async (ev) => {
       ev.preventDefault();
       erreurG.hidden = true;
@@ -535,13 +601,18 @@
       if (premier) { premier.focus(); return; }
       const b = $('button[type="submit"]', form);
       b.disabled = true;
-      let horodatage = new Date().toISOString(), reference = "";
+      let horodatage = new Date().toISOString(), reference = "", verifiee = true;
       try {
-        if (!DEMO) { const r = await posterJSON(API.retractation, v); horodatage = r.horodatage || horodatage; reference = r.reference || ""; }
-      } catch (e) { erreurG.hidden = false; erreurG.textContent = e.message; b.disabled = false; return; }
+        if (!DEMO) {
+          const jeton = jetonTurnstile(form);
+          if (TS_ACTIF && !jeton) throw new Error("Patientez pendant la vérification anti-robot, puis réessayez.");
+          const r = await posterJSON(API.retractation, Object.assign({}, v, { turnstile: jeton }));
+          horodatage = r.horodatage || horodatage; reference = r.reference || ""; verifiee = r.commande_verifiee !== false;
+        }
+      } catch (e) { erreurG.hidden = false; erreurG.textContent = e.message; b.disabled = false; reinitTurnstile(form); return; }
       const quand = new Intl.DateTimeFormat("fr-FR", { dateStyle: "full", timeStyle: "medium", timeZone: "Europe/Paris" }).format(new Date(horodatage));
       zone.innerHTML = `<h2>Accusé de réception de votre rétractation</h2>
-        ${DEMO ? '<p class="message message--demo"><strong>Simulation</strong> : en production, cet accusé est aussi envoyé par e-mail.</p>' : `<p class="message message--succes">Cet accusé vous a été envoyé par e-mail à ${esc(v.email)}.</p>`}
+        ${DEMO ? '<p class="message message--demo"><strong>Simulation</strong> : en production, cet accusé est aussi envoyé par e-mail.</p>' : verifiee ? `<p class="message message--succes">Cet accusé vous a été envoyé par e-mail à ${esc(v.email)}.</p>` : `<p class="message message--info">Votre déclaration a été transmise à notre service client avec sa date et son heure. Nous n'avons pas retrouvé automatiquement la commande indiquée avec cette adresse e-mail : nous vous répondons par e-mail sous 48 heures ouvrées. Conservez cet accusé (bouton ci-dessous).</p>`}
         <dl><dt>Envoyée le</dt><dd>${esc(quand)} (heure de Paris)</dd>${reference ? `<dt>Référence</dt><dd>${esc(reference)}</dd>` : ""}<dt>Nom</dt><dd>${esc(v.nom)}</dd><dt>Prénom</dt><dd>${esc(v.prenom)}</dd><dt>Commande</dt><dd>${esc(v.commande)}</dd><dt>E-mail</dt><dd>${esc(v.email)}</dd><dt>Produits</dt><dd>${v.produits ? esc(v.produits) : "Toute la commande"}</dd></dl>
         <p>Déclaration : « Je notifie par la présente ma rétractation du contrat portant sur la vente des biens ci-dessus. »</p>
         <p><button type="button" class="btn btn--secondaire js-imprimer">Imprimer ou enregistrer en PDF</button></p>`;
@@ -617,12 +688,14 @@
     $$(".js-reseaux").forEach((el) => { el.innerHTML = liens.join(""); el.hidden = !liens.length; });
   }
   function initPhase() {
+    $$(".js-bandeau-demo").forEach((el) => { el.hidden = !DEMO; });
     if (PHASE !== "liste_attente") return;
     $$(".js-ouvrir-panier").forEach((a) => { a.hidden = true; });
   }
 
   /* ------------------------------------------------------------ démarrage */
   function demarrer() {
+    capterUtm();
     initMenu();
     initCookies();
     initReseaux();

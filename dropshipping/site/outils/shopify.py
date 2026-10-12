@@ -87,7 +87,7 @@ def bloc_livraison(livraison_offerte):
     frais = "Livraison offerte." if livraison_offerte else "Livraison 3,90 € en point relais, offerte dès 35 € d'achat."
     return (
         "<h3>Livraison et retours</h3>"
-        f"<p>Expédié sous 1 jour ouvré depuis la France, livré en point relais Mondial Relay en 3 à 6 jours ouvrés. {frais} "
+        f"<p>Expédié sous 1 jour ouvré depuis la France, livré en point relais Mondial Relay 3 à 6 jours ouvrés après la commande (produits en stock). {frais} "
         "30 jours après réception pour changer d'avis (14 jours prévus par la loi + 16 jours offerts) ; retour à vos frais, sauf produit défectueux.</p>"
     )
 
@@ -139,7 +139,11 @@ def ligne_vide():
 
 def generer_csv(brand, cat, idx, base):
     couts = {p["id"]: p["cout_produit_ht"] + p["droits_douane_estimes"] for p in brand["produits"]}
-    stock = brand["hypotheses_cles"]["micro_stock_initial"]
+    # Stock vendable du micro-stock : les gants réservés à la prime de lancement ne sont pas en vente.
+    stock = {k: v for k, v in brand["hypotheses_cles"]["micro_stock_initial"].items() if isinstance(v, int)}
+    prime = brand["livraison"]["precommande"].get("prime") or {}
+    if "gant-toilettage" in stock and prime.get("quantite"):
+        stock["gant-toilettage"] = max(0, stock["gant-toilettage"] - int(prime["quantite"]))
     lignes = []
     for p in cat["produits"]:
         r = ligne_vide()
@@ -147,7 +151,7 @@ def generer_csv(brand, cat, idx, base):
         r.update({
             "Title": p["nom"], "URL handle": p["slug"], "Description": description_produit(p), "Vendor": "Canapoil",
             "Product category": TAXONOMIE_SHOPIFY[p["id"]], "Type": TYPES[p["id"]], "Tags": TAGS[p["id"]],
-            "Published on online store": "TRUE", "Status": "Active", "SKU": p["sku"],
+            "Published on online store": "FALSE", "Status": "Draft", "SKU": p["sku"],
             "Option1 name": "Title", "Option1 value": "Default Title",
             "Price": prix(p["prix_ttc"]), "Cost per item": prix(couts[p["id"]]), "Charge tax": "TRUE",
             "Inventory tracker": "shopify", "Inventory quantity": str(stock.get(p["id"], 0)),
@@ -174,11 +178,12 @@ def generer_csv(brand, cat, idx, base):
         r.update({
             "Title": k["nom"], "URL handle": k["slug"], "Description": description_kit(k, idx), "Vendor": "Canapoil",
             "Product category": TAXONOMIE_SHOPIFY[premier], "Type": "Kit", "Tags": "kit, anti-poils, chat, chien" + (", saisonnier" if k.get("saison") else ""),
-            "Published on online store": "TRUE", "Status": "Active", "SKU": k["sku"],
+            "Published on online store": "FALSE", "Status": "Draft", "SKU": k["sku"],
             "Option1 name": "Title", "Option1 value": "Default Title",
             "Price": prix(k["prix_ttc"]),
             "Cost per item": prix(sum(couts[c["id"]] * c["quantite"] for c in k["composition"])),
-            "Charge tax": "TRUE", "Inventory tracker": "", "Inventory quantity": "",
+            "Charge tax": "TRUE", "Inventory tracker": "shopify",
+            "Inventory quantity": str(min(int(stock.get(c["id"], 0)) // c["quantite"] for c in k["composition"])),
             "Continue selling when out of stock": "DENY", "Weight value (grams)": str(k["poids_g"]),
             "Weight unit for display": "g", "Requires shipping": "TRUE", "Fulfillment service": "manual",
             "Product image URL": base + k["image_produit_png"], "Image position": "1",
@@ -209,10 +214,10 @@ PAGES_SHOPIFY = [
 ]
 
 
-def generer_pages(contenus, dossier):
+def generer_pages(contenus, dossier, transformer=lambda t: t):
     dossier.mkdir(parents=True, exist_ok=True)
     for src, out, ou in PAGES_SHOPIFY:
-        meta, corps = MD.lire_entete((contenus / f"{src}.md").read_text(encoding="utf-8"))
+        meta, corps = MD.lire_entete(transformer((contenus / f"{src}.md").read_text(encoding="utf-8")))
         h = MD.convertir(corps, "shopify", decalage_titres=0)
         h = h.replace('<div class="tableau-wrap">', "<div>").replace(' class="code"', "").replace('<div class="formulaire-type">', "<div>")
         entete = (
@@ -241,11 +246,15 @@ def generer_redirections(cat):
     return sortie.getvalue()
 
 
-def generer(brand, cat, idx, dossier_kit, contenus, base):
+def generer(brand, cat, idx, dossier_kit, contenus, base, transformer=lambda t: t):
+    """Kit Shopify. Produits et kits importés en brouillon (Status Draft, non publiés) : la boutique
+    n'est publiée qu'après le remplissage de l'identité. Les kits sont suivis en stock avec la quantité
+    du composant le plus rare ; installer Shopify Bundles le jour de l'import pour lier leur stock
+    à celui des composants (correction M3)."""
     dossier_kit = Path(dossier_kit)
-    (dossier_kit / "products.csv").write_text(generer_csv(brand, cat, idx, base), encoding="utf-8")
+    (dossier_kit / "products.csv").write_text(transformer(generer_csv(brand, cat, idx, base)), encoding="utf-8")
     (dossier_kit / "redirections.csv").write_text(generer_redirections(cat), encoding="utf-8")
-    generer_pages(contenus, dossier_kit / "pages")
+    generer_pages(contenus, dossier_kit / "pages", transformer)
     infos = contenus / "shopify"
     if infos.exists():
         for f in sorted(infos.glob("*.html")):

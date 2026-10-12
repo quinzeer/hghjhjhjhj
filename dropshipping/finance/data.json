@@ -37,7 +37,7 @@
      {
       "poste": "Coût produit",
       "cle": "cout_produit",
-      "montant": -5.19,
+      "montant": -6.23,
       "type": "deduction"
      },
      {
@@ -49,7 +49,7 @@
      {
       "poste": "Droits de douane et redevance",
       "cle": "droits",
-      "montant": -0.3,
+      "montant": -0.52,
       "type": "deduction"
      },
      {
@@ -79,13 +79,13 @@
      {
       "poste": "Marge nette de contribution",
       "cle": "marge",
-      "montant": 7.55,
+      "montant": 6.3,
       "type": "total"
      }
     ],
     "ca_ht": 23.4,
-    "marge": 7.55,
-    "marge_pct_ca_ht": 0.3228
+    "marge": 6.3,
+    "marge_pct_ca_ht": 0.2692
    },
    {
     "id": "site-gk",
@@ -108,7 +108,7 @@
      {
       "poste": "Coût produit",
       "cle": "cout_produit",
-      "montant": -7.7,
+      "montant": -9.24,
       "type": "deduction"
      },
      {
@@ -120,7 +120,7 @@
      {
       "poste": "Droits de douane et redevance",
       "cle": "droits",
-      "montant": -0.5,
+      "montant": -0.95,
       "type": "deduction"
      },
      {
@@ -150,13 +150,13 @@
      {
       "poste": "Marge nette de contribution",
       "cle": "marge",
-      "montant": 17.74,
+      "montant": 15.75,
       "type": "total"
      }
     ],
     "ca_ht": 33.25,
-    "marge": 17.74,
-    "marge_pct_ca_ht": 0.5335
+    "marge": 15.75,
+    "marge_pct_ca_ht": 0.4737
    },
    {
     "id": "site-rou",
@@ -179,7 +179,7 @@
      {
       "poste": "Coût produit",
       "cle": "cout_produit",
-      "montant": -4.5,
+      "montant": -5.4,
       "type": "deduction"
      },
      {
@@ -191,7 +191,7 @@
      {
       "poste": "Droits de douane et redevance",
       "cle": "droits",
-      "montant": -0.25,
+      "montant": -0.4,
       "type": "deduction"
      },
      {
@@ -221,13 +221,13 @@
      {
       "poste": "Marge nette de contribution",
       "cle": "marge",
-      "montant": 12.57,
+      "montant": 11.52,
       "type": "total"
      }
     ],
     "ca_ht": 24.0,
-    "marge": 12.57,
-    "marge_pct_ca_ht": 0.5237
+    "marge": 11.52,
+    "marge_pct_ca_ht": 0.4799
    },
    {
     "id": "site-kap",
@@ -250,7 +250,7 @@
      {
       "poste": "Coût produit",
       "cle": "cout_produit",
-      "montant": -5.8,
+      "montant": -6.96,
       "type": "deduction"
      },
      {
@@ -262,7 +262,7 @@
      {
       "poste": "Droits de douane et redevance",
       "cle": "droits",
-      "montant": -0.35,
+      "montant": -0.65,
       "type": "deduction"
      },
      {
@@ -292,13 +292,13 @@
      {
       "poste": "Marge nette de contribution",
       "cle": "marge",
-      "montant": 15.05,
+      "montant": 13.59,
       "type": "total"
      }
     ],
     "ca_ht": 28.17,
-    "marge": 15.05,
-    "marge_pct_ca_ht": 0.5344
+    "marge": 13.59,
+    "marge_pct_ca_ht": 0.4825
    },
    {
     "id": "tts-propre-rou",
@@ -321,7 +321,7 @@
      {
       "poste": "Coût produit",
       "cle": "cout_produit",
-      "montant": -4.5,
+      "montant": -5.4,
       "type": "deduction"
      },
      {
@@ -333,7 +333,7 @@
      {
       "poste": "Droits de douane et redevance",
       "cle": "droits",
-      "montant": -0.25,
+      "montant": -0.4,
       "type": "deduction"
      },
      {
@@ -363,13 +363,13 @@
      {
       "poste": "Marge nette de contribution",
       "cle": "marge",
-      "montant": 7.92,
+      "montant": 6.87,
       "type": "total"
      }
     ],
     "ca_ht": 20.75,
-    "marge": 7.92,
-    "marge_pct_ca_ht": 0.3818
+    "marge": 6.87,
+    "marge_pct_ca_ht": 0.3312
    },
    {
     "id": "tts-aff-rou",
@@ -392,7 +392,7 @@
      {
       "poste": "Coût produit",
       "cle": "cout_produit",
-      "montant": -4.5,
+      "montant": -5.4,
       "type": "deduction"
      },
      {
@@ -404,7 +404,7 @@
      {
       "poste": "Droits de douane et redevance",
       "cle": "droits",
-      "montant": -0.25,
+      "montant": -0.4,
       "type": "deduction"
      },
      {
@@ -434,13 +434,13 @@
      {
       "poste": "Marge nette de contribution",
       "cle": "marge",
-      "montant": 4.19,
+      "montant": 3.14,
       "type": "total"
      }
     ],
     "ca_ht": 20.75,
-    "marge": 4.19,
-    "marge_pct_ca_ht": 0.2018
+    "marge": 3.14,
+    "marge_pct_ca_ht": 0.1512
    },
    {
     "id": "tts-aff-kap",
@@ -463,7 +463,7 @@
      {
       "poste": "Coût produit",
       "cle": "cout_produit",
-      "montant": -5.8,
+      "montant": -6.96,
       "type": "deduction"
      },
      {
@@ -475,7 +475,7 @@
      {
       "poste": "Droits de douane et redevance",
       "cle": "droits",
-      "montant": -0.35,
+      "montant": -0.65,
       "type": "deduction"
      },
      {
@@ -505,13 +505,13 @@
      {
       "poste": "Marge nette de contribution",
       "cle": "marge",
-      "montant": 5.54,
+      "montant": 4.08,
       "type": "total"
      }
     ],
     "ca_ht": 24.92,
-    "marge": 5.54,
-    "marge_pct_ca_ht": 0.2225
+    "marge": 4.08,
+    "marge_pct_ca_ht": 0.1639
    },
    {
     "id": "imp-site-gk",
@@ -747,7 +747,7 @@
      {
       "poste": "Coût produit",
       "cle": "cout_produit",
-      "montant": -5.4,
+      "montant": -6.48,
       "type": "deduction"
      },
      {
@@ -759,7 +759,7 @@
      {
       "poste": "Droits de douane et redevance",
       "cle": "droits",
-      "montant": -0.3,
+      "montant": -0.48,
       "type": "deduction"
      },
      {
@@ -795,13 +795,13 @@
      {
       "poste": "Marge nette de contribution",
       "cle": "marge",
-      "montant": 1.96,
+      "montant": 0.7,
       "type": "total"
      }
     ],
     "ca_ht": 24.9,
-    "marge": 1.96,
-    "marge_pct_ca_ht": 0.0788
+    "marge": 0.7,
+    "marge_pct_ca_ht": 0.0282
    }
   ],
   "par_offre": [
@@ -811,11 +811,11 @@
     "libelle": "Site — Rouleau seul (+3,90 € de port)",
     "prix_ttc": 28.8,
     "ca_ht": 24.0,
-    "marge": 12.57,
-    "marge_pct": 0.5237,
-    "roas_rentabilite_ht": 1.91,
-    "roas_rentabilite_ttc": 2.29,
-    "cpa_max": 12.57
+    "marge": 11.52,
+    "marge_pct": 0.4799,
+    "roas_rentabilite_ht": 2.08,
+    "roas_rentabilite_ttc": 2.5,
+    "cpa_max": 11.52
    },
    {
     "bloc": "société assujettie, micro-stock",
@@ -823,11 +823,11 @@
     "libelle": "Site — Gant seul (+3,90 € de port)",
     "prix_ttc": 13.8,
     "ca_ht": 11.5,
-    "marge": 4.27,
-    "marge_pct": 0.3711,
-    "roas_rentabilite_ht": 2.69,
-    "roas_rentabilite_ttc": 3.23,
-    "cpa_max": 4.27
+    "marge": 3.86,
+    "marge_pct": 0.3355,
+    "roas_rentabilite_ht": 2.98,
+    "roas_rentabilite_ttc": 3.58,
+    "cpa_max": 3.86
    },
    {
     "bloc": "société assujettie, micro-stock",
@@ -835,11 +835,11 @@
     "libelle": "Site — Raclette seule (+3,90 € de port)",
     "prix_ttc": 16.8,
     "ca_ht": 14.0,
-    "marge": 5.95,
-    "marge_pct": 0.4249,
-    "roas_rentabilite_ht": 2.35,
-    "roas_rentabilite_ttc": 2.82,
-    "cpa_max": 5.95
+    "marge": 5.42,
+    "marge_pct": 0.387,
+    "roas_rentabilite_ht": 2.58,
+    "roas_rentabilite_ttc": 3.1,
+    "cpa_max": 5.42
    },
    {
     "bloc": "société assujettie, micro-stock",
@@ -847,11 +847,11 @@
     "libelle": "Site — Tapis thermique seul (+3,90 € de port)",
     "prix_ttc": 28.8,
     "ca_ht": 24.0,
-    "marge": 11.97,
-    "marge_pct": 0.4987,
-    "roas_rentabilite_ht": 2.01,
-    "roas_rentabilite_ttc": 2.41,
-    "cpa_max": 11.97
+    "marge": 10.82,
+    "marge_pct": 0.4507,
+    "roas_rentabilite_ht": 2.22,
+    "roas_rentabilite_ttc": 2.66,
+    "cpa_max": 10.82
    },
    {
     "bloc": "société assujettie, micro-stock",
@@ -859,11 +859,11 @@
     "libelle": "Site — Kit anti-poils (+3,90 € de port)",
     "prix_ttc": 33.8,
     "ca_ht": 28.17,
-    "marge": 15.05,
-    "marge_pct": 0.5344,
-    "roas_rentabilite_ht": 1.87,
-    "roas_rentabilite_ttc": 2.25,
-    "cpa_max": 15.05
+    "marge": 13.59,
+    "marge_pct": 0.4825,
+    "roas_rentabilite_ht": 2.07,
+    "roas_rentabilite_ttc": 2.49,
+    "cpa_max": 13.59
    },
    {
     "bloc": "société assujettie, micro-stock",
@@ -871,11 +871,11 @@
     "libelle": "Site — Grand kit (port offert)",
     "prix_ttc": 39.9,
     "ca_ht": 33.25,
-    "marge": 17.74,
-    "marge_pct": 0.5335,
-    "roas_rentabilite_ht": 1.87,
-    "roas_rentabilite_ttc": 2.25,
-    "cpa_max": 17.74
+    "marge": 15.75,
+    "marge_pct": 0.4737,
+    "roas_rentabilite_ht": 2.11,
+    "roas_rentabilite_ttc": 2.53,
+    "cpa_max": 15.75
    },
    {
     "bloc": "société assujettie, micro-stock",
@@ -883,11 +883,11 @@
     "libelle": "Site — Duo 2 rouleaux (port offert)",
     "prix_ttc": 39.9,
     "ca_ht": 33.25,
-    "marge": 15.34,
-    "marge_pct": 0.4613,
-    "roas_rentabilite_ht": 2.17,
-    "roas_rentabilite_ttc": 2.6,
-    "cpa_max": 15.34
+    "marge": 13.24,
+    "marge_pct": 0.3982,
+    "roas_rentabilite_ht": 2.51,
+    "roas_rentabilite_ttc": 3.01,
+    "cpa_max": 13.24
    },
    {
     "bloc": "société assujettie, micro-stock",
@@ -895,11 +895,11 @@
     "libelle": "Site — Kit chat d'hiver (port offert)",
     "prix_ttc": 44.9,
     "ca_ht": 37.42,
-    "marge": 18.62,
-    "marge_pct": 0.4977,
-    "roas_rentabilite_ht": 2.01,
-    "roas_rentabilite_ttc": 2.41,
-    "cpa_max": 18.62
+    "marge": 16.42,
+    "marge_pct": 0.4389,
+    "roas_rentabilite_ht": 2.28,
+    "roas_rentabilite_ttc": 2.73,
+    "cpa_max": 16.42
    },
    {
     "bloc": "société assujettie, micro-stock",
@@ -907,11 +907,11 @@
     "libelle": "TikTok Shop, contenu propre — Rouleau",
     "prix_ttc": 24.9,
     "ca_ht": 20.75,
-    "marge": 7.92,
-    "marge_pct": 0.3818,
-    "roas_rentabilite_ht": 2.62,
-    "roas_rentabilite_ttc": 3.14,
-    "cpa_max": 7.92
+    "marge": 6.87,
+    "marge_pct": 0.3312,
+    "roas_rentabilite_ht": 3.02,
+    "roas_rentabilite_ttc": 3.62,
+    "cpa_max": 6.87
    },
    {
     "bloc": "société assujettie, micro-stock",
@@ -919,11 +919,11 @@
     "libelle": "TikTok Shop, contenu propre — Kit anti-poils",
     "prix_ttc": 29.9,
     "ca_ht": 24.92,
-    "marge": 10.03,
-    "marge_pct": 0.4025,
-    "roas_rentabilite_ht": 2.48,
-    "roas_rentabilite_ttc": 2.98,
-    "cpa_max": 10.03
+    "marge": 8.57,
+    "marge_pct": 0.3439,
+    "roas_rentabilite_ht": 2.91,
+    "roas_rentabilite_ttc": 3.49,
+    "cpa_max": 8.57
    },
    {
     "bloc": "société assujettie, micro-stock",
@@ -931,11 +931,11 @@
     "libelle": "TikTok Shop, contenu propre, commission 4 % — Rouleau",
     "prix_ttc": 24.9,
     "ca_ht": 20.75,
-    "marge": 9.17,
-    "marge_pct": 0.4418,
-    "roas_rentabilite_ht": 2.26,
-    "roas_rentabilite_ttc": 2.72,
-    "cpa_max": 9.17
+    "marge": 8.12,
+    "marge_pct": 0.3912,
+    "roas_rentabilite_ht": 2.56,
+    "roas_rentabilite_ttc": 3.07,
+    "cpa_max": 8.12
    },
    {
     "bloc": "société assujettie, micro-stock",
@@ -943,8 +943,8 @@
     "libelle": "TikTok Shop, affilié 15 % — Rouleau",
     "prix_ttc": 24.9,
     "ca_ht": 20.75,
-    "marge": 4.19,
-    "marge_pct": 0.2018,
+    "marge": 3.14,
+    "marge_pct": 0.1512,
     "roas_rentabilite_ht": null,
     "roas_rentabilite_ttc": null,
     "cpa_max": null
@@ -955,8 +955,8 @@
     "libelle": "TikTok Shop, affilié 15 % — Kit anti-poils",
     "prix_ttc": 29.9,
     "ca_ht": 24.92,
-    "marge": 5.54,
-    "marge_pct": 0.2225,
+    "marge": 4.08,
+    "marge_pct": 0.1639,
     "roas_rentabilite_ht": null,
     "roas_rentabilite_ttc": null,
     "cpa_max": null
@@ -967,11 +967,11 @@
     "libelle": "Site — Grand kit si le colis dépasse 500 g emballage compris",
     "prix_ttc": 39.9,
     "ca_ht": 33.25,
-    "marge": 16.64,
-    "marge_pct": 0.5004,
-    "roas_rentabilite_ht": 2.0,
-    "roas_rentabilite_ttc": 2.4,
-    "cpa_max": 16.64
+    "marge": 14.65,
+    "marge_pct": 0.4406,
+    "roas_rentabilite_ht": 2.27,
+    "roas_rentabilite_ttc": 2.72,
+    "cpa_max": 14.65
    },
    {
     "bloc": "société assujettie, import + 3PL",
@@ -1099,11 +1099,11 @@
     "libelle": "Site — Rouleau seul (+3,90 € de port)",
     "prix_ttc": 28.8,
     "ca_ht": 28.8,
-    "marge": 15.22,
-    "marge_pct": 0.5284,
-    "roas_rentabilite_ht": 1.89,
-    "roas_rentabilite_ttc": 1.89,
-    "cpa_max": 15.22
+    "marge": 13.96,
+    "marge_pct": 0.4847,
+    "roas_rentabilite_ht": 2.06,
+    "roas_rentabilite_ttc": 2.06,
+    "cpa_max": 13.96
    },
    {
     "bloc": "franchise en base de TVA",
@@ -1111,11 +1111,11 @@
     "libelle": "Site — Kit anti-poils (+3,90 € de port)",
     "prix_ttc": 33.8,
     "ca_ht": 33.8,
-    "marge": 18.21,
-    "marge_pct": 0.5388,
-    "roas_rentabilite_ht": 1.86,
-    "roas_rentabilite_ttc": 1.86,
-    "cpa_max": 18.21
+    "marge": 16.46,
+    "marge_pct": 0.487,
+    "roas_rentabilite_ht": 2.05,
+    "roas_rentabilite_ttc": 2.05,
+    "cpa_max": 16.46
    },
    {
     "bloc": "franchise en base de TVA",
@@ -1123,11 +1123,11 @@
     "libelle": "Site — Grand kit (port offert)",
     "prix_ttc": 39.9,
     "ca_ht": 39.9,
-    "marge": 21.46,
-    "marge_pct": 0.5378,
-    "roas_rentabilite_ht": 1.86,
-    "roas_rentabilite_ttc": 1.86,
-    "cpa_max": 21.46
+    "marge": 19.07,
+    "marge_pct": 0.4779,
+    "roas_rentabilite_ht": 2.09,
+    "roas_rentabilite_ttc": 2.09,
+    "cpa_max": 19.07
    },
    {
     "bloc": "franchise en base de TVA",
@@ -1135,11 +1135,11 @@
     "libelle": "Site — Duo 2 rouleaux (port offert)",
     "prix_ttc": 39.9,
     "ca_ht": 39.9,
-    "marge": 18.58,
-    "marge_pct": 0.4656,
-    "roas_rentabilite_ht": 2.15,
-    "roas_rentabilite_ttc": 2.15,
-    "cpa_max": 18.58
+    "marge": 16.06,
+    "marge_pct": 0.4024,
+    "roas_rentabilite_ht": 2.48,
+    "roas_rentabilite_ttc": 2.48,
+    "cpa_max": 16.06
    },
    {
     "bloc": "franchise en base de TVA",
@@ -1147,11 +1147,11 @@
     "libelle": "TikTok Shop, contenu propre — Rouleau",
     "prix_ttc": 24.9,
     "ca_ht": 24.9,
-    "marge": 9.51,
-    "marge_pct": 0.3818,
-    "roas_rentabilite_ht": 2.62,
-    "roas_rentabilite_ttc": 2.62,
-    "cpa_max": 9.51
+    "marge": 8.25,
+    "marge_pct": 0.3312,
+    "roas_rentabilite_ht": 3.02,
+    "roas_rentabilite_ttc": 3.02,
+    "cpa_max": 8.25
    },
    {
     "bloc": "franchise en base de TVA",
@@ -1159,11 +1159,11 @@
     "libelle": "TikTok Shop, contenu propre — Kit anti-poils",
     "prix_ttc": 29.9,
     "ca_ht": 29.9,
-    "marge": 12.04,
-    "marge_pct": 0.4025,
-    "roas_rentabilite_ht": 2.48,
-    "roas_rentabilite_ttc": 2.48,
-    "cpa_max": 12.04
+    "marge": 10.28,
+    "marge_pct": 0.3439,
+    "roas_rentabilite_ht": 2.91,
+    "roas_rentabilite_ttc": 2.91,
+    "cpa_max": 10.28
    },
    {
     "bloc": "franchise en base de TVA",
@@ -1171,8 +1171,8 @@
     "libelle": "TikTok Shop, affilié 15 % — Rouleau",
     "prix_ttc": 24.9,
     "ca_ht": 24.9,
-    "marge": 5.02,
-    "marge_pct": 0.2018,
+    "marge": 3.76,
+    "marge_pct": 0.1512,
     "roas_rentabilite_ht": null,
     "roas_rentabilite_ttc": null,
     "cpa_max": null
@@ -1183,8 +1183,8 @@
     "libelle": "TikTok Shop, affilié 15 % — Kit anti-poils",
     "prix_ttc": 29.9,
     "ca_ht": 29.9,
-    "marge": 6.65,
-    "marge_pct": 0.2225,
+    "marge": 4.9,
+    "marge_pct": 0.1639,
     "roas_rentabilite_ht": null,
     "roas_rentabilite_ttc": null,
     "cpa_max": null
@@ -1195,11 +1195,11 @@
     "libelle": "Site — Rouleau seul (+3,90 € de port)",
     "prix_ttc": 28.8,
     "ca_ht": 28.8,
-    "marge": 11.68,
-    "marge_pct": 0.4054,
-    "roas_rentabilite_ht": 2.47,
-    "roas_rentabilite_ttc": 2.47,
-    "cpa_max": 11.68
+    "marge": 10.42,
+    "marge_pct": 0.3617,
+    "roas_rentabilite_ht": 2.77,
+    "roas_rentabilite_ttc": 2.77,
+    "cpa_max": 10.42
    },
    {
     "bloc": "micro-entreprise",
@@ -1207,11 +1207,11 @@
     "libelle": "Site — Kit anti-poils (+3,90 € de port)",
     "prix_ttc": 33.8,
     "ca_ht": 33.8,
-    "marge": 14.06,
-    "marge_pct": 0.4158,
-    "roas_rentabilite_ht": 2.4,
-    "roas_rentabilite_ttc": 2.4,
-    "cpa_max": 14.06
+    "marge": 12.3,
+    "marge_pct": 0.364,
+    "roas_rentabilite_ht": 2.75,
+    "roas_rentabilite_ttc": 2.75,
+    "cpa_max": 12.3
    },
    {
     "bloc": "micro-entreprise",
@@ -1219,11 +1219,11 @@
     "libelle": "Site — Grand kit (port offert)",
     "prix_ttc": 39.9,
     "ca_ht": 39.9,
-    "marge": 16.55,
-    "marge_pct": 0.4148,
-    "roas_rentabilite_ht": 2.41,
-    "roas_rentabilite_ttc": 2.41,
-    "cpa_max": 16.55
+    "marge": 14.16,
+    "marge_pct": 0.3549,
+    "roas_rentabilite_ht": 2.82,
+    "roas_rentabilite_ttc": 2.82,
+    "cpa_max": 14.16
    },
    {
     "bloc": "micro-entreprise",
@@ -1231,11 +1231,11 @@
     "libelle": "Site — Duo 2 rouleaux (port offert)",
     "prix_ttc": 39.9,
     "ca_ht": 39.9,
-    "marge": 13.67,
-    "marge_pct": 0.3426,
-    "roas_rentabilite_ht": 2.92,
-    "roas_rentabilite_ttc": 2.92,
-    "cpa_max": 13.67
+    "marge": 11.15,
+    "marge_pct": 0.2794,
+    "roas_rentabilite_ht": 3.58,
+    "roas_rentabilite_ttc": 3.58,
+    "cpa_max": 11.15
    },
    {
     "bloc": "micro-entreprise",
@@ -1243,11 +1243,11 @@
     "libelle": "TikTok Shop, contenu propre — Rouleau",
     "prix_ttc": 24.9,
     "ca_ht": 24.9,
-    "marge": 6.44,
-    "marge_pct": 0.2588,
-    "roas_rentabilite_ht": 3.86,
-    "roas_rentabilite_ttc": 3.86,
-    "cpa_max": 6.44
+    "marge": 5.18,
+    "marge_pct": 0.2082,
+    "roas_rentabilite_ht": 4.8,
+    "roas_rentabilite_ttc": 4.8,
+    "cpa_max": 5.18
    },
    {
     "bloc": "micro-entreprise",
@@ -1255,11 +1255,11 @@
     "libelle": "TikTok Shop, contenu propre — Kit anti-poils",
     "prix_ttc": 29.9,
     "ca_ht": 29.9,
-    "marge": 8.36,
-    "marge_pct": 0.2795,
-    "roas_rentabilite_ht": 3.58,
-    "roas_rentabilite_ttc": 3.58,
-    "cpa_max": 8.36
+    "marge": 6.61,
+    "marge_pct": 0.2209,
+    "roas_rentabilite_ht": 4.53,
+    "roas_rentabilite_ttc": 4.53,
+    "cpa_max": 6.61
    },
    {
     "bloc": "micro-entreprise",
@@ -1267,8 +1267,8 @@
     "libelle": "TikTok Shop, affilié 15 % — Rouleau",
     "prix_ttc": 24.9,
     "ca_ht": 24.9,
-    "marge": 1.96,
-    "marge_pct": 0.0788,
+    "marge": 0.7,
+    "marge_pct": 0.0282,
     "roas_rentabilite_ht": null,
     "roas_rentabilite_ttc": null,
     "cpa_max": null
@@ -1279,8 +1279,8 @@
     "libelle": "TikTok Shop, affilié 15 % — Kit anti-poils",
     "prix_ttc": 29.9,
     "ca_ht": 29.9,
-    "marge": 2.98,
-    "marge_pct": 0.0995,
+    "marge": 1.22,
+    "marge_pct": 0.0409,
     "roas_rentabilite_ht": null,
     "roas_rentabilite_ttc": null,
     "cpa_max": null
@@ -1290,23 +1290,23 @@
    "SITE_TTC": 34.79,
    "SITE_HT": 29.0,
    "SITE_PAY": 0.77,
-   "SITE_PROD_MS": 6.78,
+   "SITE_PROD_MS": 8.35,
    "SITE_LOG_MS": 4.96,
-   "SITE_MARGE_MS": 15.03,
+   "SITE_MARGE_MS": 13.46,
    "TTS_TTC": 26.4,
    "TTS_HT": 22.0,
-   "TTS_PROD_MS": 5.17,
+   "TTS_PROD_MS": 6.34,
    "TTS_LOG_MS": 4.8,
-   "PROPRE_MARGE_MS": 8.55,
-   "AFF_MARGE_MS": 4.59,
+   "PROPRE_MARGE_MS": 7.38,
+   "AFF_MARGE_MS": 3.42,
    "PUB_TTC": 39.9,
    "PUB_HT": 33.25,
    "PUB_PAY": 0.85,
-   "PUB_PROD_MS": 8.2,
+   "PUB_PROD_MS": 10.19,
    "PUB_LOG_MS": 4.8,
-   "PUB_MARGE_AVANT_PUB_MS": 17.74,
-   "MIX_MARGE_MS": 7.55,
-   "MIX_PROD_MS": 5.49,
+   "PUB_MARGE_AVANT_PUB_MS": 15.75,
+   "MIX_MARGE_MS": 6.3,
+   "MIX_PROD_MS": 6.74,
    "MIX_LOG_MS": 4.83,
    "SITE_PROD_IMP": 2.97,
    "SITE_LOG_IMP": 7.05,
@@ -1323,33 +1323,33 @@
    "MIX_LOG_IMP": 6.93,
    "MIX_TTC": 28.08,
    "MIX_HT": 23.4,
-   "SITE_MARGE_FR": 18.19,
-   "PROPRE_MARGE_FR": 10.26,
-   "AFF_MARGE_FR": 5.51,
-   "MIX_MARGE_FR": 9.09,
-   "SITE_MARGE_MICRO": 13.91,
-   "PROPRE_MARGE_MICRO": 7.02,
-   "AFF_MARGE_MICRO": 2.27,
-   "MIX_MARGE_MICRO": 5.64
+   "SITE_MARGE_FR": 16.31,
+   "PROPRE_MARGE_FR": 8.86,
+   "AFF_MARGE_FR": 4.11,
+   "MIX_MARGE_FR": 7.59,
+   "SITE_MARGE_MICRO": 12.03,
+   "PROPRE_MARGE_MICRO": 5.61,
+   "AFF_MARGE_MICRO": 0.86,
+   "MIX_MARGE_MICRO": 4.14
   },
   "comparaison_regimes": {
    "societe_assujettie": {
-    "site_rouleau": 12.57,
-    "site_grand_kit": 17.74,
-    "tiktok_affilie_rouleau": 4.19,
-    "mix": 7.55
+    "site_rouleau": 11.52,
+    "site_grand_kit": 15.75,
+    "tiktok_affilie_rouleau": 3.14,
+    "mix": 6.3
    },
    "societe_franchise_tva": {
-    "site_rouleau": 15.22,
-    "site_grand_kit": 21.46,
-    "tiktok_affilie_rouleau": 5.02,
-    "mix": 9.09
+    "site_rouleau": 13.96,
+    "site_grand_kit": 19.07,
+    "tiktok_affilie_rouleau": 3.76,
+    "mix": 7.59
    },
    "micro_entreprise": {
-    "site_rouleau": 11.68,
-    "site_grand_kit": 16.55,
-    "tiktok_affilie_rouleau": 1.96,
-    "mix": 5.64
+    "site_rouleau": 10.42,
+    "site_grand_kit": 14.16,
+    "tiktok_affilie_rouleau": 0.7,
+    "mix": 4.14
    }
   }
  },
@@ -1357,43 +1357,43 @@
   "par_offre": [
    {
     "offre": "Site — Rouleau seul, micro-stock",
-    "marge_contribution": 12.57,
-    "marge_contribution_pct": 0.5237,
-    "roas_rentabilite_ht": 1.91,
-    "roas_rentabilite_ttc": 2.29,
-    "cpa_maximal": 12.57,
-    "cpa_cible_mer_1_2": 10.47,
-    "roas_cible_ttc": 2.75
+    "marge_contribution": 11.52,
+    "marge_contribution_pct": 0.4799,
+    "roas_rentabilite_ht": 2.08,
+    "roas_rentabilite_ttc": 2.5,
+    "cpa_maximal": 11.52,
+    "cpa_cible_mer_1_2": 9.6,
+    "roas_cible_ttc": 3.0
    },
    {
     "offre": "Site — Kit anti-poils, micro-stock",
-    "marge_contribution": 15.05,
-    "marge_contribution_pct": 0.5344,
-    "roas_rentabilite_ht": 1.87,
-    "roas_rentabilite_ttc": 2.25,
-    "cpa_maximal": 15.05,
-    "cpa_cible_mer_1_2": 12.54,
-    "roas_cible_ttc": 2.69
+    "marge_contribution": 13.59,
+    "marge_contribution_pct": 0.4825,
+    "roas_rentabilite_ht": 2.07,
+    "roas_rentabilite_ttc": 2.49,
+    "cpa_maximal": 13.59,
+    "cpa_cible_mer_1_2": 11.33,
+    "roas_cible_ttc": 2.98
    },
    {
     "offre": "Site — Grand kit, micro-stock",
-    "marge_contribution": 17.74,
-    "marge_contribution_pct": 0.5335,
-    "roas_rentabilite_ht": 1.87,
-    "roas_rentabilite_ttc": 2.25,
-    "cpa_maximal": 17.74,
-    "cpa_cible_mer_1_2": 14.78,
-    "roas_cible_ttc": 2.7
+    "marge_contribution": 15.75,
+    "marge_contribution_pct": 0.4737,
+    "roas_rentabilite_ht": 2.11,
+    "roas_rentabilite_ttc": 2.53,
+    "cpa_maximal": 15.75,
+    "cpa_cible_mer_1_2": 13.12,
+    "roas_cible_ttc": 3.04
    },
    {
     "offre": "Site — Kit chat d'hiver, micro-stock",
-    "marge_contribution": 18.62,
-    "marge_contribution_pct": 0.4977,
-    "roas_rentabilite_ht": 2.01,
-    "roas_rentabilite_ttc": 2.41,
-    "cpa_maximal": 18.62,
-    "cpa_cible_mer_1_2": 15.52,
-    "roas_cible_ttc": 2.89
+    "marge_contribution": 16.42,
+    "marge_contribution_pct": 0.4389,
+    "roas_rentabilite_ht": 2.28,
+    "roas_rentabilite_ttc": 2.73,
+    "cpa_maximal": 16.42,
+    "cpa_cible_mer_1_2": 13.69,
+    "roas_cible_ttc": 3.28
    },
    {
     "offre": "Site — Rouleau seul, import + 3PL",
@@ -1421,22 +1421,22 @@
    "tiktok": 2.21,
    "source": "Triple Whale 2025 (02 §2.6), majoritairement US"
   },
-  "marge_contribution_mix_lancement": 7.55,
+  "marge_contribution_mix_lancement": 6.3,
   "marge_contribution_mix_import": 8.6,
-  "point_mort_commandes_mois": 35.76,
+  "point_mort_commandes_mois": 42.87,
   "point_mort_note": "Frais fixes du palier 1 (structure, outils, RC, domiciliation, Léko, médiateur, domaine) + 100 € d'échantillons, divisés par la marge moyenne du mix de lancement",
   "cpa_cible_palier_2": 16.7,
   "synthese": {
    "offre_reference": "Grand kit sur le site",
-   "marge_contribution_micro_stock": 17.74,
-   "roas_rentabilite_ttc_micro_stock": 2.25,
-   "cpa_maximal_micro_stock": 17.74,
+   "marge_contribution_micro_stock": 15.75,
+   "roas_rentabilite_ttc_micro_stock": 2.53,
+   "cpa_maximal_micro_stock": 15.75,
    "marge_contribution_import": 20.04,
    "roas_rentabilite_ttc_import": 1.99,
    "roas_rentabilite_ht_import": 1.66,
    "cpa_maximal_import": 20.04,
    "cpa_cible_import": 16.7,
-   "lecture": "Publicité non rentable avant l'import groupé : ROAS de rentabilité TTC de 2,25 contre une médiane Meta de 1,93"
+   "lecture": "Publicité non rentable avant l'import groupé : ROAS de rentabilité TTC de 2,53 contre une médiane Meta de 1,93"
   }
  },
  "scenarios": {
@@ -1628,44 +1628,44 @@
    ],
    "couts": [
     145.0,
-    366.71,
-    574.08,
-    425.05,
-    498.19,
-    508.51,
-    538.83,
-    553.99,
-    553.99,
-    553.99,
-    569.15,
-    599.47,
-    670.11,
-    972.18,
-    1028.78,
-    569.15,
-    569.15,
-    599.47
+    648.59,
+    637.86,
+    472.96,
+    523.64,
+    536.51,
+    569.37,
+    585.8,
+    585.8,
+    585.8,
+    602.24,
+    635.1,
+    710.83,
+    1029.45,
+    1098.77,
+    602.24,
+    602.24,
+    635.1
    ],
    "couts_detail": {
     "produits_droits": [
      0.0,
-     54.22,
-     169.57,
-     100.29,
-     111.44,
-     122.58,
-     133.72,
-     139.3,
-     139.3,
-     139.3,
-     144.87,
-     156.01,
-     178.3,
-     250.73,
-     306.45,
-     144.87,
-     144.87,
-     156.01
+     66.79,
+     208.34,
+     123.2,
+     136.89,
+     150.58,
+     164.27,
+     171.11,
+     171.11,
+     171.11,
+     177.96,
+     191.65,
+     219.02,
+     308.0,
+     376.45,
+     177.96,
+     177.96,
+     191.65
     ],
     "logistique": [
      0.0,
@@ -1809,9 +1809,9 @@
     ],
     "frais_fixes": [
      145.0,
-     255.0,
-     110.0,
-     110.0,
+     524.3,
+     135.0,
+     135.0,
      135.0,
      135.0,
      135.0,
@@ -1830,63 +1830,63 @@
    },
    "marge_contribution": [
     0.0,
-    120.25,
-    318.88,
-    172.43,
-    171.79,
-    188.97,
-    206.15,
-    214.74,
-    214.74,
-    214.74,
-    223.32,
-    240.5,
-    274.86,
-    386.52,
-    472.42,
-    223.32,
-    223.32,
-    240.5
+    107.68,
+    280.1,
+    149.52,
+    146.34,
+    160.97,
+    175.6,
+    182.92,
+    182.92,
+    182.92,
+    190.24,
+    204.87,
+    234.14,
+    329.26,
+    402.42,
+    190.24,
+    190.24,
+    204.87
    ],
    "benefice_net": [
     -145.0,
-    -134.75,
-    148.88,
-    2.43,
-    -23.21,
-    13.97,
-    31.15,
-    39.74,
-    39.74,
-    39.74,
-    48.32,
-    65.5,
-    89.86,
-    96.52,
-    277.42,
-    48.32,
-    48.32,
-    65.5
+    -416.62,
+    85.1,
+    -45.48,
+    -48.66,
+    -14.03,
+    0.6,
+    7.92,
+    7.92,
+    7.92,
+    15.24,
+    29.87,
+    49.14,
+    39.26,
+    207.42,
+    15.24,
+    15.24,
+    29.87
    ],
    "benefice_net_cumule": [
     -145.0,
-    -279.75,
-    -130.87,
-    -128.44,
-    -151.65,
-    -137.68,
-    -106.54,
-    -66.8,
-    -27.07,
-    12.67,
-    60.99,
-    126.49,
-    216.36,
-    312.88,
-    590.3,
-    638.62,
-    686.94,
-    752.45
+    -561.62,
+    -476.52,
+    -521.99,
+    -570.66,
+    -584.69,
+    -584.09,
+    -576.17,
+    -568.25,
+    -560.33,
+    -545.09,
+    -515.22,
+    -466.09,
+    -426.83,
+    -219.41,
+    -204.17,
+    -188.94,
+    -159.07
    ],
    "is_provisionne": [
     0.0,
@@ -1898,102 +1898,102 @@
     0.0,
     0.0,
     0.0,
-    1.9,
-    7.25,
-    9.83,
-    13.48,
-    14.48,
-    41.61,
-    7.25,
-    7.25,
-    9.83
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
    ],
    "resultat_apres_is": [
     -145.0,
-    -134.75,
-    148.88,
-    2.43,
-    -23.21,
-    13.97,
-    31.15,
-    39.74,
-    39.74,
-    37.84,
-    41.08,
-    55.68,
-    76.38,
-    82.04,
-    235.8,
-    41.08,
-    41.08,
-    55.68
+    -416.62,
+    85.1,
+    -45.48,
+    -48.66,
+    -14.03,
+    0.6,
+    7.92,
+    7.92,
+    7.92,
+    15.24,
+    29.87,
+    49.14,
+    39.26,
+    207.42,
+    15.24,
+    15.24,
+    29.87
    ],
    "tresorerie": [
     -145.0,
-    -559.83,
-    -712.51,
-    -691.57,
-    -688.75,
-    -541.76,
-    -442.25,
-    -408.15,
-    -368.41,
-    -336.7,
-    -310.05,
-    -287.9,
-    -324.87,
-    -381.77,
-    72.02,
-    283.62,
-    315.9,
-    370.14
+    -900.05,
+    -1089.6,
+    -1120.86,
+    -1147.05,
+    -1031.63,
+    -964.39,
+    -962.05,
+    -954.13,
+    -956.07,
+    -966.13,
+    -986.84,
+    -1088.15,
+    -1219.98,
+    -782.53,
+    -605.49,
+    -609.97,
+    -591.26
    ],
    "flux_tresorerie": [
     -145.0,
-    -414.83,
-    -152.68,
-    20.94,
-    2.82,
-    146.99,
-    99.51,
-    34.1,
-    39.74,
-    31.71,
-    26.65,
-    22.15,
-    -36.97,
-    -56.9,
-    453.8,
-    211.6,
-    32.28,
-    54.24
+    -755.05,
+    -189.54,
+    -31.26,
+    -26.19,
+    115.43,
+    67.24,
+    2.34,
+    7.92,
+    -1.94,
+    -10.06,
+    -20.71,
+    -101.31,
+    -131.84,
+    437.46,
+    177.04,
+    -4.48,
+    18.71
    ],
    "stock_fin_de_mois": [
     0.0,
-    203.48,
-    120.35,
-    133.72,
-    147.1,
-    160.47,
-    167.16,
-    167.16,
-    167.16,
-    173.84,
-    187.21,
-    213.96,
-    300.88,
-    367.74,
-    173.84,
-    173.84,
-    187.21,
-    187.21
+    250.01,
+    147.84,
+    164.27,
+    180.69,
+    197.12,
+    205.34,
+    205.34,
+    205.34,
+    213.55,
+    229.98,
+    262.83,
+    369.6,
+    451.74,
+    213.55,
+    213.55,
+    229.98,
+    229.98
    ],
    "totaux_18_mois": {
     "commandes": 463.0,
     "ca_ht": 11048.24,
-    "benefice_net": 752.45,
-    "is_provisionne": 112.87,
-    "resultat_apres_is": 639.58,
+    "benefice_net": -159.07,
+    "is_provisionne": 0.0,
+    "resultat_apres_is": -159.07,
     "publicite": 0.0
    },
    "evenements": {
@@ -2002,13 +2002,18 @@
     "depot_inpi": null,
     "import_groupe": null
    },
-   "regle_arret": null,
-   "besoin_tresorerie": 712.51,
-   "mois_creux": "déc. 2026"
+   "regle_arret": {
+    "mois": "mars 2027",
+    "benefice_cumule_a_l_arret": -584.69,
+    "tresorerie_a_l_arret": -1031.63,
+    "critere": "Bénéfice net négatif 3 mois de suite (04 §6.3)"
+   },
+   "besoin_tresorerie": 1219.98,
+   "mois_creux": "nov. 2027"
   },
   "realiste": {
    "libelle": "Réaliste",
-   "description": "Croissance organique régulière ; palier 1 vers l'été 2027 ; import groupé en octobre 2027 ; test publicitaire de 3 mois arrêté faute de rentabilité.",
+   "description": "Croissance organique régulière ; palier 1 en novembre 2027 ; import groupé en octobre 2027 ; test publicitaire de 3 mois arrêté faute de rentabilité.",
    "probabilite": "Au moins aussi bien dans 30-40 % des cas où la porte 1 est franchie (estimation, confiance faible)",
    "commandes": [
     0.0,
@@ -2174,17 +2179,17 @@
    ],
    "couts": [
     145.0,
-    422.57,
-    776.13,
-    968.48,
-    1315.02,
-    1581.95,
-    2168.88,
-    2215.81,
-    2532.73,
-    2795.43,
-    2953.9,
-    3191.59,
+    710.73,
+    859.29,
+    1057.11,
+    1396.44,
+    1688.43,
+    2260.41,
+    2372.39,
+    2714.38,
+    2995.86,
+    3166.85,
+    3423.34,
     4575.26,
     4935.07,
     6120.57,
@@ -2195,17 +2200,17 @@
    "couts_detail": {
     "produits_droits": [
      0.0,
-     81.33,
-     254.35,
-     278.59,
-     356.95,
-     466.78,
-     576.61,
-     686.44,
-     796.27,
-     878.64,
-     933.56,
-     1015.93,
+     100.19,
+     312.52,
+     342.23,
+     438.37,
+     573.26,
+     708.14,
+     843.02,
+     977.91,
+     1079.07,
+     1146.51,
+     1247.68,
      481.75,
      641.79,
      833.43,
@@ -2355,12 +2360,12 @@
     ],
     "frais_fixes": [
      145.0,
-     255.0,
-     110.0,
-     110.0,
+     524.3,
      135.0,
      135.0,
-     405.0,
+     135.0,
+     135.0,
+     365.0,
      135.0,
      135.0,
      160.0,
@@ -2376,17 +2381,17 @@
    },
    "marge_contribution": [
     0.0,
-    180.38,
-    478.32,
-    478.97,
-    490.93,
-    641.98,
-    793.04,
-    944.09,
-    1095.14,
-    1208.44,
-    1283.96,
-    1397.25,
+    161.52,
+    420.15,
+    415.34,
+    409.5,
+    535.5,
+    661.5,
+    787.5,
+    913.5,
+    1008.0,
+    1071.0,
+    1165.5,
     1762.43,
     2435.58,
     3180.52,
@@ -2396,17 +2401,17 @@
    ],
    "benefice_net": [
     -145.0,
-    -74.62,
-    308.32,
-    218.97,
-    205.93,
-    406.98,
-    288.04,
-    709.09,
-    860.14,
-    948.44,
-    1023.96,
-    1137.25,
+    -362.78,
+    225.15,
+    130.34,
+    124.5,
+    300.5,
+    196.5,
+    552.5,
+    678.5,
+    748.0,
+    811.0,
+    905.5,
     221.57,
     1389.72,
     2079.66,
@@ -2416,37 +2421,37 @@
    ],
    "benefice_net_cumule": [
     -145.0,
-    -219.62,
-    88.7,
-    307.67,
-    513.59,
-    920.58,
-    1208.61,
-    1917.7,
-    2777.85,
-    3726.28,
-    4750.25,
-    5887.5,
-    6109.07,
-    7498.79,
-    9578.45,
-    10948.32,
-    12517.6,
-    14344.8
+    -507.78,
+    -282.63,
+    -152.29,
+    -27.79,
+    272.72,
+    469.22,
+    1021.72,
+    1700.23,
+    2448.23,
+    3259.23,
+    4164.74,
+    4386.31,
+    5776.03,
+    7855.68,
+    9225.56,
+    10794.84,
+    12622.03
    ],
    "is_provisionne": [
     0.0,
     0.0,
-    13.3,
-    32.85,
-    30.89,
-    61.05,
-    43.21,
-    106.36,
-    129.02,
-    142.27,
-    153.59,
-    170.59,
+    0.0,
+    0.0,
+    0.0,
+    40.91,
+    29.48,
+    82.88,
+    101.78,
+    112.2,
+    121.65,
+    135.83,
     33.24,
     208.46,
     311.95,
@@ -2456,17 +2461,17 @@
    ],
    "resultat_apres_is": [
     -145.0,
-    -74.62,
-    295.01,
-    186.12,
-    175.04,
-    345.93,
-    244.83,
-    602.73,
-    731.12,
-    806.17,
-    870.37,
-    966.67,
+    -362.78,
+    225.15,
+    130.34,
+    124.5,
+    259.59,
+    167.03,
+    469.63,
+    576.73,
+    635.8,
+    689.35,
+    769.68,
     188.34,
     1181.26,
     1767.71,
@@ -2476,37 +2481,37 @@
    ],
    "tresorerie": [
     -145.0,
-    -639.74,
-    -968.31,
-    -1151.58,
-    -1308.92,
-    -684.37,
-    -374.41,
-    63.28,
-    691.56,
-    1475.98,
-    2324.7,
-    3594.94,
-    3212.81,
-    3822.15,
-    5854.01,
-    7873.08,
-    9175.47,
-    10813.62
+    -1015.43,
+    -1428.93,
+    -1726.24,
+    -2000.37,
+    -1517.37,
+    -1334.03,
+    -1088.0,
+    -667.42,
+    -100.72,
+    508.49,
+    1872.18,
+    1490.04,
+    2099.39,
+    4131.24,
+    6150.32,
+    7452.71,
+    9090.86
    ],
    "flux_tresorerie": [
     -145.0,
-    -494.74,
-    -328.57,
-    -183.27,
-    -157.34,
-    624.55,
-    309.95,
-    437.69,
-    628.28,
-    784.42,
-    848.72,
-    1270.24,
+    -870.43,
+    -413.5,
+    -297.31,
+    -274.13,
+    483.0,
+    183.35,
+    246.02,
+    420.58,
+    566.7,
+    609.21,
+    1363.69,
     -382.14,
     609.35,
     2031.85,
@@ -2516,16 +2521,16 @@
    ],
    "stock_fin_de_mois": [
     0.0,
-    305.22,
-    334.31,
-    428.34,
-    560.13,
-    691.93,
-    823.73,
-    955.52,
-    1054.37,
-    1120.27,
-    1219.11,
+    375.02,
+    410.67,
+    526.05,
+    687.91,
+    849.77,
+    1011.63,
+    1173.49,
+    1294.89,
+    1375.82,
+    1497.21,
     1204.37,
     1604.46,
     2083.57,
@@ -2537,9 +2542,9 @@
    "totaux_18_mois": {
     "commandes": 2776.29,
     "ca_ht": 65712.17,
-    "benefice_net": 14344.8,
-    "is_provisionne": 2151.72,
-    "resultat_apres_is": 12193.08,
+    "benefice_net": 12622.03,
+    "is_provisionne": 1893.31,
+    "resultat_apres_is": 10728.73,
     "publicite": 1350.0
    },
    "evenements": {
@@ -2549,7 +2554,7 @@
     "import_groupe": "oct. 2027"
    },
    "regle_arret": null,
-   "besoin_tresorerie": 1308.92,
+   "besoin_tresorerie": 2000.37,
    "mois_creux": "févr. 2027"
   },
   "optimiste": {
@@ -2720,13 +2725,13 @@
    ],
    "couts": [
     145.0,
-    673.93,
-    3198.89,
-    3644.0,
-    4847.0,
-    6064.72,
-    7173.97,
-    8283.22,
+    990.37,
+    3442.4,
+    3961.7,
+    5197.76,
+    6515.69,
+    7712.63,
+    8909.57,
     9919.95,
     10583.85,
     12197.75,
@@ -2741,13 +2746,13 @@
    "couts_detail": {
     "produits_droits": [
      0.0,
-     203.32,
-     1130.45,
-     1281.53,
-     1537.62,
-     1976.94,
-     2361.35,
-     2745.75,
+     250.47,
+     1388.96,
+     1574.24,
+     1888.38,
+     2427.91,
+     2900.01,
+     3372.1,
      1316.0,
      1545.71,
      1775.43,
@@ -2901,9 +2906,9 @@
     ],
     "frais_fixes": [
      145.0,
-     255.0,
-     405.0,
-     135.0,
+     524.3,
+     390.0,
+     160.0,
      160.0,
      160.0,
      160.0,
@@ -2922,13 +2927,13 @@
    },
    "marge_contribution": [
     0.0,
-    450.95,
-    2125.86,
-    2203.26,
-    2114.76,
-    2718.98,
-    3247.67,
-    3776.36,
+    403.8,
+    1867.35,
+    1910.56,
+    1764.01,
+    2268.01,
+    2709.01,
+    3150.01,
     4814.45,
     5874.01,
     6933.58,
@@ -2942,13 +2947,13 @@
    ],
    "benefice_net": [
     -145.0,
-    195.95,
-    1620.86,
-    1818.26,
-    1704.76,
-    2358.98,
-    2887.67,
-    3416.36,
+    -120.5,
+    1377.35,
+    1500.56,
+    1354.01,
+    1908.01,
+    2349.01,
+    2790.01,
     3183.59,
     4643.15,
     5152.72,
@@ -2962,93 +2967,93 @@
    ],
    "benefice_net_cumule": [
     -145.0,
-    50.95,
-    1671.81,
-    3490.07,
-    5194.83,
-    7553.81,
-    10441.48,
-    13857.84,
-    17041.43,
-    21684.58,
-    26837.3,
-    33074.02,
-    38499.73,
-    46137.92,
-    56667.45,
-    64616.32,
-    73856.27,
-    84817.16
+    -265.5,
+    1111.85,
+    2612.41,
+    3966.42,
+    5874.42,
+    8223.43,
+    11013.45,
+    14197.03,
+    18840.18,
+    23992.9,
+    30229.62,
+    35655.33,
+    43293.52,
+    53823.06,
+    61771.93,
+    71011.88,
+    81972.77
    ],
    "is_provisionne": [
     0.0,
-    7.64,
-    243.13,
-    272.74,
-    255.71,
-    353.85,
-    433.15,
-    512.45,
+    0.0,
+    166.78,
+    225.08,
+    203.1,
+    286.2,
+    352.35,
+    418.5,
     477.54,
     696.47,
     772.91,
     935.51,
     813.86,
-    1342.34,
-    2632.38,
+    1145.73,
+    2600.55,
     1192.33,
     1385.99,
     1644.13
    ],
    "resultat_apres_is": [
     -145.0,
-    188.31,
-    1377.73,
-    1545.52,
-    1449.05,
-    2005.13,
-    2454.52,
-    2903.91,
+    -120.5,
+    1210.57,
+    1275.48,
+    1150.91,
+    1621.81,
+    1996.66,
+    2371.51,
     2706.05,
     3946.68,
     4379.81,
     5301.21,
     4611.85,
-    6295.85,
-    7897.15,
+    6492.46,
+    7928.98,
     6756.54,
     7853.96,
     9316.76
    ],
    "tresorerie": [
     -145.0,
-    -1711.54,
-    -3088.4,
-    -3040.6,
-    -2675.25,
-    851.47,
-    4052.77,
-    7626.81,
-    11227.74,
-    15113.13,
-    18933.8,
-    23361.24,
-    26053.09,
-    30375.75,
-    42049.63,
-    49691.17,
-    56934.72,
-    67284.98
+    -2409.67,
+    -4059.51,
+    -4411.64,
+    -4539.03,
+    -1585.55,
+    954.32,
+    4782.41,
+    8383.35,
+    12268.74,
+    16089.41,
+    20516.84,
+    23208.69,
+    27531.35,
+    39205.24,
+    46846.77,
+    54090.32,
+    64440.58
    ],
    "flux_tresorerie": [
     -145.0,
-    -1566.54,
-    -1376.86,
-    47.8,
-    365.35,
-    3526.71,
-    3201.3,
-    3574.04,
+    -2264.67,
+    -1649.84,
+    -352.13,
+    -127.39,
+    2953.48,
+    2539.87,
+    3828.09,
     3600.94,
     3885.39,
     3820.67,
@@ -3062,12 +3067,12 @@
    ],
    "stock_fin_de_mois": [
     0.0,
-    1356.54,
-    1537.84,
-    1845.14,
-    2372.33,
-    2833.61,
-    3294.9,
+    1666.75,
+    1889.08,
+    2266.05,
+    2913.49,
+    3480.01,
+    4046.52,
     3290.0,
     3864.29,
     4438.57,
@@ -3083,9 +3088,9 @@
    "totaux_18_mois": {
     "commandes": 13750.0,
     "ca_ht": 346753.89,
-    "benefice_net": 84817.16,
-    "is_provisionne": 13972.14,
-    "resultat_apres_is": 70845.02,
+    "benefice_net": 81972.77,
+    "is_provisionne": 13317.04,
+    "resultat_apres_is": 68655.73,
     "publicite": 35000.0
    },
    "evenements": {
@@ -3095,31 +3100,31 @@
     "import_groupe": "juin 2027"
    },
    "regle_arret": null,
-   "besoin_tresorerie": 3088.4,
-   "mois_creux": "déc. 2026"
+   "besoin_tresorerie": 4539.03,
+   "mois_creux": "févr. 2027"
   }
  },
  "paliers": [
   {
    "palier": "1k",
    "benefice_net_mensuel": 1000,
-   "ca_ht_mensuel": 3934.86,
-   "ca_ttc_mensuel": 4721.83,
-   "commandes_mois": 168.16,
-   "commandes_jour": 5.61,
+   "ca_ht_mensuel": 4717.27,
+   "ca_ttc_mensuel": 5660.72,
+   "commandes_mois": 201.6,
+   "commandes_jour": 6.72,
    "budget_pub_mensuel": 0.0,
    "cpa_cible": null,
-   "effectif": "Fondateur seul, 20-25 h par semaine",
+   "effectif": "Fondateur seul, 25 h par semaine",
    "effectif_etp_indicatif": 1,
-   "stock_immobilise": 1108.16,
-   "bfr": 2281.99,
-   "creances": 1613.57,
-   "dettes_court_terme": 439.73,
-   "probabilite_estimee": "10-20 % à 12 mois : P(porte 1) 35-50 % × P(trajectoire réaliste ou mieux, porte 1 franchie) 30-40 %",
-   "probabilite_strategie": "20-30 % à 6 mois ; 30-40 % à 12 mois",
-   "probabilite_finance": "10-20 % à 12 mois : P(porte 1) 35-50 % × P(trajectoire réaliste ou mieux, porte 1 franchie) 30-40 %",
-   "delai_estime": "3 à 9 mois après les premières ventes (été 2027 dans le scénario réaliste)",
-   "conditions": "Porte 1 et porte 2 franchies ; ≈ 15 affiliés actifs ; 3 vidéos par jour ; marge moyenne ≥ 7,55 €"
+   "stock_immobilise": 1631.56,
+   "bfr": 3089.3,
+   "creances": 1934.41,
+   "dettes_court_terme": 476.66,
+   "probabilite_estimee": "10-20 % à 12 mois : P(porte 1) 35-50 % × P(trajectoire réaliste ou mieux, porte 1 franchie) 30-40 % ; la red team l'estime à 5-12 %",
+   "probabilite_strategie": "10-20 % à 12 mois (alignée sur la finance, correction M6)",
+   "probabilite_finance": "10-20 % à 12 mois : P(porte 1) 35-50 % × P(trajectoire réaliste ou mieux, porte 1 franchie) 30-40 % ; la red team l'estime à 5-12 %",
+   "delai_estime": "3 à 12 mois après les premières ventes (novembre 2027 dans le scénario réaliste)",
+   "conditions": "Porte 1, porte stock et porte 2 franchies ; ≈ 15 affiliés actifs ; 2 vidéos par jour ; marge moyenne ≥ marge du mix de lancement"
   },
   {
    "palier": "10k",
@@ -3137,10 +3142,10 @@
    "creances": 16174.29,
    "dettes_court_terme": 6943.43,
    "probabilite_estimee": "3-5 % à 24 mois : P(porte 1) 35-50 % × P(trajectoire optimiste, porte 1 franchie) 8-10 % ; le CPA cible ≤ 16,70 € est le verrou",
-   "probabilite_strategie": "5-10 % à 24 mois",
+   "probabilite_strategie": "3-5 % à 24 mois (alignée sur la finance)",
    "probabilite_finance": "3-5 % à 24 mois : P(porte 1) 35-50 % × P(trajectoire optimiste, porte 1 franchie) 8-10 % ; le CPA cible ≤ 16,70 € est le verrou",
    "delai_estime": "9 à 18 mois après le palier 1",
-   "conditions": "Import groupé, 3PL, marque déposée, publicité rentable avec MER ≥ 1,2 × rentabilité, sortie de la franchise de TVA et de la micro-entreprise"
+   "conditions": "Import groupé, 3PL, marque déposée, publicité rentable avec MER ≥ 1,2 × rentabilité ; aucune publicité au-delà de 1 000 € par mois sans un produit à ≥ 15 % de réachat à 180 jours (M17) ; sortie de la franchise de TVA et de la micro-entreprise"
   },
   {
    "palier": "100k",
@@ -3157,9 +3162,9 @@
    "bfr": 307142.86,
    "creances": 171428.57,
    "dettes_court_terme": 185714.29,
-   "probabilite_estimee": "0,5-1 % à 4 ans",
-   "probabilite_strategie": "0,5-1,5 % à 4 ans",
-   "probabilite_finance": "0,5-1 % à 4 ans",
+   "probabilite_estimee": "Non chiffrée : repère d'échelle obtenu par ratios, sans consommable ni valeur vie client modélisés",
+   "probabilite_strategie": "Non chiffrée : repère d'échelle sans base produit (correction M17)",
+   "probabilite_finance": "Non chiffrée : repère d'échelle obtenu par ratios, sans consommable ni valeur vie client modélisés",
    "delai_estime": "18 à 36 mois après le palier 2",
    "conditions": "France < 50 % du CA ; Allemagne, Italie, Espagne ; Amazon UE ; financement de stock bancaire ou BPI"
   },
@@ -3178,102 +3183,102 @@
    "bfr": 4250000.0,
    "creances": 2000000.0,
    "dettes_court_terme": 2333333.33,
-   "probabilite_estimee": "≤ 0,1 % à 8 ans",
-   "probabilite_strategie": "≤ 0,1 % à 8 ans",
-   "probabilite_finance": "≤ 0,1 % à 8 ans",
+   "probabilite_estimee": "Non chiffrée : hors de portée du projet tel qu'il est financé",
+   "probabilite_strategie": "Non chiffrée : repère d'échelle sans base produit (correction M17)",
+   "probabilite_finance": "Non chiffrée : hors de portée du projet tel qu'il est financé",
    "delai_estime": "3 à 5 ans après le palier 3",
    "conditions": "10 pays et plus, distribution physique, levée de fonds ou rachat de marques ; place l'entreprise dans le 1 % des sites qui font 78 % du CA"
   }
  ],
  "sensibilite": {
   "base_libelle": "Palier 1 — scénario réaliste, sept. 2027",
-  "benefice_base": 1137.25,
+  "benefice_base": 905.5,
   "variables": [
    {
     "variable": "Prix de vente (tous produits)",
     "code": "kPrix",
-    "benefice_moins_20": 473.95,
-    "benefice_plus_20": 1800.56,
+    "benefice_moins_20": 242.2,
+    "benefice_plus_20": 1568.81,
     "impact_moins_20": -663.31,
     "impact_plus_20": 663.31
    },
    {
-    "variable": "Volume de commandes organiques",
-    "code": "kVol",
-    "benefice_moins_20": 857.8,
-    "benefice_plus_20": 1416.7,
-    "impact_moins_20": -279.45,
-    "impact_plus_20": 279.45
-   },
-   {
     "variable": "Coût produit et droits",
     "code": "kProd",
-    "benefice_moins_20": 1340.44,
-    "benefice_plus_20": 934.07,
-    "impact_moins_20": 203.19,
-    "impact_plus_20": -203.19
+    "benefice_moins_20": 1155.04,
+    "benefice_plus_20": 655.97,
+    "impact_moins_20": 249.54,
+    "impact_plus_20": -249.54
+   },
+   {
+    "variable": "Volume de commandes organiques",
+    "code": "kVol",
+    "benefice_moins_20": 672.4,
+    "benefice_plus_20": 1138.61,
+    "impact_moins_20": -233.1,
+    "impact_plus_20": 233.1
    },
    {
     "variable": "Livraison et emballage",
     "code": "kLog",
-    "benefice_moins_20": 1316.07,
-    "benefice_plus_20": 958.43,
+    "benefice_moins_20": 1084.33,
+    "benefice_plus_20": 726.68,
     "impact_moins_20": 178.82,
     "impact_plus_20": -178.82
    },
    {
     "variable": "Commission des créateurs",
     "code": "kCrea",
-    "benefice_moins_20": 1222.24,
-    "benefice_plus_20": 1052.27,
+    "benefice_moins_20": 990.49,
+    "benefice_plus_20": 820.52,
     "impact_moins_20": 84.98,
     "impact_plus_20": -84.98
    },
    {
     "variable": "Part des ventes par affiliés",
     "code": "kAff",
-    "benefice_moins_20": 1222.24,
-    "benefice_plus_20": 1052.27,
+    "benefice_moins_20": 990.49,
+    "benefice_plus_20": 820.52,
     "impact_moins_20": 84.98,
     "impact_plus_20": -84.98
    },
    {
     "variable": "Commission TikTok Shop",
     "code": "kTTS",
-    "benefice_moins_20": 1207.58,
-    "benefice_plus_20": 1066.92,
+    "benefice_moins_20": 975.83,
+    "benefice_plus_20": 835.17,
     "impact_moins_20": 70.33,
     "impact_plus_20": -70.33
    },
    {
     "variable": "Retours, SAV et litiges",
     "code": "kRet",
-    "benefice_moins_20": 1180.54,
-    "benefice_plus_20": 1093.97,
+    "benefice_moins_20": 948.79,
+    "benefice_plus_20": 862.22,
     "impact_moins_20": 43.29,
     "impact_plus_20": -43.29
    },
    {
     "variable": "Frais fixes",
     "code": "kFix",
-    "benefice_moins_20": 1169.25,
-    "benefice_plus_20": 1105.25,
+    "benefice_moins_20": 937.5,
+    "benefice_plus_20": 873.5,
     "impact_moins_20": 32.0,
     "impact_plus_20": -32.0
    },
    {
     "variable": "Échantillons créateurs",
     "code": "kEch",
-    "benefice_moins_20": 1157.25,
-    "benefice_plus_20": 1117.25,
+    "benefice_moins_20": 925.5,
+    "benefice_plus_20": 885.5,
     "impact_moins_20": 20.0,
     "impact_plus_20": -20.0
    },
    {
     "variable": "Frais de paiement",
     "code": "kPay",
-    "benefice_moins_20": 1142.97,
-    "benefice_plus_20": 1131.54,
+    "benefice_moins_20": 911.22,
+    "benefice_plus_20": 899.79,
     "impact_moins_20": 5.71,
     "impact_plus_20": -5.71
    }
@@ -3400,30 +3405,45 @@
   },
   "cash_avant_premier_encaissement": {
    "avant_porte_1": 45.0,
-   "porte_1_conformite_ttc": 174.0,
-   "micro_stock_initial_ht": 164.1,
-   "micro_stock_initial_ttc": 196.92,
-   "total": 415.92,
-   "note": "Les précommandes ne financent pas le stock à temps : Stripe verse le premier paiement 7 jours après, alors que le fournisseur est payé à la commande."
+   "porte_1_conformite_ttc": 389.0,
+   "porte_1_detail": {
+    "mediateur_cm2c": 48,
+    "leko_ttc": 114.0,
+    "fournitures": 12,
+    "inpi_classe_21": 190,
+    "rc_premier_mois": 25
+   },
+   "micro_stock_initial_unites": {
+    "rouleau-anti-poils": 40,
+    "gant-toilettage": 45,
+    "raclette-anti-poils": 12,
+    "tapis-fenetre-thermique": 8
+   },
+   "micro_stock_initial_ht": 396.41,
+   "micro_stock_initial_ttc": 475.69,
+   "micro_stock_initial_ttc_sans_majoration_20": 403.38,
+   "total": 909.69,
+   "total_si_rc_payee_a_l_annee": 1184.69,
+   "note": "Ordre corrigé (C2) : le micro-stock est commandé et payé à la porte 1, avant l'ouverture des précommandes. Aucune recette n'arrive avant le premier versement Stripe, 7 jours après le premier paiement."
   },
   "par_scenario": {
    "pessimiste": {
-    "besoin_tresorerie": 712.51,
-    "mois_creux": "déc. 2026",
-    "besoin_hors_comptable_et_banque": 412.51,
-    "tresorerie_fin_mars_2028": 370.14
+    "besoin_tresorerie": 1219.98,
+    "mois_creux": "nov. 2027",
+    "besoin_hors_comptable_et_banque": 789.6,
+    "tresorerie_fin_mars_2028": -591.26
    },
    "realiste": {
-    "besoin_tresorerie": 1308.92,
+    "besoin_tresorerie": 2000.37,
     "mois_creux": "févr. 2027",
-    "besoin_hors_comptable_et_banque": 808.92,
-    "tresorerie_fin_mars_2028": 10813.62
+    "besoin_hors_comptable_et_banque": 1500.37,
+    "tresorerie_fin_mars_2028": 9090.86
    },
    "optimiste": {
-    "besoin_tresorerie": 3088.4,
-    "mois_creux": "déc. 2026",
-    "besoin_hors_comptable_et_banque": 2788.4,
-    "tresorerie_fin_mars_2028": 67284.98
+    "besoin_tresorerie": 4539.03,
+    "mois_creux": "févr. 2027",
+    "besoin_hors_comptable_et_banque": 4039.03,
+    "tresorerie_fin_mars_2028": 64440.58
    }
   },
   "detail_realiste_jusqu_au_creux": {
@@ -3431,74 +3451,80 @@
    "cumuls": {
     "enc_site": 1661.46,
     "enc_tts": 1401.58,
-    "achats_stock": 1531.36,
-    "tva_achats": 306.27,
+    "achats_stock": 1881.21,
+    "tva_achats": 376.24,
     "logistique_ttc": 1000.82,
     "remboursements": 207.04,
-    "tva_payee": 211.47,
+    "tva_payee": 163.8,
     "pub": 0.0,
     "ech": 360.0,
-    "frais_fixes": 755.0
+    "frais_fixes": 1074.3
    }
   },
   "budget_client": 150.0,
   "sensibilite_du_besoin": [
    {
     "hypothese": "Base du modèle",
-    "pessimiste": 712.51,
-    "realiste": 1308.92,
-    "optimiste": 3088.4
+    "pessimiste": 1219.98,
+    "realiste": 2000.37,
+    "optimiste": 4539.03
    },
    {
     "hypothese": "Statut débutant TikTok Shop pendant 6 mois au lieu de 3",
-    "pessimiste": 735.87,
-    "realiste": 1646.41,
-    "optimiste": 3088.4
+    "pessimiste": 1272.66,
+    "realiste": 2619.48,
+    "optimiste": 4631.58
    },
    {
     "hypothese": "Règlement TikTok Shop standard à 31 jours (période différée)",
-    "pessimiste": 891.78,
-    "realiste": 1646.41,
-    "optimiste": 3088.4
+    "pessimiste": 1729.99,
+    "realiste": 2619.48,
+    "optimiste": 4631.58
    },
    {
     "hypothese": "Premier versement Stripe à 14 jours",
-    "pessimiste": 712.51,
-    "realiste": 1308.92,
-    "optimiste": 3088.4
+    "pessimiste": 1219.98,
+    "realiste": 2000.37,
+    "optimiste": 4539.03
    },
    {
     "hypothese": "Stock détenu de 2 mois en phase micro-stock",
-    "pessimiste": 788.6,
-    "realiste": 1699.91,
-    "optimiste": 4327.09
+    "pessimiste": 1532.09,
+    "realiste": 2480.56,
+    "optimiste": 6567.68
    },
    {
     "hypothese": "Sans comptable ni banque facturés au projet",
-    "pessimiste": 412.51,
-    "realiste": 808.92,
-    "optimiste": 2788.4
+    "pessimiste": 789.6,
+    "realiste": 1500.37,
+    "optimiste": 4039.03
    }
   ],
   "recommandation": {
-   "minimum_pour_vendre_le_premier_stock": 415.92,
-   "reserve_pour_le_scenario_realiste": 1308.92,
-   "reserve_pour_absorber_un_succes": 3088.4
+   "minimum_pour_vendre_le_premier_stock": 909.69,
+   "reserve_pour_le_scenario_realiste": 2000.37,
+   "reserve_pour_absorber_un_succes": 4539.03,
+   "seuil_alerte_reserve": 300.0,
+   "options_a_signer_par_le_client": {
+    "a_apport_compte_courant": 2400.0,
+    "b_plafond_tiktok_shop": "Ventes TikTok Shop plafonnées au stock déjà payé, aucune collaboration d'affiliés avant le premier règlement TikTok Shop ; apport limité au minimum pour vendre le premier stock",
+    "c_arret": "Arrêt avec 45 € engagés si la porte 1 n'est pas franchie"
+   }
   }
  },
  "variante_franchise_tva": {
   "pessimiste": {
-   "gain_marge_phase_micro_stock": 831.41,
+   "gain_marge_phase_micro_stock": 712.97,
    "ca_encaisse_2027": 9832.07,
    "franchise_tenable_2027": true
   },
   "realiste": {
-   "gain_marge_phase_micro_stock": 1818.26,
+   "gain_marge_phase_micro_stock": 1529.57,
    "ca_encaisse_2027": 53813.32,
    "franchise_tenable_2027": true
   },
   "optimiste": {
-   "gain_marge_phase_micro_stock": 3316.32,
+   "gain_marge_phase_micro_stock": 2803.3,
    "ca_encaisse_2027": 259700.62,
    "franchise_tenable_2027": false
   }
@@ -3509,14 +3535,14 @@
   "sasu_salaire": 555.56,
   "eurl_tns_remuneration": 689.66,
   "eurl_cotisations_minimales_annuelles": 1423,
-  "heures_par_mois": 97.5,
+  "heures_par_mois": 108.33,
   "smic_net_horaire": 9.74,
-  "taux_horaire_sasu_dividendes": 5.98,
-  "taux_horaire_sasu_salaire": 5.7,
-  "taux_horaire_eurl_tns": 7.07,
+  "taux_horaire_sasu_dividendes": 5.38,
+  "taux_horaire_sasu_salaire": 5.13,
+  "taux_horaire_eurl_tns": 6.37,
   "comparaison_palier_1": {
-   "commandes_mois": 168.16,
-   "ca_encaisse_mois": 4721.83,
+   "commandes_mois": 201.6,
+   "ca_encaisse_mois": 5660.72,
    "lignes": [
     {
      "forme": "SASU ou EURL assujettie à la TVA, dividendes",
@@ -3526,30 +3552,30 @@
     },
     {
      "forme": "SASU en franchise de TVA, dividendes",
-     "benefice_avant_is": 1259.21,
-     "net_en_poche": 734.24,
+     "benefice_avant_is": 1260.24,
+     "net_en_poche": 734.85,
      "protection_sociale": "Aucune (dividendes)"
     },
     {
      "forme": "SASU en franchise de TVA, salaire du président",
-     "benefice_avant_is": 1259.21,
-     "net_en_poche": 699.56,
+     "benefice_avant_is": 1260.24,
+     "net_en_poche": 700.13,
      "protection_sociale": "Régime général sans chômage"
     },
     {
      "forme": "EURL en franchise de TVA, rémunération du gérant (TNS)",
-     "benefice_avant_is": 1259.21,
-     "net_en_poche": 868.42,
+     "benefice_avant_is": 1260.24,
+     "net_en_poche": 869.13,
      "protection_sociale": "Sécurité sociale des indépendants ; cotisations minimales ≈ 1 423 € par an même sans rémunération"
     },
     {
      "forme": "Micro-entreprise en franchise, versement libératoire",
-     "benefice_avant_is": 768.42,
-     "net_en_poche": 721.21,
+     "benefice_avant_is": 653.97,
+     "net_en_poche": 597.37,
      "protection_sociale": "Incluse dans les 12,3 % ; pas d'expert-comptable obligatoire"
     }
    ]
   },
-  "benefice_net_pour_un_smic_net_horaire_sasu_dividendes": 1628.62
+  "benefice_net_pour_un_smic_net_horaire_sasu_dividendes": 1809.53
  }
 }

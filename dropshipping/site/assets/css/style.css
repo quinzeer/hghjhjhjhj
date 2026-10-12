@@ -611,3 +611,14 @@ tbody th { font-weight: 700; width: 38%; }
   .entete, .bandeau-info, .pied, .cookies, .barre-achat, .tiroir, .tiroir-fond { display: none !important; }
   body { background: #fff; }
 }
+
+/* Bandeau « démonstration » (mode demo de config.js) */
+.bandeau-demo { background: var(--c-accent); color: var(--c-texte); text-align: center; font-size: .8125rem; line-height: 1.35; padding: 6px 16px; }
+.bandeau-demo[hidden] { display: none; }
+/* Case de consentement des formulaires d'inscription */
+.case--consentement { font-size: .8125rem; color: var(--c-texte-2); margin: 10px 0 4px; align-items: flex-start; }
+.case--consentement input { margin-top: 1px; }
+.js-turnstile:empty { display: none; }
+.js-turnstile { margin: 8px 0; min-height: 65px; }
+.recap__note.encart--precommande { padding: 10px 12px; border-radius: var(--rayon-s); border: 1px solid var(--c-accent); }
+.js-form-inscription > .aide { font-size: .8125rem; color: var(--c-texte-2); margin: 4px 0 0; }

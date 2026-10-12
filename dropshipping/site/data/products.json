@@ -1,5 +1,5 @@
 {
-  "version": "1.0",
+  "version": "1.1",
   "source": "strategie/brand.json",
   "genere_le": "2026-10-12",
   "devise": "EUR",
@@ -10,6 +10,7 @@
     "site": "https://canapoil.fr"
   },
   "livraison": {
+    "phase": "liste_attente",
     "transporteur": "Mondial Relay (point relais)",
     "zone": "France métropolitaine (Belgique et Luxembourg au palier 1)",
     "pays_autorises": [
@@ -20,8 +21,18 @@
     "delai_min_jours_ouvres": 3,
     "delai_max_jours_ouvres": 6,
     "expedition_jours_ouvres": 1,
-    "texte": "Expédié sous 1 jour ouvré depuis la France, livré en 3 à 6 jours ouvrés en point relais."
+    "texte": "Ventes non ouvertes",
+    "precommande": null,
+    "reassort": null,
+    "prime": "",
+    "seuil_bascule_precommande": 5
   },
+  "tva": "assujetti",
+  "cgv_version": "2026-10-12-liste_attente",
+  "produits_liste_attente": [
+    "lettre",
+    "tapis-de-fouille"
+  ],
   "retours": {
     "delai_jours": 30,
     "delai_legal_jours": 14,
@@ -41,13 +52,13 @@
       "statut": "lancement",
       "prix_ttc": 24.9,
       "description_courte": "Quelques allers-retours sur le canapé et les poils de chat ou de chien finissent dans le réservoir. Sans feuille adhésive, sans recharge, sans pile.",
-      "description_longue": "La bande textile du rouleau attrape les poils quand vous le faites aller et venir sur le tissu, puis les dépose dans un réservoir fermé. Pour le vider, il suffit d'ouvrir le clapet au-dessus de la poubelle. Il donne ses meilleurs résultats sur les canapés en tissu ou en velours, les plaids, les couettes, les arbres à chat et les sièges auto en tissu. Il est moins efficace sur le cuir, la soie, les tissus très lisses et les tapis à poils longs : pour les tapis et la voiture, la raclette anti-poils prend le relais. Nos vidéos montrent le résultat tissu par tissu, y compris là où il marche moins bien. Expédié depuis la France sous 1 jour ouvré.",
+      "description_longue": "La bande textile du rouleau attrape les poils quand vous le faites aller et venir sur le tissu, puis les dépose dans un réservoir fermé. Pour le vider, il suffit d'ouvrir le clapet au-dessus de la poubelle. Il donne ses meilleurs résultats sur les canapés en tissu ou en velours, les plaids, les couettes, les arbres à chat et les sièges auto en tissu. Il est moins efficace sur le cuir, la soie, les tissus très lisses et les tapis à poils longs : pour les tapis et la voiture, la raclette anti-poils prend le relais. Nos vidéos montrent le résultat tissu par tissu, y compris là où il marche moins bien.",
       "benefices": [
         "Ramasse les poils de chat et de chien sur les tissus d'ameublement, les plaids, les lits et les sièges auto",
         "Réutilisable : aucune feuille adhésive à racheter",
         "Se vide en un geste au-dessus de la poubelle",
         "Fonctionne sans pile ni électricité",
-        "Expédié depuis la France, livré en 3 à 6 jours ouvrés"
+        "Testé en vidéo tissu par tissu, y compris là où il marche moins bien"
       ],
       "caracteristiques": {
         "matieres": "Corps en plastique ABS ; bande de nettoyage en fibres textiles (à confirmer sur l'échantillon retenu)",
@@ -110,7 +121,7 @@
       "image_partage": "/images/og/rouleau-anti-poils-reutilisable.png",
       "image_produit_png": "/images/produits/rouleau-anti-poils-reutilisable/principale.png",
       "gpsr": {
-        "fabricant": "{{FABRICANT_ROULEAU}} : nom, adresse postale et e-mail du fabricant, à reporter depuis le dossier fournisseur avant publication",
+        "fabricant": "identité et coordonnées communiquées avant l'ouverture des ventes",
         "responsable_ue": "{{RAISON_SOCIALE}}, {{ADRESSE}}, {{EMAIL}} (importateur établi dans l'UE)",
         "identification": "Réf. CNP-ROU-01, lot AAMM indiqué sur l'étiquette",
         "avertissements": [
@@ -141,13 +152,17 @@
         },
         {
           "q": "Sous quel délai vais-je le recevoir ?",
-          "r": "Il est expédié depuis la France sous 1 jour ouvré et livré en point relais en 3 à 6 jours ouvrés."
+          "r": "[[DELAI_FAQ]]"
         },
         {
           "q": "Et s'il ne convient pas à mon tissu ?",
           "r": "Vous avez 30 jours après réception pour changer d'avis : 14 jours prévus par la loi, plus 16 jours que nous ajoutons. Le remboursement intervient sous 14 jours au plus."
         }
-      ]
+      ],
+      "nom_court_pluriel": "rouleaux",
+      "etat": "attente",
+      "stock_disponible": 0,
+      "stock_max_commande": 0
     },
     {
       "id": "gant-toilettage",
@@ -202,7 +217,7 @@
       "image_partage": "/images/og/gant-toilettage-silicone.png",
       "image_produit_png": "/images/produits/gant-toilettage-silicone/principale.png",
       "gpsr": {
-        "fabricant": "{{FABRICANT_GANT}} : nom, adresse postale et e-mail du fabricant, à reporter depuis le dossier fournisseur avant publication",
+        "fabricant": "identité et coordonnées communiquées avant l'ouverture des ventes",
         "responsable_ue": "{{RAISON_SOCIALE}}, {{ADRESSE}}, {{EMAIL}} (importateur établi dans l'UE)",
         "identification": "Réf. CNP-GAN-01, lot AAMM indiqué sur l'étiquette",
         "avertissements": [
@@ -227,7 +242,11 @@
           "q": "Comment le nettoyer ?",
           "r": "Retirez les poils à la main, rincez à l'eau claire et laissez sécher à l'air libre."
         }
-      ]
+      ],
+      "nom_court_pluriel": "gants",
+      "etat": "attente",
+      "stock_disponible": 0,
+      "stock_max_commande": 0
     },
     {
       "id": "raclette-anti-poils",
@@ -282,7 +301,7 @@
       "image_partage": "/images/og/raclette-anti-poils-tapis-voiture.png",
       "image_produit_png": "/images/produits/raclette-anti-poils-tapis-voiture/principale.png",
       "gpsr": {
-        "fabricant": "{{FABRICANT_RACLETTE}} : nom, adresse postale et e-mail du fabricant, à reporter depuis le dossier fournisseur avant publication",
+        "fabricant": "identité et coordonnées communiquées avant l'ouverture des ventes",
         "responsable_ue": "{{RAISON_SOCIALE}}, {{ADRESSE}}, {{EMAIL}} (importateur établi dans l'UE)",
         "identification": "Réf. CNP-RAC-01, lot AAMM indiqué sur l'étiquette",
         "avertissements": [
@@ -307,7 +326,11 @@
           "q": "Contient-elle du latex ?",
           "r": "La matière exacte est indiquée sur la fiche et sur l'étiquette dès réception du stock contrôlé."
         }
-      ]
+      ],
+      "nom_court_pluriel": "raclettes",
+      "etat": "attente",
+      "stock_disponible": 0,
+      "stock_max_commande": 0
     },
     {
       "id": "tapis-fenetre-thermique",
@@ -330,7 +353,7 @@
         "Lavable à 30 °C"
       ],
       "caracteristiques": {
-        "matieres": "Dessus sherpa en polyester, couche réfléchissante intérieure, dessous antidérapant (composition exacte à reporter depuis l'échantillon retenu)",
+        "matieres": "Dessus sherpa en polyester, couche réfléchissante intérieure, dessous antidérapant ; composition exacte en pourcentage à reporter depuis l'échantillon retenu (étiquette de composition en français obligatoire, règlement (UE) n° 1007/2011 ; rattachement à une filière REP textile à demander à Léko avant l'achat)",
         "dimensions": "≈ 90 × 28 cm (à confirmer sur l'échantillon retenu)",
         "poids": "≈ 400 g",
         "alimentation": "Aucune",
@@ -363,7 +386,7 @@
       "image_partage": "/images/og/tapis-fenetre-thermique-chat.png",
       "image_produit_png": "/images/produits/tapis-fenetre-thermique-chat/principale.png",
       "gpsr": {
-        "fabricant": "{{FABRICANT_TAPIS}} : nom, adresse postale et e-mail du fabricant, à reporter depuis le dossier fournisseur avant publication",
+        "fabricant": "identité et coordonnées communiquées avant l'ouverture des ventes",
         "responsable_ue": "{{RAISON_SOCIALE}}, {{ADRESSE}}, {{EMAIL}} (importateur établi dans l'UE)",
         "identification": "Réf. CNP-TAP-01, lot AAMM indiqué sur l'étiquette",
         "avertissements": [
@@ -393,6 +416,10 @@
           "r": "C'est un produit de saison : nous le proposons d'octobre à février, quand les chats recherchent la chaleur près des fenêtres."
         }
       ],
+      "nom_court_pluriel": "tapis de fenêtre",
+      "etat": "attente",
+      "stock_disponible": 0,
+      "stock_max_commande": 0,
       "saison": {
         "debut_mois": 10,
         "fin_mois": 2,
@@ -438,7 +465,10 @@
         }
       ],
       "image_partage": "/images/og/grand-kit.png",
-      "image_produit_png": "/images/kits/grand-kit/principale.png"
+      "image_produit_png": "/images/kits/grand-kit/principale.png",
+      "etat": "attente",
+      "stock_disponible": 0,
+      "stock_max_commande": 0
     },
     {
       "id": "kit-anti-poils",
@@ -473,7 +503,10 @@
         }
       ],
       "image_partage": "/images/og/kit-anti-poils.png",
-      "image_produit_png": "/images/kits/kit-anti-poils/principale.png"
+      "image_produit_png": "/images/kits/kit-anti-poils/principale.png",
+      "etat": "attente",
+      "stock_disponible": 0,
+      "stock_max_commande": 0
     },
     {
       "id": "duo-rouleaux",
@@ -504,7 +537,10 @@
         }
       ],
       "image_partage": "/images/og/duo-maison-voiture.png",
-      "image_produit_png": "/images/kits/duo-maison-voiture/principale.png"
+      "image_produit_png": "/images/kits/duo-maison-voiture/principale.png",
+      "etat": "attente",
+      "stock_disponible": 0,
+      "stock_max_commande": 0
     },
     {
       "id": "kit-chat-hiver",
@@ -540,6 +576,9 @@
       ],
       "image_partage": "/images/og/kit-chat-hiver.png",
       "image_produit_png": "/images/kits/kit-chat-hiver/principale.png",
+      "etat": "attente",
+      "stock_disponible": 0,
+      "stock_max_commande": 0,
       "disponible_jusqu_au": "2027-02-28",
       "saison": {
         "debut_mois": 10,

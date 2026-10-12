@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": "1.0",
+    "version": "1.1",
     "date": "2026-10-12",
     "source": "strategie/04-strategie.md",
     "consommateurs": [
@@ -11,29 +11,41 @@
     ],
     "devise": "EUR",
     "convention_prix": "prix_ttc = prix de vente TTC affiché ; couts en HT ; montants en euros",
-    "variables_a_remplacer": [
-      "{{RAISON_SOCIALE}}",
-      "{{ADRESSE}}",
-      "{{EMAIL}}",
-      "{{TELEPHONE}}",
-      "{{ADRESSE_RETOUR}}",
-      "{{ADRESSE_EXPEDITION}}",
-      "{{MEDIATEUR}}",
-      "{{IDU_EMBALLAGES}}",
-      "{{FABRICANT_ROULEAU}}",
-      "{{FABRICANT_GANT}}",
-      "{{FABRICANT_RACLETTE}}",
-      "{{FABRICANT_TAPIS}}"
-    ]
+    "variables_a_remplacer": "Voir le bloc « identite » : chaque clé vide reste affichée {{CLE}} sur le site et bloque la commande « generer.py --publication ».",
+    "source_unique": "brand.json est la seule source des prix, coûts, délais, phase de vente, dates de précommande, stock, identité légale et règles de service client. 04, 05, le marketing et le site citent ces champs ; en cas d'écart, brand.json fait foi (correction M15 de la revue red team)."
+  },
+  "identite": {
+    "_mode_emploi": "Remplir chaque valeur une seule fois ici, puis lancer « python3 site/outils/generer.py --publication » : le générateur remplace {{CLE}} dans toutes les pages, products.json, le PDF des CGV et le kit Shopify, et refuse de publier s'il reste une seule variable. Fabricants : « Raison sociale, adresse postale complète, e-mail », recopiés du document écrit du fournisseur (critère éliminatoire, voir approvisionnement).",
+    "RAISON_SOCIALE": "",
+    "FORME_JURIDIQUE": "",
+    "CAPITAL": "",
+    "ADRESSE": "",
+    "SIREN": "",
+    "RCS": "",
+    "TVA_INTRACOM": "",
+    "EMAIL": "",
+    "TELEPHONE": "",
+    "HORAIRES_SERVICE_CLIENT": "",
+    "DIRECTEUR_PUBLICATION": "",
+    "HEBERGEUR": "",
+    "MEDIATEUR": "",
+    "IDU_EMBALLAGES": "",
+    "ADRESSE_RETOUR": "",
+    "ADRESSE_EXPEDITION": "",
+    "FABRICANT_ROULEAU": "",
+    "FABRICANT_GANT": "",
+    "FABRICANT_RACLETTE": "",
+    "FABRICANT_TAPIS": "",
+    "FABRICANT_TAPIS_FOUILLE": ""
   },
   "marque": {
     "nom": "Canapoil",
     "slogan": "Les câlins sur le canapé, les poils à la poubelle.",
     "promesse": "Des outils simples pour partager le canapé avec son chat ou son chien et garder un intérieur présentable. Chaque produit est montré en vidéo, sans trucage, sur de vrais tissus, et expédié depuis la France.",
-    "positionnement": "Spécialiste de la cohabitation canapé-animaux ; prix milieu-haut de marché (rouleau à 24,90 €, Grand kit à 39,90 €) justifié par la preuve vidéo par tissu, les kits pensés par surface et l'expédition depuis la France en 3 à 6 jours ouvrés.",
+    "positionnement": "Spécialiste de la cohabitation canapé-animaux ; prix milieu-haut de marché (rouleau à 24,90 €, Grand kit à 39,90 €) justifié par la preuve vidéo par tissu, les kits pensés par surface et l'expédition depuis la France. Prix du rouleau sous condition : relevé de 20 rouleaux concurrents sur TikTok Shop avant la porte 1 ; si la médiane est sous 16 €, test du rouleau à 19,90 € et Grand kit seul mis en avant (correction M8).",
     "origine_transparence": "Marque française. Produits fabriqués en Chine, contrôlés et expédiés depuis la France. Aucun drapeau ni mention « made in France ».",
     "domaine_vise": "canapoil.fr",
-    "statut_juridique_nom": "Aucune marque identique trouvée par recherche web le 12/10/2026 ; canapoil.fr et canapoil.com non enregistrés selon RDAP à cette date ; dépôt INPI (classes 21, 20, 28) et achat des domaines à confirmer",
+    "statut_juridique_nom": "Aucune marque identique trouvée par recherche web le 12/10/2026 ; canapoil.fr et canapoil.com non enregistrés selon RDAP à cette date. Recherches TMview, DesignView et data.inpi.fr avec captures datées en S1 ; dépôt INPI classe 21 à la porte 1 (190 €), classes 20 et 28 à la porte 2 (voir propriete_intellectuelle).",
     "noms_alternatifs": [
       "Toutpoil",
       "Poilette"
@@ -110,13 +122,13 @@
       "role": "heros",
       "statut": "lancement",
       "description_courte": "Quelques allers-retours sur le canapé et les poils de chat ou de chien finissent dans le réservoir. Sans feuille adhésive, sans recharge, sans pile.",
-      "description_longue": "La bande textile du rouleau attrape les poils quand vous le faites aller et venir sur le tissu, puis les dépose dans un réservoir fermé. Pour le vider, il suffit d'ouvrir le clapet au-dessus de la poubelle. Il donne ses meilleurs résultats sur les canapés en tissu ou en velours, les plaids, les couettes, les arbres à chat et les sièges auto en tissu. Il est moins efficace sur le cuir, la soie, les tissus très lisses et les tapis à poils longs : pour les tapis et la voiture, la raclette anti-poils prend le relais. Nos vidéos montrent le résultat tissu par tissu, y compris là où il marche moins bien. Expédié depuis la France sous 1 jour ouvré.",
+      "description_longue": "La bande textile du rouleau attrape les poils quand vous le faites aller et venir sur le tissu, puis les dépose dans un réservoir fermé. Pour le vider, il suffit d'ouvrir le clapet au-dessus de la poubelle. Il donne ses meilleurs résultats sur les canapés en tissu ou en velours, les plaids, les couettes, les arbres à chat et les sièges auto en tissu. Il est moins efficace sur le cuir, la soie, les tissus très lisses et les tapis à poils longs : pour les tapis et la voiture, la raclette anti-poils prend le relais. Nos vidéos montrent le résultat tissu par tissu, y compris là où il marche moins bien.",
       "benefices": [
         "Ramasse les poils de chat et de chien sur les tissus d'ameublement, les plaids, les lits et les sièges auto",
         "Réutilisable : aucune feuille adhésive à racheter",
         "Se vide en un geste au-dessus de la poubelle",
         "Fonctionne sans pile ni électricité",
-        "Expédié depuis la France, livré en 3 à 6 jours ouvrés"
+        "Testé en vidéo tissu par tissu, y compris là où il marche moins bien"
       ],
       "caracteristiques": {
         "matieres": "Corps en plastique ABS ; bande de nettoyage en fibres textiles (à confirmer sur l'échantillon retenu)",
@@ -144,12 +156,12 @@
       ],
       "prix_ttc": 24.9,
       "prix_barre_ttc": null,
-      "cout_produit_ht": 4.5,
-      "cout_produit_detail": "3,50 € fournisseur + 1,00 € de fret entrant par unité (lot de 20) ; estimation, confiance moyenne, prix d'index AliExpress à revérifier",
+      "cout_produit_ht": 5.4,
+      "cout_produit_detail": "Base prudente = 4,5 € (fournisseur + fret entrant : 3,50 € fournisseur + 1,00 € de fret entrant par unité (lot de 20) ; estimation, confiance moyenne, prix d'index AliExpress à revérifier) × 1,20. La majoration de 20 % couvre la TVA facturée par la plateforme si elle n'est pas récupérable, les droits d'un petit lot et l'écart avec le prix d'index (correction M13). Elle reste l'hypothèse de base tant que l'expert-comptable n'a pas validé le traitement TVA et douane de l'achat B2B.",
       "cout_livraison_ht": 4.5,
       "cout_emballage_ht": 0.3,
-      "droits_douane_estimes": 0.25,
-      "droits_douane_detail": "≈ 5 € de droit forfaitaire et de redevance UE par colis de stock, répartis sur 20 unités ; estimation, confiance moyenne",
+      "droits_douane_estimes": 0.4,
+      "droits_douane_detail": "Lot unique de ≈ 105 unités (4 références) en un seul colis de plus de 150 € : droits du tarif commun (≈ 0 à 6,5 % selon TARIC) ou, si le régime des petits envois s'applique, 3 € par catégorie + 2 € de redevance par article distinct, plus ≈ 20 € de frais de dossier du transporteur, répartis sur le lot ; estimation, confiance faible, à valider par l'expert-comptable avant la porte 1",
       "delai_livraison_jours": {
         "min": 3,
         "max": 6,
@@ -162,11 +174,11 @@
         "https://www.aliexpress.com/item/1005010323493766.html",
         "https://www.aliexpress.com/w/wholesale-pet-hair-remover-reusable.html"
       ],
-      "entrepot": "Micro-stock en France ({{ADRESSE_EXPEDITION}}), importé de Chine par lot et étiqueté au nom de {{RAISON_SOCIALE}}",
+      "entrepot": "Stock en France ({{ADRESSE_EXPEDITION}}), importé de Chine par lot et étiqueté au nom de {{RAISON_SOCIALE}}",
       "poids_g": 280,
       "variantes": [],
       "gpsr": {
-        "fabricant": "{{FABRICANT_ROULEAU}} : nom, adresse postale et e-mail du fabricant, à reporter depuis le dossier fournisseur avant publication",
+        "fabricant": "{{FABRICANT_ROULEAU}}",
         "responsable_ue": "{{RAISON_SOCIALE}}, {{ADRESSE}}, {{EMAIL}} (importateur établi dans l'UE)",
         "identification": "Réf. CNP-ROU-01, lot AAMM indiqué sur l'étiquette",
         "avertissements": [
@@ -197,13 +209,16 @@
         },
         {
           "q": "Sous quel délai vais-je le recevoir ?",
-          "r": "Il est expédié depuis la France sous 1 jour ouvré et livré en point relais en 3 à 6 jours ouvrés."
+          "r": "[[DELAI_FAQ]]"
         },
         {
           "q": "Et s'il ne convient pas à mon tissu ?",
           "r": "Vous avez 30 jours après réception pour changer d'avis : 14 jours prévus par la loi, plus 16 jours que nous ajoutons. Le remboursement intervient sous 14 jours au plus."
         }
-      ]
+      ],
+      "cout_produit_ht_hors_majoration": 4.5,
+      "stock_disponible": 0,
+      "nom_court_pluriel": "rouleaux"
     },
     {
       "id": "gant-toilettage",
@@ -235,11 +250,11 @@
       ],
       "prix_ttc": 9.9,
       "prix_barre_ttc": null,
-      "cout_produit_ht": 1.3,
-      "cout_produit_detail": "≈ 1,00 € fournisseur + 0,30 € de fret entrant ; estimation, confiance faible",
+      "cout_produit_ht": 1.56,
+      "cout_produit_detail": "Base prudente = 1,3 € (fournisseur + fret entrant : ≈ 1,00 € fournisseur + 0,30 € de fret entrant ; estimation, confiance faible) × 1,20. La majoration de 20 % couvre la TVA facturée par la plateforme si elle n'est pas récupérable, les droits d'un petit lot et l'écart avec le prix d'index (correction M13). Elle reste l'hypothèse de base tant que l'expert-comptable n'a pas validé le traitement TVA et douane de l'achat B2B.",
       "cout_livraison_ht": 4.5,
       "cout_emballage_ht": 0.3,
-      "droits_douane_estimes": 0.1,
+      "droits_douane_estimes": 0.25,
       "delai_livraison_jours": {
         "min": 3,
         "max": 6,
@@ -248,11 +263,11 @@
       },
       "fournisseur": "AliExpress, référence à sélectionner sur échantillon",
       "url_fournisseur": "https://www.aliexpress.com/w/wholesale-silicone-pet-grooming-glove.html",
-      "entrepot": "Micro-stock en France ({{ADRESSE_EXPEDITION}}), importé de Chine par lot et étiqueté au nom de {{RAISON_SOCIALE}}",
+      "entrepot": "Stock en France ({{ADRESSE_EXPEDITION}}), importé de Chine par lot et étiqueté au nom de {{RAISON_SOCIALE}}",
       "poids_g": 70,
       "variantes": [],
       "gpsr": {
-        "fabricant": "{{FABRICANT_GANT}} : nom, adresse postale et e-mail du fabricant, à reporter depuis le dossier fournisseur avant publication",
+        "fabricant": "{{FABRICANT_GANT}}",
         "responsable_ue": "{{RAISON_SOCIALE}}, {{ADRESSE}}, {{EMAIL}} (importateur établi dans l'UE)",
         "identification": "Réf. CNP-GAN-01, lot AAMM indiqué sur l'étiquette",
         "avertissements": [
@@ -277,7 +292,11 @@
           "q": "Comment le nettoyer ?",
           "r": "Retirez les poils à la main, rincez à l'eau claire et laissez sécher à l'air libre."
         }
-      ]
+      ],
+      "cout_produit_ht_hors_majoration": 1.3,
+      "droits_douane_detail": "Lot unique de ≈ 105 unités (4 références) en un seul colis de plus de 150 € : droits du tarif commun (≈ 0 à 6,5 % selon TARIC) ou, si le régime des petits envois s'applique, 3 € par catégorie + 2 € de redevance par article distinct, plus ≈ 20 € de frais de dossier du transporteur, répartis sur le lot ; estimation, confiance faible, à valider par l'expert-comptable avant la porte 1",
+      "stock_disponible": 0,
+      "nom_court_pluriel": "gants"
     },
     {
       "id": "raclette-anti-poils",
@@ -309,11 +328,11 @@
       ],
       "prix_ttc": 12.9,
       "prix_barre_ttc": null,
-      "cout_produit_ht": 1.9,
-      "cout_produit_detail": "≈ 1,50 € fournisseur + 0,40 € de fret entrant ; estimation, confiance faible",
+      "cout_produit_ht": 2.28,
+      "cout_produit_detail": "Base prudente = 1,9 € (fournisseur + fret entrant : ≈ 1,50 € fournisseur + 0,40 € de fret entrant ; estimation, confiance faible) × 1,20. La majoration de 20 % couvre la TVA facturée par la plateforme si elle n'est pas récupérable, les droits d'un petit lot et l'écart avec le prix d'index (correction M13). Elle reste l'hypothèse de base tant que l'expert-comptable n'a pas validé le traitement TVA et douane de l'achat B2B.",
       "cout_livraison_ht": 4.5,
       "cout_emballage_ht": 0.3,
-      "droits_douane_estimes": 0.15,
+      "droits_douane_estimes": 0.3,
       "delai_livraison_jours": {
         "min": 3,
         "max": 6,
@@ -322,11 +341,11 @@
       },
       "fournisseur": "AliExpress, référence à sélectionner sur échantillon",
       "url_fournisseur": "https://www.aliexpress.com/w/wholesale-pet-hair-rubber-scraper.html",
-      "entrepot": "Micro-stock en France ({{ADRESSE_EXPEDITION}}), importé de Chine par lot et étiqueté au nom de {{RAISON_SOCIALE}}",
+      "entrepot": "Stock en France ({{ADRESSE_EXPEDITION}}), importé de Chine par lot et étiqueté au nom de {{RAISON_SOCIALE}}",
       "poids_g": 150,
       "variantes": [],
       "gpsr": {
-        "fabricant": "{{FABRICANT_RACLETTE}} : nom, adresse postale et e-mail du fabricant, à reporter depuis le dossier fournisseur avant publication",
+        "fabricant": "{{FABRICANT_RACLETTE}}",
         "responsable_ue": "{{RAISON_SOCIALE}}, {{ADRESSE}}, {{EMAIL}} (importateur établi dans l'UE)",
         "identification": "Réf. CNP-RAC-01, lot AAMM indiqué sur l'étiquette",
         "avertissements": [
@@ -351,7 +370,11 @@
           "q": "Contient-elle du latex ?",
           "r": "La matière exacte est indiquée sur la fiche et sur l'étiquette dès réception du stock contrôlé."
         }
-      ]
+      ],
+      "cout_produit_ht_hors_majoration": 1.9,
+      "droits_douane_detail": "Lot unique de ≈ 105 unités (4 références) en un seul colis de plus de 150 € : droits du tarif commun (≈ 0 à 6,5 % selon TARIC) ou, si le régime des petits envois s'applique, 3 € par catégorie + 2 € de redevance par article distinct, plus ≈ 20 € de frais de dossier du transporteur, répartis sur le lot ; estimation, confiance faible, à valider par l'expert-comptable avant la porte 1",
+      "stock_disponible": 0,
+      "nom_court_pluriel": "raclettes"
     },
     {
       "id": "tapis-fenetre-thermique",
@@ -376,7 +399,7 @@
         "Lavable à 30 °C"
       ],
       "caracteristiques": {
-        "matieres": "Dessus sherpa en polyester, couche réfléchissante intérieure, dessous antidérapant (composition exacte à reporter depuis l'échantillon retenu)",
+        "matieres": "Dessus sherpa en polyester, couche réfléchissante intérieure, dessous antidérapant ; composition exacte en pourcentage à reporter depuis l'échantillon retenu (étiquette de composition en français obligatoire, règlement (UE) n° 1007/2011 ; rattachement à une filière REP textile à demander à Léko avant l'achat)",
         "dimensions": "≈ 90 × 28 cm (à confirmer sur l'échantillon retenu)",
         "poids": "≈ 400 g",
         "alimentation": "Aucune",
@@ -389,11 +412,11 @@
       ],
       "prix_ttc": 24.9,
       "prix_barre_ttc": null,
-      "cout_produit_ht": 5.0,
-      "cout_produit_detail": "≈ 3,80 € fournisseur hors promotion + 1,20 € de fret entrant ; estimation, confiance faible (prix d'appel AliExpress à 1 $ non retenu)",
+      "cout_produit_ht": 6.0,
+      "cout_produit_detail": "Base prudente = 5,0 € (fournisseur + fret entrant : ≈ 3,80 € fournisseur hors promotion + 1,20 € de fret entrant ; estimation, confiance faible (prix d'appel AliExpress à 1 $ non retenu)) × 1,20. La majoration de 20 % couvre la TVA facturée par la plateforme si elle n'est pas récupérable, les droits d'un petit lot et l'écart avec le prix d'index (correction M13). Elle reste l'hypothèse de base tant que l'expert-comptable n'a pas validé le traitement TVA et douane de l'achat B2B.",
       "cout_livraison_ht": 4.5,
       "cout_emballage_ht": 0.3,
-      "droits_douane_estimes": 0.35,
+      "droits_douane_estimes": 0.5,
       "delai_livraison_jours": {
         "min": 3,
         "max": 6,
@@ -405,11 +428,11 @@
       "url_fournisseur_alternatives": [
         "https://www.aliexpress.com/item/1005012462046397.html"
       ],
-      "entrepot": "Micro-stock en France ({{ADRESSE_EXPEDITION}}), importé de Chine par lot et étiqueté au nom de {{RAISON_SOCIALE}}",
+      "entrepot": "Stock en France ({{ADRESSE_EXPEDITION}}), importé de Chine par lot et étiqueté au nom de {{RAISON_SOCIALE}}",
       "poids_g": 400,
       "variantes": [],
       "gpsr": {
-        "fabricant": "{{FABRICANT_TAPIS}} : nom, adresse postale et e-mail du fabricant, à reporter depuis le dossier fournisseur avant publication",
+        "fabricant": "{{FABRICANT_TAPIS}}",
         "responsable_ue": "{{RAISON_SOCIALE}}, {{ADRESSE}}, {{EMAIL}} (importateur établi dans l'UE)",
         "identification": "Réf. CNP-TAP-01, lot AAMM indiqué sur l'étiquette",
         "avertissements": [
@@ -438,7 +461,71 @@
           "q": "Pourquoi n'est-il vendu qu'en hiver ?",
           "r": "C'est un produit de saison : nous le proposons d'octobre à février, quand les chats recherchent la chaleur près des fenêtres."
         }
-      ]
+      ],
+      "cout_produit_ht_hors_majoration": 5.0,
+      "droits_douane_detail": "Lot unique de ≈ 105 unités (4 références) en un seul colis de plus de 150 € : droits du tarif commun (≈ 0 à 6,5 % selon TARIC) ou, si le régime des petits envois s'applique, 3 € par catégorie + 2 € de redevance par article distinct, plus ≈ 20 € de frais de dossier du transporteur, répartis sur le lot ; estimation, confiance faible, à valider par l'expert-comptable avant la porte 1",
+      "stock_disponible": 0,
+      "nom_court_pluriel": "tapis de fenêtre"
+    }
+  ],
+  "challengers": [
+    {
+      "id": "tapis-de-fouille",
+      "sku": "CNP-FOU-01",
+      "nom": "Le Tapis de fouille lavable",
+      "slug": "tapis-de-fouille",
+      "role": "challenger",
+      "statut": "test",
+      "page": "/liste-attente/tapis-de-fouille/",
+      "decision": "Duel de la porte 1 : devient le héros s'il fait au moins 50 % de mieux que le rouleau sur les inscriptions qualifiées (champ « produit » de la liste d'attente) et sur le taux de clics produit. Sinon, reste en réserve pour l'automne 2027 (pic de recherche en novembre, indice 1,30).",
+      "description_courte": "Des croquettes cachées dans des bandes de polaire : votre chien cherche avec son flair au lieu de s'ennuyer. Lavable en machine.",
+      "description_longue": "Le tapis de fouille réunit des bandes de polaire nouées sur une base antidérapante. Vous y cachez quelques croquettes ou friandises, et le chien les cherche avec son flair, à son rythme. Il s'utilise toujours sous surveillance, se range roulé et passe en machine à 30 °C. Format M d'environ 45 × 30 cm pour les petits et moyens chiens.",
+      "benefices": [
+        "Occupe le chien par le flair, sous votre surveillance",
+        "Base antidérapante",
+        "Lavable en machine à 30 °C",
+        "Se roule pour le rangement"
+      ],
+      "caracteristiques": {
+        "matieres": "Polaire ou feutre teint sans colorants azoïques, base antidérapante (composition exacte à reporter depuis l'échantillon retenu)",
+        "dimensions": "≈ 45 × 30 cm, format M (à mesurer sur l'échantillon)",
+        "poids": "≈ 400 g",
+        "entretien": "Lavage en machine à 30 °C, séchage à plat",
+        "origine": "Fabriqué en Chine, contrôlé et expédié depuis la France"
+      },
+      "prix_ttc": 29.9,
+      "prix_lot_envisage_ttc": 54.9,
+      "prix_barre_ttc": null,
+      "cout_produit_ht": 9.0,
+      "cout_produit_ht_hors_majoration": 7.5,
+      "cout_produit_detail": "Base prudente = 7,50 € (≈ 6,00 € fournisseur, 01 §3.5, + 1,50 € de fret entrant ; estimation, confiance faible) × 1,20 (correction M13)",
+      "cout_livraison_ht": 4.5,
+      "cout_emballage_ht": 0.3,
+      "droits_douane_estimes": 0.45,
+      "poids_g": 400,
+      "stock_disponible": 0,
+      "marge_site_estimee_ht": 11.75,
+      "marge_site_note": "Site, 29,90 € + 3,90 € de port = 33,80 € TTC, soit 28,17 € HT − 9,45 € (produit et droits) − 4,80 € (port et emballage) − 0,76 € (Stripe) − 1,41 € (provision 5 %) = 11,75 € ; estimation, confiance faible",
+      "url_fournisseur": "https://www.aliexpress.com/item/1005002611412566.html",
+      "url_fournisseur_alternatives": [
+        "https://www.aliexpress.com/w/wholesale-dog-snuffle-mat.html",
+        "https://cjdropshipping.com/product/snake-snuffle-toy-for-dogs-pet-slow-feeder-feeder-puzzle-nosework-toys-dog-enrichment-puzzle-p-1509073837051760640.html"
+      ],
+      "gpsr": {
+        "fabricant": "{{FABRICANT_TAPIS_FOUILLE}}",
+        "responsable_ue": "{{RAISON_SOCIALE}}, {{ADRESSE}}, {{EMAIL}} (importateur établi dans l'UE)",
+        "identification": "Réf. CNP-FOU-01, lot AAMM indiqué sur l'étiquette",
+        "avertissements": [
+          "Toujours utiliser sous la surveillance d'un adulte.",
+          "Risque d'ingestion : retirer le tapis dès que le chien mâche ou arrache les bandes de tissu.",
+          "Ne pas laisser à la portée des jeunes enfants.",
+          "Vérifier l'état des bandes avant chaque usage ; jeter un tapis abîmé."
+        ],
+        "avertissements_statut": "À valider sur l'échantillon et la notice du fabricant",
+        "instructions": "Posez le tapis sur un sol plat. Cachez quelques croquettes entre les bandes. Laissez le chien chercher sous votre surveillance, puis rangez le tapis. Lavez-le à 30 °C et laissez-le sécher à plat."
+      },
+      "signaux_de_demande": "« tapis de fouille » +11 % sur un an, pic en novembre (indice 1,30) ; zooplus.fr : 48 produits de 1,99 à 62,49 € ; aucun tapis de fouille dans le top 30 Amazon.fr des jouets pour chien (01 §3 bis)",
+      "risques": "Population canine en baisse (−300 000) ; designs d'artisans à ne pas imiter ; avertissement d'ingestion indispensable"
     }
   ],
   "bundles": [
@@ -534,27 +621,108 @@
     }
   ],
   "livraison": {
+    "phase": "liste_attente",
+    "phases": {
+      "liste_attente": "Avant la porte 1 : aucune vente ; formulaire d'inscription. Le serveur refuse tout paiement (503).",
+      "precommande": "Après la commande du micro-stock (porte 1) : paiement à la commande, dates d'expédition et de livraison écrites partout (fiche, panier, commande, Stripe, e-mail). Exige precommande.expedition_a_partir_du et precommande.livraison_au_plus_tard_le.",
+      "vente": "Stock en France : expédition sous 1 jour ouvré. Un produit sous le seuil de stock passe en précommande (dates de réassort) ou devient indisponible."
+    },
     "transporteur": "Mondial Relay (point relais)",
     "transporteur_domicile": "Colissimo, à partir du palier 1",
     "zone": "France métropolitaine (Belgique et Luxembourg au palier 1)",
     "pays_expedition": "France",
-    "delai_annonce": "Expédié sous 1 jour ouvré depuis la France, livré en 3 à 6 jours ouvrés en point relais.",
+    "delai_annonce": "Expédié sous 1 jour ouvré depuis la France, livré en point relais 3 à 6 jours ouvrés après la commande (phase vente uniquement).",
     "delai_jours": {
       "min": 3,
       "max": 6,
-      "unite": "jours ouvrés"
+      "unite": "jours ouvrés",
+      "base": "à compter de la commande, préparation comprise (CGV art. 7.1)"
     },
     "regle_recalcul": "Après 30 livraisons : 90e centile des délais constatés + 2 jours ouvrés, affiché sous forme de dates « livré entre le … et le … ». Jamais la mention « délais indicatifs ».",
     "seuil_gratuite_ttc": 35.0,
     "frais_ttc": 3.9,
     "precommande": {
-      "actif_au_lancement": true,
-      "duree_jours": 7,
-      "mention": "Précommande : expédition à partir du JJ/MM, livraison au plus tard le JJ/MM.",
-      "limite_legale_jours": 30,
-      "prime": "Gant de toilettage offert aux 30 premières précommandes"
+      "expedition_a_partir_du": null,
+      "livraison_au_plus_tard_le": null,
+      "ordre_des_operations": "1) Porte 1 franchie ; 2) micro-stock commandé et payé ; 3) dates calculées ; 4) phase « precommande » et dates saisies ici ; 5) génération du site. Aucune précommande avant la commande du stock (correction C2).",
+      "regle_dates": "Expédition à partir du = date de commande du stock + 90e centile du transit mesuré sur les échantillons (jours calendaires) + 3 jours ouvrés (dédouanement, contrôle, étiquetage). Livraison au plus tard le = expédition + 6 jours ouvrés. Plafond : 30 jours après l'ouverture des précommandes (generer.py refuse au-delà). Si la date dépasse le 23/12, aucun argument « Noël ».",
+      "exemples_calcul_commande_stock_16_11_2026": [
+        {
+          "transit_p90_jours": 8,
+          "mode": "entrepôt UE ou envoi express",
+          "expedition_a_partir_du": "2026-11-27",
+          "livraison_au_plus_tard_le": "2026-12-07",
+          "noel": true
+        },
+        {
+          "transit_p90_jours": 12,
+          "mode": "AliExpress Choice",
+          "expedition_a_partir_du": "2026-12-02",
+          "livraison_au_plus_tard_le": "2026-12-10",
+          "noel": true
+        },
+        {
+          "transit_p90_jours": 20,
+          "mode": "AliExpress standard en période 11.11 / Black Friday",
+          "expedition_a_partir_du": "2026-12-09",
+          "livraison_au_plus_tard_le": "2026-12-17",
+          "noel": true
+        },
+        {
+          "transit_p90_jours": 25,
+          "mode": "retard",
+          "expedition_a_partir_du": "2026-12-16",
+          "livraison_au_plus_tard_le": "2026-12-24",
+          "noel": false
+        }
+      ],
+      "controle_j_moins_10": "Si le colis fournisseur n'est pas arrivé en France 10 jours avant la date limite de livraison : e-mail individuel à chaque client avec la nouvelle date et le choix d'une annulation remboursée sous 14 jours (CGV art. 5.4).",
+      "fournisseur_conseille": "Vendeur expédiant depuis un entrepôt UE ou envoi express pour ce lot ; sinon CJ (entrepôt UE) ou agent",
+      "limite_jours": 30,
+      "prime": {
+        "texte": "Gant de toilettage offert aux 30 premières précommandes",
+        "quantite": 30,
+        "attribuees": 0,
+        "attribuees_au": null,
+        "condition": "Dans la limite des 30 gants réservés à cette offre et commandés avec le micro-stock (45 gants au total) ; compteur mis à jour à chaque génération du site avec sa date",
+        "cout_estime_ht": 54.3,
+        "cout_note": "30 × (1,56 € + 0,25 € de droits) ; ligne « prime de lancement » du modèle financier (correction M4)"
+      }
     },
-    "noel_2026": "Date limite de commande pour une livraison avant le 24/12 affichée dès le 1/12 (estimation : 17/12, à confirmer selon le transporteur)",
+    "stock": {
+      "seuil_bascule_precommande": 5,
+      "regle": "Le stock disponible de chaque produit (produits[].stock_disponible) est saisi ici à chaque réception, puis mis à jour chaque matin d'après le tableur, et le site régénéré. Sous 5 unités, le produit passe automatiquement en précommande avec les dates de réassort ci-dessous, ou devient indisponible si aucune date n'est saisie. Le serveur refuse une commande qui dépasse le stock affiché.",
+      "reassort": {
+        "expedition_a_partir_du": null,
+        "livraison_au_plus_tard_le": null,
+        "quantite_commandee": null
+      },
+      "tiktok_shop": "Stock saisi dans le Seller Center = stock réel − 2 unités de sécurité, mis à jour 2 fois par jour (9 h et 18 h)",
+      "echantillons_createurs": "Prélevés sur le stock et retirés du stock disponible le jour de l'envoi",
+      "procedure_pic_viral": "Vidéo > 20 000 vues en 6 heures : stock TikTok Shop mis à jour toutes les 2 heures ; site en précommande avec dates réelles dès 5 unités ; réassort express déclenché à 10 unités ; aucune ancre produit sur une vidéo qui dépasse ce seuil si le stock couvre moins de 7 jours (correction M18)"
+    },
+    "noel_2026": {
+      "date_limite_commande": "2026-12-15",
+      "livraison_au_plus_tard": "2026-12-23",
+      "affichage_a_partir_du": "2026-12-01",
+      "calcul": "15/12 + 6 jours ouvrés (délai maximal annoncé, préparation comprise) = mercredi 23/12",
+      "condition": "Phase vente avec stock en France. En précommande, l'argument Noël n'est utilisé que si livraison_au_plus_tard_le ≤ 23/12."
+    },
+    "tiktok_shop": {
+      "mode_expedition": "Expédition par TikTok (mode par défaut en France), ou expédition par le vendeur avec un transporteur agréé remis à J+2 au plus tard (Colissimo en point retrait)",
+      "exigence_livraison": "Expédition par le vendeur : livraison sous 4 jours ouvrés ; annulation automatique au-delà de 7 jours ouvrés (politique TikTok Shop France, https://seller-fr.tiktok.com/university/essay?default_language=fr&knowledge_id=6711589562500897)",
+      "mondial_relay": "Interdit pour TikTok Shop tant que le 90e centile mesuré sur 30 envois n'est pas ≤ 4 jours ouvrés",
+      "port_ht": {
+        "jusqu_a_300g": null,
+        "jusqu_a_500g": null,
+        "de_500g_a_1kg": null
+      },
+      "port_ht_modele": {
+        "jusqu_a_500g": 4.5,
+        "de_500g_a_1kg": 5.5
+      },
+      "port_note": "Tarif de l'étiquette « Expédition par TikTok » non publié hors Seller Center : à relever à l'ouverture du compte pour 300 g, 500 g et 1 kg, puis à saisir dans port_ht et dans le modèle financier (PORT_TTS_500, PORT_TTS_1KG). En attendant, le modèle reprend 4,50 € et 5,50 € HT (hypothèse non vérifiée)."
+    },
     "frais_a_la_livraison": "Aucun : prix tout compris, droits et taxes déjà acquittés"
   },
   "retours": {
@@ -607,8 +775,10 @@
       "email": "Brevo gratuit",
       "marketplace": "TikTok Shop",
       "google": "Merchant Center, fiches gratuites (flux XML)",
-      "mesure": "Cloudflare Web Analytics, sans cookie",
-      "pilotage": "Google Sheets"
+      "mesure": "Cloudflare Web Analytics (domaines autorisés dans la CSP de site/_headers) ; UTM conservés pendant la visite et transmis aux métadonnées Stripe et aux attributs Brevo",
+      "pilotage": "Google Sheets",
+      "securite_formulaires": "Origine vérifiée, Cloudflare Turnstile, 3 requêtes par heure et par adresse IP (stockage KV), vérification de la commande Stripe avant tout accusé de rétractation",
+      "option_precommande": "Shopify Basic à 1 $ par mois pendant 3 mois (≈ 3 € pour novembre à janvier) : stock, précommandes et e-mails de commande natifs ; à envisager si le déploiement du site statique bloque le client"
     },
     "croissance": {
       "site": "Shopify Basic puis Grow au-delà d'≈ 34 500 € de CA mensuel",
@@ -638,7 +808,8 @@
       "tiktok_shop_affilies": 0.58,
       "tiktok_shop_contenu_propre": 0.22,
       "site": 0.2
-    }
+    },
+    "note": "Répartition de croisière ; TikTok Shop plafonné au stock payé et sans affiliés avant le premier règlement si l'option b de hypotheses_cles.tresorerie est retenue"
   },
   "hypotheses_cles": {
     "taux_conversion": 0.015,
@@ -662,33 +833,71 @@
       "jusqu_a_500g": 4.5,
       "de_500g_a_1kg": 5.5,
       "de_1_a_2kg": 7.0,
-      "note": "hypothèse prudente ; tarif public Mondial Relay 4,15 € TTC jusqu'à 500 g depuis le 15/06/2026"
+      "note": "Site, Mondial Relay : hypothèse prudente ; tarif public 4,15 € TTC jusqu'à 500 g depuis le 15/06/2026 (source secondaire Margeo, à revérifier sur mondialrelay.fr). TikTok Shop : voir livraison.tiktok_shop.port_ht."
     },
     "provision_retours_sav": "5 % du CA HT",
-    "regime_tva_hypothese": "société assujettie à la TVA (voir 04-strategie.md §4.1 pour la franchise et la micro-entreprise)",
-    "marge_moyenne_par_commande_ht": 7.55,
+    "regime_tva_hypothese": "Voir regime_tva : décision à prendre avec l'expert-comptable ; le modèle financier reste en régime assujetti (prudent)",
+    "marge_moyenne_par_commande_ht": 6.3,
     "frais_fixes_mensuels_palier_1": 170,
-    "commandes_par_mois_palier_1": 155,
+    "commandes_par_mois_palier_1": 202,
     "micro_stock_initial": {
-      "rouleau-anti-poils": 20,
-      "gant-toilettage": 10,
-      "raclette-anti-poils": 6,
+      "rouleau-anti-poils": 40,
+      "gant-toilettage": 45,
+      "raclette-anti-poils": 12,
       "tapis-fenetre-thermique": 8,
-      "cout_estime_ht": 165
+      "dimensionnement": "30 précommandes au mix du site (35 % rouleau, 20 % Kit anti-poils, 30 % Grand kit, 15 % Duo) + 30 gants de prime + 5 échantillons créateurs : ≈ 40 rouleaux, ≈ 45 gants, ≈ 12 raclettes ; 8 tapis de fenêtre (saison) (correction M4)",
+      "achat": "Un seul colis, facture B2B HT (AliExpress Business avec numéro de TVA, CJ ou agent), commandé à la porte 1 avant toute précommande"
     },
-    "budget_cash_avant_porte_1": 45,
-    "budget_cash_porte_1_hors_stock": 174
+    "taux_conversion_tiktok_shop_clic_commande_note": "Agrégateur non sourcé (02 §2.2) ; estimation, confiance faible, à remplacer par le taux du Seller Center après 1 000 vues produit",
+    "marge_moyenne_note": "Mix de lancement, société assujettie, coûts produit +20 % (finance/data.json) ; 7,55 € sans la majoration de prudence",
+    "commandes_par_mois_palier_1_note": "(1 000 € + 170 € de frais fixes + 100 € d'échantillons créateurs) ÷ 6,30 € (05 §6)",
+    "tresorerie": {
+      "cash_avant_porte_1": 45,
+      "cash_porte_1_conformite_ttc": 389,
+      "cash_porte_1_conformite_detail": "Médiateur CM2C 48 € + Léko 114 € TTC + fournitures 12 € + INPI classe 21 190 € + premier mois de RC 25 €",
+      "micro_stock_initial_ttc": 476,
+      "cash_avant_premier_encaissement": 910,
+      "cash_avant_premier_encaissement_note": "45 + 389 + 476 € ; 1 185 € si l'assurance RC est payée à l'année. Le stock est payé à la commande, avant l'ouverture des précommandes (C2) : il n'est pas financé par elles (finance/data.json → tresorerie_demarrage)",
+      "besoin_tresorerie_realiste": 2000,
+      "besoin_tresorerie_realiste_mois": "février 2027",
+      "besoin_tresorerie_optimiste": 4539,
+      "besoin_tresorerie_pessimiste": 1220,
+      "cause": "Règlement TikTok Shop 31 jours après livraison pour un vendeur débutant ; stock, étiquettes et échantillons payés comptant",
+      "seuil_alerte_reserve": 300,
+      "budget_client_initial": 150,
+      "options_a_signer_avant_S1": {
+        "a": "Apport en compte courant d'associé de 2 400 € (besoin réaliste 2 000 € + seuil d'alerte 300 €, arrondi)",
+        "b": "Ventes TikTok Shop plafonnées au stock déjà payé, aucune collaboration d'affiliés avant le premier règlement TikTok Shop ; apport minimal de 910 € à la porte 1",
+        "c": "Arrêt à 45 € engagés si la porte 1 n'est pas franchie, ou si le client refuse a et b"
+      },
+      "option_retenue": null,
+      "option_retenue_note": "Décision écrite du client, à reporter ici et dans docs/demarrage-J1-J14.md (J1)"
+    }
   },
   "lancement": {
     "porte_1": {
       "date": "2026-11-15",
-      "criteres": "Sur 14 jours : ≥ 1 vidéo > 50 000 vues avec ≥ 1 % de clics, ou ≥ 150 inscrits sur la liste d'attente ; et ≥ 20 commentaires d'intention d'achat"
+      "criteres": "Sur 14 jours, les trois conditions : (1) ≥ 1 vidéo > 50 000 vues avec ≥ 1 % de clics, ou ≥ 150 inscrits qualifiés sur la liste d'attente ; (2) taux de clics produit ≥ 1,5 % en moyenne sur toutes les vidéos de démonstration du produit (clics vers le profil ou le site ÷ vues, TikTok Studio) ; (3) ≥ 20 commentaires d'intention d'achat de comptes uniques hors entourage",
+      "decision_si_franchie": "Commande et paiement du micro-stock (lot unique, facture B2B HT), adhésions CM2C et Léko, RC produits souscrite, dépôt INPI classe 21 ; puis ouverture des précommandes avec les dates calculées (livraison.precommande.regle_dates)"
+    },
+    "porte_stock": {
+      "criteres": "≥ 20 précommandes payées par des acheteurs hors entourage (vérifié sur les noms et adresses) et conversion liste d'attente → précommande ≥ 8 %",
+      "decision_si_franchie": "Autorise le réassort et l'achat du stock principal, programmé fin janvier 2027 avant la hausse saisonnière de février",
+      "decision_sinon": "Aucun réassort : le micro-stock est écoulé (site, TikTok Shop, échantillons créateurs), retour au test de contenu"
     },
     "porte_2": {
-      "criteres": "≥ 3 commandes par jour pendant 7 jours après l'arrivée du stock"
+      "criteres": "≥ 3 commandes par jour pendant 7 jours après l'arrivée du stock",
+      "date_realiste": "mars-avril 2027 (05 §4.4)"
     },
-    "mode_site_avant_porte_1": "Liste d'attente (aucune vente) : « Lancement en novembre : recevez un e-mail le jour de l'ouverture »",
-    "challenger": "Tapis de fouille lavable : devient le héros s'il fait au moins 50 % de mieux au critère de la porte 1"
+    "mode_site_avant_porte_1": "Phase liste_attente (aucune vente) : « Lancement en préparation : recevez un e-mail le jour de l'ouverture des ventes »",
+    "challenger": "Tapis de fouille lavable (challengers[0]) : page /liste-attente/tapis-de-fouille/ avec champ produit ; devient le héros s'il fait au moins 50 % de mieux sur les inscriptions qualifiées et le taux de clics produit",
+    "calendrier_si_le_rouleau_gagne": "Micro-stock à la porte 1 pour les précommandes et Noël ; achat du stock principal décalé à fin janvier 2027 (creux de recherche « anti poils » en décembre, indice 0,59 ; hausse en février)",
+    "probabilites": {
+      "porte_1": "35-50 % (estimation, confiance faible ; critères durcis)",
+      "palier_1_a_12_mois": "10-20 % (05 §6 ; la red team l'estime à 5-12 %)",
+      "palier_2_a_24_mois": "3-5 % (05 §6)",
+      "paliers_3_et_4": "Non chiffrées : repères d'échelle sans base produit (aucun consommable, valeur vie client non modélisée)"
+    }
   },
   "seo": {
     "mots_cles_principaux": [
@@ -699,13 +908,49 @@
       "poils de chien voiture"
     ],
     "titre_accueil": "Canapoil — Rouleau anti-poils réutilisable pour chat et chien",
-    "meta_description_accueil": "Rouleau anti-poils réutilisable, gant de toilettage et raclette pour tapis et voiture. Testés en vidéo sur de vrais tissus, expédiés depuis la France en 3 à 6 jours ouvrés."
+    "meta_description_accueil": "Rouleau anti-poils réutilisable, gant de toilettage et raclette pour tapis et voiture. Testés en vidéo sur de vrais tissus, expédiés depuis la France."
   },
   "contact": {
     "email": "{{EMAIL}}",
     "telephone": "{{TELEPHONE}}",
     "mediateur": "{{MEDIATEUR}}",
     "idu_emballages": "{{IDU_EMBALLAGES}}",
-    "descripteur_bancaire": "CANAPOIL"
+    "descripteur_bancaire": "CANAPOIL",
+    "delai_reponse": "48 heures ouvrées (service_client)"
+  },
+  "regime_tva": {
+    "decision": "a_decider",
+    "affichage_site": "assujetti",
+    "options": "assujetti : « dont TVA 20 % » sous les totaux ; franchise : « TVA non applicable, art. 293 B du CGI »",
+    "recommandation": "Société à l'IS en franchise de TVA tant que le CA reste sous 85 000 € et jusqu'à l'import groupé, si la société n'a pas opté pour la TVA (option valable deux ans) : +1,29 € par commande au mix de lancement (05 §8.1)",
+    "qui_decide": "Le client avec son expert-comptable, en S1 ; reporter la décision ici (decision et affichage_site), puis régénérer le site"
+  },
+  "service_client": {
+    "delai_reponse": "48 heures ouvrées",
+    "delai_reponse_heures_ouvrees": 48,
+    "cible_interne": "24 heures ouvrées",
+    "canaux": "E-mail {{EMAIL}}, téléphone {{TELEPHONE}}, messagerie TikTok Shop"
+  },
+  "approvisionnement": {
+    "criteres_eliminatoires": [
+      "Fabricant identifié par écrit : raison sociale, adresse postale complète, e-mail (obligatoire pour le bloc GPSR et pour TikTok Shop UE)",
+      "Notice d'utilisation et avertissements de sécurité fournis par le fabricant",
+      "Photos de l'étiquette et de l'emballage d'origine",
+      "Facture B2B hors taxes au nom de la société (AliExpress Business avec numéro de TVA, CJ ou agent)",
+      "Les 4 références expédiées dans un seul colis, depuis un entrepôt UE ou en envoi express pour le lot de précommande",
+      "Aucun logo ni nom de marque tiers ; design vérifié sur DesignView"
+    ],
+    "repli": "Si aucun vendeur AliExpress ne remplit ces critères : CJ Dropshipping ou un agent de sourcing qui fournit ces documents (03 §5.1)",
+    "validation_comptable": "Traitement TVA (risque de double TVA) et régime douanier de l'achat B2B validés par l'expert-comptable avant la porte 1"
+  },
+  "assurance": {
+    "rc_produits": "RC professionnelle et RC produits : 3 devis en S1, souscription avant la commande du micro-stock (porte 1). En important, la société est assimilée au producteur (art. 1245-5 du Code civil).",
+    "cout_estime": "150-500 € par an (03 §0.5) ; 25 € par mois dans le modèle à partir de novembre 2026"
+  },
+  "propriete_intellectuelle": {
+    "recherches_s1": "DesignView (classes de Locarno 04-02 brosses et 08-05 outils), TMview et data.inpi.fr pour le rouleau, le tapis de fouille et le nom « Canapoil », avec captures d'écran datées dans le dossier produit, avant la commande des échantillons",
+    "depot_porte_1": "INPI « Canapoil », classe 21 : 190 €",
+    "depot_porte_2": "INPI classes 20 et 28 : 190 € + 40 € ; marque de l'Union européenne au palier 2",
+    "critere_arret": "Dessin ou modèle enregistré couvrant le rouleau : abandon du produit"
   }
 }

@@ -16,7 +16,7 @@
 |---|---|
 | Preuve | Toute démonstration est filmée en **plan-séquence fixe**, sans coupe ni accélération entre l'avant et l'après. Le nombre d'allers-retours est affiché par un compteur à l'écran |
 | Allégations | Aucune allégation de santé, de bien-être médical de l'animal, d'allergie, d'écologie ; jamais « 100 % des poils », « le meilleur », « made in France » (`brand.json` → `regles_commerciales`) |
-| Chiffres | Seuls les chiffres mesurés dans la vidéo ou présents dans `brand.json` apparaissent : prix, délai (3 à 6 jours ouvrés), 30 jours pour changer d'avis, poids, nombre d'allers-retours, chrono |
+| Chiffres | Seuls les chiffres mesurés dans la vidéo ou présents dans `brand.json` apparaissent : prix, délai de la phase en cours (en vente : 3 à 6 jours ouvrés après la commande ; en précommande : les deux dates de `brand.json`, jamais « 1 jour ouvré »), 30 jours pour changer d'avis, poids, nombre d'allers-retours, chrono |
 | Commentaires cités | Seulement de vrais commentaires, affichés avec l'autocollant « Répondre au commentaire » de TikTok. Aucun commentaire inventé ou reconstitué |
 | Animal | Le rouleau et la raclette ne touchent jamais l'animal. Tournage arrêté si l'animal montre de l'inconfort |
 | Divulgation | Réglage « Votre marque » activé sur chaque vidéo du compte Canapoil |
@@ -29,8 +29,8 @@
 
 | Code | Phase | Texte à l'écran | Voix |
 |---|---|---|---|
-| CTA-A | Liste d'attente (jusqu'au 15/11) | « Lancement en novembre · lien en bio pour être prévenu » | « Le lien pour être prévenu du lancement est dans ma bio. » |
-| CTA-P | Précommande | « Précommande ouverte · expédition à partir du {{JJ/MM}} · lien en bio » | « Les précommandes sont ouvertes, la date d'expédition est écrite sur la page. » |
+| CTA-A | Liste d'attente (jusqu'à la porte 1) | « Lancement en préparation · lien en bio pour être prévenu » | « Le lien pour être prévenu du lancement est dans ma bio. » |
+| CTA-P | Précommande | « Précommande ouverte · expédition à partir du {{JJ/MM}} · livraison au plus tard le {{JJ/MM}} · lien en bio » | « Les précommandes sont ouvertes, la date d'expédition est écrite sur la page. » |
 | CTA-V | Vente TikTok Shop (dès S8) | « Panier orange en bas de la vidéo » | « Il est dans le panier orange juste en dessous. » |
 | CTA-S | Vente sur le site | « canapoil.fr · lien en bio · livré en 3 à 6 jours ouvrés » | « Lien dans ma bio, expédié depuis la France. » |
 
@@ -228,8 +228,8 @@ Les deux produits sont testés sur les **mêmes 5 angles**, chacun avec 3 accroc
 | Plan | Temps | Image | Texte à l'écran | Voix / son |
 |---|---|---|---|---|
 | 1 | 0-3 s | Accroche | Accroche | Accroche |
-| 2 | 3-20 s | Pièces déplacées en tas sur la table, un tas par poste | « TVA 4,15 € · produit + transport depuis l'usine 4,50 € · droits 0,25 € · envoi en point relais + emballage 4,80 € · commission TikTok 2,24 € · retours et SAV 1,04 € » | « Sur une vente TikTok à 24,90 €… » (lecture des postes) |
-| 3 | 20-25 s | Le dernier tas | « Il reste 7,92 € avant les frais fixes et les impôts » | « Il me reste 7,92 € avant mes frais et mes impôts. » |
+| 2 | 3-20 s | Pièces déplacées en tas sur la table, un tas par poste | « TVA 4,15 € · produit + transport depuis l'usine {coût réel de la facture} · droits {réel} · envoi en point relais + emballage {réel} · commission TikTok 2,24 € · retours et SAV 1,04 € » (chiffres de la facture du lot au jour du tournage ; hypothèses prudentes de `brand.json` : 5,40 €, 0,40 €, 4,80 €) | « Sur une vente TikTok à 24,90 €… » (lecture des postes) |
+| 3 | 20-25 s | Le dernier tas | « Il reste {marge réelle} avant les frais fixes et les impôts » (6,87 € avec les hypothèses prudentes) | « Il me reste {marge réelle} avant mes frais et mes impôts. » |
 | 4 | 25-33 s | Face caméra | « Expédié depuis la France · testé tissu par tissu · 30 jours pour changer d'avis » | « Ce que tu paies en plus : un stock en France, des tests filmés et 30 jours pour changer d'avis. » |
 | 5 | 33-37 s | Face caméra | « Ton rouleau actuel marche ? Garde-le. » | « Si ton rouleau actuel marche, garde-le. » |
 | 6 | 37-40 s | Produit | CTA | CTA |

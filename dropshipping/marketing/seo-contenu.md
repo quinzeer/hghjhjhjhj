@@ -5,6 +5,7 @@
 | Date | 12 octobre 2026 |
 | Domaine | `canapoil.fr` (neuf) ; section `/guides/` à créer par l'agent site ([07 §1.3](07-plan-organique-90j.md)) |
 | Données | [Google Trends France, 57 mots-clés, 5 ans, relevé du 12/10/2026](../recherche/donnees/google-trends-fr-2026-10-12.csv) et [séries brutes](../recherche/donnees/) ; mots-clés de `brand.json` → `seo` |
+| Cadence retenue | **4 articles avant février 2027 : A1 (pilier), A2 (voiture), A9 (cadeaux, avant le 1/12), A3 (tissu de canapé)**, ≈ 1 h 30 par semaine dans le plan de 25 heures ([07 §4.5](07-plan-organique-90j.md)). Les 6 autres articles sont rédigés à partir de février, au moment de la hausse saisonnière (revue red team M5) |
 | Rôle du SEO | Canal de rendement lent : 4 à 12 mois avant un trafic significatif sur un domaine neuf (02 §1.7, estimation, confiance moyenne). Les articles servent aussi tout de suite de support aux épingles Pinterest, aux e-mails et aux réponses en commentaire |
 
 ---

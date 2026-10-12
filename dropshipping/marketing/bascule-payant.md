@@ -2,9 +2,9 @@
 
 | Champ | Valeur |
 |---|---|
-| Date | 12 octobre 2026 |
+| Date | 12 octobre 2026 (version corrigée après la [revue red team](../docs/revue-red-team.md) : coûts produit +20 %, condition de réachat) |
 | Entrées | [`brand.json`](../strategie/brand.json) (prix, coûts, frais de port, Stripe, commissions), [02 §5](../recherche/02-acquisition.md), [04 §6.4](../strategie/04-strategie.md), [05 §3 et §4](../finance/05-analyse-financiere.md) |
-| Calculs | Script de la direction marketing qui relit `brand.json` et reproduit les marges de 04 §4.1 (12,57 €, 15,05 €, 17,74 €, 15,34 €, 18,62 €) et de 05 §2.2 après import (13,22 €, 20,04 €). Coûts d'import et de 3PL : estimation de la finance, confiance faible |
+| Calculs | Script de la direction marketing qui relit `brand.json` et reproduit les marges de 04 §4.1 (11,52 €, 13,59 €, 15,75 €, 13,24 €, 16,42 €, coûts produit majorés de 20 %) et de 05 §2.2 après import (13,22 €, 20,04 €). Coûts d'import et de 3PL : estimation de la finance, confiance faible |
 | Convention | ROAS = chiffre d'affaires attribué ÷ dépense publicitaire. « TTC » = valeur que remontent les pixels Meta et TikTok (montant payé, port compris). MER = CA total TTC ÷ dépense publicitaire totale |
 
 ---
@@ -13,8 +13,8 @@
 
 | Question | Réponse |
 |---|---|
-| Faut-il de la publicité au lancement ? | **Non.** Aucune offre en micro-stock n'est rentable au ROAS médian du marché : le Grand kit exige un ROAS de **2,25** sur le TTC, le rouleau seul **2,29**, contre une médiane de **1,93** sur Meta et **2,21** sur TikTok ([Triple Whale](https://triplewhale.com/blog/facebook-ads-benchmarks), [Triple Whale TikTok](https://www.triplewhale.com/blog/tiktok-benchmarks), données majoritairement américaines, 02 §2.6) |
-| Quand ? | Quand les **8 conditions** du §1 sont réunies, dont l'import groupé avec 3PL. Date probable : **juin-juillet 2027** dans le scénario optimiste de la finance, **octobre-novembre 2027** dans le réaliste (05 §4.1) |
+| Faut-il de la publicité au lancement ? | **Non.** Aucune offre en micro-stock n'est rentable au ROAS médian du marché : le Grand kit exige un ROAS de **2,53** sur le TTC, le rouleau seul **2,50**, contre une médiane de **1,93** sur Meta et **2,21** sur TikTok ([Triple Whale](https://triplewhale.com/blog/facebook-ads-benchmarks), [Triple Whale TikTok](https://www.triplewhale.com/blog/tiktok-benchmarks), données majoritairement américaines, 02 §2.6) |
+| Quand ? | Quand les **8 conditions** du §1 sont réunies, dont l'import groupé avec 3PL ; au-delà de 1 000 € par mois, il faut en plus la condition 2 bis (≥ 15 % de réachat à 180 jours). Date probable : **juin-juillet 2027** dans le scénario optimiste de la finance, **octobre-novembre 2027** dans le réaliste (05 §4.1) |
 | Quelle offre ? | **Grand kit** sur le site après import : marge de **20,04 €** (60,3 % du CA HT), ROAS de rentabilité **1,99** TTC, CPA maximal **20,04 €**, CPA cible **16,70 €** |
 | Sur quelle plateforme d'abord ? | **Meta** (campagne Ventes, puis Advantage+ Ventes) avec les vidéos organiques gagnantes. TikTok Spark Ads ensuite. GMV Max (TikTok Shop) en dernier |
 | Combien pour tester ? | Vagues de **120 €** (3 ensembles × 10 € par jour × 4 jours), au plus 3 vagues, sans jamais dépasser 50 % de la trésorerie disponible |
@@ -28,6 +28,7 @@
 |---|---|---|---|---|
 | 1 | Demande prouvée en organique | ≥ 30 commandes organiques sur 14 jours glissants | Stripe + Seller Center | 02 §5.1 |
 | 2 | Conversion du site | ≥ 2 % sur ≥ 1 000 sessions | Commandes ÷ sessions | 02 §5.1 ; en dessous, le CPC maximal rentable tombe sous 0,40 € (§2.3) |
+| 2 bis | **Réachat prouvé avant de dépasser 1 000 € de publicité par mois** | Un produit (consommable ou accessoire d'usure) avec ≥ 15 % de clients qui rachètent dans les 180 jours, mesuré sur ≥ 100 clients | Tableur des commandes (e-mail haché) | Revue red team M17 : sans valeur vie client, le CPA central (30 €) dépasse le CPA maximal (20,04 €) ; seule une marge sur plusieurs achats peut le payer |
 | 3 | Marge de l'offre promue | ≥ 20 € par commande **et** ≥ 55 % du CA HT | Calcul du §2 avec les factures réelles | 02 §5.1. Seuls le Grand kit importé (20,04 €, 60,3 %) et le Kit chat d'hiver importé (22,12 €, 59,1 %) passent |
 | 4 | Créatives éprouvées | ≥ 3 vidéos organiques avec rétention à 3 s ≥ 60 % et clics mesurables ; droits publicitaires signés pour les vidéos de créateurs | TikTok Studio ; avenant de droits ([createurs-affiliation.md](createurs-affiliation.md) §7.2, clause 4) | 02 §5.1 |
 | 5 | Trésorerie | ≥ 600 € disponibles hors provisions d'IS et de TVA ; budget de test ≤ 50 % de ce montant | Relevé bancaire + tableur | 02 §5.1 ; 05 §9.4 |
@@ -47,12 +48,12 @@ Hypothèses : société assujettie à la TVA ; port client 3,90 € TTC sous 35 
 
 | Offre | Panier TTC | CA HT | Marge avant pub | % CA HT | ROAS de rentabilité HT | **ROAS de rentabilité TTC** | CPA maximal | CPA cible (MER ≥ 1,2 × rentabilité) | ROAS TTC cible | CPA pour 15 % de marge nette |
 |---|---|---|---|---|---|---|---|---|---|---|
-| Rouleau seul (+ port) | 28,80 € | 24,00 € | 12,57 € | 52,4 % | 1,91 | **2,29** | 12,57 € | 10,47 € | 2,75 | 8,97 € |
-| Kit anti-poils (+ port) | 33,80 € | 28,17 € | 15,05 € | 53,4 % | 1,87 | **2,25** | 15,05 € | 12,54 € | 2,69 | 10,83 € |
-| Grand kit | 39,90 € | 33,25 € | 17,74 € | 53,4 % | 1,87 | **2,25** | 17,74 € | 14,78 € | 2,70 | 12,75 € |
-| Duo | 39,90 € | 33,25 € | 15,34 € | 46,1 % | 2,17 | **2,60** | 15,34 € | 12,78 € | 3,12 | 10,35 € |
-| Kit chat d'hiver | 44,90 € | 37,42 € | 18,62 € | 49,8 % | 2,01 | **2,41** | 18,62 € | 15,52 € | 2,89 | 13,01 € |
-| Grand kit si le colis emballé dépasse 500 g (05 §2.3) | 39,90 € | 33,25 € | 16,64 € | 50,0 % | 2,00 | **2,40** | 16,64 € | 13,87 € | 2,88 | 11,65 € |
+| Rouleau seul (+ port) | 28,80 € | 24,00 € | 11,52 € | 48,0 % | 2,08 | **2,50** | 11,52 € | 9,60 € | 3,00 | 7,92 € |
+| Kit anti-poils (+ port) | 33,80 € | 28,17 € | 13,59 € | 48,3 % | 2,07 | **2,49** | 13,59 € | 11,33 € | 2,98 | 9,37 € |
+| Grand kit | 39,90 € | 33,25 € | 15,75 € | 47,4 % | 2,11 | **2,53** | 15,75 € | 13,12 € | 3,04 | 10,76 € |
+| Duo | 39,90 € | 33,25 € | 13,24 € | 39,8 % | 2,51 | **3,01** | 13,24 € | 11,03 € | 3,62 | 8,25 € |
+| Kit chat d'hiver | 44,90 € | 37,42 € | 16,42 € | 43,9 % | 2,28 | **2,73** | 16,42 € | 13,69 € | 3,28 | 10,81 € |
+| Grand kit si le colis emballé dépasse 500 g (05 §2.3) | 39,90 € | 33,25 € | 14,65 € | 44,1 % | 2,27 | **2,72** | 14,65 € | 12,21 € | 3,27 | 9,66 € |
 
 **Après import groupé + 3PL (condition 8)**
 
@@ -74,9 +75,9 @@ ROI calculé sur le GMV (montant payé TTC), commission TikTok de 9 %.
 
 | Offre | Marge avant pub, micro-stock | ROI de rentabilité | ROI cible | Marge après import | ROI de rentabilité | ROI cible |
 |---|---|---|---|---|---|---|
-| Rouleau 24,90 € | 7,92 € | 3,14 | 3,77 | 8,57 € | 2,90 | 3,49 |
-| Kit anti-poils 29,90 € | 10,03 € | 2,98 | 3,58 | 11,43 € | 2,62 | 3,14 |
-| Grand kit 39,90 € | 15,00 € | 2,66 | 3,19 | 17,30 € | **2,31** | **2,77** |
+| Rouleau 24,90 € | 6,87 € | 3,62 | 4,35 | 8,57 € | 2,90 | 3,49 |
+| Kit anti-poils 29,90 € | 8,57 € | 3,49 | 4,19 | 11,43 € | 2,62 | 3,14 |
+| Grand kit 39,90 € | 13,01 € | 3,07 | 3,68 | 17,30 € | **2,31** | **2,77** |
 
 GMV Max est le seul type de campagne pris en charge pour les publicités TikTok Shop depuis juillet 2025 ; TikTok recommande un budget total d'environ **40 fois le CPA moyen** pour sortir de la phase d'apprentissage, soit ≈ 40 conversions par boutique ([aide TikTok Ads](https://ads.tiktok.com/help/article/best-practices-for-setting-a-live-shopping-ads-budget)). Pour le Grand kit importé (CPA cible 14,42 €) : **≈ 577 €**. Si la vidéo promue est celle d'un affilié, sa commission s'ajoute et le ROI de rentabilité augmente d'autant.
 
@@ -184,7 +185,7 @@ Source : 02 §5.2 (proportions estimées, confiance moyenne). Au palier 2 de la 
 
 | # | Vérification | Fait |
 |---|---|---|
-| 1 | Les 8 conditions du §1 sont remplies et datées dans le tableur | |
+| 1 | Les 8 conditions du §1 sont remplies et datées dans le tableur (et la condition 2 bis avant de dépasser 1 000 € par mois) | |
 | 2 | Les marges du §2 sont recalculées avec les factures réelles d'import et de 3PL | |
 | 3 | Le Grand kit emballé est pesé (≤ 500 g ou port de 5,50 € intégré) | |
 | 4 | Les seuils d'arrêt du §3.2 sont saisis comme règles automatiques dans le gestionnaire Meta | |

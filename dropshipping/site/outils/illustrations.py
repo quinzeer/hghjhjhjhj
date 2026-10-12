@@ -583,6 +583,45 @@ def favicon():
     )
 
 
+
+def tapis_fouille(x=0, y=0, echelle=1.0):
+    """Tapis de fouille vu de dessus : base, bandes de polaire nouées, croquettes."""
+    bandes = ""
+    couleurs = [C["sauge"], C["accent"], C["primaire_clair"], C["sauge_clair"]]
+    for i, ligne in enumerate(range(-150, 151, 50)):
+        for j, col in enumerate(range(-250, 251, 50)):
+            cx, cy = col + (25 if i % 2 else 0), ligne
+            if cx > 250:
+                continue
+            c = couleurs[(i + j) % len(couleurs)]
+            bandes += (f'<path d="M{cx - 22},{cy} q11,-26 22,0 q11,26 22,0" fill="none" stroke="{c}" '
+                       f'stroke-width="16" stroke-linecap="round"/>')
+    croquettes = "".join(
+        f'<circle cx="{cx}" cy="{cy}" r="7" fill="{C["bois"]}"/>'
+        for cx, cy in [(-180, -110), (-40, -20), (90, 70), (190, -90), (-120, 120), (30, -130), (160, 140)]
+    )
+    return (
+        f'<g transform="translate({x},{y}) scale({echelle})">'
+        f'<rect x="-290" y="-195" width="580" height="390" rx="28" fill="{C["secondaire"]}" opacity=".18"/>'
+        f'<rect x="-280" y="-185" width="560" height="370" rx="24" fill="{C["creme"]}"/>'
+        f"{bandes}{croquettes}"
+        f"</g>"
+    )
+
+
+def planche_fouille_principale():
+    return document(
+        f'<rect x="0" y="0" width="800" height="600" fill="{C["sauge_pale"]}"/>'
+        + ombre(400, 520, 300, 30)
+        + tapis_fouille(400, 300, 1.0),
+        titre="Le tapis de fouille lavable vu de dessus : bandes de polaire nouées et quelques croquettes cachées",
+    )
+
+
+PLANCHES_CHALLENGERS = {
+    "tapis-de-fouille": [("01-principale", planche_fouille_principale)],
+}
+
 PLANCHES_PRODUITS = {
     "rouleau-anti-poils": [
         ("01-principale", planche_rouleau_principale),

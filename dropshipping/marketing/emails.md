@@ -2,7 +2,7 @@
 
 | Champ | Valeur |
 |---|---|
-| Date | 12 octobre 2026 |
+| Date | 12 octobre 2026 (version corrigée après la [revue red team](../docs/revue-red-team.md) : consentement codé sur le site, relances de panier suspendues) |
 | Outil | Brevo gratuit au lancement (`brand.json` → `stack.lancement.email`) ; Shopify Messaging après la bascule (`stack.croissance`) |
 | Expéditeur | « Canapoil » `<{{EMAIL}}>`, adresse de réponse lue chaque jour |
 | Ton | Vouvoiement (`brand.json` → `marque.ton`) ; phrases courtes ; chiffres réels |
@@ -14,13 +14,13 @@
 
 | ID | Flux | Déclencheur | Délai | Destinataires | Base légale | Mise en œuvre au lancement |
 |---|---|---|---|---|---|---|
-| BV0 | Confirmation d'inscription (double opt-in) | Formulaire de liste d'attente | Immédiat | Inscrits | Consentement | Modèle Brevo déjà appelé par `/api/inscription` |
-| BV1-BV3 | **Bienvenue** | Inscription confirmée | J0, J+3, J+7 | Inscrits confirmés | Consentement | Automatisation Brevo |
-| PA1-PA3 | **Panier abandonné** | Session Stripe expirée sans paiement | H+1, H+24, H+72 | **Uniquement** les personnes qui ont coché la case de rappel | Consentement préalable | Webhook Stripe + Brevo (développement à demander à l'agent site) |
+| BV0 | Confirmation d'inscription (double opt-in) | Formulaire de liste d'attente | Immédiat | Inscrits | Consentement | Modèle Brevo appelé par `/api/inscription` avec les attributs `PRODUIT`, `CONSENTEMENT_DATE`, `CONSENTEMENT_TEXTE`, `SOURCE` et `UTM_*` |
+| BV1-BV3 | **Bienvenue** | Inscription confirmée | J0, J+3, J+7 | Inscrits confirmés **dont l'attribut `CONSENTEMENT_DATE` est renseigné** (case du §1.2 cochée) | Consentement | Automatisation Brevo filtrée sur cet attribut ; les inscrits antérieurs au formulaire du 12/10/2026 ne reçoivent que BV0 et C1 |
+| PA1-PA3 | **Panier abandonné — SUSPENDU** | Session Stripe expirée sans paiement | H+1, H+24, H+72 | **Aucun envoi** tant que la case de rappel du panier et le webhook `checkout.session.expired` n'existent pas sur le site | Consentement préalable | Non développé : textes conservés au §3 pour la bascule Shopify ou un développement ultérieur |
 | PO1-PO3 | **Post-achat** | Paiement, expédition, livraison | J0, expédition, J+7 après livraison | Clients du site | Exécution du contrat (PO1, PO2) ; exception « client » pour le bloc produit de PO3 | Brevo transactionnel + automatisation |
 | AV1 | **Demande d'avis** | Livraison | J+10 après livraison | Clients du site | Intérêt légitime (service), sans contrepartie | Automatisation Brevo |
 | RE1 | **Réactivation** | 75 jours sans commande | J+75 | Clients ayant accepté les offres analogues | Exception « client » (L34-5 CPCE) | Automatisation Brevo |
-| C1-C2 | Annexe : campagnes d'ouverture des précommandes | Porte 1 franchie | J1 et dernier jour | Liste d'attente | Consentement | Campagnes manuelles |
+| C1-C2 | Annexe : campagnes d'ouverture des précommandes | Stock commandé, dates de précommande publiées | Ouverture et J+6 | Liste d'attente (tout inscrit confirmé : l'annonce de l'ouverture est couverte par l'ancien et le nouveau texte) | Consentement | Campagnes manuelles |
 
 Les clients TikTok Shop ne reçoivent aucun de ces e-mails : la relation passe par la messagerie du Seller Center.
 
@@ -45,12 +45,12 @@ Les clients TikTok Shop ne reçoivent aucun de ces e-mails : la relation passe p
 
 | Emplacement | Texte exact | Type |
 |---|---|---|
-| Formulaire de liste d'attente | « Je souhaite recevoir par e-mail l'annonce du lancement, les tests et les nouveautés de Canapoil (2 e-mails par semaine au plus, hors e-mails liés à mes commandes). Désinscription en un clic dans chaque e-mail. » | Case non pré-cochée, obligatoire pour s'inscrire |
+| Formulaire de liste d'attente | « Je souhaite recevoir par e-mail l'annonce du lancement, les tests et les nouveautés de Canapoil (2 e-mails par semaine au plus, hors e-mails liés à mes commandes). Désinscription en un clic dans chaque e-mail. » | Case non pré-cochée, obligatoire pour s'inscrire. **Codée sur le site le 12/10/2026** (fiches, page du tapis de fouille, accueil) ; refus serveur sans case ; date et version du texte enregistrées dans Brevo (`CONSENTEMENT_DATE`, `CONSENTEMENT_TEXTE`) |
 | Formulaire de liste d'attente (facultatif) | « J'accepte que Canapoil mesure l'ouverture de ses e-mails. » | Case distincte, non pré-cochée (seulement si le suivi des ouvertures est conservé) |
-| Page `/panier/` | « Envoyez-moi un rappel par e-mail si je ne termine pas ma commande (3 e-mails au plus, sur 3 jours). » | Case non pré-cochée ; champ e-mail affiché seulement si la case est cochée |
+| Page `/panier/` | « Envoyez-moi un rappel par e-mail si je ne termine pas ma commande (3 e-mails au plus, sur 3 jours). » | Case non pré-cochée ; champ e-mail affiché seulement si la case est cochée. **Non codée : PA1-PA3 suspendus** |
 | Page `/panier/`, sous le bouton de paiement | « Après votre commande, Canapoil peut vous écrire au sujet de produits similaires. Vous pouvez vous y opposer en cochant cette case, puis à tout moment dans chaque e-mail. » | Case d'opposition non pré-cochée (exception « client ») |
 
-### 1.3 Développements à demander à l'agent site
+### 1.3 Développements à demander à l'agent site (état au 12/10/2026 : 1 à 3 non réalisés, relances de panier suspendues ; consentement de la liste d'attente réalisé)
 
 | # | Développement | Raison |
 |---|---|---|
@@ -110,7 +110,7 @@ Le lien « Renoncer au contrat ici » figure dans PO1, PO2 et PO3 ; il pointe ve
 
 > Bonjour {{ contact.PRENOM | default: "" }},
 >
-> Merci de votre inscription. Vous serez parmi les premiers prévenus quand les commandes ouvriront, en novembre.
+> Merci de votre inscription. Vous serez parmi les premiers prévenus quand les commandes ouvriront, avec les dates d'expédition et de livraison écrites.
 >
 > Canapoil part d'un constat simple : chez nous, le chat dort sur le canapé, et le canapé garde ses poils. Nous avons donc cherché des outils simples pour partager le canapé avec un chat ou un chien et garder un intérieur présentable.
 >
@@ -118,7 +118,7 @@ Le lien « Renoncer au contrat ici » figure dans PO1, PO2 et PO3 ; il pointe ve
 >
 > Trois engagements, dès le premier jour :
 > - **Tout est filmé** sur de vrais tissus, y compris là où le rouleau marche mal (cuir, soie, tapis à poils longs).
-> - **Expédition depuis la France** sous 1 jour ouvré, livraison en point relais en 3 à 6 jours ouvrés.
+> - **Expédition depuis la France**, avec un délai écrit avant le paiement : en précommande, une date d'expédition et une date limite de livraison ; ensuite, livraison en point relais 3 à 6 jours ouvrés après la commande.
 > - **30 jours pour changer d'avis** après réception : les 14 jours prévus par la loi, plus 16 jours que nous ajoutons.
 >
 > Une question pour mieux vous servir : **en quoi est votre canapé ?** Velours, microfibre, lin, cuir ? Répondez simplement à cet e-mail : nous lisons toutes les réponses, et les tissus les plus cités seront testés en vidéo en premier.
@@ -184,7 +184,9 @@ Le lien « Renoncer au contrat ici » figure dans PO1, PO2 et PO3 ; il pointe ve
 
 ---
 
-## 3. Flux panier abandonné (avec consentement uniquement)
+## 3. Flux panier abandonné (avec consentement uniquement) — SUSPENDU
+
+**Aucun de ces e-mails ne part au lancement** : la case de consentement du panier et le webhook `checkout.session.expired` ne sont pas développés sur le site statique (revue red team M10). Les textes sont conservés pour la bascule Shopify (relances natives réservées aux abonnés marketing) ou pour un développement ultérieur.
 
 Arrêt du flux dès qu'un paiement est enregistré pour la même adresse. Aucune remise, aucun code promotionnel (`allow_promotion_codes` laissé à `false`).
 
@@ -205,7 +207,7 @@ Arrêt du flux dès qu'un paiement est enregistré pour la même adresse. Aucune
 > **[Reprendre ma commande]**
 >
 > Pour mémoire :
-> - expédition depuis la France sous 1 jour ouvré, livraison en point relais en 3 à 6 jours ouvrés ;
+> - {% if precommande %}expédition à partir du {{ params.DATE_EXPEDITION }}, livraison au plus tard le {{ params.DATE_LIVRAISON_MAX }} ;{% else %}livraison en point relais 3 à 6 jours ouvrés après la commande ;{% endif %}
 > - livraison offerte dès 35 € d'achat ;
 > - 30 jours après réception pour changer d'avis.
 >
@@ -266,7 +268,7 @@ Arrêt du flux dès qu'un paiement est enregistré pour la même adresse. Aucune
 | Objet | Commande {{ params.NUMERO_COMMANDE }} confirmée |
 | Pré-en-tête | Récapitulatif, date d'expédition et vos droits. |
 | Déclencheur | `checkout.session.completed` |
-| Remarque | Le reçu Stripe part aussi ; PO1 porte les informations contractuelles |
+| Remarque | Le reçu Stripe part aussi ; PO1 porte les informations contractuelles. **Au lancement, PO1 est envoyé par la fonction `stripe-webhook` du site** (texte codé dans `site/netlify/lib/coeur.js`, dates de précommande lues dans les métadonnées de la session) ; ce modèle sert après la bascule Shopify |
 
 > Bonjour {{ params.PRENOM }},
 >
@@ -413,7 +415,7 @@ Arrêt du flux dès qu'un paiement est enregistré pour la même adresse. Aucune
 | Champ | Contenu |
 |---|---|
 | Objet | C'est ouvert : les précommandes Canapoil commencent |
-| Pré-en-tête | Dates d'expédition écrites, gant offert aux 30 premières commandes. |
+| Pré-en-tête | Dates d'expédition écrites, gant offert aux 30 premières précommandes (30 gants réservés). |
 | Lien suivi | `utm_campaign=precommande-2026&utm_content=C1` |
 
 > Bonjour {{ contact.PRENOM | default: "" }},
@@ -421,7 +423,7 @@ Arrêt du flux dès qu'un paiement est enregistré pour la même adresse. Aucune
 > Vous avez demandé à être prévenu : les précommandes sont ouvertes.
 >
 > - **Expédition à partir du {{ params.DATE_EXPEDITION }}**, depuis la France ; **livraison au plus tard le {{ params.DATE_LIVRAISON_MAX }}**.
-> - **Le gant de toilettage est offert aux 30 premières précommandes.**
+> - **Le gant de toilettage est offert aux 30 premières précommandes**, dans la limite des 30 gants réservés à cette offre.
 > - Rouleau 24,90 € · Kit anti-poils 29,90 € · **Grand kit 39,90 €, livraison offerte** · Duo 39,90 €, livraison offerte.
 > - 30 jours après réception pour changer d'avis.
 >
@@ -430,17 +432,18 @@ Arrêt du flux dès qu'un paiement est enregistré pour la même adresse. Aucune
 > Merci d'avoir suivi le projet depuis le début.
 > {prénom du fondateur}
 
-### C2 — Dernier jour de la fenêtre de précommande annoncée
+### C2 — Rappel des dates (J+6 de l'ouverture)
 
 | Champ | Contenu |
 |---|---|
-| Objet | Précommandes : dernier jour aux dates annoncées |
-| Pré-en-tête | Ensuite, les commandes partent avec la date d'expédition suivante. |
-| Destinataires | Inscrits n'ayant pas commandé |
+| Objet | Précommandes : les dates, et ce qu'il reste du stock commandé |
+| Pré-en-tête | Expédition à partir du {{ params.DATE_EXPEDITION }}, livraison au plus tard le {{ params.DATE_LIVRAISON_MAX }}. |
+| Destinataires | Inscrits n'ayant pas commandé (consentement enregistré) |
+| Règle | Aucune fausse urgence : la précommande reste ouverte aux mêmes dates tant que le stock commandé le permet ; l'e-mail ne parle de fin que si une date de fin réelle est fixée |
 
 > Bonjour {{ contact.PRENOM | default: "" }},
 >
-> Les précommandes aux dates annoncées (expédition à partir du {{ params.DATE_EXPEDITION }}) ferment ce soir à 23 h 59. Les commandes passées ensuite partiront avec le réassort suivant, à la date affichée sur la page.
+> Les précommandes sont ouvertes depuis 6 jours : expédition depuis la France à partir du {{ params.DATE_EXPEDITION }}, livraison au plus tard le {{ params.DATE_LIVRAISON_MAX }}. Le stock est commandé et en route ; quand il sera épuisé, la fiche affichera la date du réassort suivant.
 >
 > {% if primes_restantes > 0 %}Le gant offert aux 30 premières précommandes est encore disponible : il en reste {{ params.PRIMES_RESTANTES }} (décompte réel).{% else %}Les 30 gants offerts ont tous été attribués.{% endif %}
 >

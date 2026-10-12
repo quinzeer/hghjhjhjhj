@@ -40,7 +40,7 @@ Le Site est hébergé par : {{HEBERGEUR}}
 - Par courrier : {{RAISON_SOCIALE}}, {{ADRESSE}}
 - Page [Contact](lien:contact)
 
-Nous répondons aux demandes sous 24 heures ouvrées en moyenne et au plus tard sous 48 heures ouvrées.
+Nous répondons aux demandes sous 48 heures ouvrées.
 
 ## 5. Médiation de la consommation
 

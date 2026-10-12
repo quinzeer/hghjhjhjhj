@@ -58,7 +58,7 @@ Version en vigueur au 12 octobre 2026
 
 5.3. Le Vendeur accuse réception de la commande sans délai par e-mail, puis adresse au plus tard lors de la livraison une confirmation sur support durable comprenant les présentes CGV, le formulaire type de rétractation et le lien vers la fonctionnalité de rétractation en ligne.
 
-5.4. Précommandes. Lorsqu'un produit est proposé en précommande, la fiche produit, le panier et l'e-mail de confirmation indiquent la date d'expédition et la date limite de livraison, qui ne peut dépasser 30 jours après la commande. Le paiement est débité à la commande. Si la date limite ne peut être tenue, le Client est prévenu et peut annuler sa commande avec un remboursement intégral sous 14 jours.
+5.4. Précommandes. Un produit n'est proposé en précommande qu'après la commande du stock correspondant auprès du fournisseur. La fiche produit, le panier, la page de commande, la page de paiement et l'e-mail de confirmation indiquent la date d'expédition et la date limite de livraison, qui ne peut dépasser 30 jours après la commande. Le paiement est débité à la commande. Si le stock n'est pas arrivé en France 10 jours avant la date limite, ou si cette date ne peut être tenue pour une autre raison, le Client en est informé individuellement et peut choisir entre la nouvelle date proposée et l'annulation de sa commande avec un remboursement intégral sous 14 jours.
 
 5.5. Le Vendeur peut refuser ou annuler une commande pour un motif légitime, notamment un litige de paiement antérieur ou une commande manifestement anormale. Le Client est alors informé et intégralement remboursé.
 
@@ -79,7 +79,7 @@ Version en vigueur au 12 octobre 2026
 
 ## Article 7 — Livraison
 
-7.1. Les produits sont expédiés depuis la France sous 1 jour ouvré et livrés en point relais Mondial Relay en 3 à 6 jours ouvrés à compter de la commande, selon les modalités décrites sur la page [Livraison](lien:livraison).
+[[CGV_7_1]]
 
 7.2. La date ou le délai de livraison est indiqué sur la fiche produit et récapitulé avant le paiement. À défaut d'indication, le produit est livré au plus tard 30 jours après la conclusion du contrat (article L216-1 du Code de la consommation).
 
@@ -156,7 +156,7 @@ Version en vigueur au 12 octobre 2026
 
 ### 10.2 Mise en œuvre
 
-Le Client adresse sa demande au service client ({{EMAIL}} ou {{TELEPHONE}}) en indiquant son numéro de commande et en décrivant le défaut, si possible avec une photographie ou une vidéo. Le Vendeur prend en charge les frais de renvoi d'un produit non conforme et apporte une réponse sous 5 jours ouvrés. Pour un produit d'une valeur inférieure à 15 €, le remplacement ou le remboursement peut intervenir sans renvoi. Le Client s'adresse au Vendeur, seul responsable à son égard, et n'a pas à contacter le fabricant ni le fournisseur.
+Le Client adresse sa demande au service client ({{EMAIL}} ou {{TELEPHONE}}) en indiquant son numéro de commande et en décrivant le défaut, si possible avec une photographie ou une vidéo. Le Vendeur prend en charge les frais de renvoi d'un produit non conforme et apporte une réponse sous 48 heures ouvrées. Pour un produit d'une valeur inférieure à 15 €, le remplacement ou le remboursement peut intervenir sans renvoi. Le Client s'adresse au Vendeur, seul responsable à son égard, et n'a pas à contacter le fabricant ni le fournisseur.
 
 ### 10.3 Garantie commerciale
 

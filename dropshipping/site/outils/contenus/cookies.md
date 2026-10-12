@@ -35,6 +35,9 @@ Lors de votre première visite, une bannière vous permet d'**accepter**, de **r
 | `canapoil_consentement_v1` (stockage local) | Canapoil | Strictement nécessaire | Mémorise votre choix de cookies | 6 mois |
 | `canapoil_derniere_commande` (stockage de session) | Canapoil | Strictement nécessaire | Affiche le récapitulatif sur la page de confirmation | Fermeture de l'onglet |
 | Cookies de la page de paiement | Stripe (checkout.stripe.com) | Strictement nécessaire | Sécurité du paiement et lutte contre la fraude, uniquement sur la page de paiement Stripe | Voir la politique de Stripe |
+| `canapoil_utm` (stockage de session) | Canapoil | Strictement nécessaire à l'attribution de la commande au contenu qui vous a amené | Paramètres UTM de l'adresse d'arrivée, transmis avec la commande ou l'inscription | Fermeture de l'onglet |
+| Cloudflare Turnstile | Cloudflare (challenges.cloudflare.com) | Strictement nécessaire (sécurité) | Vérifie qu'un formulaire (inscription, rétractation) n'est pas envoyé par un robot ; chargé uniquement sur les pages qui contiennent ces formulaires | Session |
+| Cloudflare Web Analytics | Cloudflare (static.cloudflareinsights.com) | Mesure d'audience sans cookie ni identifiant | Pages vues et provenance, en données agrégées | Aucun dépôt sur votre appareil |
 
 **Traceurs soumis à consentement : aucun à ce jour.** Si nous ajoutons un outil de mesure d'audience ou un pixel publicitaire (par exemple le pixel TikTok), il sera listé ici avant sa mise en service et ne sera chargé qu'après votre accord.
 :::

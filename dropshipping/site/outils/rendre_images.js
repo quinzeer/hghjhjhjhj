@@ -26,7 +26,7 @@ function og(item) {
   const img = item.images[0];
   const sous = item.type === "kit"
     ? `${euros(item.economie_ttc)} de moins que séparément${item.livraison_offerte ? " · livraison offerte" : ""}`
-    : "Expédié depuis la France en 3 à 6 jours ouvrés";
+    : "Testé sur de vrais tissus · expédié depuis la France";
   return `<html><head><style>${polices}
   body{width:1200px;height:630px;background:#FAF5EE;display:grid;grid-template-columns:620px 1fr;align-items:center}
   .v{height:630px;background:#fff;display:flex;align-items:center;justify-content:center}.v img{width:620px;height:465px}

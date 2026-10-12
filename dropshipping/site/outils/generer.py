@@ -9,10 +9,23 @@ Source unique : strategie/brand.json. Le script produit :
 - shopify-kit/products.csv et shopify-kit/pages/*.html ;
 - le tableau des variables {{...}} dans site/README.md.
 
-Usage : python3 site/outils/generer.py   (depuis n'importe quel dossier)
+Usage : python3 site/outils/generer.py [options]   (depuis n'importe quel dossier)
+  --publication        refuse de générer s'il reste une variable {{...}} ou si les
+                       prérequis de la phase manquent (à lancer avant tout déploiement)
+  --sortie DOSSIER     écrit le site dans DOSSIER (copie de site/) sans toucher au kit
+                       Shopify ni au README : sert aux tests de phase du vérificateur
+  --phase, --expedition AAAA-MM-JJ, --livraison-max AAAA-MM-JJ, --stock N,
+  --reassort-exp AAAA-MM-JJ, --reassort-max AAAA-MM-JJ
+                       remplacent les valeurs de brand.json pour cette génération (tests)
 Le site déployé reste du HTML/CSS/JS statique : ce script n'est pas une étape
 de build, il ne sert qu'à régénérer les fichiers quand brand.json change.
+
+Phase de vente, dates de précommande, stock et identité légale viennent de
+brand.json (livraison.phase, livraison.precommande, produits[].stock_disponible,
+identite) : config.js ne contient plus que le mode (démo ou production).
 """
+
+import argparse
 
 import csv
 import datetime as dt
@@ -37,8 +50,146 @@ import shopify as SHOP  # noqa: E402
 BRAND = json.loads((RACINE / "strategie" / "brand.json").read_text(encoding="utf-8"))
 M = BRAND["marque"]
 BASE = "https://" + M["domaine_vise"]
-AUJOURDHUI = dt.date(2026, 10, 12)
+AUJOURDHUI = dt.date(2026, 10, 12)  # date affichée (sitemap, version) : stable d'une génération à l'autre
 ANNEE = AUJOURDHUI.year
+IDENTITE = {k: v for k, v in BRAND.get("identite", {}).items() if not k.startswith("_")}
+OPTS = None
+PHASE = "liste_attente"
+PRECO = {}       # dates de la phase précommande (date)
+REASSORT = {}    # dates de réassort (phase vente, stock sous le seuil)
+SORTIE_TEST = False
+MOIS_FR = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
+JOURS_FR = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
+
+
+def date_fr(d, jour=False, annee=True):
+    t = f"{d.day if d.day > 1 else '1er'} {MOIS_FR[d.month - 1]}" + (f" {d.year}" if annee else "")
+    return (JOURS_FR[d.weekday()] + " " + t) if jour else t
+
+
+# Variables qui ne deviennent obligatoires qu'à l'ouverture des ventes (porte 1, choix du fournisseur) :
+# en phase liste d'attente, une mention neutre les remplace tant qu'elles sont vides ; en précommande
+# et en vente, elles doivent être remplies (generer.py --publication refuse sinon).
+VARIABLES_VENTE = {
+    "MEDIATEUR": "désigné avant l'ouverture des ventes",
+    "IDU_EMBALLAGES": "attribué avant l'ouverture des ventes",
+    "ADRESSE_RETOUR": "communiquée avant l'ouverture des ventes",
+    "ADRESSE_EXPEDITION": "France",
+    "FABRICANT_ROULEAU": "identité et coordonnées communiquées avant l'ouverture des ventes",
+    "FABRICANT_GANT": "identité et coordonnées communiquées avant l'ouverture des ventes",
+    "FABRICANT_RACLETTE": "identité et coordonnées communiquées avant l'ouverture des ventes",
+    "FABRICANT_TAPIS": "identité et coordonnées communiquées avant l'ouverture des ventes",
+    "FABRICANT_TAPIS_FOUILLE": "identité et coordonnées communiquées si le produit est lancé",
+}
+
+
+def remplir(texte):
+    """Remplace {{CLE}} par la valeur saisie dans brand.json → identite (si elle est renseignée)."""
+    for k, v in IDENTITE.items():
+        if v:
+            texte = texte.replace("{{" + k + "}}", str(v))
+        elif PHASE == "liste_attente" and k in VARIABLES_VENTE:
+            texte = texte.replace("{{" + k + "}}", VARIABLES_VENTE[k])
+    return texte
+
+
+def remplir_objet(o):
+    if isinstance(o, str):
+        return remplir(o)
+    if isinstance(o, list):
+        return [remplir_objet(x) for x in o]
+    if isinstance(o, dict):
+        return {k: remplir_objet(v) for k, v in o.items()}
+    return o
+
+
+def arreter(message):
+    sys.exit("generer.py : " + message)
+
+
+def lire_date(v, quoi):
+    if not v:
+        return None
+    try:
+        return dt.date.fromisoformat(str(v))
+    except ValueError:
+        arreter(f"{quoi} : date invalide « {v} » (format AAAA-MM-JJ attendu)")
+
+
+def configurer(argv=None):
+    """Lit brand.json et les options ; vérifie la cohérence de la phase (corrections C1, C2, M14)."""
+    global OPTS, PHASE, PRECO, REASSORT, SITE, SORTIE_TEST
+    ap = argparse.ArgumentParser(description="Génère le site Canapoil depuis brand.json")
+    ap.add_argument("--publication", action="store_true")
+    ap.add_argument("--sortie")
+    ap.add_argument("--phase", choices=["liste_attente", "precommande", "vente"])
+    ap.add_argument("--expedition")
+    ap.add_argument("--livraison-max")
+    ap.add_argument("--stock", type=int)
+    ap.add_argument("--reassort-exp")
+    ap.add_argument("--reassort-max")
+    OPTS = ap.parse_args(argv)
+    if OPTS.sortie:
+        SITE = Path(OPTS.sortie).resolve()
+        SORTIE_TEST = True
+        if not (SITE / "assets" / "js" / "app.js").exists():
+            arreter("--sortie doit désigner une copie complète du dossier site/")
+    liv = BRAND["livraison"]
+    PHASE = OPTS.phase or liv.get("phase", "liste_attente")
+    if PHASE not in ("liste_attente", "precommande", "vente"):
+        arreter(f"livraison.phase inconnue : {PHASE}")
+    pc = liv.get("precommande", {})
+    exp = lire_date(OPTS.expedition or pc.get("expedition_a_partir_du"), "precommande.expedition_a_partir_du")
+    lmax = lire_date(OPTS.livraison_max or pc.get("livraison_au_plus_tard_le"), "precommande.livraison_au_plus_tard_le")
+    rs = liv.get("stock", {}).get("reassort", {})
+    rexp = lire_date(OPTS.reassort_exp or rs.get("expedition_a_partir_du"), "stock.reassort.expedition_a_partir_du")
+    rmax = lire_date(OPTS.reassort_max or rs.get("livraison_au_plus_tard_le"), "stock.reassort.livraison_au_plus_tard_le")
+    jour = dt.date.today()
+    limite = pc.get("limite_jours", 30)
+
+    def verifier_dates(d1, d2, quoi):
+        if not d1 or not d2:
+            arreter(f"phase {quoi} sans dates : renseignez la date d'expédition et la date limite de livraison dans brand.json")
+        if d2 < d1:
+            arreter(f"{quoi} : la livraison au plus tard ({d2}) précède l'expédition ({d1})")
+        if d2 < jour:
+            arreter(f"{quoi} : la date limite de livraison ({d2}) est passée")
+        if (d2 - jour).days > limite:
+            arreter(f"{quoi} : livraison au plus tard le {d2}, soit plus de {limite} jours après aujourd'hui ({jour}) ; "
+                    "décalez l'ouverture des précommandes ou choisissez un envoi plus rapide (règle de livraison.precommande.regle_dates)")
+        return {"expedition": d1, "livraison_max": d2}
+
+    if PHASE == "precommande":
+        PRECO = verifier_dates(exp, lmax, "précommande")
+    if rexp or rmax:
+        REASSORT = verifier_dates(rexp, rmax, "réassort")
+    if OPTS.stock is not None:
+        for p in BRAND["produits"]:
+            p["stock_disponible"] = OPTS.stock
+    if PHASE == "vente" and not any(p.get("stock_disponible", 0) > 0 for p in BRAND["produits"]):
+        arreter("phase « vente » sans aucun stock disponible (produits[].stock_disponible) : restez en liste d'attente ou passez en précommande")
+    if PHASE != "liste_attente" and OPTS.publication:
+        manquants = [k for k in VARIABLES_VENTE if not IDENTITE.get(k) and k != "FABRICANT_TAPIS_FOUILLE"]
+        if manquants:
+            arreter("phase de vente sans les prérequis légaux (médiateur, IDU Léko, identité) : " + ", ".join(manquants))
+
+
+RANG_ETAT = {"disponible": 0, "precommande": 1, "epuise": 2, "attente": 3}
+
+
+def etat_produit(p):
+    """État de vente d'un produit selon la phase et le stock (corrections C1, M2, M3)."""
+    if PHASE == "liste_attente":
+        return "attente", None
+    stock = int(p.get("stock_disponible", 0) or 0)
+    if PHASE == "precommande":
+        return ("precommande", PRECO) if stock > 0 else ("epuise", None)
+    seuil = BRAND["livraison"].get("stock", {}).get("seuil_bascule_precommande", 5)
+    if stock >= seuil:
+        return "disponible", None
+    if REASSORT:
+        return "precommande", REASSORT
+    return "epuise", None
 
 e = lambda s: html.escape(str(s), quote=True).replace("&#x27;", "'")  # noqa: E731  (attributs entre guillemets doubles)
 
@@ -132,6 +283,12 @@ def generer_illustrations():
         svg = ILL.planche_kit(k["produits"], t)
         ecrire(SITE / "images" / "kits" / SLUG_KITS[k["id"]] / "01-principale.svg", svg)
         alts[k["id"]] = [("01-principale", t)]
+    for cid, planches in ILL.PLANCHES_CHALLENGERS.items():
+        alts[cid] = []
+        for slot, fonction in planches:
+            svg = fonction()
+            ecrire(SITE / "images" / "attente" / cid / f"{slot}.svg", svg)
+            alts[cid].append((slot, titre_svg(svg)))
     hero = ILL.planche_hero()
     ecrire(SITE / "images" / "illustrations" / "accueil-canape.svg", hero)
     alts["hero"] = titre_svg(hero)
@@ -142,6 +299,35 @@ def generer_illustrations():
         alts["etapes"].append(titre_svg(svg))
     ecrire(SITE / "favicon.svg", ILL.favicon())
     return alts
+
+
+def stock_max(etat, stock):
+    """Quantité maximale qu'une commande peut consommer (contrôlée par le serveur)."""
+    if etat == "disponible":
+        return stock
+    if etat == "precommande":
+        if PHASE == "precommande":
+            return stock
+        q = BRAND["livraison"].get("stock", {}).get("reassort", {}).get("quantite_commandee")
+        return int(q) if q else 10
+    return 0
+
+
+def texte_prime():
+    """Prime de lancement (phase précommande) : texte réel, avec le compteur daté s'il est renseigné (M4)."""
+    if PHASE != "precommande":
+        return ""
+    pr = BRAND["livraison"].get("precommande", {}).get("prime") or {}
+    if not pr or not pr.get("texte"):
+        return ""
+    reste = int(pr.get("quantite", 0)) - int(pr.get("attribuees", 0) or 0)
+    if reste <= 0:
+        return ""
+    t = f"{pr['texte']}, dans la limite des {pr['quantite']} gants réservés à cette offre"
+    if pr.get("attribuees_au"):
+        d = dt.date.fromisoformat(pr["attribuees_au"])
+        t += f" ({pr.get('attribuees', 0)} déjà attribués au {date_fr(d, annee=False)})"
+    return t
 
 
 def construire_catalogue(alts):
@@ -172,7 +358,15 @@ def construire_catalogue(alts):
             "image_produit_png": f"/images/produits/{p['slug']}/principale.png",
             "gpsr": p["gpsr"],
             "faq": p["faq"],
+            "nom_court_pluriel": p.get("nom_court_pluriel", ""),
         }
+        etat, dates = etat_produit(p)
+        item["etat"] = etat
+        item["stock_disponible"] = int(p.get("stock_disponible", 0) or 0)
+        item["stock_max_commande"] = stock_max(etat, item["stock_disponible"])
+        if dates:
+            item["precommande"] = {"expedition_a_partir_du": dates["expedition"].isoformat(),
+                                   "livraison_au_plus_tard_le": dates["livraison_max"].isoformat()}
         if p.get("saison"):
             item["saison"] = {"debut_mois": 10, "fin_mois": 2, "libelle": "d'octobre à février"}
         produits.append(item)
@@ -208,6 +402,14 @@ def construire_catalogue(alts):
             "image_partage": f"/images/og/{slug}.png",
             "image_produit_png": f"/images/kits/{slug}/principale.png",
         }
+        compo_items = [index[c["id"]] for c in composition]
+        etat = max((x["etat"] for x in compo_items), key=lambda e_: RANG_ETAT[e_])
+        item["etat"] = etat
+        item["stock_disponible"] = min(index[c["id"]]["stock_max_commande"] // c["quantite"] for c in composition)
+        item["stock_max_commande"] = item["stock_disponible"] if etat in ("disponible", "precommande") else 0
+        dates = [x["precommande"] for x in compo_items if x.get("precommande")]
+        if etat == "precommande" and dates:
+            item["precommande"] = max(dates, key=lambda d_: d_["livraison_au_plus_tard_le"])
         if k.get("disponible_jusqu_au"):
             item["disponible_jusqu_au"] = k["disponible_jusqu_au"]
             item["saison"] = {"debut_mois": 10, "fin_mois": 2, "libelle": "d'octobre à février"}
@@ -222,6 +424,7 @@ def construire_catalogue(alts):
         "prix": "TTC, en euros",
         "marque": {"nom": M["nom"], "slogan": M["slogan"], "site": BASE},
         "livraison": {
+            "phase": PHASE,
             "transporteur": liv["transporteur"],
             "zone": liv["zone"],
             "pays_autorises": ["FR"],
@@ -230,8 +433,19 @@ def construire_catalogue(alts):
             "delai_min_jours_ouvres": liv["delai_jours"]["min"],
             "delai_max_jours_ouvres": liv["delai_jours"]["max"],
             "expedition_jours_ouvres": 1,
-            "texte": liv["delai_annonce"],
+            "texte": (liv["delai_annonce"] if PHASE == "vente" else
+                      (f"Précommande : expédition à partir du {date_fr(PRECO['expedition'])}, livraison au plus tard le {date_fr(PRECO['livraison_max'])}."
+                       if PHASE == "precommande" else "Ventes non ouvertes")),
+            "precommande": ({"expedition_a_partir_du": PRECO["expedition"].isoformat(),
+                             "livraison_au_plus_tard_le": PRECO["livraison_max"].isoformat()} if PRECO else None),
+            "reassort": ({"expedition_a_partir_du": REASSORT["expedition"].isoformat(),
+                          "livraison_au_plus_tard_le": REASSORT["livraison_max"].isoformat()} if REASSORT else None),
+            "prime": texte_prime(),
+            "seuil_bascule_precommande": liv.get("stock", {}).get("seuil_bascule_precommande", 5),
         },
+        "tva": BRAND.get("regime_tva", {}).get("affichage_site", "assujetti"),
+        "cgv_version": f"{AUJOURDHUI.isoformat()}-{PHASE}",
+        "produits_liste_attente": ["lettre"] + [c["id"] for c in BRAND.get("challengers", [])],
         "retours": {
             "delai_jours": BRAND["retours"]["delai_jours"],
             "delai_legal_jours": BRAND["retours"]["delai_legal_jours"],
@@ -241,6 +455,110 @@ def construire_catalogue(alts):
         "produits": produits,
         "kits": kits,
     }
+
+
+# ===================================================================== textes selon la phase (correction C1)
+# Aucune phrase de délai n'est écrite en dur ailleurs : tout passe par ces fonctions,
+# pour que la précommande n'affiche jamais « 1 jour ouvré » (contrôlé par verifier_site.js).
+
+CONSENTEMENT_TEXTE = ("Je souhaite recevoir par e-mail l'annonce du lancement, les tests et les nouveautés de Canapoil "
+                      "(2 e-mails par semaine au plus, hors e-mails liés à mes commandes). Désinscription en un clic dans chaque e-mail.")
+DELAI_SAV = BRAND.get("service_client", {}).get("delai_reponse", "48 heures ouvrées")
+
+
+def dates_txt(d, jour=False):
+    return (date_fr(d["expedition"], jour), date_fr(d["livraison_max"], jour))
+
+
+def tous_disponibles():
+    return PHASE == "vente" and all(etat_produit(p)[0] == "disponible" for p in BRAND["produits"] if not p.get("saison"))
+
+
+def txt(cle):
+    """Phrases de délai pour la phase globale du site."""
+    if PHASE == "precommande":
+        e1, e2 = dates_txt(PRECO)
+        return {
+            "bandeau": f"<strong>Précommande</strong> : expédition à partir du {date_fr(PRECO['expedition'], annee=False)}, livraison au plus tard le {date_fr(PRECO['livraison_max'], annee=False)}<span class=\"large-seulement\"> · Livraison offerte dès 35 €</span>",
+            "hero": f"<strong>Précommande</strong> : expédition depuis la France à partir du {e1}, livraison en point relais au plus tard le {e2}",
+            "faq": f"Pendant la précommande, les colis partent de notre stock en France à partir du {e1} et sont livrés en point relais Mondial Relay au plus tard le {e2}. Ces deux dates figurent sur la fiche produit, dans le panier, sur la page de paiement et dans l'e-mail de confirmation. Si elles ne peuvent pas être tenues, nous vous prévenons et vous pouvez annuler avec un remboursement intégral.",
+            "faq_produit": f"C'est une précommande : expédition depuis la France à partir du {e1}, livraison en point relais au plus tard le {e2}.",
+            "recap": f"Précommande : expédition depuis la France à partir du {e1}, livraison en point relais Mondial Relay au plus tard le {e2}. Prix TTC.",
+            "commande": f"Précommande : expédition depuis la France à partir du {e1}, livraison au plus tard le {e2}.",
+            "merci": [f"Nous expédions votre colis depuis la France à partir du {e1}.",
+                      "Vous recevez un e-mail avec le numéro de suivi et le point relais Mondial Relay retenu.",
+                      f"Mondial Relay vous prévient quand le colis est disponible, au plus tard le {e2}."],
+            "engagement": "Les dates d'expédition et de livraison sont écrites avant le paiement et dans l'e-mail de confirmation. Le délai affiché sera recalculé sur nos livraisons réelles.",
+        }[cle]
+    if PHASE == "vente":
+        return {
+            "bandeau": "<strong>Livraison offerte dès 35 €</strong> · Expédié depuis la France" + ("<span class=\"large-seulement\"> sous 1 jour ouvré</span>" if tous_disponibles() else ""),
+            "hero": "<strong>Expédié depuis la France</strong> sous 1 jour ouvré, livré 3 à 6 jours ouvrés après la commande",
+            "faq": "Les produits en stock sont expédiés depuis la France sous 1 jour ouvré et livrés en point relais Mondial Relay 3 à 6 jours ouvrés après la commande ; la fourchette de dates est affichée sur chaque fiche produit. Un produit en précommande porte ses propres dates, écrites sur la fiche, dans le panier et dans l'e-mail de confirmation.",
+            "faq_produit": "En stock, il est expédié depuis la France sous 1 jour ouvré et livré en point relais 3 à 6 jours ouvrés après la commande. S'il est en précommande, les dates d'expédition et de livraison sont écrites sur cette fiche.",
+            "recap": "Produits en stock : livraison en point relais Mondial Relay 3 à 6 jours ouvrés après la commande, depuis la France. Prix TTC.",
+            "commande": "Produits en stock : expédiés sous 1 jour ouvré depuis la France, livrés 3 à 6 jours ouvrés après la commande",
+            "merci": ["Nous préparons votre colis et l'expédions depuis la France sous 1 jour ouvré (produits en stock) ou à la date de précommande indiquée dans l'e-mail de confirmation.",
+                      "Vous recevez un e-mail avec le numéro de suivi et le point relais Mondial Relay retenu.",
+                      "Mondial Relay vous prévient quand le colis est disponible : 3 à 6 jours ouvrés après la commande pour un produit en stock."],
+            "engagement": "Délai écrit avant le paiement : expédié depuis la France sous 1 jour ouvré pour un produit en stock. Il sera recalculé sur nos livraisons réelles.",
+        }[cle]
+    return {
+        "bandeau": "<strong>Lancement en préparation</strong><span class=\"large-seulement\"> · Inscrivez-vous pour être prévenu de l'ouverture des ventes</span>",
+        "hero": "<strong>Expédiés depuis la France</strong> : le délai de livraison sera écrit sur chaque fiche à l'ouverture des ventes",
+        "faq": "Les ventes ne sont pas encore ouvertes. Dès l'ouverture, le délai sera écrit sur chaque fiche produit, dans le panier et dans l'e-mail de confirmation : expédition depuis notre stock en France et livraison en point relais Mondial Relay.",
+        "faq_produit": "Les ventes ne sont pas encore ouvertes : inscrivez-vous sur cette page pour recevoir la date d'ouverture et le délai de livraison.",
+        "recap": "Les ventes ne sont pas encore ouvertes : aucun paiement n'est possible pour l'instant.",
+        "commande": "Les ventes ne sont pas encore ouvertes : aucune commande n'est possible pour l'instant.",
+        "merci": ["Les ventes ne sont pas encore ouvertes : aucune commande ne peut avoir été passée.",
+                  "Inscrivez-vous sur une fiche produit pour être prévenu de l'ouverture.",
+                  "Les délais de livraison seront écrits sur chaque fiche à l'ouverture."],
+        "engagement": "À l'ouverture des ventes, le délai sera écrit avant le paiement, puis recalculé sur nos livraisons réelles.",
+    }[cle]
+
+
+def ligne_delai_item(item):
+    """Ligne de délai d'une fiche produit ou kit, selon son état (et non selon la phase seule)."""
+    etat = item.get("etat", "attente")
+    if etat == "disponible":
+        return ('<strong>Expédié sous 1 jour ouvré depuis la France.</strong> Livré en point relais 3 à 6 jours ouvrés '
+                'après la commande<span class="js-dates-livraison"></span>.')
+    if etat == "precommande":
+        d = item["precommande"]
+        d1, d2 = dt.date.fromisoformat(d["expedition_a_partir_du"]), dt.date.fromisoformat(d["livraison_au_plus_tard_le"])
+        return (f'<strong>Précommande</strong> : expédition depuis la France à partir du {date_fr(d1, True)}, '
+                f'livraison en point relais au plus tard le {date_fr(d2, True)}.')
+    if etat == "epuise":
+        return "<strong>Momentanément indisponible.</strong> Inscrivez-vous ci-dessus pour être prévenu du retour en stock."
+    return "<strong>Lancement en préparation.</strong> Le délai de livraison sera écrit ici à l'ouverture des ventes."
+
+
+def jetons_phase(t):
+    """Jetons [[...]] des contenus Markdown et de brand.json."""
+    rep = {"[[DELAI_FAQ]]": txt("faq_produit"), "[[DELAI_FAQ_GENERALE]]": txt("faq"), "[[ENGAGEMENT_DELAI]]": txt("engagement")}
+    if PHASE == "precommande":
+        e1, e2 = dates_txt(PRECO)
+        rep.update({
+            "[[LIVRAISON_DESCRIPTION]]": f"Précommande : expédition depuis la France à partir du {e1}, livraison en point relais Mondial Relay au plus tard le {e2}. 3,90 €, offerte dès 35 € d'achat. Aucun frais à la livraison.",
+            "[[LIVRAISON_CHAPO]]": f"Précommande : expédition à partir du {e1}, livraison en point relais au plus tard le {e2}.",
+            "[[LIVRAISON_DELAIS]]": (f"Nos produits sont en **précommande** : le stock est commandé et en route vers la France. Les dates ci-dessous figurent aussi sur chaque fiche produit, dans le panier, sur la page de paiement et dans l'e-mail de confirmation.\n\n"
+                                     f"| Étape | Date |\n|---|---|\n| Expédition depuis la France | à partir du {e1} |\n| Livraison en point relais | au plus tard le {e2} |\n\n"
+                                     "Si le stock n'est pas arrivé en France 10 jours avant la date limite, nous vous écrivons avec la nouvelle date et vous pouvez annuler avec un remboursement intégral sous 14 jours."),
+            "[[CGV_7_1]]": f"7.1. Pendant la période de précommande, les produits sont expédiés depuis la France à partir du {e1} et livrés en point relais Mondial Relay au plus tard le {e2}, dates rappelées sur la fiche produit, dans le panier, avant le paiement et dans l'e-mail de confirmation (article 5.4).",
+        })
+    else:
+        rep.update({
+            "[[LIVRAISON_DESCRIPTION]]": "Produits en stock : expédition depuis la France sous 1 jour ouvré, livraison en point relais Mondial Relay 3 à 6 jours ouvrés après la commande. 3,90 €, offerte dès 35 € d'achat. Aucun frais à la livraison.",
+            "[[LIVRAISON_CHAPO]]": ("Produits en stock : expédiés depuis la France sous 1 jour ouvré, livrés en point relais 3 à 6 jours ouvrés après la commande."
+                                    if PHASE == "vente" else "Les ventes ne sont pas encore ouvertes. Voici les conditions qui s'appliqueront à l'ouverture."),
+            "[[LIVRAISON_DELAIS]]": ("Les produits en stock partent de notre stock en France. Le délai total comprend la préparation de la commande et le transport. **La fourchette de livraison applicable à votre commande est indiquée sur la fiche produit, rappelée avant le paiement**, puis dans l'e-mail de confirmation.\n\n"
+                                     "| Produits expédiés depuis | Préparation | Transport | Délai total après la commande (jours ouvrés) |\n|---|---|---|---|\n| France (point relais) | 1 jour | 2 à 5 jours | 3 à 6 jours |\n\n"
+                                     "Ce délai sera recalculé après nos 30 premières livraisons, à partir des délais réellement constatés : nous afficherons alors une fourchette de dates couvrant au moins 9 livraisons sur 10, augmentée de 2 jours ouvrés."),
+            "[[CGV_7_1]]": "7.1. Les produits en stock sont expédiés depuis la France sous 1 jour ouvré et livrés en point relais Mondial Relay 3 à 6 jours ouvrés à compter de la commande, selon les modalités décrites sur la page [Livraison](lien:livraison). Les produits en précommande sont livrés aux dates indiquées dans les conditions de l'article 5.4.",
+        })
+    for k, v in rep.items():
+        t = t.replace(k, v)
+    return t
 
 
 # ===================================================================== gabarit
@@ -412,10 +730,11 @@ def page(chemin_fichier, url, titre, description, corps, page_id, jsonld=None, r
 <script src="/assets/js/config.js?v={v_cfg}" defer></script>
 <script src="/assets/js/app.js?v={v_js}" defer></script>
 {ld}</head>
-<body data-page="{page_id}"{f' class="{classes}"' if classes else ""}>
+<body data-page="{page_id}" data-phase="{PHASE}"{f' class="{classes}"' if classes else ""}>
 <a class="lien-evitement" href="#contenu">Aller au contenu</a>
 {SPRITE}
-<p class="bandeau-info"><strong>Livraison offerte dès 35 €</strong> · Expédié depuis la France<span class="large-seulement"> sous 1 jour ouvré</span></p>
+<div class="bandeau-demo js-bandeau-demo" role="note" hidden><strong>Démonstration</strong> : ce site est un prototype. Aucun paiement, aucune commande ni aucun e-mail n'est transmis.</div>
+<p class="bandeau-info">{txt("bandeau")}</p>
 <header class="entete">
   <div class="conteneur entete__barre">
     <button type="button" class="bouton-icone entete__menu js-menu" aria-expanded="false" aria-controls="nav-principale" aria-label="Ouvrir le menu">{ic("menu")}</button>
@@ -433,7 +752,7 @@ def page(chemin_fichier, url, titre, description, corps, page_id, jsonld=None, r
 </body>
 </html>
 """
-    ecrire(SITE / chemin_fichier, doc)
+    ecrire(SITE / chemin_fichier, remplir(jetons_phase(doc)))
     PAGES.append({"url": url, "fichier": chemin_fichier, "robots": robots, "titre": titre, "description": description})
 
 
@@ -482,7 +801,7 @@ def ld_offre(item):
         "url": BASE + item["url"],
         "priceCurrency": "EUR",
         "price": f"{item['prix_ttc']:.2f}",
-        "availability": "https://schema.org/InStock",
+        "availability": {"disponible": "https://schema.org/InStock", "precommande": "https://schema.org/PreOrder"}.get(item.get("etat"), "https://schema.org/OutOfStock"),
         "itemCondition": "https://schema.org/NewCondition",
         "seller": {"@type": "Organization", "name": "Canapoil"},
         "shippingDetails": {
@@ -506,6 +825,15 @@ def ld_offre(item):
     }
 
 
+def ld_offre_complete(item):
+    o = ld_offre(item)
+    if item.get("etat") == "precommande":
+        o["availabilityStarts"] = item["precommande"]["expedition_a_partir_du"]
+    if item.get("etat") != "disponible":
+        o["shippingDetails"].pop("deliveryTime", None)
+    return o
+
+
 def ld_produit(item, description):
     return {
         "@context": "https://schema.org",
@@ -516,7 +844,7 @@ def ld_produit(item, description):
         "image": [BASE + item["image_produit_png"]],
         "brand": {"@type": "Brand", "name": "Canapoil"},
         "url": BASE + item["url"],
-        "offers": ld_offre(item),
+        "offers": ld_offre_complete(item),
     }
 
 
@@ -578,10 +906,17 @@ def carte_item(item, vedette=False):
 </article>"""
 
 
-def encart_livraison():
-    return f"""<div class="encart encart--livraison js-encart-livraison">
-  <p class="encart__ligne">{ic("camion")}<span><strong>Expédié sous 1 jour ouvré depuis la France.</strong> Livré en point relais en 3 à 6 jours ouvrés<span class="js-dates-livraison"></span>.</span></p>
-  <p class="encart__ligne js-precommande-texte" hidden>{ic("horloge")}<span></span></p>
+def encart_livraison(item=None):
+    etat = (item or {}).get("etat") or {"vente": "disponible", "precommande": "precommande", "liste_attente": "attente"}[PHASE]
+    if item is None and etat == "precommande":
+        item = {"etat": "precommande", "precommande": CAT["livraison"]["precommande"]}
+    ligne = ligne_delai_item(item or {"etat": etat})
+    prime = CAT["livraison"].get("prime") if etat == "precommande" and PHASE == "precommande" else ""
+    classe = " encart--precommande" if etat == "precommande" else ""
+    icone = "horloge" if etat == "precommande" else "camion"
+    return f"""<div class="encart encart--livraison{classe} js-encart-livraison">
+  <p class="encart__ligne">{ic(icone)}<span>{ligne}</span></p>
+  {f'<p class="encart__ligne">{ic("etiquette")}<span>{e(prime)}.</span></p>' if prime else ''}
   <p class="encart__ligne">{ic("retour")}<span><strong>30 jours pour changer d'avis</strong> : 14 jours prévus par la loi + 16 jours offerts. Retour à vos frais, sauf produit défectueux.</span></p>
   <p class="encart__ligne">{ic("cadenas")}<span>Paiement sécurisé sur la page Stripe, nous ne voyons jamais votre carte. {badges_paiement()}</span></p>
 </div>"""
@@ -648,16 +983,29 @@ def quantite():
     return """<div class="quantite js-quantite"><button type="button" data-pas="-1" aria-label="Diminuer la quantité">−</button><label class="visuellement-cache" for="qte">Quantité</label><input id="qte" type="number" inputmode="numeric" min="1" max="10" value="1"><button type="button" data-pas="1" aria-label="Augmenter la quantité">+</button></div>"""
 
 
-TPL_ATTENTE = """<template id="tpl-attente">
-  <form class="formulaire js-form-inscription" data-source="liste-attente" novalidate>
-    <p class="message message--info">Lancement en novembre : recevez un e-mail le jour de l'ouverture des ventes.</p>
-    <div class="champ"><label for="attente-email">Votre adresse e-mail</label>
-      <div class="form-ligne"><input id="attente-email" name="email" type="email" autocomplete="email" required><button class="btn btn--primaire" type="submit">Me prévenir</button></div>
-      <p class="aide">Un e-mail de confirmation vous sera envoyé. Désinscription en un clic. <a href="/confidentialite/">Confidentialité</a></p>
-      <p class="erreur js-erreur" role="alert"></p>
+def formulaire_inscription(produit, message, ident, source="liste-attente", bouton="Me prévenir"):
+    """Formulaire de liste d'attente : e-mail, case de consentement non pré-cochée et obligatoire
+    (texte de marketing/emails.md §1.2), produit d'intérêt transmis à Brevo (corrections M1, M10)."""
+    msg = f'<p class="message message--info">{e(message)}</p>' if message else ""
+    return f"""<form class="formulaire js-form-inscription" data-source="{source}" novalidate>
+    {msg}
+    <input type="hidden" name="produit" value="{e(produit)}">
+    <div class="champ"><label for="{ident}-email">Votre adresse e-mail</label>
+      <div class="form-ligne"><input id="{ident}-email" name="email" type="email" autocomplete="email" required><button class="btn btn--primaire" type="submit">{e(bouton)}</button></div>
     </div>
-  </form>
-</template>"""
+    <label class="case case--simple case--consentement"><input type="checkbox" name="consentement" required><span>{e(CONSENTEMENT_TEXTE)}</span></label>
+    <div class="js-turnstile"></div>
+    <p class="aide">Un e-mail de confirmation vous sera envoyé avant toute inscription. <a href="/confidentialite/">Confidentialité</a></p>
+    <p class="erreur js-erreur" role="alert"></p>
+  </form>"""
+
+
+def tpl_attente(item):
+    etat = item.get("etat")
+    message = ("Momentanément indisponible : recevez un e-mail au retour du stock." if etat == "epuise"
+               else "Lancement en préparation : recevez un e-mail le jour de l'ouverture des ventes.")
+    return f'<template id="tpl-attente">\n  {formulaire_inscription(item["id"], message, "attente")}\n</template>'
+
 
 
 # ===================================================================== pages produit
@@ -677,7 +1025,7 @@ def page_produit(p):
             it = IDX[oid]
             if it["type"] == "kit":
                 compo = " + ".join(
-                    (f"{c['quantite']} " if c["quantite"] > 1 else "") + NOMS_COURTS[c["id"]].split(" ", 1)[1] + ("s" if c["quantite"] > 1 else "")
+                    (f"{c['quantite']} {IDX[c['id']]['nom_court_pluriel']}" if c["quantite"] > 1 else NOMS_COURTS[c["id"]].split(" ", 1)[1])
                     for c in it["composition"]
                 )
                 detail = f"{compo.capitalize()} · {euros(it['economie_ttc'])} de moins que séparément"
@@ -740,7 +1088,7 @@ def page_produit(p):
         surfaces = f"""<section class="section" aria-labelledby="t-surfaces"><div class="conteneur">
   <span class="surtitre">Sans trucage</span>
   <h2 id="t-surfaces">Où il marche, et où il marche moins bien</h2>
-  <p class="chapo">Nous préférons le dire avant votre achat. En cas de doute sur votre tissu, envoyez-nous une photo : nous vous répondons sous 24 heures ouvrées.</p>
+  <p class="chapo">Nous préférons le dire avant votre achat. En cas de doute sur votre tissu, envoyez-nous une photo : nous vous répondons sous {DELAI_SAV}.</p>
   <div class="surfaces">
     <div class="surfaces__oui"><h3>{ic("oui")}Donne ses meilleurs résultats sur</h3><ul>{oui}</ul></div>
     <div class="surfaces__non"><h3>{ic("non")}Moins efficace sur</h3><ul>{non}</ul><p class="texte-2">Pour les tapis et la moquette, la <a href="{IDX['raclette-anti-poils']['url']}">raclette anti-poils</a> prend le relais.</p></div>
@@ -782,7 +1130,7 @@ def page_produit(p):
     </div>
     <ul class="benefices">{benefs}</ul>
     {achat}
-    {encart_livraison()}
+    {encart_livraison(p)}
     {kit_suggere}
   </div>
 </div></section>
@@ -804,12 +1152,12 @@ def page_produit(p):
   <div class="titre-section"><h2 id="t-croise">{'Complétez la maison' if heros else 'Avec ce produit'}</h2><a class="lien-fleche" href="/boutique/">Toute la boutique</a></div>
   <div class="grille-produits grille-produits--3">{cartes}</div>
 </div></section>
-{TPL_ATTENTE}
+{tpl_attente(p)}
 {barre_achat(p)}
 """
     desc_meta = {
-        "rouleau-anti-poils": "Rouleau anti-poils réutilisable pour chat et chien : sans adhésif ni recharge, se vide en un geste. 24,90 € TTC, expédié depuis la France, livré en 3 à 6 jours ouvrés.",
-        "gant-toilettage": "Gant de toilettage en silicone pour chat et chien : récupère une partie des poils morts au brossage. 9,90 € TTC, expédié depuis la France en 3 à 6 jours ouvrés.",
+        "rouleau-anti-poils": "Rouleau anti-poils réutilisable pour chat et chien : sans adhésif ni recharge, se vide en un geste. 24,90 € TTC, testé en vidéo sur de vrais tissus, expédié depuis la France.",
+        "gant-toilettage": "Gant de toilettage en silicone pour chat et chien : récupère une partie des poils morts au brossage. 9,90 € TTC, expédié depuis la France.",
         "raclette-anti-poils": "Raclette anti-poils pour tapis, moquette et voiture : décolle les poils de chien et de chat incrustés. 12,90 € TTC, expédiée depuis la France.",
         "tapis-fenetre-thermique": "Tapis de fenêtre thermique pour chat : couchage sherpa avec couche réfléchissante, sans fil ni prise. 24,90 € TTC, vendu d'octobre à février.",
     }[p["id"]]
@@ -863,7 +1211,7 @@ def page_kit(k):
       {saison}
       <div class="achat">{quantite()}<button type="button" class="btn btn--primaire btn--grand js-ajouter"><span class="js-libelle-ajout">Ajouter au panier</span><span class="achat__prix">&nbsp;·&nbsp;<span class="js-prix-bouton">{euros(k['prix_ttc'])}</span></span></button></div>
     </div>
-    {encart_livraison()}
+    {encart_livraison(k)}
   </div>
 </div></section>
 <section class="section section--blanche" aria-labelledby="t-compo"><div class="conteneur">
@@ -879,7 +1227,7 @@ def page_kit(k):
   <div class="titre-section"><h2 id="t-autres">Les autres kits</h2><a class="lien-fleche" href="/boutique/">Toute la boutique</a></div>
   <div class="grille-produits grille-produits--3">{''.join(carte_item(x, vedette=x['mise_en_avant']) for x in autres)}</div>
 </div></section>
-{TPL_ATTENTE}
+{tpl_attente(k)}
 {barre_achat(k)}
 """
     desc = f"{k['nom']} Canapoil à {euros(k['prix_ttc']).replace(chr(160), ' ')} TTC : {k['description']} {euros(k['economie_ttc']).replace(chr(160), ' ')} de moins que séparément. Expédié depuis la France."
@@ -897,7 +1245,7 @@ def page_kit(k):
 ENGAGEMENTS = [
     ("etoile", "Aucun faux avis", "Seuls les clients qui ont commandé peuvent laisser un avis. Les avis négatifs sont publiés."),
     ("etiquette", "Aucune fausse promotion", "Pas de prix barré inventé, pas de compte à rebours, pas de stock fictif. L'économie des kits est écrite en clair."),
-    ("camion", "Des délais réels", "Expédié depuis la France sous 1 jour ouvré. Le délai affiché sera recalculé sur nos livraisons réelles."),
+    ("camion", "Des délais réels", "[[ENGAGEMENT_DELAI]]"),
     ("repere", "L'origine dite clairement", "Produits fabriqués en Chine, importés, contrôlés, étiquetés et expédiés depuis la France par Canapoil."),
     ("oeil", "Les limites aussi", "Nous disons où nos produits marchent moins bien : cuir, soie, tapis à poils longs."),
     ("retour", "30 jours pour changer d'avis", "14 jours prévus par la loi, plus 16 jours que nous ajoutons. Rétractation en ligne en deux clics."),
@@ -911,7 +1259,7 @@ def bloc_engagements():
 
 FAQ_GENERALE = [
     ("Livraison", [
-        ("Sous quel délai vais-je recevoir ma commande ?", "Elle est expédiée depuis notre stock en France sous 1 jour ouvré et livrée en point relais Mondial Relay en 3 à 6 jours ouvrés. La fourchette de dates est affichée sur chaque fiche produit."),
+        ("Sous quel délai vais-je recevoir ma commande ?", "[[DELAI_FAQ_GENERALE]]"),
         ("Combien coûte la livraison ?", "3,90 € en point relais. Elle est offerte dès 35 € d'achat, ainsi que pour le Grand kit, le Duo maison + voiture et le Kit chat d'hiver."),
         ("Livrez-vous à domicile ou hors de France ?", "Pas encore : uniquement en point relais, en France métropolitaine (Corse comprise). La livraison à domicile, la Belgique et le Luxembourg viendront ensuite."),
         ("Y a-t-il des frais de douane à la livraison ?", "Non. Le prix payé sur le site est le seul montant dû : nos produits sont déjà en France quand vous commandez."),
@@ -961,7 +1309,7 @@ def page_accueil():
     </div>
     <ul class="puces">
       <li>{ic("check")}<span><strong>Réutilisable</strong> : aucune feuille adhésive ni recharge à racheter</span></li>
-      <li>{ic("check")}<span><strong>Expédié depuis la France</strong> sous 1 jour ouvré, livré en 3 à 6 jours ouvrés</span></li>
+      <li>{ic("check")}<span>{txt("hero")}</span></li>
       <li>{ic("check")}<span><strong>30 jours pour changer d'avis</strong>, rétractation en ligne en deux clics</span></li>
     </ul>
   </div>
@@ -1001,14 +1349,8 @@ def page_accueil():
 </div></section>
 
 <section class="section section--blanche" aria-labelledby="t-lettre"><div class="conteneur grille-2">
-  <div><h2 id="t-lettre">Des astuces anti-poils, une fois par mois</h2><p class="texte-2">Les nouveautés et nos tests sur de vrais tissus. Pas de fausse promotion, désinscription en un clic.</p></div>
-  <form class="formulaire js-form-inscription" data-source="lettre" novalidate>
-    <div class="champ"><label for="lettre-email">Votre adresse e-mail</label>
-      <div class="form-ligne"><input id="lettre-email" name="email" type="email" autocomplete="email" required><button class="btn btn--primaire" type="submit">S'inscrire</button></div>
-      <p class="aide">Un e-mail de confirmation vous sera envoyé avant toute inscription. <a href="/confidentialite/">Confidentialité</a></p>
-      <p class="erreur js-erreur" role="alert"></p>
-    </div>
-  </form>
+  <div><h2 id="t-lettre">Le lancement, nos tests et nos nouveautés</h2><p class="texte-2">Deux e-mails par semaine au plus, sans fausse promotion, désinscription en un clic.</p></div>
+  {formulaire_inscription("lettre", "", "lettre", source="lettre", bouton="S'inscrire")}
 </div></section>
 """
     site_ld = {"@context": "https://schema.org", "@type": "WebSite", "name": "Canapoil", "url": BASE + "/", "inLanguage": "fr-FR"}
@@ -1046,20 +1388,21 @@ def page_boutique():
 
 
 def page_panier():
-    corps = """
+    corps = f"""
 <section class="page-entete"><div class="conteneur"><h1>Votre panier</h1></div></section>
 <section class="section"><div class="conteneur page-panier__grille">
   <div class="panneau">
     <div class="progression js-progression"></div>
     <ul class="lignes js-lignes"><li class="vide">Chargement du panier…</li></ul>
     <div class="js-suggestion"></div>
-    <noscript><p class="message message--alerte">Le panier nécessite JavaScript. Vous pouvez aussi commander par e-mail : {{EMAIL}}.</p></noscript>
+    <noscript><p class="message message--alerte">Le panier nécessite JavaScript. Vous pouvez aussi commander par e-mail : {{{{EMAIL}}}}.</p></noscript>
   </div>
   <aside class="panneau colonne-collante" aria-labelledby="t-recap">
     <h2 id="t-recap">Récapitulatif</h2>
     <div class="recap js-recap"></div>
     <a class="btn btn--primaire btn--plein btn--grand js-vers-commande" href="/commande/">Commander</a>
-    <p class="recap__note">Livraison en point relais Mondial Relay en 3 à 6 jours ouvrés, depuis la France. Prix TTC.</p>
+    <p class="recap__note js-delai-standard">{txt("recap")}</p>
+    <p class="recap__note encart--precommande js-delai-precommande" hidden></p>
   </aside>
 </div></section>
 """
@@ -1077,7 +1420,8 @@ def page_commande():
 <section class="section"><div class="conteneur commande__grille">
   <form class="panneau formulaire js-form-commande" novalidate>
     <h2>Livraison</h2>
-    <p class="encart__ligne">{ic("repere")}<span><strong>Point relais Mondial Relay</strong>, en France métropolitaine. Expédié sous 1 jour ouvré depuis la France, livré en 3 à 6 jours ouvrés<span class="js-dates-livraison"></span>.</span></p>
+    <p class="encart__ligne js-delai-standard">{ic("repere")}<span><strong>Point relais Mondial Relay</strong>, en France métropolitaine. {txt("commande")}{'<span class="js-dates-livraison"></span>.' if PHASE == "vente" else ""}</span></p>
+    <p class="encart__ligne encart--precommande js-delai-precommande" hidden>{ic("horloge")}<span></span></p>
     <div class="champ">
       <label for="point-relais">Numéro du point relais choisi <span class="texte-2">(facultatif)</span></label>
       <input id="point-relais" name="point_relais" type="text" maxlength="80" autocomplete="off" aria-describedby="aide-relais">
@@ -1104,18 +1448,15 @@ def page_commande():
 
 
 def page_merci():
-    corps = """
+    etapes = "".join(f"<li>{e(x)}</li>" for x in txt("merci"))
+    corps = f"""
 <section class="section"><div class="conteneur prose">
   <div class="message message--demo js-merci-demo" hidden><strong>Simulation.</strong> Aucun paiement n'a été effectué et aucune commande n'a été transmise : le site est en mode démonstration.</div>
   <h1 class="js-merci-titre">Merci pour votre commande</h1>
   <p class="chapo js-merci-chapo">Un e-mail de confirmation vous est envoyé avec le récapitulatif, nos conditions générales de vente et le formulaire de rétractation.</p>
   <div class="panneau js-merci-recap" hidden><h2>Récapitulatif</h2><p class="js-merci-numero"></p><ul class="lignes js-merci-lignes"></ul><div class="recap js-merci-totaux"></div></div>
   <h2>Et maintenant ?</h2>
-  <ol>
-    <li>Nous préparons votre colis et l'expédions depuis la France sous 1 jour ouvré.</li>
-    <li>Vous recevez un e-mail avec le numéro de suivi et le point relais Mondial Relay retenu.</li>
-    <li>Mondial Relay vous prévient quand le colis est disponible : 3 à 6 jours ouvrés après la commande.</li>
-  </ol>
+  <ol>{etapes}</ol>
   <p>Vous changez d'avis ? Vous avez 30 jours après réception. <a href="/retractation/">renoncer au contrat ici</a>.</p>
   <p><a class="btn btn--secondaire" href="/boutique/">Retour à la boutique</a></p>
 </div></section>
@@ -1135,7 +1476,7 @@ def page_faq():
         blocs += f'<section class="bloc" aria-labelledby="f-{p["id"]}"><h2 id="f-{p["id"]}">{e(p["nom"])}</h2>{accordeon(qs)}<p><a href="{p["url"]}">Voir la fiche produit</a></p></section>'
         tout += [(f"{q} ({NOMS_COURTS[p['id']].split(' ', 1)[1]})", r) for q, r in qs]
     corps = f"""
-<section class="page-entete"><div class="conteneur"><h1>Questions fréquentes</h1><p class="chapo">Livraison, retours, paiement, origine des produits : les réponses courtes. Une autre question ? Écrivez-nous, nous répondons sous 24 heures ouvrées.</p></div></section>
+<section class="page-entete"><div class="conteneur"><h1>Questions fréquentes</h1><p class="chapo">Livraison, retours, paiement, origine des produits : les réponses courtes. Une autre question ? Écrivez-nous, nous répondons sous {DELAI_SAV}.</p></div></section>
 <section class="section"><div class="conteneur prose">{blocs}<p><a class="btn btn--secondaire" href="/contact/">Nous contacter</a></p></div></section>
 """
     page("faq/index.html", "/faq/", "Questions fréquentes : livraison, retours, produits | Canapoil",
@@ -1173,7 +1514,7 @@ def page_a_propos():
 
 def page_contact():
     corps = f"""
-<section class="page-entete"><div class="conteneur"><h1>Contact</h1><p class="chapo">Une question avant d'acheter, un colis en retard, un produit qui ne convient pas : nous répondons sous 24 heures ouvrées en moyenne, 48 heures au plus.</p></div></section>
+<section class="page-entete"><div class="conteneur"><h1>Contact</h1><p class="chapo">Une question avant d'acheter, un colis en retard, un produit qui ne convient pas : nous répondons sous {DELAI_SAV}.</p></div></section>
 <section class="section"><div class="conteneur">
   <div class="contact-cartes">
     <div class="panneau"><h2>{ic("mail")} Par e-mail</h2><p><a href="mailto:{{{{EMAIL}}}}">{{{{EMAIL}}}}</a></p><p class="texte-2">Le plus rapide. Joignez une photo de votre tissu ou du produit si besoin.</p></div>
@@ -1187,7 +1528,7 @@ def page_contact():
 </div></section>
 """
     page("contact/index.html", "/contact/", "Contact et service client | Canapoil",
-         "Contacter le service client Canapoil par e-mail, téléphone ou courrier. Réponse sous 24 heures ouvrées en moyenne. Médiateur de la consommation.",
+         f"Contacter le service client Canapoil par e-mail, téléphone ou courrier. Réponse sous {DELAI_SAV}. Médiateur de la consommation.",
          corps, "contact")
 
 
@@ -1228,6 +1569,46 @@ def page_retractation():
          corps, "retractation", robots="noindex,follow")
 
 
+def page_challenger(c):
+    """Page de liste d'attente d'un produit en test (tapis de fouille) : le duel de la porte 1
+    devient mesurable (inscriptions attribuées par le champ « produit », correction M1 et M7)."""
+    images = resoudre_images(f"images/attente/{c['id']}", ALTS[c["id"]])
+    item = {"images": images}
+    benefs = "".join(f"<li>{ic('check')}<span>{e(b)}</span></li>" for b in c["benefices"])
+    lignes_c = "".join(f'<tr><th scope="row">{lib}</th><td>{e(c["caracteristiques"][k_])}</td></tr>'
+                       for k_, lib in (("matieres", "Matières"), ("dimensions", "Dimensions"), ("poids", "Poids"),
+                                       ("entretien", "Entretien"), ("origine", "Origine")) if k_ in c["caracteristiques"])
+    lignes_c += f'<tr><th scope="row">Référence</th><td>{e(c["sku"])}</td></tr>'
+    message = "Ce produit n'est pas en vente. Inscrivez-vous : s'il est lancé, vous serez prévenu en premier, avec son prix et son délai."
+    corps = f"""
+<nav class="fil-ariane conteneur" aria-label="Fil d'Ariane"><ol><li><a href="/">Accueil</a></li><li aria-current="page">{e(c['nom'])}</li></ol></nav>
+<section class="produit"><div class="conteneur produit__grille">
+  {galerie(item, c['nom'])}
+  <div class="produit__infos">
+    <div class="produit__entete">
+      <span class="badge badge--sauge">En test</span>
+      <h1>{e(c['nom'])}</h1>
+      <p class="produit__accroche">{e(c['description_courte'])}</p>
+      <div class="produit__prix"><span class="ligne-livraison">Prix envisagé : {euros(c['prix_ttc'])} TTC (format M), lot de 2 avec guide de jeux de flair : {euros(c['prix_lot_envisage_ttc'])}</span></div>
+    </div>
+    <ul class="benefices">{benefs}</ul>
+    {formulaire_inscription(c['id'], message, "fouille")}
+  </div>
+</div></section>
+<section class="section" aria-labelledby="t-desc"><div class="conteneur grille-2">
+  <div><span class="surtitre">En détail</span><h2 id="t-desc">{e(c['nom'])}</h2><p>{e(c['description_longue'])}</p></div>
+  <div><h3>Caractéristiques envisagées</h3><div class="tableau-wrap"><table><tbody>{lignes_c}</tbody></table></div><p class="texte-2">Valeurs à confirmer sur l'échantillon retenu.</p></div>
+</div></section>
+<section class="section section--blanche" aria-labelledby="t-secu"><div class="conteneur">
+  <h2 id="t-secu" class="visuellement-cache">Sécurité</h2>
+  {bloc_gpsr(c, 'h2')}
+</div></section>
+"""
+    page(f"liste-attente/{c['slug']}/index.html", c["page"], f"{c['nom']} pour chien : liste d'attente | Canapoil",
+         f"{c['nom']} : croquettes cachées dans des bandes de polaire, lavable en machine. Produit en test chez Canapoil : inscrivez-vous pour être prévenu de son lancement.",
+         corps, "attente", robots="noindex,follow")
+
+
 def page_404():
     corps = """
 <section class="erreur-404"><div class="conteneur">
@@ -1249,7 +1630,7 @@ def pages_legales():
         ("cookies", "/cookies/"),
     ]
     for nom, url in infos:
-        meta, corps_md = MD.lire_entete((ICI / "contenus" / f"{nom}.md").read_text(encoding="utf-8"))
+        meta, corps_md = MD.lire_entete(jetons_phase((ICI / "contenus" / f"{nom}.md").read_text(encoding="utf-8")))
         html_corps = MD.convertir(corps_md, "site")
         html_corps = html_corps.replace("<p>Dernière mise à jour", '<p class="mise-a-jour">Dernière mise à jour', 1).replace(
             "<p>Version en vigueur", '<p class="mise-a-jour">Version en vigueur', 1
@@ -1319,7 +1700,8 @@ def flux_merchant():
     <g:description>{e(desc[:4900])}</g:description>
     <g:link>{BASE}{it['url']}</g:link>
     <g:image_link>{BASE}{it['image_produit_png']}</g:image_link>
-    <g:availability>in_stock</g:availability>
+    <g:availability>{ {"disponible": "in_stock", "precommande": "preorder"}.get(it.get("etat"), "out_of_stock") }</g:availability>
+{('    <g:availability_date>' + it['precommande']['expedition_a_partir_du'] + 'T09:00+01:00</g:availability_date>' + chr(10)) if it.get('etat') == 'precommande' else ''}
     <g:price>{it['prix_ttc']:.2f} EUR</g:price>
     <g:brand>Canapoil</g:brand>
     <g:condition>new</g:condition>
@@ -1338,7 +1720,7 @@ def flux_merchant():
 {items}</channel>
 </rss>
 """
-    ecrire(SITE / "flux" / "google-merchant.xml", xml)
+    ecrire(SITE / "flux" / "google-merchant.xml", remplir(xml))
 
 
 def placeholders_readme():
@@ -1367,15 +1749,17 @@ def placeholders_readme():
         "{{FABRICANT_GANT}}": "Idem pour le gant",
         "{{FABRICANT_RACLETTE}}": "Idem pour la raclette",
         "{{FABRICANT_TAPIS}}": "Idem pour le tapis de fenêtre",
+        "{{FABRICANT_TAPIS_FOUILLE}}": "Idem pour le tapis de fouille (page de liste d'attente)",
+        "{{ADRESSE_EXPEDITION}}": "Adresse d'où partent les colis",
     }
-    lignes = ["| Variable | À remplacer par | Pages concernées |", "|---|---|---|"]
+    lignes = ["| Variable (`brand.json` → `identite`) | À saisir | Pages concernées |", "|---|---|---|"]
     for k in sorted(trouve, key=lambda x: list(descriptions).index(x) if x in descriptions else 99):
         urls = trouve[k]
         u = ", ".join(f"`{x}`" for x in urls[:6]) + (f" et {len(urls) - 6} autres" if len(urls) > 6 else "")
         lignes.append(f"| `{k}` | {descriptions.get(k, 'À compléter')} | {u} |")
     tableau = "\n".join(lignes)
     readme = SITE / "README.md"
-    if readme.exists():
+    if readme.exists() and not SORTIE_TEST:
         t = readme.read_text(encoding="utf-8")
         t = re.sub(r"<!-- PLACEHOLDERS:DEBUT -->.*<!-- PLACEHOLDERS:FIN -->",
                    "<!-- PLACEHOLDERS:DEBUT -->\n" + tableau + "\n<!-- PLACEHOLDERS:FIN -->", t, flags=re.S)
@@ -1385,7 +1769,7 @@ def placeholders_readme():
 
 def document_cgv():
     """Version imprimable des CGV (jointe en PDF à l'e-mail de confirmation : support durable)."""
-    meta, corps_md = MD.lire_entete((ICI / "contenus" / "cgv.md").read_text(encoding="utf-8"))
+    meta, corps_md = MD.lire_entete(jetons_phase((ICI / "contenus" / "cgv.md").read_text(encoding="utf-8")))
     corps = MD.convertir(corps_md, "site").replace('href="/', f'href="{BASE}/')
     doc = f"""<!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="robots" content="noindex">
@@ -1406,7 +1790,7 @@ blockquote{{margin:0;padding:6pt 10pt;border-left:3pt solid #E7D5BF;font-size:9.
 {corps}
 </body></html>
 """
-    ecrire(SITE / "documents" / "cgv.html", doc)
+    ecrire(SITE / "documents" / "cgv.html", remplir(doc))
 
 
 def pages_info_shopify():
@@ -1423,7 +1807,7 @@ def pages_info_shopify():
     for p in CAT["produits"]:
         faq += f"<h2>{e(p['nom'])}</h2>" + "".join(f"<h3>{e(q['q'])}</h3><p>{e(q['r'])}</p>" for q in p["faq"])
     faq = faq.replace("en bas de chaque page", "en bas de chaque page (lien vers /pages/retractation)")
-    (dossier / "page-faq.html").write_text(entete("Questions fréquentes", "Boutique en ligne > Pages > Ajouter, titre « Questions fréquentes », adresse /pages/faq") + faq + "\n", encoding="utf-8")
+    (dossier / "page-faq.html").write_text(remplir(jetons_phase(entete("Questions fréquentes", "Boutique en ligne > Pages > Ajouter, titre « Questions fréquentes », adresse /pages/faq") + faq + "\n")), encoding="utf-8")
     engag = "".join(f"<li><strong>{e(t)}</strong> : {e(d)}</li>" for _, t, d in ENGAGEMENTS)
     apropos = (
         f"<p>{e(M['promesse'])}</p>"
@@ -1432,34 +1816,46 @@ def pages_info_shopify():
         f"<h2>Nos engagements</h2><ul>{engag}</ul>"
         "<p>Canapoil est une marque de {{RAISON_SOCIALE}}, {{ADRESSE}}. Toutes nos coordonnées figurent dans les <a href=\"/policies/legal-notice\">mentions légales</a>.</p>"
     )
-    (dossier / "page-a-propos.html").write_text(entete("À propos", "Boutique en ligne > Pages > Ajouter, titre « À propos », adresse /pages/a-propos") + apropos + "\n", encoding="utf-8")
+    (dossier / "page-a-propos.html").write_text(remplir(jetons_phase(entete("À propos", "Boutique en ligne > Pages > Ajouter, titre « À propos », adresse /pages/a-propos") + apropos + "\n")), encoding="utf-8")
     contact = (
-        "<p>Une question avant d'acheter, un colis en retard, un produit qui ne convient pas : nous répondons sous 24 heures ouvrées en moyenne, 48 heures au plus.</p>"
+        f"<p>Une question avant d'acheter, un colis en retard, un produit qui ne convient pas : nous répondons sous {DELAI_SAV}.</p>"
         "<ul><li><strong>E-mail</strong> : {{EMAIL}}</li><li><strong>Téléphone</strong> : {{TELEPHONE}} (appel non surtaxé), {{HORAIRES_SERVICE_CLIENT}}</li>"
         "<li><strong>Courrier</strong> : {{RAISON_SOCIALE}}, {{ADRESSE}}</li></ul>"
         "<p><strong>Avant d'acheter</strong> : envoyez-nous une photo de votre tissu, nous vous disons franchement si le rouleau convient.</p>"
         "<p><strong>Rétractation</strong> : <a href=\"/pages/retractation\">renoncer au contrat ici</a>.</p>"
         "<p>En cas de litige non résolu, vous pouvez saisir gratuitement le médiateur de la consommation : {{MEDIATEUR}}.</p>"
     )
-    (dossier / "page-contact.html").write_text(entete("Contact", "Boutique en ligne > Pages > Contact (modèle « page.contact » qui affiche le formulaire de contact du thème)") + contact + "\n", encoding="utf-8")
+    (dossier / "page-contact.html").write_text(remplir(jetons_phase(entete("Contact", "Boutique en ligne > Pages > Contact (modèle « page.contact » qui affiche le formulaire de contact du thème)") + contact + "\n")), encoding="utf-8")
     retract = (
         "<p>Vous disposez de 30 jours après la réception de votre commande pour vous rétracter : 14 jours prévus par la loi, plus 16 jours que nous ajoutons. Aucun motif n'est demandé.</p>"
         "<p>Remplissez le formulaire ci-dessous (nom, prénom, numéro de commande, adresse e-mail) et cliquez sur « confirmer la rétractation ». Vous recevez par e-mail un accusé de réception reprenant votre déclaration, avec sa date et son heure.</p>"
         "<p>Ensuite : renvoyez le produit au plus tard 14 jours après votre déclaration à {{ADRESSE_RETOUR}}. Les frais de renvoi sont à votre charge, sauf produit défectueux ou erroné (environ 5 à 7 € en point relais). Nous vous remboursons au plus tard 14 jours après votre déclaration, frais de livraison initiaux inclus.</p>"
         "<p>Vous pouvez aussi utiliser le formulaire type figurant dans notre <a href=\"/policies/refund-policy\">politique de retours</a> ou nous écrire à {{EMAIL}}.</p>"
     )
-    (dossier / "page-retractation.html").write_text(entete("Renoncer au contrat (rétractation en ligne)", "Boutique en ligne > Pages > Ajouter, titre « Renoncer au contrat », adresse /pages/retractation, modèle « page.retractation » qui contient la section shopify-kit/theme/sections/canapoil-retractation.liquid") + retract + "\n", encoding="utf-8")
+    (dossier / "page-retractation.html").write_text(remplir(jetons_phase(entete("Renoncer au contrat (rétractation en ligne)", "Boutique en ligne > Pages > Ajouter, titre « Renoncer au contrat », adresse /pages/retractation, modèle « page.retractation » qui contient la section shopify-kit/theme/sections/canapoil-retractation.liquid") + retract + "\n")), encoding="utf-8")
 
 
 # ===================================================================== principal
 
 
+def controler_publication():
+    """Bloque la publication s'il reste une variable {{...}} (correction C4)."""
+    restes = {}
+    for f in [SITE / p_["fichier"] for p_ in PAGES] + [SITE / "data" / "products.json", SITE / "documents" / "cgv.html", SITE / "flux" / "google-merchant.xml"]:
+        for m in set(re.findall(r"\{\{[A-Z0-9_]+\}\}", f.read_text(encoding="utf-8"))):
+            restes.setdefault(m, []).append(str(f.relative_to(SITE)))
+    if restes:
+        arreter("publication refusée : " + str(len(restes)) + " variable(s) à remplir dans brand.json → identite : "
+                + ", ".join(sorted(restes)))
+
+
 def main():
     global CAT, IDX, ALTS
+    configurer()
     ALTS = generer_illustrations()
     CAT = construire_catalogue(ALTS)
     IDX = {x["id"]: x for x in CAT["produits"] + CAT["kits"]}
-    ecrire(SITE / "data" / "products.json", json.dumps(CAT, ensure_ascii=False, indent=2) + "\n")
+    ecrire(SITE / "data" / "products.json", json.dumps(remplir_objet(CAT), ensure_ascii=False, indent=2) + "\n")
     page_accueil()
     page_boutique()
     for p in CAT["produits"]:
@@ -1473,15 +1869,33 @@ def main():
     page_a_propos()
     page_contact()
     page_retractation()
+    for c in BRAND.get("challengers", []):
+        page_challenger(c)
     pages_legales()
     page_404()
     sitemap_robots()
     flux_merchant()
     document_cgv()
     trouve = placeholders_readme()
-    SHOP.generer(BRAND, CAT, IDX, RACINE / "shopify-kit", ICI / "contenus", BASE)
-    pages_info_shopify()
-    print(f"{len(PAGES)} pages, {len(CAT['produits'])} produits, {len(CAT['kits'])} kits, {len(trouve)} variables {{...}}")
+    if not SORTIE_TEST:
+        generer_shopify()
+    if OPTS.publication:
+        controler_publication()
+    etats = ", ".join(f"{x['id']} {x['etat']}" for x in CAT["produits"])
+    print(f"{len(PAGES)} pages, {len(CAT['produits'])} produits, {len(CAT['kits'])} kits, phase {PHASE} ({etats}), "
+          f"{len(trouve)} variables {{...}} à remplir" + ("" if not trouve else " : site non publiable (generer.py --publication échouera)"))
+
+
+def generer_shopify():
+    """Kit Shopify : textes de la phase « vente » (stock en France), identité remplie si elle est saisie."""
+    global PHASE
+    sauve = PHASE
+    PHASE = "vente"
+    try:
+        SHOP.generer(BRAND, CAT, IDX, RACINE / "shopify-kit", ICI / "contenus", BASE, transformer=lambda t: remplir(jetons_phase(t)))
+        pages_info_shopify()
+    finally:
+        PHASE = sauve
 
 
 ALTS = {}

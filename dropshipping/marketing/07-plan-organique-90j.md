@@ -2,7 +2,7 @@
 
 | Champ | Valeur |
 |---|---|
-| Date | 12 octobre 2026 |
+| Date | 12 octobre 2026 (version corrigée après la [revue red team](../docs/revue-red-team.md) : plan ramené à 25 heures par semaine) |
 | Rôle | Direction du marketing organique |
 | Période | Lundi 12/10/2026 (S1) → dimanche 10/01/2027 (S13), calée sur le palier 0 de [04 §6.2](../strategie/04-strategie.md) |
 | Entrées | [`brand.json`](../strategie/brand.json), [04 — Stratégie](../strategie/04-strategie.md), [02 — Acquisition](../recherche/02-acquisition.md), [05 — Finance](../finance/05-analyse-financiere.md), [relevé Google Trends FR du 12/10/2026](../recherche/donnees/google-trends-fr-2026-10-12.csv) |
@@ -16,12 +16,12 @@
 | Sujet | Décision marketing | Justification chiffrée |
 |---|---|---|
 | Canal moteur | TikTok (compte de marque) jusqu'à la porte 1, puis **TikTok Shop** dès que le stock est en France | TikTok Shop convertit ≈ 0,042 % des vues en commandes contre ≈ 0,0034 % pour le lien en bio, soit 12 fois plus (02 §4.3, estimation, confiance faible) |
-| Cadence | **3 vidéos par jour** sur TikTok à partir de S3, recyclées sur Reels, Shorts et Pinterest | 02 §1.2 : 5 angles × 3 accroches = 15 vidéos minimum par produit avant de conclure |
-| Production | 1 smartphone, 1 échantillon par produit, 2 sessions de tournage de 3 h par semaine | ≈ 21 vidéos par semaine pour 20-25 h de travail total (02 §7, estimation, confiance moyenne) |
+| Cadence | **2 vidéos par jour** sur TikTok à partir de S3, recyclées sur Reels et Pinterest seulement ; LIVE à partir de S12 ; 4 articles SEO avant février | Le plan initial (3 vidéos par jour, Shorts, LIVE dès S8, 10 articles) demandait 35 à 43 heures par semaine avec ses propres durées unitaires, pour un budget de 20 à 25 heures (revue red team M5). 02 §1.2 : 15 vidéos par produit avant de conclure, atteintes sur S3-S5 |
+| Production | 1 smartphone, 1 échantillon par produit, 2 sessions de tournage de 2 h 30 par semaine | ≈ 14 vidéos par semaine pour **25 heures** de travail total, détail au §4.5 (estimation, confiance moyenne). Si le client dispose réellement de 35-40 heures, le plan à 3 vidéos par jour peut être rétabli (04 §8 décision 6) |
 | Piliers | 5 piliers ; 35 % du volume sur le « banc d'essai par tissu » | La promesse de marque repose sur la preuve vidéo (`brand.json` → `marque.promesse`) |
-| Saison | Novembre-décembre : angles « invités des fêtes », « cadeau », « chat à la fenêtre ». Février-août : angles « mue » et « poils partout » | Google Trends FR sur 5 ans : l'intérêt pour « anti poils » tombe à **0,54** de sa moyenne annuelle en décembre et culmine à **1,21** en août ; « poils de chat » au plus bas en novembre (0,74), au plus haut en mai (1,16) (calcul marketing sur les [séries brutes](../recherche/donnees/), confiance moyenne) |
+| Saison | Novembre-décembre : angles « invités des fêtes », « cadeau », « chat à la fenêtre » ; le tapis de fouille, challenger, culmine en novembre (indice 1,30). Février-août : angles « mue » et « poils partout » ; si le rouleau gagne, stock principal acheté fin janvier pour la hausse de février | Google Trends FR sur 5 ans : l'intérêt pour « anti poils » tombe à **0,54** de sa moyenne annuelle en décembre et culmine à **1,21** en août ; « poils de chat » au plus bas en novembre (0,74), au plus haut en mai (1,16) (calcul marketing sur les [séries brutes](../recherche/donnees/), confiance moyenne) |
 | Portes | Porte 1 le **15/11/2026** ; porte 2 = ≥ 3 commandes par jour sur 7 jours après l'arrivée du stock | `brand.json` → `lancement` |
-| Budget marketing cash | **0 € de publicité**. Échantillons créateurs (≈ 60 € pour 5) financés par les marges | 04 §5.3 ; [bascule-payant.md](bascule-payant.md) |
+| Budget marketing cash | **0 € de publicité**. 5 échantillons créateurs prélevés sur le micro-stock ; collaborations d'affiliés seulement avec l'option de trésorerie a (04 §5.3) | 04 §5.3 ; [bascule-payant.md](bascule-payant.md) |
 | Objectif J+90 (nominal) | Trajectoire ≥ 5 commandes par jour | 04 §6.2. Le scénario réaliste de la finance place la porte 2 en mars-avril 2027 (05 §9.3) : les cibles hebdomadaires ci-dessous portent une valeur nominale et un plancher d'alerte |
 
 **Ce que la saisonnalité change.** Le lancement tombe au creux annuel de la recherche « poils » (indices 0,54 à 0,84 d'octobre à décembre). Le produit reste démontrable en 3 secondes, mais l'urgence ressentie est plus faible qu'au printemps. Le plan compense par trois déclencheurs propres à la saison : les invités des fêtes (canapé présentable), le cadeau à moins de 40 € et le chat qui cherche la chaleur près de la fenêtre (tapis thermique). Le stock de contenus « mue » et les articles SEO sont préparés en décembre-janvier pour la hausse de février.
@@ -47,7 +47,7 @@
 | **TikTok** | Compte Business, catégorie « Animaux » ou « Maison » | « Les câlins sur le canapé, les poils à la poubelle. Testé tissu par tissu. » (73 caractères ; limite de 80) | Lien site dans la bio : vérifier dans l'application que le champ est disponible sans seuil d'abonnés (sources contradictoires, 02 §1.2) ; réglage de divulgation « Votre marque » sur chaque vidéo de produit ; légendes automatiques activées ; téléchargement des vidéos par les tiers désactivé | Canal moteur ; test des accroches ; vente via TikTok Shop dès S8 |
 | **TikTok Shop** (à partir de S8) | Seller Center France, compte officiel = le compte TikTok ci-dessus | — | Dossier déposé en S1 (SIRET, n° de TVA intracommunautaire, pièce d'identité du représentant, IBAN) ; boutique activée seulement quand le stock est en France ; 8 fiches (4 produits + 4 kits) ; modèle d'expédition conforme (étiquette sous 2 jours ouvrés, livraison sous 4 jours ouvrés, [politique TikTok Shop](https://seller-fr.tiktok.com/university/essay?default_language=fr&knowledge_id=6711589562500897)) ; mission « nouveau vendeur » à 4 % pendant 60 jours, à accepter dans les 15 jours avec au moins 5 produits en stock ([Speed Ecom, mis à jour le 14/09/2026](https://speed-ecom.eu/blog/tiktok-shop-france-2026-guide-complet-vendre/)) | Achat dans l'application ; affiliation des créateurs ; LIVE |
 | **Instagram** | Compte professionnel « Entreprise », relié à une Page Facebook minimale (nécessaire pour Meta Business Suite et la future publicité) | « Les câlins sur le canapé, les poils à la poubelle. Outils anti-poils testés en vidéo sur vrais tissus. Expédiés depuis la France. » (≤ 150) | 5 stories à la une : Tests par tissu · Où ça ne marche pas · Livraison · Retours 30 jours · Coulisses ; durée des Reels à vérifier dans le sélecteur de l'application (90 s ou 3 min selon les comptes, [Kontentino](https://www.kontentino.com/fr/questions-et-reponses/quelle-est-la-duree-des-reels-instagram/)) | Recyclage des vidéos TikTok ; preuve sociale ; vivier de créatives pour la phase payante |
-| **YouTube** | Chaîne de marque (compte Google de la société), identifiant `@canapoil` | Description de chaîne : promesse + liste des tissus testés + lien du site | Lien du site dans l'en-tête de la chaîne ; liste de lecture « Tests par tissu » ; les liens des descriptions de Shorts ne sont pas cliquables depuis le 31/08/2023 (02 §1.5) | Recyclage en Shorts ; 1 vidéo longue par mois (« test complet 5 tissus », 6-8 min) intégrée dans l'article SEO pilier |
+| **YouTube** | Chaîne de marque (compte Google de la société), identifiant `@canapoil` | Description de chaîne : promesse + liste des tissus testés + lien du site | Lien du site dans l'en-tête de la chaîne ; liste de lecture « Tests par tissu » ; les liens des descriptions de Shorts ne sont pas cliquables depuis le 31/08/2023 (02 §1.5) | Chaîne réservée en S1 ; Shorts et vidéo longue mensuelle (« test complet 5 tissus ») à partir du palier 1, faute de temps dans le plan de 25 heures |
 | **Pinterest** | Compte professionnel | « Canapoil : outils simples pour vivre avec un chat ou un chien sur le canapé. Tests vidéo par tissu, astuces anti-poils, idées d'aménagement. Expédié depuis la France. » | Revendication du site `canapoil.fr` (balise méta ou fichier à déposer par l'agent site) ; 6 tableaux : Poils de chat sur le canapé · Poils de chien dans la voiture · Chat à la fenêtre en hiver · Canapé et animaux : tissus · Idées cadeaux propriétaires de chat · Tests Canapoil ; catalogue produits à partir du flux XML du site (format à valider dans Pinterest) | Trafic cliquable direct vers les fiches ; épingles à durée de vie de plusieurs mois ; 2 à 6 mois avant un trafic régulier (02 §1.6, estimation, confiance moyenne) |
 | **Google** | Merchant Center | — | Fiches gratuites activées avec le flux `site/flux/google-merchant.xml` (02 §1.7) ; Search Console sur `canapoil.fr` ; compte Google Ads sans dépense pour accéder au Keyword Planner (volumes réels de [seo-contenu.md](seo-contenu.md)) | Trafic gratuit d'intention d'achat |
 | **E-mail** | Brevo gratuit | — | Liste « Liste d'attente » + modèle de double opt-in déjà branchés sur `/api/inscription` (fonction du site) ; domaine d'envoi authentifié (SPF, DKIM, DMARC) ; suivi des ouvertures désactivé sauf consentement spécifique (voir [emails.md](emails.md) §1) | Liste d'attente avant la porte 1 ; flux automatiques ensuite |
@@ -56,13 +56,13 @@
 
 | # | Demande | Raison | Échéance |
 |---|---|---|---|
-| 1 | Passer `phase` de `"vente"` à `"liste_attente"` dans `site/assets/js/config.js` jusqu'à la porte 1 | `brand.json` → `lancement.mode_site_avant_porte_1` : aucune vente avant le signal | S1 |
+| 1 | Phase de vente dans `brand.json` → `livraison.phase` (`liste_attente` par défaut, le serveur refuse tout paiement) | Aucune vente avant le signal | **Fait** (12/10/2026) |
 | 2 | Renseigner `reseaux` (TikTok, Instagram, Pinterest, YouTube) dans `config.js` | Liens de profil en pied de page | S1 |
-| 3 | Conserver `utm_source` et `utm_content` en `sessionStorage` et les transmettre en métadonnées de la session Stripe | Attribuer chaque commande à une plateforme et à un script (`utm_content=R02`) ; la mesure Cloudflare seule ne relie pas une visite à un paiement | Avant l'ouverture des précommandes |
+| 3 | Conserver les `utm_*` en `sessionStorage` et les transmettre en métadonnées de la session Stripe et en attributs Brevo ; autoriser Cloudflare Web Analytics dans la CSP | Attribuer chaque commande et chaque inscription à une plateforme et à un script (`utm_content=R02`) | **Fait** (12/10/2026) |
 | 4 | Section `/guides/` générée par `site/outils/generer.py` | Accueil des 10 articles de [seo-contenu.md](seo-contenu.md) | S10 |
-| 5 | Case de consentement non pré-cochée pour les rappels de panier sur `/panier/`, e-mail transmis à Stripe, `after_expiration.recovery` et fonction webhook | La CNIL qualifie la relance de panier de message promotionnel soumis au consentement préalable ([FAQ CNIL, question 16](https://www.cnil.fr/fr/faq-recommandation-pixels-courriers-electroniques)) ; la collecte du consentement par Stripe Checkout est réservée aux entreprises et clients situés aux États-Unis ([Stripe](https://docs.stripe.com/payments/checkout/promotional-emails-consent)) | Avant l'ouverture des précommandes |
-| 6 | Dates de précommande de `config.js` (`23/11` et `04/12`) recalées sur le délai réel de l'échantillon | Commande du stock prévue vers le 18-20/11 : une expédition le 23/11 suppose un transit de 3 à 5 jours depuis la Chine (estimation, confiance faible). Règle proposée : date d'expédition = date de commande du stock + 90e centile du transit observé sur les échantillons + 2 jours ouvrés ; dates nominales retenues dans [lancement-30-jours.md](lancement-30-jours.md) : expédition à partir du 4/12, livraison au plus tard le 14/12 | À la porte 1 |
-| 7 | Champ facultatif « Le produit qui m'intéresse » (rouleau anti-poils / tapis de fouille) sur le formulaire de liste d'attente, transmis à Brevo comme attribut | Mesurer les inscriptions de chaque produit pendant le duel de la porte 1 ([scripts-tiktok.md](scripts-tiktok.md) §2.1) | S3 |
+| 5 | **Non réalisé** : case de consentement non pré-cochée pour les rappels de panier sur `/panier/`, e-mail transmis à Stripe, `after_expiration.recovery` et fonction webhook. Tant qu'elle n'existe pas, aucune relance de panier (PA1-PA3 suspendus, [emails.md](emails.md)) | La CNIL qualifie la relance de panier de message promotionnel soumis au consentement préalable ([FAQ CNIL, question 16](https://www.cnil.fr/fr/faq-recommandation-pixels-courriers-electroniques)) ; la collecte du consentement par Stripe Checkout est réservée aux entreprises et clients situés aux États-Unis ([Stripe](https://docs.stripe.com/payments/checkout/promotional-emails-consent)) | Avant l'ouverture des précommandes |
+| 6 | Dates de précommande dans `brand.json` → `livraison.precommande`, calculées après la commande du stock : date de commande + 90e centile du transit mesuré sur les échantillons + 3 jours ouvrés, puis + 6 jours ouvrés, plafond 30 jours ; `generer.py` refuse des dates absentes ou au-delà du plafond | Exemple nominal (transit de 12 jours) : expédition à partir du 2/12, livraison au plus tard le 10/12 ([lancement-30-jours.md](lancement-30-jours.md)) | **Fait** ; dates à saisir à la porte 1 |
+| 7 | Champ caché `produit` sur chaque formulaire de liste d'attente, transmis à Brevo (attribut `PRODUIT`) ; page `/liste-attente/tapis-de-fouille/` pour le challenger | Mesurer les inscriptions de chaque produit pendant le duel de la porte 1 ([scripts-tiktok.md](scripts-tiktok.md) §2.1) : lien de la bio vers la fiche du rouleau ou la page du tapis selon la vidéo | **Fait** (12/10/2026) |
 
 ---
 
@@ -95,22 +95,22 @@
 
 | Plateforme | S1 | S2 | S3-S13 | Décalage avec TikTok | Sélection |
 |---|---|---|---|---|---|
-| TikTok | 1 par jour | 2 par jour | **3 par jour** (≈ 8 h, 13 h, 19 h ; ajuster après 3 semaines selon l'onglet « Abonnés » des statistiques) | — | Toutes les vidéos |
-| TikTok LIVE | — | — | 1 par semaine dès l'ouverture de TikTok Shop (S8), 2 par semaine dès S10 | — | Format : démonstration sur les tissus envoyés par les spectateurs en photo, questions-réponses, délai réel |
+| TikTok | 1 par jour | 2 par jour | **2 par jour** (≈ 12 h et 19 h ; ajuster après 3 semaines selon l'onglet « Abonnés » des statistiques) | — | Toutes les vidéos |
+| TikTok LIVE | — | — | 1 par semaine à partir de S12 (si le compte y est éligible) | — | Format : démonstration sur les tissus envoyés par les spectateurs en photo, questions-réponses, délai réel |
 | Instagram Reels | — | 1 par jour | 1 à 2 par jour | J+1 à J+2 | Les vidéos TikTok dont la rétention à 3 s est dans la moitié haute de la semaine |
-| Instagram Stories | — | 3 par semaine | 1 par jour | Libre | Sondages (« quel tissu tester demain ? »), coulisses, colis du jour |
-| YouTube Shorts | — | 1 par jour | 1 par jour | J+2 | Meilleure vidéo de la veille |
-| YouTube long | — | — | 1 par mois (S8, S12) | — | « Test complet sur 5 tissus » ; intégré à l'article pilier |
-| Pinterest | — | — | 5 épingles par jour (2 vidéos + 3 images extraites) | J+1 à J+7 | Démonstrations et avant/après ; lien vers la fiche produit concernée |
+| Instagram Stories | — | 2 par semaine | 3 par semaine | Libre | Sondages (« quel tissu tester demain ? »), coulisses, colis du jour |
+| YouTube Shorts | — | — | Suspendu jusqu'au palier 1 (temps) | — | — |
+| YouTube long | — | — | Aucun avant février | — | « Test complet sur 5 tissus » ; intégré à l'article pilier |
+| Pinterest | — | — | 2 épingles par jour (1 vidéo + 1 image extraite) | J+1 à J+7 | Démonstrations et avant/après ; lien vers la fiche produit concernée |
 
-### 3.2 Répartition hebdomadaire des 21 vidéos TikTok
+### 3.2 Répartition hebdomadaire des 14 vidéos TikTok
 
 | Période | P1 Banc d'essai | P2 Canapé | P3 Réponses | P4 Coulisses | P5 Astuces | Produits concernés |
 |---|---|---|---|---|---|---|
-| S1-S2 (avant échantillon) | 0 | 9 | 0 | 5 | 7 | Aucun produit visible : problème, situations, fondateur |
-| S3 (échantillons reçus) | 8 | 5 | 2 | 4 | 2 | Rouleau, gant, raclette, tapis de fouille |
-| **S4-S5 (duel)** | 8 | 4 | 3 | 3 | 3 | **8 rouleau + 8 tapis de fouille + 5 autres par semaine** (5 angles × 3 accroches par produit sur 14 jours) |
-| S6-S13 | 7 | 5 | 4 | 3 | 2 | Héros retenu à la porte 1 ; kits ; tapis thermique (si stock) |
+| S1-S2 (avant échantillon) | 0 | 5 | 0 | 2 | 3 | Aucun produit visible : problème, situations, fondateur (7 puis 14 vidéos) |
+| S3 (échantillons reçus) | 6 | 3 | 2 | 2 | 1 | Rouleau, tapis de fouille (premières démonstrations), gant, raclette |
+| **S4-S5 (duel)** | 7 | 2 | 2 | 2 | 1 | **7 rouleau + 7 tapis de fouille par semaine** : ≈ 15 démonstrations par produit avec S3 (5 angles × 3 accroches) |
+| S6-S13 | 5 | 3 | 3 | 2 | 1 | Héros retenu à la porte 1 ; kits ; tapis thermique (si stock) |
 
 ---
 
@@ -150,7 +150,24 @@
 | Bloc 3 — situations | 40 min | POV, animal sur le canapé, plans d'ambiance | 3 vidéos + plans de coupe |
 | Rangement | 15 min | Nommage `AAAAMMJJ_IDscript_accroche_prise.mp4` ; sauvegarde sur un drive | Banque de plans réutilisable |
 
-Montage : 25 à 35 minutes par vidéo, soit ≈ 6 h pour 10 vidéos (estimation, confiance moyenne). Le budget-temps hebdomadaire total reste de 20 à 25 h (02 §7).
+Montage : 25 à 35 minutes par vidéo (estimation, confiance moyenne). Deux sessions de 2 h 30 produisent les 14 vidéos de la semaine.
+
+### 4.5 Budget-temps hebdomadaire : 25 heures (correction M5)
+
+| Poste | Plan initial (durées unitaires de ce document) | Plan retenu | Heures retenues |
+|---|---|---|---|
+| Tournage | 2 × 3 h | 2 × 2 h 30 | 5,0 |
+| Montage | 21 vidéos × 25-35 min = 9-12 h | 14 vidéos × 25 min (gabarits CapCut) | 5,8 |
+| Recyclage | 10 vidéos × 30 min = 5 h | Reels (5 min) et Pinterest (5 min) pour 10 vidéos | 1,7 |
+| LIVE | 1-2 × 1 h 30 dès S8 | Aucun avant S12, puis 1 × 1 h | 0 (1 dès S12) |
+| Communauté (réponses dans l'heure, messages) | ≈ 3,5 h | Deux créneaux de 15 min par jour | 3,5 |
+| Créateurs (recherche, messages, suivi) | 2-3 h | 2 h (option a) | 2,0 |
+| SEO | 10 articles ≈ 3,5 h par semaine | 4 articles avant février (A1, A2, A9, A3) | 1,5 |
+| Colisage et SAV | 3-4 h | 3 h | 3,0 |
+| Administration, pilotage, revue hebdomadaire | 1 h | 1,5 h (tableur `docs/pilotage.xlsx`) | 1,5 |
+| **Total** | **≈ 35-43 h** | | **≈ 24 h** (25 h dès S12 avec le LIVE) |
+
+Le modèle financier compte désormais 25 heures par semaine (`HEURES_FONDATEUR`) : 3,77 € de l'heure en dividendes nets dans le scénario réaliste sur 18 mois (05 §4.3).
 
 ### 4.4 Banque de plans à constituer en S3
 
@@ -175,11 +192,11 @@ Montage : 25 à 35 minutes par vidéo, soit ≈ 6 h pour 10 vidéos (estimation,
 |---|---|---|---|
 | 1 | TikTok | Légende avec le mot-clé principal (ex. « enlever poils chat canapé velours ») prononcé dans les 3 premières secondes et écrit à l'écran ; 3 à 5 hashtags ; ancre produit TikTok Shop dès S8 ; divulgation « Votre marque » | 5 min |
 | 2 | Instagram Reels (J+1 à J+2) | Même fichier maître sans filigrane ; légende réécrite en vouvoiement ou tutoiement selon le ton du compte ; appel à l'action « lien dans la bio » ; couverture lisible dans la grille | 8 min |
-| 3 | YouTube Shorts (J+2) | Titre = question recherchée (« Comment enlever les poils de chat d'un canapé en velours ? ») ; vidéo longue associée liée au Short | 5 min |
+| 3 | YouTube Shorts (J+2), à partir du palier 1 | Titre = question recherchée (« Comment enlever les poils de chat d'un canapé en velours ? ») ; vidéo longue associée liée au Short | 5 min |
 | 4 | Pinterest (J+1 à J+7) | 1 épingle vidéo + 2 images extraites (avant, après) avec texte superposé ; titre et description avec le mot-clé ; lien vers la fiche produit avec `utm_source=pinterest&utm_medium=pin&utm_content=<ID>` | 10 min |
 | 5 | Site et SEO | Intégration de la vidéo dans l'article ou la fiche produit concernée (`utm_content` identique) | 5 min |
 
-Coût marginal du recyclage : ≈ 30 minutes par vidéo, soit ≈ 5 h par semaine pour les 10 meilleures vidéos (estimation, confiance moyenne).
+Coût marginal du recyclage limité à Reels et Pinterest : ≈ 10 minutes par vidéo, soit ≈ 1 h 40 par semaine pour les 10 meilleures vidéos (estimation, confiance moyenne). YouTube Shorts et l'intégration au site reprennent au palier 1.
 
 ### 5.2 Convention de liens suivis
 
@@ -199,20 +216,20 @@ Valeurs « nominales » : trajectoire de 04 §6.2. Valeurs « plancher » : seui
 | Sem. | Dates | Objectif de la semaine | Actions clés | Vidéos TikTok | KPI nominal | Plancher → action |
 |---|---|---|---|---|---|---|
 | **S1** | 12-18/10 | Comptes ouverts, site en liste d'attente | §1 ; domaine ; échantillons commandés (2 rouleaux de 2 vendeurs, gant, raclette, tapis thermique, tapis de fouille) ; dossier TikTok Shop déposé ; tableur de suivi (§8) ; Keyword Planner | 7 | 5/5 comptes ; site en ligne ; 7 vidéos | Compte bloqué → contacter le support, publier sur Instagram en attendant |
-| **S2** | 19-25/10 | Trouver les accroches qui retiennent | Vidéos « problème » sans produit (P2, P4, P5) ; 3 accroches par thème ; recyclage Reels et Shorts ; premières réponses aux commentaires | 14 | Médiane ≥ 300 vues ; ≥ 1 vidéo > 2 000 vues ; 15 inscrits | Médiane < 150 → revoir les 2 premières secondes (image du problème plus nette, texte plus gros) |
-| **S3** | 26/10-1/11 | Échantillons reçus, preuve tournée | Déballage et première utilisation filmés ; test sur 3 tissus ; second fournisseur testé hors caméra ; vérification DesignView ; banque de plans B01-B08 | 21 | ≥ 1 vidéo > 10 000 vues ; 40 inscrits ; 5 commentaires d'intention | Échantillon inefficace sur 2 tissus sur 3 → fournisseur B ; sinon le tapis de fouille passe devant (04 §2.5) |
-| **S4** | 2-8/11 | Duel, semaine 1 | 8 vidéos rouleau (R02, R05, R08, R09, R03) et 8 vidéos tapis de fouille (TF26-TF30) ; Pinterest lancé ; liste des 50 créateurs commencée ([createurs-affiliation.md](createurs-affiliation.md)) | 21 | 90 inscrits ; médiane ≥ 500 vues ; 10 commentaires d'intention | Aucune vidéo > 5 000 vues sur 10 vidéos d'un produit → changer d'angle, pas de produit |
-| **S5** | 9-15/11 | Duel, semaine 2 ; **porte 1 le dim. 15/11** | 15 vidéos par produit atteintes ; décompte des commentaires d'intention ; décision écrite | 21 | **Porte 1** : ≥ 1 vidéo > 50 000 vues avec ≥ 1 % de clics, **ou** ≥ 150 inscrits ; **et** ≥ 20 commentaires d'intention | Porte non franchie → 2 semaines de plus sur le meilleur produit ; 3 produits sans porte = arrêt (04 §6.2) |
-| **S6** | 16-22/11 | Précommandes ouvertes | Médiateur et Léko ; e-mail d'ouverture à la liste ; vidéos avec appel « lien en bio » ; gant offert aux 30 premières ; commande du micro-stock dès 10 précommandes ([lancement-30-jours.md](lancement-30-jours.md)) | 21 | ≥ 10 précommandes (go stock) ; cible 30 ; conversion liste → précommande ≥ 10 % | < 5 précommandes en 7 jours → aucun stock, remboursement intégral, retour au test de contenu (04 §6.2) |
-| **S7** | 23-29/11 | Tenir l'attention pendant le transit du stock | Black Friday sans remise (R19) ; coulisses du contrôle qualité ; 5 créateurs ciblés contactés ; fiches TikTok Shop prêtes | 21 | 20 précommandes cumulées ; 5 créateurs d'accord | 0 créateur d'accord sur 15 contactés → revoir le message et la grille |
-| **S8** | 30/11-6/12 | Stock reçu, précommandes expédiées, TikTok Shop ouvert | Étiquetage ; expédition sous 1 jour ouvré ; déballage du vrai colis (R20) ; ancres produit ; date limite de Noël affichée dès le 1/12 ; 5 échantillons envoyés aux créateurs ; premier LIVE si le compte y est éligible (seuil de 1 000 abonnés cité par des guides, non confirmé par TikTok) | 21 | 100 % des précommandes expédiées ; ≥ 1 commande par jour | Retard de stock > 7 jours sur la date écrite → e-mail individuel avec nouvelle date et proposition de remboursement |
-| **S9** | 7-13/12 | Premières ventes TikTok Shop régulières | Collaboration ouverte à 12 % ; LIVE hebdomadaire ; angle cadeau (K25) ; Kit chat d'hiver si le tapis est en stock | 21 | ≥ 2 commandes par jour ; ≥ 2 vidéos d'affiliés publiées | Taux clic produit / vues < 0,5 % → retravailler l'ancre et l'appel à l'action |
-| **S10** | 14-20/12 | Dernière semaine de Noël | Date limite : commande avant le lun. 14/12 pour une livraison au plus tard le 23/12, calculée sur le délai maximal annoncé (`brand.json` estime le 17/12, date trop tardive tant que le 90e centile mesuré n'est pas plus court, voir [lancement-30-jours.md](lancement-30-jours.md) §0) ; aucun compte à rebours fictif ; 2 LIVE ; réassort décidé | 21 | ≥ 3 commandes par jour sur 7 jours (porte 2 nominale) | < 1 commande par jour → conserver le stock, aucune nouvelle commande fournisseur |
-| **S11** | 21-27/12 | Fêtes : angle « invités » | R03 et variantes ; contenu « après les fêtes » préparé ; réponses SAV prioritaires | 21 | Stock ≥ 15 jours de ventes | Stock < 15 jours → mention « réassort le JJ/MM » réelle |
-| **S12** | 28/12-3/1 | Recalcul du délai annoncé | 30 livraisons atteintes : 90e centile + 2 jours ouvrés (`brand.json` → `livraison.regle_recalcul`) ; tournage du stock « mue » de février | 21 | 5 affiliés actifs ; note moyenne ≥ 4,3/5 | Taux de retour > 8 % → analyse des motifs ; vidéo « bien l'utiliser » |
-| **S13** | 4-10/1 | **Revue J+90** | Bilan chiffré ; décision : continuer, changer de héros ou arrêter (critères de 04 §6.2-§6.3 et 05 §9.4) ; plan T1 2027 orienté recherche (février-août) | 21 | Trajectoire ≥ 5 commandes par jour | < 20 commandes sur les 30 jours suivant l'arrivée du stock → critère d'arrêt de 04 §6.3 |
+| **S2** | 19-25/10 | Trouver les accroches qui retiennent | Vidéos « problème » sans produit (P2, P4, P5) ; 3 accroches par thème ; recyclage Reels ; page de liste d'attente du tapis de fouille en ligne ; relevé des prix de 20 rouleaux sur TikTok Shop | 14 | Médiane ≥ 300 vues ; ≥ 1 vidéo > 2 000 vues ; 15 inscrits | Médiane < 150 → revoir les 2 premières secondes (image du problème plus nette, texte plus gros) |
+| **S3** | 26/10-1/11 | Échantillons reçus, preuve tournée | Déballage et première utilisation filmés ; transit de chaque échantillon noté ; test sur 3 tissus ; second fournisseur testé hors caméra ; banque de plans B01-B08 | 14 | ≥ 1 vidéo > 10 000 vues ; 40 inscrits ; 5 commentaires d'intention | Échantillon inefficace sur 2 tissus sur 3 → fournisseur B ; sinon le tapis de fouille passe devant (04 §2.5) |
+| **S4** | 2-8/11 | Duel, semaine 1 | 7 vidéos rouleau (R02, R05, R08, R09, R03) et 7 vidéos tapis de fouille (TF26-TF30) ; Pinterest lancé ; liste des 50 créateurs commencée ([createurs-affiliation.md](createurs-affiliation.md)) | 14 | 90 inscrits ; médiane ≥ 500 vues ; 10 commentaires d'intention | Aucune vidéo > 5 000 vues sur 10 vidéos d'un produit → changer d'angle, pas de produit |
+| **S5** | 9-15/11 | Duel, semaine 2 ; **porte 1 le dim. 15/11** | ≈ 15 vidéos par produit atteintes ; décompte des commentaires d'intention et des inscrits par produit ; taux de clics produit par vidéo ; décision écrite | 14 | **Porte 1** : (≥ 1 vidéo > 50 000 vues avec ≥ 1 % de clics, **ou** ≥ 150 inscrits) **et** taux de clics produit ≥ 1,5 % en moyenne sur les vidéos de démonstration **et** ≥ 20 commentaires d'intention hors entourage | Porte non franchie → 2 semaines de plus sur le meilleur produit ; 3 produits sans porte = arrêt (04 §6.2) |
+| **S6** | 16-22/11 | Stock commandé, puis précommandes ouvertes | Lundi : médiateur, Léko, INPI, RC, **commande du micro-stock** ; mercredi : précommandes ouvertes avec les dates calculées ; e-mail d'ouverture à la liste (consentement enregistré) ; vidéos avec appel « lien en bio » ; gant offert aux 30 premières, dans la limite des 30 gants réservés ([lancement-30-jours.md](lancement-30-jours.md)) | 14 | Cible 30 précommandes ; conversion liste → précommande ≥ 10 % | < 10 précommandes à J9 → contenu recentré sur la démonstration ; le stock déjà payé sera écoulé |
+| **S7** | 23-29/11 | Tenir l'attention pendant le transit du stock | Black Friday sans remise (R19) ; coulisses du contrôle qualité ; 5 créateurs ciblés contactés ; fiches TikTok Shop prêtes | 14 | 20 précommandes cumulées ; 5 créateurs d'accord | 0 créateur d'accord sur 15 contactés → revoir le message et la grille |
+| **S8** | 30/11-6/12 | Stock reçu, précommandes expédiées, TikTok Shop ouvert | Contrôle J-10 le 30/11 ; étiquetage ; expédition des précommandes à partir de la date écrite ; déballage du vrai colis (R20) ; ancres produit ; date limite de Noël affichée dès le passage en vente ; 5 échantillons envoyés aux créateurs | 14 | 100 % des précommandes expédiées à temps ; **porte stock** (≥ 20 précommandes hors entourage, conversion ≥ 8 %) ; ≥ 1 commande par jour | Colis fournisseur absent de France 10 jours avant la date limite → e-mail individuel avec nouvelle date et proposition de remboursement |
+| **S9** | 7-13/12 | Premières ventes TikTok Shop régulières | Collaboration ouverte à 12 % (option a) ; angle cadeau (K25) ; Kit chat d'hiver si le tapis est en stock | 14 | ≥ 2 commandes par jour ; ≥ 2 vidéos d'affiliés publiées | Taux clic produit / vues < 0,5 % → retravailler l'ancre et l'appel à l'action |
+| **S10** | 14-20/12 | Dernière semaine de Noël | Date limite : **commande avant le mar. 15/12** pour une livraison au plus tard le mer. 23/12 (15/12 + 6 jours ouvrés, `brand.json` → `livraison.noel_2026`) ; aucun compte à rebours fictif ; réassort décidé seulement si la porte stock est franchie | 14 | ≥ 3 commandes par jour sur 7 jours (porte 2 nominale) | < 1 commande par jour → conserver le stock, aucune nouvelle commande fournisseur |
+| **S11** | 21-27/12 | Fêtes : angle « invités » | R03 et variantes ; contenu « après les fêtes » préparé ; réponses SAV prioritaires | 14 | Stock ≥ 15 jours de ventes | Stock < 15 jours → mention « réassort le JJ/MM » réelle |
+| **S12** | 28/12-3/1 | Recalcul du délai annoncé | 30 livraisons atteintes : 90e centile + 2 jours ouvrés (`brand.json` → `livraison.regle_recalcul`) ; tournage du stock « mue » de février ; premier LIVE si le compte y est éligible | 14 | 5 affiliés actifs ; note moyenne ≥ 4,3/5 | Taux de retour > 8 % → analyse des motifs ; vidéo « bien l'utiliser » |
+| **S13** | 4-10/1 | **Revue J+90** | Bilan chiffré ; décision : continuer, changer de héros ou arrêter (critères de 04 §6.2-§6.3 et 05 §9.4) ; stock principal commandé fin janvier si la porte stock est franchie ; plan T1 2027 orienté recherche (février-août) | 14 | Trajectoire ≥ 5 commandes par jour | < 20 commandes sur les 30 jours suivant l'arrivée du stock → critère d'arrêt de 04 §6.3 |
 
-**Volume cumulé** : 252 vidéos TikTok sur 13 semaines (7 + 14 + 11 × 21), soit ≈ 90 vidéos par mois en régime de croisière, conforme à la cible de 02 §0.2.
+**Volume cumulé** : 175 vidéos TikTok sur 13 semaines (7 + 14 + 11 × 14), soit ≈ 60 vidéos par mois en régime de croisière, sous la cible de 02 §0.2 (90) : c'est le prix d'un plan tenable à 25 heures par semaine.
 
 ---
 
@@ -220,11 +237,11 @@ Valeurs « nominales » : trajectoire de 04 §6.2. Valeurs « plancher » : seui
 
 | Règle | Détail | Indicateur |
 |---|---|---|
-| Première heure | Répondre à tous les commentaires dans l'heure qui suit la publication | Taux de réponse ≥ 90 % |
+| Première heure | Répondre aux commentaires dans deux créneaux de 15 minutes, juste après chaque publication | Taux de réponse ≥ 90 % |
 | Objections | Chaque objection posée 2 fois devient une réponse vidéo dans la semaine (pilier P3) | ≥ 3 réponses vidéo par semaine |
 | Commentaire épinglé | FAQ courte : délai, tissus conseillés, retours 30 jours | Présent sur 100 % des vidéos de produit |
 | Commentaires d'intention | Compter chaque compte unique qui écrit « je veux », « où l'acheter », « c'est combien », « lien ? » ; exclure les proches | Critère de la porte 1 |
-| Messages privés | Réponse type + vidéo du tissu concerné en moins de 24 h ouvrées (04 §5.6) | Délai médian de réponse |
+| Messages privés | Réponse type + vidéo du tissu concerné ; engagement 48 h ouvrées, cible interne 24 h (`brand.json` → `service_client`) | Délai médian de réponse |
 | Modération | Masquer insultes et spams ; ne jamais supprimer une critique de fond, y répondre | Registre des critiques dans le tableur |
 | Créateurs repérés | Tout abonné qui publie spontanément sur le produit passe dans la liste de [createurs-affiliation.md](createurs-affiliation.md) | Nombre de créateurs issus de la communauté |
 
@@ -238,7 +255,7 @@ Valeurs « nominales » : trajectoire de 04 §6.2. Valeurs « plancher » : seui
 
 | # | KPI | Définition | Source | Cible S4 | Cible S8 | Cible S13 | Alerte |
 |---|---|---|---|---|---|---|---|
-| 1 | Vidéos publiées | Nombre de vidéos TikTok publiées dans la semaine | TikTok | 21 | 21 | 21 | < 14 |
+| 1 | Vidéos publiées | Nombre de vidéos TikTok publiées dans la semaine | TikTok | 14 | 14 | 14 | < 10 |
 | 2 | Vues médianes par vidéo | Médiane des vues à J+7 des vidéos de la semaine | TikTok Studio | 500 | 1 200 | 2 000 | < 500 après S6 |
 | 3 | Rétention à 3 s | Part des spectateurs encore présents à 3 s (courbe de rétention) | TikTok Studio | ≥ 50 % | ≥ 55 % | ≥ 60 % | < 40 % |
 | 4 | Taux de complétion | Part des spectateurs qui voient la vidéo en entier | TikTok Studio | ≥ 20 % | ≥ 25 % | ≥ 30 % | < 15 % |
@@ -248,12 +265,14 @@ Valeurs « nominales » : trajectoire de 04 §6.2. Valeurs « plancher » : seui
 | 8 | Inscrits liste d'attente | Inscriptions confirmées (double opt-in) | Brevo | 90 | — | — | < 150 à la porte 1 sans vidéo virale |
 | 9 | Sessions du site | Visites par semaine | Cloudflare Web Analytics | 400 | 800 | 1 000 | < 200 |
 | 10 | Conversion du site | Commandes ÷ sessions | Stripe ÷ Cloudflare | — | 1,0 % | 1,5 % | < 0,8 % |
-| 11 | Clics produit TikTok Shop | Clics sur l'ancre ÷ vues | Seller Center | — | 0,8 % | 1,2 % | < 0,5 % |
+| 11 | Clics produit | Avant la porte 1 : clics vers le profil ou le site ÷ vues, moyenne des vidéos de démonstration (TikTok Studio). Ensuite : clics sur l'ancre TikTok Shop ÷ vues | TikTok Studio, Seller Center | ≥ 1,5 % | 0,8 % | 1,2 % | < 1,5 % à la porte 1 ; < 0,5 % ensuite |
 | 12 | Conversion TikTok Shop | Commandes ÷ clics produit | Seller Center | — | 2,5 % | 3,5 % | < 1,5 % |
 | 13 | Commandes par jour | Moyenne sur 7 jours, tous canaux | Stripe + Seller Center | — | 1 | 5 | < 3 sur 14 jours après S10 |
 | 14 | Panier moyen site | CA TTC ÷ commandes, port compris | Stripe | — | 34,80 € | 34,80 € | < 30 € |
 | 15 | Part des kits | Commandes de kits ÷ commandes site | Stripe | — | ≥ 45 % | ≥ 50 % | < 30 % |
-| 16 | Marge moyenne par commande | Selon 04 §4.1 | Tableur | — | ≥ 7,55 € | ≥ 7,55 € | < 6 € |
+| 16 | Marge moyenne par commande | Selon 04 §4.1 | Tableur | — | ≥ 6,30 € | ≥ 6,30 € | < 5 € |
+| 23 | Réserve de trésorerie disponible | Solde bancaire − dettes à 30 jours (fournisseur, TVA) | Banque + tableur | ≥ 300 € | ≥ 300 € | ≥ 300 € | **< 300 € : aucune commande fournisseur ni échantillon** |
+| 24 | Stock disponible par produit | Unités vendables (site + TikTok Shop) | `brand.json`, Seller Center | — | ≥ 5 | ≥ 5 | < 5 : précommande ou indisponible |
 | 17 | Affiliés actifs | Créateurs avec ≥ 1 vidéo par semaine sur 4 semaines | Seller Center | — | 0 | 5 | < 2 à S13 |
 | 18 | Vidéos d'affiliés publiées | Cumul | Seller Center | — | 0 | 15 | — |
 | 19 | E-mails : visites suivies | Visites `utm_source=email` ÷ e-mails délivrés (aucun pixel individuel, voir [emails.md](emails.md) §1.1) | Cloudflare + Brevo | ≥ 5 % | ≥ 4 % | ≥ 3 % | < 2 % |
@@ -287,6 +306,8 @@ Valeurs « nominales » : trajectoire de 04 §6.2. Valeurs « plancher » : seui
 | 20 Avis (nombre ; note) | | | | | | | | | | | | | |
 | 21 Délai P90 | | | | | | | | | | | | | |
 | 22 Taux de retour | | | | | | | | | | | | | |
+| 23 Réserve de trésorerie | | | | | | | | | | | | | |
+| 24 Stock le plus bas | | | | | | | | | | | | | |
 
 ### 8.3 Suivi par vidéo (onglet « Vidéos »)
 
@@ -314,10 +335,10 @@ Valeurs « nominales » : trajectoire de 04 §6.2. Valeurs « plancher » : seui
 | Portée des comptes de marque en baisse (−23 % sur un an selon Socialinsider, 02 §1.2) | Élevée | Ton de créateur plus que de marque ; visage du fondateur dès que possible (04 §8 décision 5) ; affiliés | Médiane < 500 vues après S6 |
 | Saison basse de la recherche « poils » (octobre-décembre) | Certaine | Angles invités, cadeau, hiver ; préparation du pic de février | Taux de clic produit < 0,5 % |
 | Vidéo jugée « non originale » par TikTok | Faible si les règles du §4 sont suivies | Contenu filmé soi-même ; aucune vidéo de fournisseur ; export sans filigrane | Portée nulle soudaine sur plusieurs vidéos |
-| Vidéo virale sans stock | Faible | Précommande avec date écrite ; stock dimensionné sur 10 jours de ventes | > 50 000 vues en 24 h pendant la phase précommande |
+| Vidéo virale sans stock | **Moyenne** : la viralité est l'objectif du plan, et 1 M de vues représente ≈ 420 commandes TikTok Shop (02 §4.4) pour 40 rouleaux en stock et ≈ 15 jours de réassort | Procédure de pic (`brand.json` → `livraison.stock.procedure_pic_viral`) : stock TikTok Shop mis à jour toutes les 2 heures (2 fois par jour hors pic) ; site en précommande avec dates réelles dès 5 unités ; réassort express déclenché à 10 unités si la réserve le permet ; aucune ancre produit sur une vidéo qui dépasse 20 000 vues en 6 heures quand le stock couvre moins de 7 jours | > 20 000 vues en 6 heures |
 | Commentaire négatif sur l'efficacité | Moyenne | Réponse vidéo avec démonstration sur le tissu cité ; reconnaître les limites (cuir, poils longs) | Plus de 3 critiques identiques |
 | Dépendance à TikTok | Élevée | Liste e-mail dès S1 ; Pinterest et Google en parallèle | > 70 % du CA sur TikTok après 6 mois (04 §7) |
-| Épuisement du fondateur | Moyenne | Tournage groupé ; banque de plans ; recyclage | < 14 vidéos par semaine pendant 2 semaines |
+| Épuisement du fondateur | Moyenne | Plan ramené à 25 heures (§4.5) ; tournage groupé ; banque de plans | < 10 vidéos par semaine pendant 2 semaines |
 
 ---
 

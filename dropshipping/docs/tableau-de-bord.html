@@ -1,0 +1,727 @@
+<title>Plan de bataille Canapoil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap">
+<style>
+/* Layout : dossier de pilotage en une colonne ; synthèse d'abord, détail ensuite ; navigation par sections collante. */
+:root {
+  --bg: #FAF5EE; --surface: #FFFFFF; --sunk: #F3EADF; --ink: #2B211B; --muted: #66574C; --faint: #8A7A6D; --line: #E5D8C8;
+  --brand: #B4492A; --brand-soft: #F6E3DA; --forest: #2F4A3C; --ochre: #E3A93B;
+  --s-real: #2a78d6; --s-pess: #eb6834; --s-opt: #1baf7a;
+  --crit: #B42318; --maj: #B54708; --min: #8A6A0B; --ok: #2E6B47;
+  --f-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --f-body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1A1512; --surface: #231C18; --sunk: #2C241F; --ink: #F2E9DF; --muted: #C2B2A3; --faint: #9C8B7C; --line: #3B3029;
+    --brand: #E2795A; --brand-soft: #3A2620; --forest: #8CC2A4; --ochre: #E8B653;
+    --s-real: #3987e5; --s-pess: #d95926; --s-opt: #199e70;
+    --crit: #F0876F; --maj: #F5A25B; --min: #E3B341; --ok: #7CC49A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1A1512; --surface: #231C18; --sunk: #2C241F; --ink: #F2E9DF; --muted: #C2B2A3; --faint: #9C8B7C; --line: #3B3029;
+  --brand: #E2795A; --brand-soft: #3A2620; --forest: #8CC2A4; --ochre: #E8B653;
+  --s-real: #3987e5; --s-pess: #d95926; --s-opt: #199e70;
+  --crit: #F0876F; --maj: #F5A25B; --min: #E3B341; --ok: #7CC49A;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: clamp(16px, 4vw, 40px); padding-block: 0 64px; }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 700; text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); line-height: 1.02; }
+h2 { font-size: clamp(1.5rem, 3.4vw, 2.1rem); line-height: 1.1; }
+h3 { font-size: 1.15rem; line-height: 1.25; }
+p { margin: 0; max-width: 68ch; }
+a { color: var(--brand); text-underline-offset: 3px; }
+.num, td, .tile-value, .tl-date { font-variant-numeric: tabular-nums; }
+.eyebrow { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+.small { font-size: 0.875rem; }
+
+/* Navigation */
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.nav-in { max-width: 1120px; margin: 0 auto; padding: 10px clamp(16px, 4vw, 40px); display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.nav a { flex: none; font-size: 0.85rem; font-weight: 500; color: var(--ink); text-decoration: none; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); }
+.nav a:hover, .nav a:focus-visible { border-color: var(--brand); color: var(--brand); }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+/* En-tête */
+header.hero { padding-block: 48px 28px; display: grid; gap: 18px; }
+.brandmark { font-family: var(--f-display); font-weight: 700; color: var(--brand); font-size: 1.35rem; }
+.hero h1 em { font-style: italic; color: var(--brand); }
+.lede { font-size: 1.12rem; color: var(--muted); max-width: 62ch; }
+.verdict { display: flex; gap: 14px; align-items: flex-start; padding: 16px 18px; border-radius: var(--r); background: var(--surface); border: 1px solid var(--line); max-width: 860px; }
+.verdict .badge { flex: none; }
+.badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.78rem; font-weight: 700; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+.badge::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.b-go { color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, transparent); }
+.b-stop { color: var(--crit); background: color-mix(in srgb, var(--crit) 14%, transparent); }
+.b-warn { color: var(--maj); background: color-mix(in srgb, var(--maj) 14%, transparent); }
+.b-min { color: var(--min); background: color-mix(in srgb, var(--min) 16%, transparent); }
+.b-neutral { color: var(--muted); background: var(--sunk); }
+
+/* Tuiles */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 8px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.tile-label { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+.tile-value { font-family: var(--f-display); font-size: 2.3rem; line-height: 1; font-weight: 700; }
+.tile-value small { font-family: var(--f-body); font-size: 0.95rem; font-weight: 500; color: var(--muted); }
+.tile-note { font-size: 0.85rem; color: var(--muted); }
+.tile.alarm .tile-value { color: var(--brand); }
+
+/* Sections */
+section { padding-block: 44px 8px; display: grid; gap: 18px; scroll-margin-top: 64px; }
+.sec-head { display: grid; gap: 8px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: clamp(14px, 2.5vw, 24px); min-width: 0; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+
+/* Tableaux */
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 700; background: var(--sunk); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.r, th.r { text-align: right; white-space: nowrap; }
+.ladder td:first-child { font-family: var(--f-display); font-weight: 700; font-size: 1.15rem; white-space: nowrap; }
+.logbar { height: 10px; border-radius: 0 4px 4px 0; background: var(--brand); min-width: 4px; }
+.logcell { min-width: 150px; }
+.logcell .num { font-size: 0.85rem; color: var(--muted); }
+.row-far td { color: var(--muted); }
+.row-far td:first-child { color: var(--ink); }
+
+/* Le pari */
+.bet dt { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.bet dd { margin: 2px 0 14px; }
+.bet dd:last-child { margin-bottom: 0; }
+.kits { display: grid; gap: 8px; margin-top: 4px; }
+.kit { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px dashed var(--line); }
+.kit:last-child { border-bottom: 0; }
+.shots { display: grid; grid-template-columns: minmax(0, 0.42fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+.shots figure { margin: 0; display: grid; gap: 6px; }
+.shots img { width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--line); display: block; }
+.shots figcaption { font-size: 0.8rem; color: var(--muted); }
+
+/* Graphiques */
+.chart { position: relative; width: 100%; min-width: 0; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text { fill: var(--muted); font-family: var(--f-body); font-size: 12px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.85rem; color: var(--ink); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
+.legend i.sq { width: 12px; height: 12px; border-radius: 3px; }
+.tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--bg); font-size: 0.8rem; line-height: 1.4; padding: 8px 10px; border-radius: 8px; white-space: nowrap; transform: translate(-50%, -110%); opacity: 0; transition: opacity .12s; z-index: 3; }
+.tip b { font-weight: 700; }
+.tip .sw { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+details.data { font-size: 0.875rem; }
+details.data summary { cursor: pointer; color: var(--muted); font-weight: 500; padding-block: 4px; }
+details.data .tbl-wrap { margin-top: 8px; }
+
+/* Cascade (HTML) */
+.wf { display: grid; gap: 6px; }
+.wf-row { display: grid; grid-template-columns: minmax(0, 240px) minmax(0, 1fr) 76px; gap: 12px; align-items: center; }
+.wf-label { font-size: 0.9rem; }
+.wf-track { position: relative; height: 22px; }
+.wf-bar { position: absolute; top: 2px; bottom: 2px; border-radius: 4px; }
+.wf-bar.total { background: var(--ink); }
+.wf-bar.ded { background: var(--s-pess); }
+.wf-bar.final { background: var(--s-real); }
+.wf-val { text-align: right; font-size: 0.9rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.wf-val.neg { color: var(--muted); font-weight: 500; }
+.wf-row.is-final { border-top: 1px solid var(--line); padding-top: 8px; margin-top: 2px; }
+
+/* Tornado (HTML) */
+.tor { display: grid; gap: 6px; }
+.tor-row { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 12px; align-items: center; }
+.tor-track { position: relative; height: 24px; }
+.tor-track::after { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--faint); }
+.tor-bar { position: absolute; top: 3px; bottom: 3px; }
+.tor-bar.loss { background: var(--s-pess); right: 50%; border-radius: 4px 0 0 4px; }
+.tor-bar.gain { background: var(--s-real); left: 50%; border-radius: 0 4px 4px 0; }
+.tor-txt { position: absolute; top: 50%; transform: translateY(-50%); font-size: 0.75rem; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.tor-txt.in { color: #fff; font-weight: 700; transform: translate(0, -50%); }
+.tor-txt.in[style*="right"] { transform: translate(100%, -50%); }
+.tor-txt.in[style*="left"] { transform: translate(-100%, -50%); }
+.tor-axis { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 12px; font-size: 0.78rem; color: var(--muted); }
+.tor-axis div:last-child { display: flex; justify-content: space-between; }
+
+/* Frise des portes */
+.tl { display: grid; gap: 0; }
+.tl-item { display: grid; grid-template-columns: 112px 22px minmax(0, 1fr); gap: 12px; }
+.tl-date { font-size: 0.85rem; font-weight: 700; color: var(--muted); padding-top: 2px; text-align: right; }
+.tl-rail { position: relative; display: flex; justify-content: center; }
+.tl-rail::before { content: ""; position: absolute; top: 0; bottom: 0; width: 2px; background: var(--line); }
+.tl-item:first-child .tl-rail::before { top: 10px; }
+.tl-item:last-child .tl-rail::before { bottom: calc(100% - 10px); }
+.tl-dot { position: relative; margin-top: 5px; width: 12px; height: 12px; border-radius: 50%; background: var(--surface); border: 2px solid var(--faint); }
+.tl-item.gate .tl-dot { width: 18px; height: 18px; margin-top: 2px; border-radius: 4px; transform: rotate(45deg); background: var(--brand); border-color: var(--brand); }
+.tl-body { padding-bottom: 20px; display: grid; gap: 4px; }
+.tl-body h3 { font-size: 1.02rem; }
+.tl-item.gate .tl-body h3 { color: var(--brand); }
+
+/* Red team */
+.rt-bar { display: flex; height: 16px; border-radius: 6px; overflow: hidden; gap: 2px; }
+.rt-bar div { height: 100%; }
+.rt-legend { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Options */
+.opt { display: grid; gap: 10px; align-content: start; }
+.opt .opt-amt { font-family: var(--f-display); font-size: 2rem; font-weight: 700; line-height: 1; }
+.opt.reco { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand) inset; }
+ol.steps { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; counter-reset: s; }
+ol.steps li { counter-increment: s; display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; }
+ol.steps li::before { content: "J" counter(s); font-family: var(--f-display); font-weight: 700; font-size: 1.3rem; color: var(--brand); }
+ol.steps .check { font-size: 0.85rem; color: var(--muted); }
+ol.steps .check b { color: var(--ok); }
+.files { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.files code { font-size: 0.82rem; background: var(--sunk); padding: 2px 6px; border-radius: 5px; overflow-wrap: anywhere; }
+.files ul { margin: 6px 0 0; padding-left: 18px; font-size: 0.9rem; color: var(--muted); }
+footer { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 0.85rem; color: var(--muted); display: grid; gap: 6px; }
+
+@media (max-width: 640px) {
+  .wf-row { grid-template-columns: minmax(0, 1fr) 70px; }
+  .wf-label { grid-column: 1 / -1; margin-bottom: -4px; }
+  .tor-row, .tor-axis { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .tor-axis div:first-child { display: none; }
+  .tl-item { grid-template-columns: 22px minmax(0, 1fr); }
+  .tl-date { grid-column: 2; grid-row: 1; text-align: left; padding: 0; }
+  .tl-rail { grid-column: 1; grid-row: 1 / span 2; }
+  .tl-body { grid-column: 2; }
+  .shots { grid-template-columns: 1fr; }
+  .tile-value { font-size: 2rem; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<nav class="nav" aria-label="Sections">
+  <div class="nav-in">
+    <a href="#realite">Les millions</a>
+    <a href="#pari">Le pari</a>
+    <a href="#euro">Chaque euro</a>
+    <a href="#scenarios">Scénarios</a>
+    <a href="#sensibilite">Leviers</a>
+    <a href="#portes">Portes</a>
+    <a href="#redteam">Red team</a>
+    <a href="#decisions">À décider</a>
+    <a href="#j1">5 premiers jours</a>
+    <a href="#livrables">Livrables</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="brandmark">canapoil</div>
+    <div class="eyebrow">Dossier de pilotage · 9 agents · 12 octobre 2026</div>
+    <h1>Un vrai business, <em>pas des millions</em> en six mois.</h1>
+    <p class="lede">Neuf agents ont étudié le marché, choisi le produit, chiffré l'économie, codé le site, écrit le marketing, puis attaqué leur propre travail. Résultat : un plan exécutable, des probabilités honnêtes et trois décisions qui t'appartiennent.</p>
+    <div class="verdict">
+      <span class="badge b-warn">Feu orange</span>
+      <p><strong>Phase 0 autorisée</strong> : contenu TikTok et liste d'attente, 45 € au total. <strong>Aucune vente</strong> tant que trois points ne sont pas signés : l'option de financement, l'identité légale de ta société et la recherche de propriété intellectuelle.</p>
+    </div>
+    <div class="tiles">
+      <div class="tile alarm">
+        <div class="tile-label">Atteindre 1 M€ net par mois</div>
+        <div class="tile-value">≤ 0,1 %</div>
+        <div class="tile-note">Borne haute (estimation, confiance faible). Il faudrait 8,3 M€ de CA HT et 7 400 commandes par jour</div>
+      </div>
+      <div class="tile">
+        <div class="tile-label">Palier 1 : 1 000 € net par mois</div>
+        <div class="tile-value">10–20 % <small>à 12 mois</small></div>
+        <div class="tile-note">La red team l'estime plus bas : 5–12 %</div>
+      </div>
+      <div class="tile">
+        <div class="tile-label">Cash réel avant le 1er euro encaissé</div>
+        <div class="tile-value">910 €</div>
+        <div class="tile-note">+ 2 000 € de réserve (scénario réaliste). Ton budget : 150 €</div>
+      </div>
+      <div class="tile">
+        <div class="tile-label">Marge nette par commande</div>
+        <div class="tile-value">6,30 € <small>/ 28,08 € TTC</small></div>
+        <div class="tile-note">Après TVA, produit, port, commissions et retours</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 1. Réalité -->
+  <section id="realite">
+    <div class="sec-head">
+      <div class="eyebrow">01 · L'échelle</div>
+      <h2>Ce que coûte chaque palier de bénéfice</h2>
+      <p class="muted">Chaque palier multiplie le volume par 10. La barre montre les commandes par jour sur une échelle logarithmique : le palier 4 demande 1 100 fois plus de commandes que le palier 1.</p>
+    </div>
+    <div class="tbl-wrap">
+      <table class="ladder" id="ladder">
+        <thead><tr><th>Bénéfice net / mois</th><th class="r">CA HT / mois</th><th>Commandes / jour</th><th class="r">Pub / mois</th><th class="r">BFR</th><th>Équipe</th><th>Probabilité</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="small muted">Paliers 3 et 4 : repères d'échelle obtenus par ratios (marge nette de 12 à 16 %), sans base produit. Source : <code>finance/data.json</code> → paliers.</p>
+  </section>
+
+  <!-- 2. Le pari -->
+  <section id="pari">
+    <div class="sec-head">
+      <div class="eyebrow">02 · Le pari</div>
+      <h2>Les poils d'animaux sur le canapé</h2>
+      <p class="muted">60 % des Français ont un animal : 16,6 M de chats et 9,6 M de chiens (FACCO-Odoxa 2026). Le problème se filme en 3 secondes : un canapé couvert de poils, un geste, un réservoir plein.</p>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <dl class="bet">
+          <dt>Marque</dt>
+          <dd><strong>Canapoil</strong> : « Les câlins sur le canapé, les poils à la poubelle. » Domaines .fr et .com libres le 12/10 ; dépôt INPI à faire.</dd>
+          <dt>Produit phare</dt>
+          <dd>Rouleau anti-poils réutilisable, <strong>24,90 €</strong>. Score de 89/100, en duel avec le tapis de fouille (87/100) jusqu'à la porte 1.</dd>
+          <dt>Gamme et kits</dt>
+          <dd>
+            <div class="kits">
+              <div class="kit"><span>Gant de toilettage silicone</span><span class="num">9,90 €</span></div>
+              <div class="kit"><span>Raclette tapis et voiture</span><span class="num">12,90 €</span></div>
+              <div class="kit"><span>Kit anti-poils</span><span class="num">29,90 €</span></div>
+              <div class="kit"><span><strong>Grand kit</strong> (offre mise en avant)</span><span class="num"><strong>39,90 €</strong></span></div>
+              <div class="kit"><span>Kit chat d'hiver (oct. → févr.)</span><span class="num">44,90 €</span></div>
+            </div>
+          </dd>
+          <dt>Acquisition</dt>
+          <dd>100 % organique : TikTok et TikTok Shop, créateurs payés à la commission (12 à 20 %), Reels, Pinterest, SEO. Aucune publicité avant que les 7 conditions de rentabilité soient réunies.</dd>
+          <dt>Logistique</dt>
+          <dd>Micro-stock en France, expédié en point relais en 3 à 6 jours ouvrés. TikTok Shop interdit l'expédition depuis la Chine : il faut un stock local.</dd>
+        </dl>
+      </div>
+      <div class="card" style="display:grid; gap:12px; align-content:start">
+        <h3>Le site, déjà codé et testé</h3>
+        <div class="shots">
+          <figure><img src="captures/accueil-mobile.png" alt="Accueil du site Canapoil sur mobile : titre « Les câlins sur le canapé, les poils à la poubelle » et bouton Découvrir le rouleau à 24,90 €" width="390" height="844" loading="lazy"><figcaption>Accueil, mobile</figcaption></figure>
+          <figure><img src="captures/produit-desktop.png" alt="Fiche produit du rouleau anti-poils sur ordinateur, avec bénéfices et choix entre Grand kit à 39,90 € et rouleau seul à 24,90 €" width="1440" height="900" loading="lazy"><figcaption>Fiche produit, ordinateur</figcaption></figure>
+        </div>
+        <p class="small muted">25 pages, panier, paiement Stripe, pages légales, bandeau cookies conforme, bloc GPSR. 417 contrôles automatiques sur 417 réussis, aucune erreur console. Aucun faux avis ni faux compte à rebours. Les illustrations seront remplacées par de vraies photos à réception du stock.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Cascade -->
+  <section id="euro">
+    <div class="sec-head">
+      <div class="eyebrow">03 · Économie unitaire</div>
+      <h2>Où partent les 28,08 € d'une commande moyenne</h2>
+      <p class="muted">Commande moyenne du mix de lancement : 20 % site, 22 % TikTok en propre, 58 % via des créateurs affiliés. Il reste 6,30 €, soit 27 % du CA HT. La TVA et le port pèsent plus lourd que le produit lui-même.</p>
+    </div>
+    <div class="card">
+      <div class="wf" id="wf" role="img" aria-label="Cascade : de 28,08 € TTC à 6,30 € de marge nette"></div>
+      <details class="data"><summary>Voir les données</summary><div class="tbl-wrap"><table id="wf-table"><thead><tr><th>Poste</th><th class="r">Montant</th></tr></thead><tbody></tbody></table></div></details>
+    </div>
+  </section>
+
+  <!-- 4. Scénarios -->
+  <section id="scenarios">
+    <div class="sec-head">
+      <div class="eyebrow">04 · 18 mois, oct. 2026 → mars 2028</div>
+      <h2>Trois trajectoires, une seule rentable pour de vrai</h2>
+      <p class="muted">Bénéfice net mensuel avant impôt et avant ta rémunération. Dans le scénario réaliste, le palier 1 arrive en novembre 2027 et ton travail rapporte environ 4 € de l'heure la première année.</p>
+    </div>
+    <div class="card" style="display:grid; gap:14px">
+      <div class="legend" id="legend-sc"></div>
+      <h3>Bénéfice net par mois</h3>
+      <div class="chart" id="ch-benef"></div>
+      <h3>Trésorerie en fin de mois, départ à 0 €</h3>
+      <div class="chart" id="ch-treso"></div>
+      <p class="small muted">Le creux vient du règlement TikTok Shop, 31 jours après livraison pour un vendeur débutant, alors que le fournisseur est payé à la commande.</p>
+      <details class="data"><summary>Voir les données mois par mois</summary><div class="tbl-wrap"><table id="sc-table"></table></div></details>
+    </div>
+    <div class="tbl-wrap">
+      <table id="sc-sum">
+        <thead><tr><th>Scénario</th><th class="r">Commandes 18 mois</th><th class="r">CA HT 18 mois</th><th class="r">Bénéfice cumulé</th><th class="r">Creux de trésorerie</th><th>Hypothèse</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 5. Sensibilité -->
+  <section id="sensibilite">
+    <div class="sec-head">
+      <div class="eyebrow">05 · Leviers</div>
+      <h2>Le prix pèse plus que tout le reste</h2>
+      <p class="muted">Effet d'une variation de ±20 % de chaque variable sur un mois type du palier 1 (906 € de bénéfice, septembre 2027, scénario réaliste). Baisser le prix de 20 % efface 73 % du bénéfice, à volume constant.</p>
+    </div>
+    <div class="card" style="display:grid; gap:10px">
+      <div class="legend"><span><i class="sq" style="background:var(--s-pess)"></i>Bénéfice en baisse</span><span><i class="sq" style="background:var(--s-real)"></i>Bénéfice en hausse</span></div>
+      <div class="tor" id="tor"></div>
+      <div class="tor-axis"><div></div><div><span class="num">−700 €</span><span class="num">0</span><span class="num">+700 €</span></div></div>
+    </div>
+  </section>
+
+  <!-- 6. Portes -->
+  <section id="portes">
+    <div class="sec-head">
+      <div class="eyebrow">06 · Feuille de route</div>
+      <h2>Des portes chiffrées : on avance ou on arrête</h2>
+      <p class="muted">Aucun euro de stock n'est engagé sans signal de demande mesuré. Chaque porte a un critère de passage et un critère d'arrêt.</p>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <div class="tl">
+          <div class="tl-item"><div class="tl-date">12–18 oct.</div><div class="tl-rail"><span class="tl-dot"></span></div><div class="tl-body"><h3>S1 · Fondations</h3><p class="small muted">Option de financement signée, Kbis et TVA avec le comptable, recherches INPI/TMview/DesignView, domaine, comptes sociaux, site en liste d'attente. Budget : 45 €.</p></div></div>
+          <div class="tl-item"><div class="tl-date">19 oct.–15 nov.</div><div class="tl-rail"><span class="tl-dot"></span></div><div class="tl-body"><h3>S2–S5 · Contenu et duel</h3><p class="small muted">2 vidéos par jour, environ 15 démonstrations par produit. Duel entre le rouleau et le tapis de fouille, mesuré par UTM et inscriptions.</p></div></div>
+          <div class="tl-item gate"><div class="tl-date">15 nov.</div><div class="tl-rail"><span class="tl-dot"></span></div><div class="tl-body"><h3>Porte 1 · Signal de demande</h3><p class="small">Go si les 3 critères sont réunis : 1 vidéo à plus de 50 000 vues avec 1 % de clics ou 150 inscrits ; taux de clics produit ≥ 1,5 % ; 20 commentaires d'intention hors entourage.</p></div></div>
+          <div class="tl-item"><div class="tl-date">16 nov.</div><div class="tl-rail"><span class="tl-dot"></span></div><div class="tl-body"><h3>S6 · Stock et précommandes</h3><p class="small muted">Médiateur, éco-organisme, INPI, assurance RC, micro-stock de 105 unités payé, puis ouverture des précommandes. Cash : 910 €.</p></div></div>
+          <div class="tl-item gate"><div class="tl-date">Début déc.</div><div class="tl-rail"><span class="tl-dot"></span></div><div class="tl-body"><h3>Porte stock</h3><p class="small">20 précommandes hors entourage et conversion liste → précommande ≥ 8 %. Sinon : aucun réassort.</p></div></div>
+          <div class="tl-item gate"><div class="tl-date">Mars–avr. 2027</div><div class="tl-rail"><span class="tl-dot"></span></div><div class="tl-body"><h3>Porte 2 · Traction</h3><p class="small">3 commandes par jour pendant 7 jours. Ouvre le stock principal et les créateurs à grande échelle.</p></div></div>
+          <div class="tl-item"><div class="tl-date">Nov. 2027</div><div class="tl-rail"><span class="tl-dot"></span></div><div class="tl-body"><h3>Palier 1 · 1 000 € net par mois</h3><p class="small muted">Environ 202 commandes par mois. Passage à Shopify, import groupé, 3PL. Ensuite seulement : publicité payante et marque propre.</p></div></div>
+        </div>
+      </div>
+      <div class="card" style="display:grid; gap:12px; align-content:start">
+        <h3>Critères d'arrêt</h3>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Signal</th><th>Décision</th></tr></thead>
+            <tbody>
+              <tr><td>15–20 vidéos d'un produit, aucune au-delà de 5 000 vues</td><td>Produit suivant</td></tr>
+              <tr><td>Échantillon inefficace sur 2 tissus sur 3</td><td>Second fournisseur, sinon produit suivant</td></tr>
+              <tr><td>Dessin ou modèle enregistré trouvé</td><td><span class="badge b-stop">Abandon immédiat</span></td></tr>
+              <tr><td>Moins de 20 précommandes ou conversion &lt; 8 %</td><td>Aucun réassort, retour au contenu</td></tr>
+              <tr><td>Bénéfice &lt; 500 €/mois en mai 2027, ou négatif 3 mois de suite</td><td>Changer de héros ou arrêter</td></tr>
+              <tr><td>3 produits testés sans porte 1 (≈ 6 mois)</td><td><span class="badge b-stop">Arrêt du projet</span> Perte : 45–90 €</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="small muted">Le scénario pessimiste déclenche le critère économique en mars 2027. Le dispositif est conçu pour que l'échec coûte moins de 100 €.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Red team -->
+  <section id="redteam">
+    <div class="sec-head">
+      <div class="eyebrow">07 · Contre-expertise</div>
+      <h2>39 problèmes trouvés, 23 corrigés, 9 en attente de toi</h2>
+      <p class="muted">Un agent a joué l'investisseur sceptique, l'avocat et le testeur. Un second a corrigé tout ce qui était critique ou majeur, puis a relancé les tests.</p>
+    </div>
+    <div class="grid2">
+      <div class="card" style="display:grid; gap:12px; align-content:start">
+        <div class="rt-bar" role="img" aria-label="5 critiques, 18 majeurs, 16 mineurs">
+          <div style="flex:5; background:var(--crit)"></div>
+          <div style="flex:18; background:var(--maj)"></div>
+          <div style="flex:16; background:var(--min)"></div>
+        </div>
+        <div class="rt-legend">
+          <span class="badge b-stop">5 critiques</span>
+          <span class="badge b-warn">18 majeurs</span>
+          <span class="badge b-min">16 mineurs</span>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Critique trouvé</th><th>Statut</th></tr></thead>
+            <tbody>
+              <tr><td>E-mail de confirmation annonçant un délai faux en précommande</td><td><span class="badge b-go">Corrigé</span></td></tr>
+              <tr><td>Stock commandé en plein Black Friday, dates de Noël intenables</td><td><span class="badge b-go">Corrigé</span></td></tr>
+              <tr><td>Trois montants de cash incompatibles entre stratégie et finance</td><td><span class="badge b-go">Aligné</span></td></tr>
+              <tr><td>Formulaires serveur exploitables pour de l'hameçonnage</td><td><span class="badge b-go">Corrigé</span></td></tr>
+              <tr><td>Identité légale et fabricants GPSR manquants</td><td><span class="badge b-warn">À toi</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card" style="display:grid; gap:10px; align-content:start">
+        <h3>Contrôle ajouté : le brevet ChomChom</h3>
+        <p class="small">Le rouleau ressemble au ChomChom Roller. Son brevet (US 8 117 706, Nippon Seal, expiration estimée en 2030) n'a <strong>aucun dépôt européen</strong> dans sa famille : dépôts US, Japon, Chine (expiré) et Hong Kong (éteint) seulement.</p>
+        <p class="small">Risque brevet en France : <span class="badge b-min">faible à moyen</span> (confiance moyenne). Trois risques restent ouverts :</p>
+        <ul class="small" style="margin:0; padding-left:18px; display:grid; gap:4px">
+          <li>des dessins et modèles UE non vérifiés : la recherche DesignView du jour 2 reste obligatoire ;</li>
+          <li>une copie servile de la forme et des couleurs : choisir un modèle visuellement distinct ;</li>
+          <li>l'usage du nom « ChomChom » ou de ses vidéos : interdit partout, en annonce comme en mot-clé.</li>
+        </ul>
+        <p class="small muted">Sources : <a href="https://patents.google.com/patent/US8117706B2/en" target="_blank" rel="noopener">Google Patents</a>, <a href="https://case-law.vlex.com/vid/cheddar-creations-inc-v-1028687036" target="_blank" rel="noopener">Cheddar Creations v. Pawico</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Décisions -->
+  <section id="decisions">
+    <div class="sec-head">
+      <div class="eyebrow">08 · À décider par toi, avant le 18 octobre</div>
+      <h2>Le budget de 150 € ne suffit pas : choisis ton option</h2>
+      <p class="muted">Vendre légalement son propre stock en France impose un médiateur, un éco-organisme, une assurance et un stock payé avant les premiers encaissements. Trois options tiennent la route.</p>
+    </div>
+    <div class="grid3">
+      <div class="card opt reco">
+        <span class="badge b-go">Recommandée si possible</span>
+        <h3>a · Apport en compte courant</h3>
+        <div class="opt-amt num">2 400 €</div>
+        <p class="small muted">Plan complet, créateurs affiliés dès décembre. Remboursable sans impôt dès que la trésorerie le permet.</p>
+      </div>
+      <div class="card opt">
+        <span class="badge b-neutral">Sinon</span>
+        <h3>b · TikTok Shop plafonné</h3>
+        <div class="opt-amt num">910 €</div>
+        <p class="small muted">Ventes TikTok Shop limitées au stock déjà payé, pas d'affiliés avant le premier règlement. Croissance plus lente, pas de creux en février.</p>
+      </div>
+      <div class="card opt">
+        <span class="badge b-neutral">Sortie propre</span>
+        <h3>c · Arrêt après la phase 0</h3>
+        <div class="opt-amt num">45 €</div>
+        <p class="small muted">Si la porte 1 n'est pas franchie, ou si a et b sont exclues. Tu gardes le site, la marque et l'audience.</p>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Autre décision</th><th>Recommandation</th><th>Quand</th></tr></thead>
+        <tbody>
+          <tr><td>Régime de TVA</td><td>Franchise en base tant que le CA reste sous 85 000 € (marge 7,59 € au lieu de 6,30 €), à valider avec un expert-comptable</td><td>S1</td></tr>
+          <tr><td>Objet social du Kbis</td><td>Il doit couvrir la vente en ligne de marchandises : Stripe et TikTok Shop le contrôlent</td><td>S1</td></tr>
+          <tr><td>Temps disponible</td><td>25 h par semaine avec le plan allégé ; 35–40 h seulement si tu les as vraiment</td><td>S1</td></tr>
+          <tr><td>Présence à l'écran</td><td>Mains et animal au départ, visage dès que possible (les lives l'exigent)</td><td>S2</td></tr>
+          <tr><td>Prix du rouleau</td><td>24,90 € si la médiane TikTok Shop dépasse 16 € ; sinon 19,90 € et Grand kit mis en avant</td><td>Avant la porte 1</td></tr>
+          <tr><td>Assurance RC produits</td><td>Avant de commander le stock : en important, ta société répond comme le fabricant</td><td>Avant la porte 1</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 9. J1-J5 -->
+  <section id="j1">
+    <div class="sec-head">
+      <div class="eyebrow">09 · Exécution</div>
+      <h2>Les 5 premiers jours</h2>
+      <p class="muted">Le détail heure par heure, jusqu'au jour 14, est dans <code>docs/demarrage-J1-J14.md</code>. Une règle : rien n'avance tant que le résultat du jour précédent n'est pas coché.</p>
+    </div>
+    <ol class="steps">
+      <li><div><strong>Décider du financement.</strong> Lire la section 5 de l'analyse financière, choisir a, b ou c par écrit, prendre rendez-vous avec l'expert-comptable. <div class="check">Réussi si : <b>option signée et rendez-vous fixé</b>. 1 h 30, 0 €.</div></div></li>
+      <li><div><strong>Vérifier la propriété intellectuelle.</strong> TMview et data.inpi.fr pour « Canapoil » ; DesignView pour « lint roller » et « pet hair remover » ; captures d'écran datées. <div class="check">Réussi si : <b>aucune marque identique ni aucun modèle proche</b>. 2 h, 0 €.</div></div></li>
+      <li><div><strong>Réserver les noms.</strong> Acheter canapoil.fr, créer l'e-mail du service client, ouvrir @canapoil sur TikTok, Instagram, Pinterest et YouTube avec double authentification. <div class="check">Réussi si : <b>domaine et 4 comptes à ton nom</b>. 2 h, ≈ 10 €.</div></div></li>
+      <li><div><strong>Identité légale et TVA.</strong> Avec le comptable : Kbis, régime de TVA, traitement de l'achat du stock. Remplir <code>brand.json</code> → identité. <div class="check">Réussi si : <b>il ne reste que les variables liées à la porte 1</b>. 2 h.</div></div></li>
+      <li><div><strong>Mettre le site en ligne en liste d'attente.</strong> Générer, déployer sur Cloudflare Pages, brancher le domaine, Turnstile et Web Analytics. Pas de clé Stripe avant la porte 1. <div class="check">Réussi si : <b><code>generer.py --publication</code> passe sans erreur</b>. 3 h, 0 €.</div></div></li>
+    </ol>
+  </section>
+
+  <!-- 10. Livrables -->
+  <section id="livrables">
+    <div class="sec-head">
+      <div class="eyebrow">10 · Ce que l'armée a produit</div>
+      <h2>Tout est dans le dépôt, branche <code>ccr-e41ac827-z9ec4r</code></h2>
+      <p class="muted">9 agents, 1 009 actions, environ 3 h 45 de travail en parallèle. Tous les chiffres viennent d'un seul fichier source, <code>strategie/brand.json</code>.</p>
+    </div>
+    <div class="files">
+      <div class="card"><h3>Recherche</h3><ul><li><code>recherche/01-marche-niches.md</code> : 15 niches notées, top 5</li><li><code>02-acquisition.md</code> : canaux à 0 €, benchmarks</li><li><code>03-legal-ops.md</code> : droit, GPSR, douane 2026</li><li>57 mots-clés Google Trends, 382 prix relevés</li></ul></div>
+      <div class="card"><h3>Stratégie et finance</h3><ul><li><code>strategie/04-strategie.md</code> + <code>brand.json</code></li><li><code>finance/modele_financier.xlsx</code> : 6 onglets en formules</li><li><code>05-analyse-financiere.md</code></li><li>Modèle recalculé : 801 valeurs, 0 écart</li></ul></div>
+      <div class="card"><h3>Site et Shopify</h3><ul><li><code>site/</code> : 25 pages, Stripe, Cloudflare</li><li>417/417 contrôles, 19/19 tests serveur</li><li><code>shopify-kit/</code> : CSV d'import, pages, thème, apps</li></ul></div>
+      <div class="card"><h3>Marketing</h3><ul><li>30 scripts TikTok prêts à tourner</li><li>Plan organique sur 90 jours, lancement en 30 jours</li><li>Méthode créateurs, séquences d'e-mails, SEO</li><li>Règles de passage à la publicité payante</li></ul></div>
+      <div class="card"><h3>Pilotage</h3><ul><li><code>docs/demarrage-J1-J14.md</code></li><li><code>docs/pilotage.xlsx</code> : suivi hebdomadaire</li><li><code>docs/gabarits/</code> : étiquettes, notices</li><li><code>docs/revue-red-team.md</code></li></ul></div>
+    </div>
+  </section>
+
+  <footer>
+    <div>Chiffres : <code>finance/data.json</code> (modèle du 12/10/2026, coûts d'achat majorés de 20 % par prudence), <code>strategie/04-strategie.md</code>, <code>docs/revue-red-team.md</code>. Probabilités : estimations de confiance faible.</div>
+    <div>Ce dossier ne remplace ni un expert-comptable ni un avocat. Les points fiscaux et douaniers sont signalés « à valider ».</div>
+  </footer>
+</div>
+
+<div class="tip" id="tip" role="status" aria-live="polite"></div>
+
+<script type="application/json" id="data">{"mois": ["oct. 2026", "nov. 2026", "déc. 2026", "janv. 2027", "févr. 2027", "mars 2027", "avr. 2027", "mai 2027", "juin 2027", "juil. 2027", "août 2027", "sept. 2027", "oct. 2027", "nov. 2027", "déc. 2027", "janv. 2028", "févr. 2028", "mars 2028"], "pessimiste": {"benef": [-145, -417, 85, -45, -49, -14, 1, 8, 8, 8, 15, 30, 49, 39, 207, 15, 15, 30], "treso": [-145, -900, -1090, -1121, -1147, -1032, -964, -962, -954, -956, -966, -987, -1088, -1220, -783, -605, -610, -591], "cmdj": [0.0, 0.3, 1.0, 0.6, 0.7, 0.7, 0.8, 0.8, 0.8, 0.8, 0.9, 0.9, 1.1, 1.5, 1.8, 0.9, 0.9, 0.9], "tot": {"commandes": 463, "ca_ht": 11048, "benefice_net": -159, "is_provisionne": 0, "resultat_apres_is": -159, "publicite": 0}, "creux": 1220, "mois_creux": "nov. 2027", "desc": "Porte 1 franchie de justesse ; moins d'une commande par jour hors Noël ; peu d'affiliés actifs ; ni import groupé ni publicité."}, "realiste": {"benef": [-145, -363, 225, 130, 124, 300, 196, 552, 678, 748, 811, 906, 222, 1390, 2080, 1370, 1569, 1827], "treso": [-145, -1015, -1429, -1726, -2000, -1517, -1334, -1088, -667, -101, 508, 1872, 1490, 2099, 4131, 6150, 7453, 9091], "cmdj": [0.0, 0.4, 1.5, 1.7, 2.2, 2.8, 3.5, 4.2, 4.8, 5.3, 5.7, 6.2, 6.8, 8.8, 11.4, 8.9, 8.7, 9.7], "tot": {"commandes": 2776, "ca_ht": 65712, "benefice_net": 12622, "is_provisionne": 1893, "resultat_apres_is": 10729, "publicite": 1350}, "creux": 2000, "mois_creux": "févr. 2027", "desc": "Croissance organique régulière ; palier 1 en novembre 2027 ; import groupé en octobre 2027 ; test publicitaire de 3 mois arrêté faute de rentabilité."}, "optimiste": {"benef": [-145, -120, 1377, 1501, 1354, 1908, 2349, 2790, 3184, 4643, 5153, 6237, 5426, 7638, 10530, 7949, 9240, 10961], "treso": [-145, -2410, -4060, -4412, -4539, -1586, 954, 4782, 8383, 12269, 16089, 20517, 23209, 27531, 39205, 46847, 54090, 64441], "cmdj": [0.0, 1.0, 6.7, 7.7, 9.3, 12.0, 14.3, 16.7, 18.7, 21.2, 23.7, 28.8, 35.5, 45.7, 57.6, 46.9, 52.6, 60.0], "tot": {"commandes": 13750, "ca_ht": 346754, "benefice_net": 81973, "is_provisionne": 13317, "resultat_apres_is": 68656, "publicite": 35000}, "creux": 4539, "mois_creux": "févr. 2027", "desc": "Vidéo virale en décembre avec du stock ; affiliés nombreux ; import groupé en juin 2027 ; publicité rentable à 14 € de CPA dès juillet 2027."}, "cascade": [{"p": "Prix payé TTC", "m": 28.08, "t": "total"}, {"p": "TVA collectée", "m": -4.68, "t": "deduction"}, {"p": "Coût produit", "m": -6.23, "t": "deduction"}, {"p": "Livraison et emballage", "m": -4.83, "t": "deduction"}, {"p": "Droits de douane et redevance", "m": -0.52, "t": "deduction"}, {"p": "Frais de paiement", "m": -0.15, "t": "deduction"}, {"p": "Commission TikTok Shop", "m": -1.9, "t": "deduction"}, {"p": "Commission créateur ou publicité (CPA)", "m": -2.3, "t": "deduction"}, {"p": "Provision retours, SAV et litiges", "m": -1.17, "t": "deduction"}, {"p": "Marge nette de contribution", "m": 6.3, "t": "total"}], "cascade_lib": "Commande moyenne du mix de lancement (20 % site, 22 % TikTok propre, 58 % affiliés)", "sens": {"base": 906, "lib": "Palier 1 — scénario réaliste, sept. 2027", "vars": [{"v": "Prix de vente (tous produits)", "m": -663, "p": 663}, {"v": "Coût produit et droits", "m": 250, "p": -250}, {"v": "Volume de commandes organiques", "m": -233, "p": 233}, {"v": "Livraison et emballage", "m": 179, "p": -179}, {"v": "Commission des créateurs", "m": 85, "p": -85}, {"v": "Part des ventes par affiliés", "m": 85, "p": -85}, {"v": "Commission TikTok Shop", "m": 70, "p": -70}, {"v": "Retours, SAV et litiges", "m": 43, "p": -43}, {"v": "Frais fixes", "m": 32, "p": -32}, {"v": "Échantillons créateurs", "m": 20, "p": -20}, {"v": "Frais de paiement", "m": 6, "p": -6}]}, "paliers": [{"k": "1k", "ca": 4717, "cj": 6.7, "pub": 0, "eff": "Fondateur seul, 25 h par semaine", "bfr": 3089, "proba": "10-20 % à 12 mois : P(porte 1) 35-50 % × P(trajectoire réaliste ou mieux, porte 1 franchie) 30-40 % ; la red team l'estime à 5-12 %", "delai": "3 à 12 mois après les premières ventes (novembre 2027 dans le scénario réaliste)"}, {"k": "10k", "ca": 47407, "cj": 61.1, "pub": 7653, "eff": "2 à 3 personnes : fondateur, assistant SAV à mi-temps, media buyer indépendant ; 3PL", "bfr": 21661, "proba": "3-5 % à 24 mois : P(porte 1) 35-50 % × P(trajectoire optimiste, porte 1 franchie) 8-10 % ; le CPA cible ≤ 16,70 € est le verrou", "delai": "9 à 18 mois après le palier 1"}, {"k": "100k", "ca": 714286, "cj": 714.3, "pub": 178571, "eff": "8 à 15 personnes ; 20-40 références", "bfr": 307143, "proba": "Non chiffrée : repère d'échelle obtenu par ratios, sans consommable ni valeur vie client modélisés", "delai": "18 à 36 mois après le palier 2"}, {"k": "1M", "ca": 8333333, "cj": 7407.4, "pub": 1833333, "eff": "50 à 100 personnes ; plusieurs gammes", "bfr": 4250000, "proba": "Non chiffrée : hors de portée du projet tel qu'il est financé", "delai": "3 à 5 ans après le palier 3"}]}</script>
+<script>
+(function () {
+  var D = JSON.parse(document.getElementById('data').textContent);
+  var nf0 = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 });
+  var nf1 = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 1 });
+  var nf2 = new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  function eur(v) { return nf0.format(v) + ' €'; }
+  function eurK(v) {
+    var a = Math.abs(v);
+    if (a >= 1e6) return nf1.format(v / 1e6) + ' M€';
+    if (a >= 1e4) return nf0.format(v / 1e3) + ' k€';
+    return nf0.format(v) + ' €';
+  }
+  function el(tag, attrs, html) {
+    var e = document.createElement(tag);
+    if (attrs) for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (html != null) e.innerHTML = html;
+    return e;
+  }
+  var SC = [
+    { key: 'pessimiste', label: 'Pessimiste', color: 'var(--s-pess)' },
+    { key: 'realiste', label: 'Réaliste', color: 'var(--s-real)' },
+    { key: 'optimiste', label: 'Optimiste', color: 'var(--s-opt)' }
+  ];
+  var months = D.mois.map(function (m) { return m.replace(/ (\d\d)(\d\d)$/, ' $2'); });
+  var tip = document.getElementById('tip');
+  function showTip(host, x, y, html) {
+    var r = host.getBoundingClientRect();
+    tip.innerHTML = html;
+    var tw = tip.offsetWidth;
+    var px = Math.min(Math.max(r.left + x, tw / 2 + 8), window.innerWidth - tw / 2 - 8);
+    tip.style.left = (px + window.scrollX) + 'px';
+    tip.style.top = (r.top + y + window.scrollY) + 'px';
+    tip.style.opacity = 1;
+  }
+  function hideTip() { tip.style.opacity = 0; }
+
+  /* 1. Échelle des paliers */
+  (function () {
+    var tb = document.querySelector('#ladder tbody');
+    var labels = { '1k': '1 000 €', '10k': '10 000 €', '100k': '100 000 €', '1M': '1 000 000 €' };
+    var maxLog = Math.log10(10000);
+    D.paliers.forEach(function (p, i) {
+      var w = Math.max(2, Math.log10(Math.max(p.cj, 1)) / maxLog * 100);
+      var proba = p.proba.split(':')[0].trim();
+      var far = i >= 2;
+      var badge = i === 0 ? 'b-warn' : (i === 1 ? 'b-stop' : 'b-neutral');
+      var tr = el('tr', far ? { 'class': 'row-far' } : null);
+      tr.innerHTML = '<td>' + labels[p.k] + '</td>' +
+        '<td class="r">' + eurK(p.ca) + '</td>' +
+        '<td class="logcell"><div class="logbar" style="width:' + w.toFixed(1) + '%"></div><span class="num">' + nf1.format(p.cj) + ' / jour</span></td>' +
+        '<td class="r">' + (p.pub ? eurK(p.pub) : '0 €') + '</td>' +
+        '<td class="r">' + eurK(p.bfr) + '</td>' +
+        '<td class="small">' + p.eff + '</td>' +
+        '<td><span class="badge ' + badge + '">' + (far ? (i === 3 ? '≤ 0,1 % (borne haute)' : 'non chiffrée') : proba) + '</span></td>';
+      tb.appendChild(tr);
+    });
+  })();
+
+  /* 2. Cascade */
+  (function () {
+    var host = document.getElementById('wf');
+    var tb = document.querySelector('#wf-table tbody');
+    var top = D.cascade[0].m;
+    var run = top;
+    D.cascade.forEach(function (s, i) {
+      var isTotal = s.t === 'total';
+      var isFinal = i === D.cascade.length - 1;
+      var left, width;
+      if (isTotal) { left = 0; width = s.m / top * 100; }
+      else { var end = run + s.m; left = end / top * 100; width = -s.m / top * 100; run = end; }
+      var row = el('div', { 'class': 'wf-row' + (isFinal ? ' is-final' : '') });
+      row.innerHTML = '<div class="wf-label">' + (isTotal ? '<strong>' + s.p + '</strong>' : s.p) + '</div>' +
+        '<div class="wf-track"><div class="wf-bar ' + (isFinal ? 'final' : (isTotal ? 'total' : 'ded')) + '" style="left:' + left.toFixed(2) + '%;width:' + Math.max(width, 0.6).toFixed(2) + '%"></div></div>' +
+        '<div class="wf-val' + (isTotal ? '' : ' neg') + '">' + (isTotal ? '' : '−') + nf2.format(Math.abs(s.m)) + ' €</div>';
+      host.appendChild(row);
+      tb.appendChild(el('tr', null, '<td>' + s.p + '</td><td class="r">' + nf2.format(s.m) + ' €</td>'));
+    });
+  })();
+
+  /* 3. Graphiques de lignes */
+  function niceStep(range, n) {
+    var raw = range / n, mag = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / mag;
+    return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * mag;
+  }
+  function lineChart(host, field, opts) {
+    function render() {
+      var W = Math.max(300, host.clientWidth);
+      var narrow = W < 560;
+      var H = narrow ? 230 : 280;
+      var m = { l: 56, r: narrow ? 12 : 92, t: 12, b: 28 };
+      var all = [];
+      SC.forEach(function (s) { all = all.concat(D[s.key][field]); });
+      var lo = Math.min(0, Math.min.apply(null, all)), hi = Math.max.apply(null, all);
+      var step = niceStep(hi - lo, narrow ? 4 : 5);
+      lo = Math.floor(lo / step) * step; hi = Math.ceil(hi / step) * step;
+      var n = months.length;
+      var x = function (i) { return m.l + i * (W - m.l - m.r) / (n - 1); };
+      var y = function (v) { return m.t + (hi - v) / (hi - lo) * (H - m.t - m.b); };
+      var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + opts.aria + '">';
+      for (var v = lo; v <= hi + 1e-9; v += step) {
+        s += '<line x1="' + m.l + '" x2="' + (W - m.r) + '" y1="' + y(v) + '" y2="' + y(v) + '" stroke="var(--line)" stroke-width="1"' + (v === 0 ? '' : ' stroke-dasharray="2 4"') + '/>';
+        s += '<text x="' + (m.l - 8) + '" y="' + (y(v) + 4) + '" text-anchor="end">' + eurK(v) + '</text>';
+      }
+      if (lo < 0) s += '<line x1="' + m.l + '" x2="' + (W - m.r) + '" y1="' + y(0) + '" y2="' + y(0) + '" stroke="var(--faint)" stroke-width="1.5"/>';
+      var every = narrow ? 4 : 3;
+      for (var i = 0; i < n; i += every) s += '<text x="' + x(i) + '" y="' + (H - 8) + '" text-anchor="middle">' + months[i] + '</text>';
+      var ends = [];
+      SC.forEach(function (sc) {
+        var vals = D[sc.key][field];
+        var d = vals.map(function (v, i) { return (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1); }).join(' ');
+        s += '<path d="' + d + '" fill="none" stroke="' + sc.color + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+        s += '<circle cx="' + x(n - 1) + '" cy="' + y(vals[n - 1]) + '" r="4" fill="' + sc.color + '" stroke="var(--surface)" stroke-width="2"/>';
+        ends.push({ y: y(vals[n - 1]), sc: sc, v: vals[n - 1] });
+      });
+      if (opts.mark) {
+        var mk = opts.mark, mx = x(mk.i), my = y(D[mk.key][field][mk.i]);
+        s += '<circle cx="' + mx + '" cy="' + my + '" r="5" fill="none" stroke="var(--ink)" stroke-width="1.5"/>';
+        s += '<text x="' + (mx + 9) + '" y="' + (my + 16) + '" style="fill:var(--ink);font-weight:700">' + mk.text + '</text>';
+      }
+      if (!narrow) {
+        ends.sort(function (a, b) { return a.y - b.y; });
+        for (var k = 1; k < ends.length; k++) if (ends[k].y - ends[k - 1].y < 15) ends[k].y = ends[k - 1].y + 15;
+        ends.forEach(function (e) { s += '<text x="' + (W - m.r + 10) + '" y="' + (e.y + 4) + '" style="fill:var(--ink)">' + e.sc.label + ' · ' + eurK(e.v) + '</text>'; });
+      }
+      s += '<line id="xh-' + field + '" x1="0" x2="0" y1="' + m.t + '" y2="' + (H - m.b) + '" stroke="var(--faint)" stroke-width="1" opacity="0"/>';
+      s += '<rect x="' + m.l + '" y="' + m.t + '" width="' + (W - m.l - m.r) + '" height="' + (H - m.t - m.b) + '" fill="transparent" class="hit"/>';
+      s += '</svg>';
+      host.innerHTML = s;
+      var svg = host.querySelector('svg'), hit = host.querySelector('.hit'), xh = host.querySelector('#xh-' + field);
+      function move(ev) {
+        var r = svg.getBoundingClientRect();
+        var px = (ev.clientX - r.left) * (W / r.width);
+        var i = Math.round((px - m.l) / ((W - m.l - m.r) / (n - 1)));
+        i = Math.max(0, Math.min(n - 1, i));
+        xh.setAttribute('x1', x(i)); xh.setAttribute('x2', x(i)); xh.setAttribute('opacity', 1);
+        var html = '<b>' + D.mois[i] + '</b>';
+        SC.slice().reverse().forEach(function (sc) { html += '<br><span class="sw" style="background:' + sc.color + '"></span>' + sc.label + ' : ' + eur(D[sc.key][field][i]); });
+        var minY = Math.min.apply(null, SC.map(function (sc) { return y(D[sc.key][field][i]); }));
+        showTip(host, x(i) * r.width / W, minY * r.height / H - 6, html);
+      }
+      hit.addEventListener('pointermove', move);
+      hit.addEventListener('pointerdown', move);
+      hit.addEventListener('pointerleave', function () { xh.setAttribute('opacity', 0); hideTip(); });
+    }
+    render();
+    var last = host.clientWidth;
+    window.addEventListener('resize', function () { if (Math.abs(host.clientWidth - last) > 8) { last = host.clientWidth; render(); } });
+  }
+  var lg = document.getElementById('legend-sc');
+  SC.forEach(function (sc) { lg.appendChild(el('span', null, '<i style="background:' + sc.color + '"></i>' + sc.label)); });
+  lineChart(document.getElementById('ch-benef'), 'benef', { aria: 'Bénéfice net mensuel des trois scénarios sur 18 mois', mark: null });
+  var creuxI = D.realiste.treso.indexOf(Math.min.apply(null, D.realiste.treso));
+  lineChart(document.getElementById('ch-treso'), 'treso', { aria: 'Trésorerie en fin de mois des trois scénarios', mark: { key: 'realiste', i: creuxI, text: 'Creux réaliste : ' + eur(D.realiste.treso[creuxI]) } });
+
+  (function () {
+    var t = document.getElementById('sc-table');
+    var h = '<thead><tr><th>Mois</th>';
+    SC.forEach(function (sc) { h += '<th class="r">Bénéfice ' + sc.label.toLowerCase() + '</th>'; });
+    SC.forEach(function (sc) { h += '<th class="r">Trésorerie ' + sc.label.toLowerCase() + '</th>'; });
+    h += '</tr></thead><tbody>';
+    D.mois.forEach(function (mo, i) {
+      h += '<tr><td>' + mo + '</td>';
+      SC.forEach(function (sc) { h += '<td class="r">' + eur(D[sc.key].benef[i]) + '</td>'; });
+      SC.forEach(function (sc) { h += '<td class="r">' + eur(D[sc.key].treso[i]) + '</td>'; });
+      h += '</tr>';
+    });
+    t.innerHTML = h + '</tbody>';
+    var tb = document.querySelector('#sc-sum tbody');
+    SC.forEach(function (sc) {
+      var r = D[sc.key];
+      tb.appendChild(el('tr', null, '<td><span class="legend"><span><i style="background:' + sc.color + '"></i><strong>' + sc.label + '</strong></span></span></td>' +
+        '<td class="r">' + nf0.format(r.tot.commandes) + '</td><td class="r">' + eurK(r.tot.ca_ht) + '</td>' +
+        '<td class="r"><strong>' + eur(r.tot.benefice_net) + '</strong></td><td class="r">−' + eur(r.creux) + ' <span class="muted small">(' + r.mois_creux + ')</span></td>' +
+        '<td class="small muted">' + r.desc + '</td>'));
+    });
+  })();
+
+  /* 4. Tornado */
+  (function () {
+    var host = document.getElementById('tor');
+    var max = 700;
+    D.sens.vars.forEach(function (v) {
+      var neg = v.m < 0 ? { val: v.m, lab: '−20 %' } : { val: v.p, lab: '+20 %' };
+      var pos = v.m < 0 ? { val: v.p, lab: '+20 %' } : { val: v.m, lab: '−20 %' };
+      var wn = Math.abs(neg.val) / max * 50, wp = Math.abs(pos.val) / max * 50;
+      var tn = neg.lab + ' · −' + nf0.format(Math.abs(neg.val)) + ' €', tp = pos.lab + ' · +' + nf0.format(pos.val) + ' €';
+      // Barre longue : l'étiquette passe à l'intérieur de la barre pour ne pas déborder de la piste.
+      var inN = wn > 24, inP = wp > 24;
+      var row = el('div', { 'class': 'tor-row' });
+      row.innerHTML = '<div class="small">' + v.v + '</div>' +
+        '<div class="tor-track" title="' + v.v + ' : ' + tn + ' ; ' + tp + '">' +
+        '<div class="tor-bar loss" style="width:' + wn.toFixed(2) + '%"></div>' +
+        '<div class="tor-bar gain" style="width:' + wp.toFixed(2) + '%"></div>' +
+        '<span class="tor-txt' + (inN ? ' in' : '') + '" style="right:calc(' + (inN ? 50 + wn - 0.1 : 50 + wn).toFixed(2) + '% ' + (inN ? '- ' : '+ ') + '6px)">' + tn + '</span>' +
+        '<span class="tor-txt' + (inP ? ' in' : '') + '" style="left:calc(' + (inP ? 50 + wp - 0.1 : 50 + wp).toFixed(2) + '% ' + (inP ? '- ' : '+ ') + '6px)">' + tp + '</span>' +
+        '</div>';
+      host.appendChild(row);
+    });
+  })();
+})();
+</script>

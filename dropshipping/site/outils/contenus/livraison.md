@@ -1,7 +1,7 @@
 ---
 titre: Livraison
-description: Expédition depuis la France sous 1 jour ouvré, livraison en point relais Mondial Relay en 3 à 6 jours ouvrés. 3,90 €, offerte dès 35 € d'achat. Aucun frais à la livraison.
-chapo: Expédié depuis la France sous 1 jour ouvré, livré en point relais en 3 à 6 jours ouvrés.
+description: [[LIVRAISON_DESCRIPTION]]
+chapo: [[LIVRAISON_CHAPO]]
 ---
 
 Dernière mise à jour : 12 octobre 2026
@@ -12,17 +12,11 @@ Nous livrons en France métropolitaine, Corse comprise. Les départements et ré
 
 ## 2. Délais de livraison
 
-Tous nos produits partent de notre stock en France. Le délai total comprend la préparation de la commande et le transport. **La fourchette de livraison applicable à votre commande est indiquée sur la fiche produit, rappelée avant le paiement**, puis dans l'e-mail de confirmation.
-
-| Produits expédiés depuis | Préparation | Transport | Délai total (jours ouvrés) |
-|---|---|---|---|
-| France (point relais) | 1 jour | 2 à 5 jours | 3 à 6 jours |
-
-Ce délai sera recalculé après nos 30 premières livraisons, à partir des délais réellement constatés : nous afficherons alors une fourchette de dates couvrant au moins 9 livraisons sur 10, augmentée de 2 jours ouvrés.
+[[LIVRAISON_DELAIS]]
 
 À défaut de date ou de délai indiqué, nous livrons au plus tard 30 jours après la conclusion du contrat (article L216-1 du Code de la consommation).
 
-**Précommandes** : lorsqu'un produit est proposé en précommande, la fiche produit indique la date d'expédition et la date limite de livraison, qui ne dépasse jamais 30 jours après votre commande.
+**Précommandes** : un produit n'est proposé en précommande qu'une fois son stock commandé. La fiche produit, le panier, la page de paiement et l'e-mail de confirmation indiquent la date d'expédition et la date limite de livraison, qui ne dépasse jamais 30 jours après votre commande. Si le stock n'est pas arrivé en France 10 jours avant la date limite, nous vous écrivons : nouvelle date ou annulation remboursée sous 14 jours, à votre choix.
 
 ## 3. Mode et frais de livraison
 

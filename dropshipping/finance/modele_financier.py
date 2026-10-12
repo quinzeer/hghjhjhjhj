@@ -85,7 +85,7 @@ HYPOTHESES = [
         ("CHARGES_TNS", "Gérant majoritaire d'EURL (TNS) : cotisations / rémunération nette", 0.45, "ratio", "Fourchette 33-45 % : " + SRC["charges"]),
         ("TNS_MINIMUM", "TNS : cotisations minimales dues sans rémunération", 1423, "€ / an", SRC["tns_min"] + " (montants 2026 divergents selon les sources : 1 058 à 1 423 €)"),
         ("SMIC_NET_H", "SMIC horaire net (depuis le 1/06/2026)", 9.74, "€ / h", SRC["smic"]),
-        ("HEURES_FONDATEUR", "Temps du fondateur", 22.5, "h / semaine", "04 §7 risque 8 : 20-25 h par semaine"),
+        ("HEURES_FONDATEUR", "Temps du fondateur", 25, "h / semaine", "Plan marketing ramené à 25 h par semaine (07 §3.3, correction M5) ; à remplacer par la valeur décidée par le client"),
     ]),
     ("Livraison, paiement, plateformes", [
         ("PORT_CLIENT_TTC", "Frais de port facturés au client sous le seuil", 3.90, "€ TTC", SRC["brand"] + " livraison.frais_ttc"),
@@ -93,6 +93,8 @@ HYPOTHESES = [
         ("PORT_500", "Port point relais HT, jusqu'à 500 g", 4.50, "€ HT", SRC["brand"] + " hypotheses_cles.port_ht"),
         ("PORT_1KG", "Port point relais HT, 500 g à 1 kg", 5.50, "€ HT", SRC["brand"] + " hypotheses_cles.port_ht"),
         ("PORT_2KG", "Port point relais HT, 1 à 2 kg", 7.00, "€ HT", SRC["brand"] + " hypotheses_cles.port_ht"),
+        ("PORT_TTS_500", "TikTok Shop : étiquette d'expédition HT, jusqu'à 500 g", 4.50, "€ HT", SRC["brand"] + " livraison.tiktok_shop.port_ht_modele ; tarif « Expédition par TikTok » à relever dans le Seller Center (non publié), hypothèse non vérifiée"),
+        ("PORT_TTS_1KG", "TikTok Shop : étiquette d'expédition HT, 500 g à 1 kg", 5.50, "€ HT", "Idem"),
         ("EMB_PETIT", "Emballage, colis jusqu'à 500 g", 0.30, "€ HT", SRC["brand"] + " cout_emballage_ht"),
         ("EMB_GRAND", "Emballage, colis de plus de 500 g", 0.40, "€ HT", "04 §4.1 (0,30-0,40 €), estimation, confiance moyenne"),
         ("STRIPE_PCT", "Stripe / Shopify Payments : part variable (carte standard EEE)", 0.015, "%", SRC["stripe"]),
@@ -113,7 +115,7 @@ HYPOTHESES = [
         ("SITE_KAP", "Site : part Kit anti-poils", 0.20, "%", SRC["brand"]),
         ("SITE_GK", "Site : part Grand kit", 0.30, "%", SRC["brand"]),
         ("SITE_DUO", "Site : part Duo", 0.15, "%", SRC["brand"]),
-        ("TTS_ROU", "TikTok Shop : part Rouleau seul", 0.70, "%", "Estimation finance, confiance faible : seule répartition qui redonne la marge moyenne de 7,55 € de brand.json"),
+        ("TTS_ROU", "TikTok Shop : part Rouleau seul", 0.70, "%", "Estimation finance, confiance faible, à remplacer par la répartition observée après 30 commandes TikTok Shop (revue red team m16)"),
         ("TTS_KAP", "TikTok Shop : part Kit anti-poils", 0.30, "%", "Idem"),
     ]),
     ("Phase import groupé + 3PL (palier 2)", [
@@ -135,7 +137,7 @@ HYPOTHESES = [
         ("COMPTABLE_P2", "Expert-comptable, phase import et publicité", 200, "€ / mois", "Estimation, confiance moyenne"),
         ("BANQUE", "Compte bancaire professionnel", 10, "€ / mois", "Estimation"),
         ("OUTILS", "Plateforme de facturation électronique, outils", 10, "€ / mois", "03 §0.5 : 0-15 € par mois"),
-        ("RC", "Assurance RC professionnelle et produits", 25, "€ / mois", "03 §0.5 : 150-500 € par an"),
+        ("RC", "Assurance RC professionnelle et produits (souscrite avant la commande du stock, dès novembre 2026)", 25, "€ / mois", "03 §0.5 : 150-500 € par an ; 3 devis en S1 (correction M11)"),
         ("DOMICILIATION", "Domiciliation avec réception de colis (dès 150 commandes / mois)", 25, "€ / mois", "03 §5.5 : 15-40 € par mois"),
         ("SHOPIFY_ESSAI", "Shopify, 3 premiers mois (1 $)", 0.86, "€ / mois", SRC["shopify"]),
         ("SHOPIFY_BASIC", "Shopify Basic", 36, "€ / mois", SRC["shopify"]),
@@ -149,7 +151,9 @@ HYPOTHESES = [
         ("MEDIATEUR", "Médiateur CM2C (3 ans)", 48, "€", SRC["cm2c"]),
         ("LEKO", "Adhésion Léko, minimum annuel", 95, "€ HT / an", SRC["leko"]),
         ("FOURNITURES", "Fournitures de lancement", 12, "€", "04 §5.3"),
-        ("INPI", "Dépôt INPI 3 classes (porte 2, ≥ 90 commandes / mois)", 270, "€", SRC["inpi"]),
+        ("INPI_P1", "Dépôt INPI « Canapoil », classe 21 (porte 1, novembre 2026)", 190, "€", SRC["inpi"] + " (correction M12)"),
+        ("INPI", "Dépôt INPI classes 20 et 28 (porte 2, ≥ 90 commandes / mois) : 190 € + 40 €", 230, "€", SRC["inpi"]),
+        ("PRIME_QTE", "Prime de lancement : gants offerts aux premières précommandes", 30, "unités", SRC["brand"] + " livraison.precommande.prime (correction M4)"),
         ("EUIPO", "Marque de l'Union européenne, 2 classes (import groupé)", 900, "€", SRC["euipo"]),
         ("ECH_UNIT", "Coût d'un échantillon envoyé à un créateur", 12, "€", "02 §3.6, central"),
     ]),
@@ -191,13 +195,13 @@ HYPOTHESES = [
 # --- Produits et kits : copie de brand.json (vérifiée au lancement) ----------
 PRODUITS = {
     "ROU": {"id": "rouleau-anti-poils", "sku": "CNP-ROU-01", "nom": "Rouleau anti-poils", "prix": 24.9,
-            "prod": 4.5, "droits": 0.25, "port": 4.5, "emb": 0.3, "poids": 280},
+            "prod": 5.4, "droits": 0.40, "port": 4.5, "emb": 0.3, "poids": 280},
     "GAN": {"id": "gant-toilettage", "sku": "CNP-GAN-01", "nom": "Gant de toilettage", "prix": 9.9,
-            "prod": 1.3, "droits": 0.1, "port": 4.5, "emb": 0.3, "poids": 70},
+            "prod": 1.56, "droits": 0.25, "port": 4.5, "emb": 0.3, "poids": 70},
     "RAC": {"id": "raclette-anti-poils", "sku": "CNP-RAC-01", "nom": "Raclette anti-poils", "prix": 12.9,
-            "prod": 1.9, "droits": 0.15, "port": 4.5, "emb": 0.3, "poids": 150},
+            "prod": 2.28, "droits": 0.30, "port": 4.5, "emb": 0.3, "poids": 150},
     "TAP": {"id": "tapis-fenetre-thermique", "sku": "CNP-TAP-01", "nom": "Tapis de fenêtre thermique", "prix": 24.9,
-            "prod": 5.0, "droits": 0.35, "port": 4.5, "emb": 0.3, "poids": 400},
+            "prod": 6.0, "droits": 0.50, "port": 4.5, "emb": 0.3, "poids": 400},
 }
 KITS = {
     "KAP": {"id": "kit-anti-poils", "nom": "Kit anti-poils", "prix": 29.9, "compo": ["ROU", "GAN"], "separes": 34.8, "eco": 4.9, "offerte": False},
@@ -208,7 +212,7 @@ KITS = {
 for code, p in PRODUITS.items():
     HYPOTHESES.insert(1, (f"Produit {p['sku']} — {p['nom']} (brand.json)", [
         (f"{code}_PRIX", "Prix de vente", p["prix"], "€ TTC", SRC["brand"]),
-        (f"{code}_PROD", "Coût produit rendu France (produit + fret entrant)", p["prod"], "€ HT", SRC["brand"] + " cout_produit_ht"),
+        (f"{code}_PROD", "Coût produit rendu France, base prudente (produit + fret entrant) × 1,20", p["prod"], "€ HT", SRC["brand"] + " cout_produit_ht (correction M13 : +20 % tant que la TVA et la douane ne sont pas validées)"),
         (f"{code}_DROITS", "Droits et redevance répartis sur le lot", p["droits"], "€ HT", SRC["brand"] + " droits_douane_estimes"),
         (f"{code}_POIDS", "Poids", p["poids"], "g", SRC["brand"] + " poids_g"),
     ]))
@@ -257,7 +261,7 @@ SCENARIOS = {
     },
     "realiste": {
         "libelle": "Réaliste",
-        "description": "Croissance organique régulière ; palier 1 vers l'été 2027 ; import groupé en octobre 2027 ; test publicitaire de 3 mois arrêté faute de rentabilité.",
+        "description": "Croissance organique régulière ; palier 1 en novembre 2027 ; import groupé en octobre 2027 ; test publicitaire de 3 mois arrêté faute de rentabilité.",
         "proba": "Au moins aussi bien dans 30-40 % des cas où la porte 1 est franchie (estimation, confiance faible)",
         "cmd_org": [0, 12, 45, 50, 65, 85, 105, 125, 145, 160, 170, 185, 205, 250, 320, 240, 260, 290],
         "mix": mix_canaux(0.20, 0.22, 0.58),
@@ -319,6 +323,8 @@ def verifier_brand_json():
         eq(round(sum(PRODUITS[c]["prix"] for c in k["compo"]), 2), k["separes"], f"{code} somme des prix")
     liv = brand["livraison"]
     eq(V["PORT_CLIENT_TTC"], liv["frais_ttc"], "frais de port")
+    eq(V["PORT_TTS_500"], liv["tiktok_shop"]["port_ht_modele"]["jusqu_a_500g"], "port TikTok ≤ 500 g")
+    eq(V["PORT_TTS_1KG"], liv["tiktok_shop"]["port_ht_modele"]["de_500g_a_1kg"], "port TikTok 500 g-1 kg")
     eq(V["SEUIL_GRATUIT"], liv["seuil_gratuite_ttc"], "seuil de livraison offerte")
     hc = brand["hypotheses_cles"]
     eq(V["PORT_500"], hc["port_ht"]["jusqu_a_500g"], "port ≤ 500 g")
@@ -378,11 +384,12 @@ COLS_UE = ["prix_ttc", "tva", "ca_ht", "cout_produit", "droits", "livraison", "p
            "commission_tts", "createur_ou_pub", "provision", "cotis_micro", "marge"]
 
 
-def tranche_port(poids):
+def tranche_port(poids, canal="site"):
+    tts = canal == "tts"
     if poids <= 500:
-        return V["PORT_500"], V["EMB_PETIT"]
+        return (V["PORT_TTS_500"] if tts else V["PORT_500"]), V["EMB_PETIT"]
     if poids <= 1000:
-        return V["PORT_1KG"], V["EMB_GRAND"]
+        return (V["PORT_TTS_1KG"] if tts else V["PORT_1KG"]), V["EMB_GRAND"]
     return V["PORT_2KG"], V["EMB_GRAND"]
 
 
@@ -397,12 +404,12 @@ def calc_cas(cas, phase="MS", regime="ASS", lourd=False):
     if phase == "MS":
         prod = sum(PRODUITS[c]["prod"] for c in compo) * K
         droits = sum(PRODUITS[c]["droits"] for c in compo) * K
-        port, emb = (V["PORT_1KG"], V["EMB_GRAND"]) if lourd else tranche_port(poids)
+        port, emb = (V["PORT_1KG"], V["EMB_GRAND"]) if lourd else tranche_port(poids, canal)
         livraison = (port + emb) * K
     else:
         prod = sum(V["IMP_" + c] for c in compo)
         droits = 0.0
-        livraison = tranche_port(poids)[0] + V["TPL_PREP"]
+        livraison = tranche_port(poids, canal)[0] + V["TPL_PREP"]
     paiement = V["STRIPE_PCT"] * ttc + V["STRIPE_FIXE"] if canal in ("site", "pub") else 0.0
     comm = V[taux_nom] * ttc * K if canal == "tts" else 0.0
     if aff:
@@ -584,12 +591,13 @@ def calc_scenario(cle, sc, mo):
         if m == 0:
             c += V["DOMAINE"] + V["ECHANT_FOURN"]
         if m == 1:
-            c += V["MEDIATEUR"] + V["LEKO"] + V["FOURNITURES"]
+            c += V["MEDIATEUR"] + V["LEKO"] + V["FOURNITURES"] + V["INPI_P1"]
+            c += V["PRIME_QTE"] * (PRODUITS["GAN"]["prod"] + PRODUITS["GAN"]["droits"])
         if m == 12:
             c += V["DOMAINE"]
         if m == 13:
             c += V["LEKO"]
-        if m >= 4:
+        if m >= 1:
             c += V["RC"]
         if m_inpi is not None and m == m_inpi:
             c += V["INPI"]
@@ -748,22 +756,22 @@ def calc_paliers(mo):
         P.append(dict(cle=cle, benefice=ben, marge_cmd=ben / n, frais_fixes=None, commandes=n, ca_ht=ca_ht, ca_ttc=ca_ttc,
                       pub=V[f"{pre}_PUB"] * ca_ht, stock=stock, creances=cre, dettes=dettes, bfr=stock + cre - dettes))
     QUAL = {
-        "1k": dict(effectif="Fondateur seul, 20-25 h par semaine", effectif_n=1,
-                   probabilite_strategie="20-30 % à 6 mois ; 30-40 % à 12 mois",
-                   probabilite_finance="10-20 % à 12 mois : P(porte 1) 35-50 % × P(trajectoire réaliste ou mieux, porte 1 franchie) 30-40 %",
-                   delai="3 à 9 mois après les premières ventes (été 2027 dans le scénario réaliste)",
-                   conditions="Porte 1 et porte 2 franchies ; ≈ 15 affiliés actifs ; 3 vidéos par jour ; marge moyenne ≥ 7,55 €"),
+        "1k": dict(effectif="Fondateur seul, 25 h par semaine", effectif_n=1,
+                   probabilite_strategie="10-20 % à 12 mois (alignée sur la finance, correction M6)",
+                   probabilite_finance="10-20 % à 12 mois : P(porte 1) 35-50 % × P(trajectoire réaliste ou mieux, porte 1 franchie) 30-40 % ; la red team l'estime à 5-12 %",
+                   delai="3 à 12 mois après les premières ventes (novembre 2027 dans le scénario réaliste)",
+                   conditions="Porte 1, porte stock et porte 2 franchies ; ≈ 15 affiliés actifs ; 2 vidéos par jour ; marge moyenne ≥ marge du mix de lancement"),
         "10k": dict(effectif="2 à 3 personnes : fondateur, assistant SAV à mi-temps, media buyer indépendant ; 3PL", effectif_n=2.5,
-                    probabilite_strategie="5-10 % à 24 mois",
+                    probabilite_strategie="3-5 % à 24 mois (alignée sur la finance)",
                     probabilite_finance="3-5 % à 24 mois : P(porte 1) 35-50 % × P(trajectoire optimiste, porte 1 franchie) 8-10 % ; le CPA cible ≤ 16,70 € est le verrou",
                     delai="9 à 18 mois après le palier 1",
-                    conditions="Import groupé, 3PL, marque déposée, publicité rentable avec MER ≥ 1,2 × rentabilité, sortie de la franchise de TVA et de la micro-entreprise"),
+                    conditions="Import groupé, 3PL, marque déposée, publicité rentable avec MER ≥ 1,2 × rentabilité ; aucune publicité au-delà de 1 000 € par mois sans un produit à ≥ 15 % de réachat à 180 jours (M17) ; sortie de la franchise de TVA et de la micro-entreprise"),
         "100k": dict(effectif="8 à 15 personnes ; 20-40 références", effectif_n=12,
-                     probabilite_strategie="0,5-1,5 % à 4 ans", probabilite_finance="0,5-1 % à 4 ans",
+                     probabilite_strategie="Non chiffrée : repère d'échelle sans base produit (correction M17)", probabilite_finance="Non chiffrée : repère d'échelle obtenu par ratios, sans consommable ni valeur vie client modélisés",
                      delai="18 à 36 mois après le palier 2",
                      conditions="France < 50 % du CA ; Allemagne, Italie, Espagne ; Amazon UE ; financement de stock bancaire ou BPI"),
         "1M": dict(effectif="50 à 100 personnes ; plusieurs gammes", effectif_n=75,
-                   probabilite_strategie="≤ 0,1 % à 8 ans", probabilite_finance="≤ 0,1 % à 8 ans",
+                   probabilite_strategie="Non chiffrée : repère d'échelle sans base produit (correction M17)", probabilite_finance="Non chiffrée : hors de portée du projet tel qu'il est financé",
                    delai="3 à 5 ans après le palier 3",
                    conditions="10 pays et plus, distribution physique, levée de fonds ou rachat de marques ; place l'entreprise dans le 1 % des sites qui font 78 % du CA"),
     }
@@ -952,7 +960,7 @@ def feuille_hypotheses(wb, saisies):
         ("cpa", "CPA", EUR), ("ech", "Échantillons créateurs", EUR0), ("couverture", "Stock détenu en fin de mois (mois de ventes suivantes)", X2),
         ("delai_site", "Délai d'encaissement du site (jours)", NB0), ("delai_tts", "Délai d'encaissement TikTok Shop depuis la commande (jours)", NB0),
         ("ff_structure", "Frais fixes : structure (comptable, banque)", EUR0),
-        ("ff_conformite", "Frais fixes : conformité et ponctuels (médiateur, Léko, RC, INPI, EUIPO, domaine)", EUR0),
+        ("ff_conformite", "Frais fixes : conformité et ponctuels (médiateur, Léko, RC, INPI, EUIPO, domaine, prime de lancement)", EUR0),
         ("ff_outils", "Frais fixes : outils, Shopify, domiciliation", EUR0),
         ("ff_import", "Frais fixes : import et stockage 3PL", EUR0), ("ff_personnel", "Frais fixes : personnel", EUR0),
     ]
@@ -1016,12 +1024,14 @@ def formules_cas(cas, row, phase, regime, lourd=False):
         if lourd:
             f["I"] = "=(h_PORT_1KG+h_EMB_GRAND)" + K
         else:
-            f["I"] = (f"=IF(C{row}<=500,h_PORT_500+h_EMB_PETIT,IF(C{row}<=1000,h_PORT_1KG+h_EMB_GRAND,"
+            p5, p1 = ("h_PORT_TTS_500", "h_PORT_TTS_1KG") if canal == "tts" else ("h_PORT_500", "h_PORT_1KG")
+            f["I"] = (f"=IF(C{row}<=500,{p5}+h_EMB_PETIT,IF(C{row}<=1000,{p1}+h_EMB_GRAND,"
                       f"h_PORT_2KG+h_EMB_GRAND))" + K)
     else:
         f["G"] = "=" + "+".join(f"h_IMP_{c}" for c in compo)
         f["H"] = "=0"
-        f["I"] = f"=IF(C{row}<=500,h_PORT_500,IF(C{row}<=1000,h_PORT_1KG,h_PORT_2KG))+h_TPL_PREP"
+        p5, p1 = ("h_PORT_TTS_500", "h_PORT_TTS_1KG") if canal == "tts" else ("h_PORT_500", "h_PORT_1KG")
+        f["I"] = f"=IF(C{row}<=500,{p5},IF(C{row}<=1000,{p1},h_PORT_2KG))+h_TPL_PREP"
     f["J"] = f"=h_STRIPE_PCT*D{row}+h_STRIPE_FIXE" if canal in ("site", "pub") else "=0"
     f["K"] = f"=h_{taux_nom}*D{row}" + K if canal == "tts" else "=0"
     if aff:
@@ -1724,17 +1734,17 @@ def main():
     ue = calc_unit_economics()
     mo = moyennes(ue)
 
-    # Contrôles de cohérence avec 04-strategie.md §4.1 (marges à 1 centime près)
-    attendus = {("MS", "site-rou"): 12.57, ("MS", "site-kap"): 15.05, ("MS", "site-gk"): 17.74, ("MS", "site-duo"): 15.34,
-                ("MS", "site-hiv"): 18.62, ("MS", "site-tap"): 11.97, ("MS", "tts-propre-rou"): 7.92,
-                ("MS", "tts-propre4-rou"): 9.17, ("MS", "tts-aff-rou"): 4.19, ("MS", "tts-aff-kap"): 5.54,
-                ("FR", "site-rou"): 15.22, ("FR", "site-gk"): 21.46, ("FR", "tts-aff-rou"): 5.02,
-                ("MICRO", "site-rou"): 11.68, ("MICRO", "site-gk"): 16.55, ("MICRO", "tts-aff-rou"): 1.96}
+    # Contrôles de cohérence avec 04-strategie.md §4.1 et brand.json (marges à 1 centime près, coûts produit +20 %)
+    attendus = {("MS", "site-rou"): 11.52, ("MS", "site-kap"): 13.59, ("MS", "site-gk"): 15.75, ("MS", "site-duo"): 13.24,
+                ("MS", "site-hiv"): 16.42, ("MS", "site-tap"): 10.82, ("MS", "tts-propre-rou"): 6.87,
+                ("MS", "tts-propre4-rou"): 8.12, ("MS", "tts-aff-rou"): 3.14, ("MS", "tts-aff-kap"): 4.08,
+                ("FR", "site-rou"): 13.96, ("FR", "site-gk"): 19.07, ("FR", "tts-aff-rou"): 3.76,
+                ("MICRO", "site-rou"): 10.42, ("MICRO", "site-gk"): 14.16, ("MICRO", "tts-aff-rou"): 0.70}
     for (b, cid), v in attendus.items():
         assert abs(ue[b][cid]["marge"] - v) < 0.006, f"{b} {cid} : {ue[b][cid]['marge']:.4f} ≠ {v}"
-    assert abs(mo["MIX_MARGE_MS"] - 7.55) < 0.006, mo["MIX_MARGE_MS"]
-    assert abs(mo["MIX_MARGE_FR"] - 9.09) < 0.006, mo["MIX_MARGE_FR"]
-    assert abs(mo["MIX_MARGE_MICRO"] - 5.64) < 0.006, mo["MIX_MARGE_MICRO"]
+    assert abs(mo["MIX_MARGE_MS"] - brand["hypotheses_cles"]["marge_moyenne_par_commande_ht"]) < 0.006, mo["MIX_MARGE_MS"]
+    assert abs(mo["MIX_MARGE_FR"] - 7.59) < 0.006, mo["MIX_MARGE_FR"]
+    assert abs(mo["MIX_MARGE_MICRO"] - 4.14) < 0.006, mo["MIX_MARGE_MICRO"]
     assert abs(mo["SITE_TTC"] - brand["hypotheses_cles"]["panier_moyen_ttc"]) < 0.006
 
     res, saisies = {}, {}
@@ -1888,7 +1898,7 @@ def construire_json(ue, mo, res, paliers, s1, s2, verif):
             "roas_rentabilite_ht_import": r2(ue["IMP"]["imp-site-gk"]["roas_ht"]),
             "cpa_maximal_import": r2(ue["IMP"]["imp-site-gk"]["cpa_max"]),
             "cpa_cible_import": r2(ue["IMP"]["imp-site-gk"]["cpa_max"] / V["MER_MARGE"]),
-            "lecture": "Publicité non rentable avant l'import groupé : ROAS de rentabilité TTC de 2,25 contre une médiane Meta de 1,93",
+            "lecture": "Publicité non rentable avant l'import groupé : ROAS de rentabilité TTC de " + f"{ue['MS']['site-gk']['roas_ttc']:.2f}".replace(".", ",") + " contre une médiane Meta de 1,93",
         },
     }
 
@@ -1946,8 +1956,13 @@ def construire_json(ue, mo, res, paliers, s1, s2, verif):
     detail = {k: r2(sum(t[k][: creux_idx + 1])) for k in ("enc_site", "enc_tts", "achats_stock", "tva_achats",
                                                           "logistique_ttc", "remboursements", "tva_payee")}
     detail.update({k: r2(sum(r[k][: creux_idx + 1])) for k in ("pub", "ech", "frais_fixes")})
-    stock_ini = 20 * (PRODUITS["ROU"]["prod"] + PRODUITS["ROU"]["droits"]) + 10 * (PRODUITS["GAN"]["prod"] + PRODUITS["GAN"]["droits"]) \
-        + 6 * (PRODUITS["RAC"]["prod"] + PRODUITS["RAC"]["droits"]) + 8 * (PRODUITS["TAP"]["prod"] + PRODUITS["TAP"]["droits"])
+    brand = json.loads(BRAND_JSON.read_text(encoding="utf-8"))
+    lot = brand["hypotheses_cles"]["micro_stock_initial"]
+    code_id = {p["id"]: c for c, p in PRODUITS.items()}
+    stock_ini = sum(lot[i] * (PRODUITS[code_id[i]]["prod"] + PRODUITS[code_id[i]]["droits"]) for i in code_id)
+    stock_ini_sans_majoration = sum(lot[i] * (PRODUITS[code_id[i]]["prod"] / 1.2 + PRODUITS[code_id[i]]["droits"]) for i in code_id)
+    conformite_p1 = V["MEDIATEUR"] + V["LEKO"] * (1 + V["TVA"]) + V["FOURNITURES"] + V["INPI_P1"] + V["RC"]
+    total_avant = 45 + conformite_p1 + stock_ini * (1 + V["TVA"])
     besoins = {}
     for cle in SCENARIOS:
         rr = res[cle]
@@ -1984,17 +1999,28 @@ def construire_json(ue, mo, res, paliers, s1, s2, verif):
             "tiktok_shop": "31 jours après livraison pour un vendeur débutant, 8 jours en standard, 3 jours en accéléré, 1 jour en express (" + SRC["tts_regl"] + ")",
             "fournisseur": "Payé à la commande (AliExpress, CJ, usine en import groupé)"},
         "cash_avant_premier_encaissement": {
-            "avant_porte_1": 45.0, "porte_1_conformite_ttc": 174.0,
+            "avant_porte_1": 45.0,
+            "porte_1_conformite_ttc": r2(conformite_p1),
+            "porte_1_detail": {"mediateur_cm2c": V["MEDIATEUR"], "leko_ttc": r2(V["LEKO"] * (1 + V["TVA"])), "fournitures": V["FOURNITURES"],
+                               "inpi_classe_21": V["INPI_P1"], "rc_premier_mois": V["RC"]},
+            "micro_stock_initial_unites": {k: v for k, v in lot.items() if k in code_id},
             "micro_stock_initial_ht": r2(stock_ini), "micro_stock_initial_ttc": r2(stock_ini * (1 + V["TVA"])),
-            "total": r2(45 + 174 + stock_ini * (1 + V["TVA"])),
-            "note": "Les précommandes ne financent pas le stock à temps : Stripe verse le premier paiement 7 jours après, alors que le fournisseur est payé à la commande."},
+            "micro_stock_initial_ttc_sans_majoration_20": r2(stock_ini_sans_majoration * (1 + V["TVA"])),
+            "total": r2(total_avant),
+            "total_si_rc_payee_a_l_annee": r2(total_avant - V["RC"] + 12 * V["RC"]),
+            "note": "Ordre corrigé (C2) : le micro-stock est commandé et payé à la porte 1, avant l'ouverture des précommandes. Aucune recette n'arrive avant le premier versement Stripe, 7 jours après le premier paiement."},
         "par_scenario": besoins,
         "detail_realiste_jusqu_au_creux": {"mois_creux": MOIS[creux_idx], "cumuls": detail},
         "budget_client": 150.0,
         "sensibilite_du_besoin": sens_besoin,
-        "recommandation": {"minimum_pour_vendre_le_premier_stock": r2(45 + 174 + stock_ini * (1 + V["TVA"])),
+        "recommandation": {"minimum_pour_vendre_le_premier_stock": r2(total_avant),
                            "reserve_pour_le_scenario_realiste": r2(res["realiste"]["treso"]["besoin"]),
-                           "reserve_pour_absorber_un_succes": r2(res["optimiste"]["treso"]["besoin"])},
+                           "reserve_pour_absorber_un_succes": r2(res["optimiste"]["treso"]["besoin"]),
+                           "seuil_alerte_reserve": 300.0,
+                           "options_a_signer_par_le_client": {
+                               "a_apport_compte_courant": r2(-(-(res["realiste"]["treso"]["besoin"] + 300) // 100) * 100),
+                               "b_plafond_tiktok_shop": "Ventes TikTok Shop plafonnées au stock déjà payé, aucune collaboration d'affiliés avant le premier règlement TikTok Shop ; apport limité au minimum pour vendre le premier stock",
+                               "c_arret": "Arrêt avec 45 € engagés si la porte 1 n'est pas franchie"}},
     }
     # Variante franchise de TVA (même volume, marge par commande en franchise, phase micro-stock)
     var_fr = {}

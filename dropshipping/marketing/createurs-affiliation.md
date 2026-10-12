@@ -14,7 +14,7 @@
 | Question | Réponse |
 |---|---|
 | Pourquoi des créateurs ? | Dans le mix de lancement, 58 % des commandes viennent d'affiliés (`brand.json` → `canaux.repartition_commandes_hypothese`). Leurs vidéos apportent la portée qu'un compte de marque neuf n'a pas (médiane de 2 500 vues contre 500 pour le compte de marque à J+30, 02 §4.4, estimation, confiance faible) |
-| Ce que coûte une vente affiliée | Rouleau à 24,90 € avec un affilié à 15 % : **4,19 €** de marge, contre 7,92 € en contenu propre (04 §4.1). L'affiliation achète de la visibilité et des vidéos réutilisables ; la marge se fait sur les kits et le site |
+| Ce que coûte une vente affiliée | Rouleau à 24,90 € avec un affilié à 15 % : **3,14 €** de marge, contre 6,87 € en contenu propre (04 §4.1, coûts produit +20 % de prudence). L'affiliation achète de la visibilité et des vidéos réutilisables ; la marge se fait sur les kits et le site |
 | Cible | 50 créateurs français qualifiés, de 1 000 à 50 000 abonnés, vivant avec un chat ou un chien, dont 15 à 20 en collaboration ciblée |
 | Rendement attendu | Sur 50 créateurs contactés : 5 à 10 réponses positives, 2 à 5 publications, 2 à 4 affiliés actifs (taux de 02 §3.3 appliqués à 50, estimation, confiance faible). Il faut ≈ 300 contacts pour 15 affiliés actifs ; la liste de 50 constitue la première vague |
 | Éligibilité TikTok Shop d'un créateur en France | 18 ans et **500 abonnés** dans l'État membre, selon la politique France du 3/09/2026 citée par [Kohen Avocats](https://kohenavocats.com/affiliation-tiktok-shop-siret-mention-publicite-commission-retenue-recours-2026/) ; des guides plus anciens citent 1 000 ou 1 500 abonnés ([Shopify France](https://www.shopify.com/fr/blog/affiliation-tiktok)). À vérifier dans le Seller Center le jour de l'ouverture |
@@ -84,7 +84,7 @@ Rythme : 1 heure pour 20 à 25 profils examinés (02 §3.1 : ≈ 1 h pour 20 pro
 
 | Score | Décision | Offre |
 |---|---|---|
-| ≥ 70 | **Collaboration ciblée** | Invitation à 20 %, échantillon gratuit, livrables écrits |
+| ≥ 70 | **Collaboration ciblée** | Invitation à 20 % sur le Grand kit (15 % sur le rouleau et le Kit anti-poils), échantillon gratuit, livrables écrits |
 | 55-69 | Collaboration ouverte | Invitation à rejoindre la collaboration ouverte à 12 % ; échantillon seulement après 1 vidéo publiée ou sur demande approuvée (§5.3) |
 | < 55 | Non retenu | Profil revu dans 3 mois |
 
@@ -204,20 +204,20 @@ Calcul sur la marge en contenu propre de 04 §4.1 (société assujettie à la TV
 
 | Offre TikTok Shop | Marge sans affilié | 10 % | 12 % (ouvert) | 15 % (moyenne `brand.json`) | 20 % (ciblé) | 25 % |
 |---|---|---|---|---|---|---|
-| Rouleau 24,90 € | 7,92 € | 5,43 € (6,68) | 4,93 € (6,18) | 4,19 € (5,44) | **2,94 €** (4,19) | 1,70 € (2,95) |
-| Kit anti-poils 29,90 € | 10,03 € | 7,04 € (8,53) | 6,44 € (7,94) | 5,54 € (7,04) | **4,05 €** (5,54) | 2,55 € (4,05) |
-| Grand kit 39,90 € | 15,00 € | 11,01 € (13,01) | 10,21 € (12,21) | 9,02 € (11,01) | **7,02 €** (9,02) | 5,03 € (7,02) |
+| Rouleau 24,90 € | 6,87 € | 4,38 € (5,63) | 3,88 € (5,13) | 3,14 € (4,38) | **1,89 €** (3,14) | 0,65 € (1,89) |
+| Kit anti-poils 29,90 € | 8,57 € | 5,58 € (7,08) | 4,98 € (6,48) | 4,08 € (5,58) | **2,59 €** (4,09) | 1,10 € (2,59) |
+| Grand kit 39,90 € | 13,01 € | 9,02 € (11,01) | 8,22 € (10,21) | 7,02 € (9,02) | **5,03 €** (7,02) | 3,03 € (5,03) |
 
-Calcul de la direction marketing à partir de `brand.json` ; estimation, confiance moyenne (coûts fournisseurs à confirmer sur échantillon).
+Calcul de la direction marketing à partir de `brand.json` (coûts produit majorés de 20 % tant que la TVA et la douane de l'achat ne sont pas validées) ; estimation, confiance moyenne (coûts fournisseurs à confirmer sur échantillon). La majoration fait passer le rouleau et le Kit anti-poils sous la marge plancher de 2,90 € au-delà de 15 % : le barème ci-dessous en tient compte.
 
 ### 6.2 Barème retenu
 
 | Programme | Taux | Échantillon | Conditions | Base |
 |---|---|---|---|---|
 | Collaboration ouverte | **12 %** sur tous les produits | Non, sauf demande approuvée (§6.3) | Approbation manuelle de chaque créateur ; lecture de la charte (§8.3) | `brand.json` → `commission_createurs_ouverte` |
-| Collaboration ciblée | **20 %** sur le Grand kit et le Kit anti-poils ; **18 %** sur le rouleau seul | Oui, 1 par créateur | Score ≥ 70 ; 2 vidéos sous 14 jours si le créateur publie ; contrat signé | `brand.json` → `commission_createurs_ciblee` ; 18 % sur le rouleau pour garder ≥ 3 € de marge hors période à 4 % (3,44 €) |
-| Palier de performance | Ouvert → 18 % le mois suivant | — | ≥ 30 commandes attribuées dans le mois civil | Estimation marketing ; récompense les créateurs qui vendent sans échantillon |
-| Plafond | 20 % sur le rouleau, 25 % sur le Grand kit | — | Marge plancher de 2,90 € par commande affiliée | Règle de la direction marketing |
+| Collaboration ciblée | **20 %** sur le Grand kit ; **15 %** sur le Kit anti-poils et le rouleau seul | Oui, 1 par créateur | Score ≥ 70 ; 2 vidéos sous 14 jours si le créateur publie ; contrat signé | `brand.json` → `commission_createurs_ciblee` (Grand kit) ; 15 % sur le rouleau et le Kit anti-poils pour garder ≥ 2,90 € de marge hors période à 4 % (3,14 € et 4,08 €) |
+| Palier de performance | Ouvert → 15 % sur le rouleau et le Kit anti-poils, 20 % sur le Grand kit, le mois suivant | — | ≥ 30 commandes attribuées dans le mois civil | Estimation marketing ; récompense les créateurs qui vendent sans échantillon |
+| Plafond | 15 % sur le rouleau et le Kit anti-poils, 25 % sur le Grand kit | — | Marge plancher de 2,90 € par commande affiliée | Règle de la direction marketing |
 | Site (après la bascule Shopify) | 15 % via GoAffPro (offre gratuite) | Non | Lien ou code personnel sans remise fictive | 02 §3.2 ; aucun suivi d'affiliation n'existe sur le site statique de lancement |
 
 Aucun cachet fixe pendant le palier 0. Le paiement est assuré par TikTok après la livraison ; une retenue jusqu'à 90 jours est possible en cas de soupçon de violation des règles ([Kohen Avocats](https://kohenavocats.com/affiliation-tiktok-shop-siret-mention-publicite-commission-retenue-recours-2026/)). Une baisse de taux ne s'applique au contenu existant qu'après 30 jours selon le guide [Shopify France](https://www.shopify.com/fr/blog/affiliation-tiktok) (fiabilité faible) : annoncer tout changement un mois à l'avance.
@@ -226,7 +226,7 @@ Aucun cachet fixe pendant le palier 0. Le paiement est assuré par TikTok après
 
 | Règle | Détail |
 |---|---|
-| Phase 0 | 5 échantillons au total, aux 5 meilleurs scores ayant accepté (≈ 60 €, 04 §5.3) |
+| Phase 0 | 5 échantillons au total, aux 5 meilleurs scores ayant accepté, prélevés sur le micro-stock (dimensionné pour cela) et retirés du stock disponible le jour de l'envoi ; collaborations rémunérées seulement avec l'option de trésorerie a (04 §5.3) |
 | Ensuite | 1 échantillon supplémentaire par tranche de 10 commandes affiliées encaissées |
 | Demandes spontanées d'échantillons dans le Seller Center | Approuvées si score ≥ 60 et ≥ 3 vidéos publiées dans les 30 derniers jours (02 §3.2) |
 | Envoi | Depuis le micro-stock, point relais, sous 2 jours ouvrés ; notice et insert « mode d'emploi en vidéo » inclus |
